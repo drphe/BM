@@ -170,7 +170,7 @@
     <div id = "main" style = "width: 500px">
     <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu"> <div class="cell-counter">0</div></div>
     <div class="cell ery2" onclick="incrementCount(this)" title="Nguyên hồng cầu ái kiềm"> <div class="cell-counter">0</div></div>
-    <div class="cell ery3" onclick="incrementCount(this)" title=" - Nguyên hồng cầu đa sắc"> <div class="cell-counter">0</div></div>
+    <div class="cell ery3" onclick="incrementCount(this)" title="Nguyên hồng cầu đa sắc"> <div class="cell-counter">0</div></div>
     <div class="cell ery4" onclick="incrementCount(this)" title="Nguyên hồng cầu ái toan"> <div class="cell-counter">0</div></div>
 <br/>
     <div class="cell mye1" onclick="incrementCount(this)" title="Nguyên tủy bào"> <div class="cell-counter">0</div></div>
@@ -204,8 +204,10 @@
         }
 	function resizeContent() {
 	const content = document.getElementById('main'); 
-	const screenWidth = window.innerHeight; 
-	const scale = screenWidth / 620; 
+	const screenWidth = window.innerWidth; 
+	const screenHeight = window.innerHeight; 
+	const tmp = screenWidth < 450
+	const scale = tmp? screenWidth / 500:screenHeight/620 ; 
 	content.style.transform = `scale(${scale})`; 
 	}
 	window.addEventListener('resize', resizeContent);
