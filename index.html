@@ -27,14 +27,11 @@
         }
 
         .counter {
-            position: sticky;
-            top: 0px;
             font-size: 20px;
             display: flex;
             padding: 8px;
             z-index: 2;
             background: #f0f0f0;
-            width: 500px;
         }
 
         .cell-counter {
@@ -214,8 +211,10 @@
 </head>
 
 <body>
-    <div class="counter">Count: <span id="totalCount">0</span></div>
+
     <div id="main" style="width: 500px; ">
+    <div class="counter">Count: <span id="totalCount">0</span></div>
+    <br/>
         <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu">
             <div class="cell-counter">0</div>
         </div>
