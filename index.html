@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +8,14 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-	    display: flex;
+            display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             height: 100vh;
             margin: 0;
         }
+
         .cell {
             width: 100px;
             height: 100px;
@@ -23,178 +25,265 @@
             position: relative;
             cursor: pointer;
         }
+
         .counter {
-            position: fixed;
-            top: 10px;
-            right: 10px;
-            font-size: 24px;
+            position: sticky;
+            top: 0px;
+            font-size: 20px;
+            display: flex;
+            padding: 8px;
+            z-index: 2;
+            background: #f0f0f0;
+            width: 500px;
         }
+
         .cell-counter {
             position: absolute;
             top: 0px;
             right: 0px;
-	    width: 18px; height: 18px;
+            width: 18px;
+            height: 18px;
             font-size: 18px;
-	    font-weight: 700;
-	    color: white;
+            font-weight: 700;
+            color: white;
             background-color: red;
             padding: 2px 5px;
             border-radius: 10px;
         }
 
-	.ery1 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/ery1.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.ery2 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/ery2.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.ery3 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/ery3.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.ery4 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/ery4.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.mye1 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/mye1.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.mye2 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/mye2.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.neu1 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/neu1.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.neu2 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/neu2.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.neu3 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/neu3.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.neu4 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/neu4.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.eos1 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/eos1.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.eos2 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/eos2.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.eos3 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/eos3.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.eos4 {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/eos4.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.baso {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/baso.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.lym {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/lym.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.mono {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/mono.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.plasma {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/plasma.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.mega {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/mega.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
-	.otherA {
-	width: 100px; height: 100px; 
-	background-image: url('assets/images/otherA.png'); 
-	background-size: cover; 
-	background-position: center; 
-	}
+        .ery1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery1.png');
+            background-size: cover;
+            background-position: center;
+        }
 
+        .ery2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ery3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ery4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mye1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mye1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mye2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mye2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .baso {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/baso.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .lym {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/lym.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mono {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mono.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .plasma {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/plasma.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mega {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mega.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherA {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherA.png');
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 </head>
+
 <body>
     <div class="counter">Count: <span id="totalCount">0</span></div>
-    <div id = "main" style = "width: 500px">
-    <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu"> <div class="cell-counter">0</div></div>
-    <div class="cell ery2" onclick="incrementCount(this)" title="Nguyên hồng cầu ái kiềm"> <div class="cell-counter">0</div></div>
-    <div class="cell ery3" onclick="incrementCount(this)" title="Nguyên hồng cầu đa sắc"> <div class="cell-counter">0</div></div>
-    <div class="cell ery4" onclick="incrementCount(this)" title="Nguyên hồng cầu ái toan"> <div class="cell-counter">0</div></div>
-<br/>
-    <div class="cell mye1" onclick="incrementCount(this)" title="Nguyên tủy bào"> <div class="cell-counter">0</div></div>
-    <div class="cell mye2" onclick="incrementCount(this)" title="Tiền nguyên tủy bào"> <div class="cell-counter">0</div></div>
-    <div class="cell neu1" onclick="incrementCount(this)" title="Tủy bào trung tính"> <div class="cell-counter">0</div></div>
-    <div class="cell neu2" onclick="incrementCount(this)" title="Hậu tủy bào trung tính"> <div class="cell-counter">0</div></div>
-<br/>
-    <div class="cell neu3" onclick="incrementCount(this)" title="Band trung tính"> <div class="cell-counter">0</div></div>
-    <div class="cell neu4" onclick="incrementCount(this)" title="Bạch cầu đoạn trung tính"> <div class="cell-counter">0</div></div>
-    <div class="cell eos1" onclick="incrementCount(this)" title="Tủy bào ái toan"> <div class="cell-counter">0</div></div>
-    <div class="cell eos2" onclick="incrementCount(this)" title="Hậu tủy bào ái toan"> <div class="cell-counter">0</div></div>
-<br/>
-    <div class="cell mono" onclick="incrementCount(this)" title="Band ái toan"> <div class="cell-counter">0</div></div>
-    <div class="cell baso" onclick="incrementCount(this)" title="Tủy bào ái toan"> <div class="cell-counter">0</div></div>
-    <div class="cell eos3" onclick="incrementCount(this)" title="Band ái toan"> <div class="cell-counter">0</div></div>
-    <div class="cell eos4" onclick="incrementCount(this)" title="Bạch cầu đoạn ái toan"> <div class="cell-counter">0</div></div>
-<br/>
-    <div class="cell lym" onclick="incrementCount(this)" title="Lympho"> <div class="cell-counter">0</div></div>
-    <div class="cell plasma" onclick="incrementCount(this)" title="Tương bào"> <div class="cell-counter">0</div></div>
-    <div class="cell mega" onclick="incrementCount(this)" title="Mẫu tiểu cầu"> <div class="cell-counter">0</div></div>
-    <div class="cell otherA" onclick="incrementCount(this)" title="Tế bào khác"> <div class="cell-counter">0</div></div>
+    <div id="main" style="width: 500px; ">
+        <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell ery2" onclick="incrementCount(this)" title="Nguyên hồng cầu ái kiềm">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell ery3" onclick="incrementCount(this)" title="Nguyên hồng cầu đa sắc">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell ery4" onclick="incrementCount(this)" title="Nguyên hồng cầu ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <br />
+        <div class="cell mye1" onclick="incrementCount(this)" title="Nguyên tủy bào">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell mye2" onclick="incrementCount(this)" title="Tiền nguyên tủy bào">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell neu1" onclick="incrementCount(this)" title="Tủy bào trung tính">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell neu2" onclick="incrementCount(this)" title="Hậu tủy bào trung tính">
+            <div class="cell-counter">0</div>
+        </div>
+        <br />
+        <div class="cell neu3" onclick="incrementCount(this)" title="Band trung tính">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell neu4" onclick="incrementCount(this)" title="Bạch cầu đoạn trung tính">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell eos1" onclick="incrementCount(this)" title="Tủy bào ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell eos2" onclick="incrementCount(this)" title="Hậu tủy bào ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <br />
+        <div class="cell mono" onclick="incrementCount(this)" title="Band ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell baso" onclick="incrementCount(this)" title="Tủy bào ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell eos3" onclick="incrementCount(this)" title="Band ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell eos4" onclick="incrementCount(this)" title="Bạch cầu đoạn ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <br />
+        <div class="cell lym" onclick="incrementCount(this)" title="Lympho">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell plasma" onclick="incrementCount(this)" title="Tương bào">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell mega" onclick="incrementCount(this)" title="Mẫu tiểu cầu">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell otherA" onclick="incrementCount(this)" title="Tế bào khác">
+            <div class="cell-counter">0</div>
+        </div>
     </div>
     <script>
         let totalCount = 0;
+
         function incrementCount(cell) {
             totalCount++;
             document.getElementById('totalCount').innerText = totalCount;
@@ -202,16 +291,18 @@
             let cellCount = parseInt(cellCounter.innerText);
             cellCounter.innerText = cellCount + 1;
         }
-	function resizeContent() {
-	const content = document.getElementById('main'); 
-	const screenWidth = window.innerWidth; 
-	const screenHeight = window.innerHeight; 
-	const tmp = screenWidth < 450
-	const scale = tmp? screenWidth / 500:screenHeight/620 ; 
-	content.style.transform = `scale(${scale})`; 
-	}
-	window.addEventListener('resize', resizeContent);
-	window.addEventListener('load', resizeContent); 
+
+        function resizeContent() {
+            const content = document.getElementById('main');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const tmp = screenWidth < 450
+            const scale = tmp ? screenWidth / 500 : (screenHeight) / 680;
+            content.style.transform = `scale(${scale})`;
+        }
+        window.addEventListener('resize', resizeContent);
+        window.addEventListener('load', resizeContent);
     </script>
 </body>
+
 </html>
