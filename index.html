@@ -7,6 +7,7 @@
     <style>
         body {
             font-family: Arial, sans-serif;
+	    display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -161,11 +162,12 @@
 	background-size: cover; 
 	background-position: center; 
 	}
+
     </style>
 </head>
 <body>
     <div class="counter">Count: <span id="totalCount">0</span></div>
-
+    <div id = "main" style = "width: 500px">
     <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu"> <div class="cell-counter">0</div></div>
     <div class="cell ery2" onclick="incrementCount(this)" title="Nguyên hồng cầu ái kiềm"> <div class="cell-counter">0</div></div>
     <div class="cell ery3" onclick="incrementCount(this)" title=" - Nguyên hồng cầu đa sắc"> <div class="cell-counter">0</div></div>
@@ -190,6 +192,7 @@
     <div class="cell plasma" onclick="incrementCount(this)" title="Tương bào"> <div class="cell-counter">0</div></div>
     <div class="cell mega" onclick="incrementCount(this)" title="Mẫu tiểu cầu"> <div class="cell-counter">0</div></div>
     <div class="cell otherA" onclick="incrementCount(this)" title="Tế bào khác"> <div class="cell-counter">0</div></div>
+    </div>
     <script>
         let totalCount = 0;
         function incrementCount(cell) {
@@ -199,6 +202,14 @@
             let cellCount = parseInt(cellCounter.innerText);
             cellCounter.innerText = cellCount + 1;
         }
+	function resizeContent() {
+	const content = document.getElementById('main'); 
+	const screenWidth = window.innerHeight; 
+	const scale = screenWidth / 620; 
+	content.style.transform = `scale(${scale})`; 
+	}
+	window.addEventListener('resize', resizeContent);
+	window.addEventListener('load', resizeContent); 
     </script>
 </body>
 </html>
