@@ -778,8 +778,8 @@ tr:hover {
 
         function resizeContent() {
             const content = document.getElementById('app');
-            const screenWidth = window.outerWidth;
-            const screenHeight = window.outerHeight;
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
             const tmp = screenWidth < 500
             if (screenWidth < 500) content.style.transform = `scale(${screenWidth / 500})`;
             else if (screenHeight < 900) content.style.transform = `scale(${screenHeight /900})`;
