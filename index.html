@@ -63,6 +63,7 @@
             background-color: red;
             padding: 2px 5px;
             border-radius: 10px;
+            user-select: none;
         }
 
         .ery1 {
@@ -400,6 +401,10 @@
             let cellCounter = cell.querySelector('.cell-counter');
             let cellCount = parseInt(cellCounter.innerText);
             cellCounter.innerText = cellCount + 1;
+	    if(totalCount==200){
+		alert("Đã đếm đủ 200 tế bào có nhân!")
+		report();
+	    }
         }
 
         function openNewPage(text) {
@@ -408,7 +413,37 @@
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="icon" type="image/png" href="https://drphe.github.io/BM/assets/images/app_splash.png">
-		<title>Thống kê</title> </head> 
+		<title>Thống kê</title>
+		<style>
+table {
+	display: inline-block;
+	border-collapse: separate;
+	border-spacing: 0px;
+	justify-content: space-between;
+    font-family: system-ui;
+}
+
+th,
+td {
+	padding: 4px;
+	text-align: left;
+	font-size: 13px;
+	white-space: nowrap;
+	border-bottom: 1px solid #ddd;
+	min-width: 60px;
+}
+
+tr {
+	margin: auto;
+	text-align: center;
+}
+
+tr:hover {
+	background-color: #d9a7d9;
+}
+
+	</style>
+		 </head> 
 		<body> ${text}</body> </html>`;
             const newWindow = window.open();
             newWindow.document.write(newPageContent);
@@ -419,10 +454,6 @@
             myeCount = 0;
             eryCount = 0;
             let countAll = [];
-            let percent = (a) => {
-                    let b = a / totalCount * 100;
-                    return b ? b.toFixed(2) + "%" : '0.0%'
-                }
                 ['ery1', 'ery2', 'ery3', 'ery4'].forEach((text) => {
                     let cellCounter = document.querySelector('.' + text + ' .cell-counter');
                     let cellCount = parseInt(cellCounter.innerText);
@@ -440,36 +471,52 @@
                 let cellCount = parseInt(cellCounter.innerText);
                 countAll.push(cellCount);
             })
+	    let tong = totalCount - countAll[18];
+            let percent = (a) => {
+                    let b = a / tong * 100;
+                    return b ? b.toFixed(2) + "%" : '0.00'
+                }
             let ME = eryCount == 0 ? 0 : myeCount / eryCount;
-            let text = `----------------------<br/>Tỷ lệ M/E: ${ME.toFixed(2)}<br/>----------------------<br/>
-                DÒNG TỦY (Myeloid)<br/>
-                Nguyên tủy bào: ${percent(countAll[4])} <br/>
-                Tiền tủy bào: ${percent(countAll[5])}<br/>
-                Tủy bào trung tính: ${percent(countAll[6])}<br/>
-                Tủy bào ái toan: ${percent(countAll[10])}<br/>
-                Hậu tủy bào trung tính: ${percent(countAll[7])}<br/>
-                Hậu tủy bào ái toan: ${percent(countAll[11])}<br/>
-                Band trung tính: ${percent(countAll[8])}<br/>
-                Band ái toan: ${percent(countAll[12])}<br/>
-                Bạch cầu đoạn trung tính: ${percent(countAll[9])}<br/>
-                Bạch cầu đoạn ái toan: ${percent(countAll[13])}<br/>
-                Bạch cầu đoạn ái kiềm: ${percent(countAll[16])}<br/>
-                DÒNG HỒNG CẦU (Erythoid)<br/>
-                Tiền nguyên hồng cầu: ${percent(countAll[0])}<br/>
-                Nguyên hồng cầu ái kiềm: ${percent(countAll[1])}<br/>
-                Nguyên hồng cầu đa sắc: ${percent(countAll[2])}<br/>
-                Nguyên hồng cầu ái toan: ${percent(countAll[3])}<br/>
-                DÒNG ĐƠN NHÂN------<br/>
-                Lympho: ${percent(countAll[14])}<br/>
-                Tương bào: ${percent(countAll[15])}<br/>
-                Mono:  ${percent(countAll[17])}<br/>
-                Mẫu tiểu cầu:  ${percent(countAll[18])}<br/>
-                DÒNG KHÁC---------<br/>
-                Tế bào khác A: ${percent(countAll[19])}<br/>
-                Tế bào khác B: ${percent(countAll[20])}<br/>
-                Tế bào khác C: ${percent(countAll[21])}<br/>
-                Tế bào khác D: ${percent(countAll[22])}<br/>
-                Tế bào khác E: ${percent(countAll[23])}`;
+            let text = `<table> 
+		<thead>
+		<th>Thông số</th>
+		<th>Kết quả</th>
+		<th>Bình thường</th>
+		<th></th>
+		</thead>
+		<tbody>
+		<tr><td>Tỷ lệ M/E </td><td>${ME.toFixed(2)}</td><td>3.0-5.0</td><td></td></tr>
+                <tr><td>Mẫu tiểu cầu (cái/mm3)</td><td>${countAll[18]}</td><td> 30-80</td><td></td></tr>
+                <tr><td></td><td>Số lượng</td><td>Tỉ lệ (%)</td><td>Tham chiếu</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG TỦY (Myeloid)<td>${myeCount}</td><td>${percent(myeCount)}</td><td></td></tr>
+                <tr><td>Nguyên tủy bào</td><td>${countAll[4]}</td><td> ${percent(countAll[4])} </td><td>0-1</td></tr>
+                <tr><td>Tiền tủy bào</td><td>${countAll[5]}</td><td> ${percent(countAll[5])}</td><td>0-2</td></tr>
+                <tr><td>Tủy bào trung tính</td><td>${countAll[6]}</td><td> ${percent(countAll[6])}</td><td>3-8</td></tr>
+                <tr><td>Tủy bào ái toan</td><td>${countAll[10]}</td><td>${percent(countAll[10])}</td><td>0-1</td></tr>
+                <tr><td>Hậu tủy bào trung tính</td><td>${countAll[7]}</td><td> ${percent(countAll[7])}</td><td>5-12</td></tr>
+                <tr><td>Hậu tủy bào ái toan</td><td>${countAll[11]}</td><td> ${percent(countAll[11])}</td><td>0-1</td></tr>
+                <tr><td>Band trung tính</td><td>${countAll[8]}</td><td> ${percent(countAll[8])}</td><td>5-12</td></tr>
+                <tr><td>Band ái toan</td><td>${countAll[12]}</td><td>${percent(countAll[12])}</td><td>0-1</td></tr>
+                <tr><td>Bạch cầu đoạn trung tính</td><td>${countAll[9]}</td><td> ${percent(countAll[9])}</td><td>25-41</td></tr>
+                <tr><td>Bạch cầu đoạn ái toan</td><td>${countAll[13]}</td><td> ${percent(countAll[13])}</td><td>1-4</td></tr>
+                <tr><td>Bạch cầu đoạn ái kiềm</td><td>${countAll[16]}</td><td> ${percent(countAll[16])}</td><td>0-1</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG HỒNG CẦU (Erythoid)</td><td>${eryCount}</td><td>${percent(eryCount)}</td><td></td></tr>
+                <tr><td>Tiền nguyên hồng cầu</td><td>${countAll[0]}</td><td> ${percent(countAll[0])}</td><td>0-1</td></tr>
+                <tr><td>Nguyên hồng cầu ái kiềm</td><td>${countAll[1]}</td><td>${percent(countAll[1])}</td><td>0.1-4</td></tr>
+                <tr><td>Nguyên hồng cầu đa sắc</td><td>${countAll[2]}</td><td>${percent(countAll[2])}</td><td>0.8-8</td></tr>
+                <tr><td>Nguyên hồng cầu ái toan</td><td>${countAll[3]}</td><td> ${percent(countAll[3])}</td><td>2.6-12</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG ĐƠN NHÂN</td><td></td><td></td><td></td></tr>
+                <tr><td>Lympho</td><td>${countAll[14]}</td><td>${percent(countAll[14])}</td><td>11-26</td></tr>
+                <tr><td>Tương bào</td><td>${countAll[15]}</td><td> ${percent(countAll[15])}</td><td>0-2</td></tr>
+                <tr><td>Mono</td><td>${countAll[17]}</td><td> ${percent(countAll[17])}</td><td>0-2</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG KHÁC</td><td></td><td></td><td></td></tr>
+                <tr><td>Tế bào khác A</td><td>${countAll[19]}</td><td>${percent(countAll[19])}</td></tr>
+                <tr><td>Tế bào khác B</td><td>${countAll[20]}</td><td>${percent(countAll[20])}</td></tr>
+                <tr><td>Tế bào khác C</td><td>${countAll[21]}</td><td>${percent(countAll[21])}</td></tr>
+                <tr><td>Tế bào khác D</td><td>${countAll[22]}</td><td>${percent(countAll[22])}</td></tr>
+                <tr><td>Tế bào khác E</td><td>${countAll[23]}</td><td> ${percent(countAll[23])}</td></tr>
+		</tbody></table>
+		`;
             openNewPage(text)
         }
 
