@@ -424,15 +424,19 @@ tr:hover {
                 <div class="cell-counter">0</div>
             </div>
         </div>
+	<i style="float: right;margin-right: 20px;font-size:12px;">© BSCK1.HHTM NGUYỄN VĂN PHÊ</i>
     </div>
-	<audio id="audio" src="./assets/sounds/sound_a1.mp3"></audio>
+	<audio id="sound_a1" src="./assets/sounds/sound_a1.mp3"></audio>
+	<audio id="sound_e1" src="./assets/sounds/sound_e1.mp3"></audio>
+	<audio id="sound_f1" src="./assets/sounds/sound_f1.mp3"></audio>
+	<audio id="sound_b1" src="./assets/sounds/sound_b1.mp3"></audio>
     <script>
         let totalCount = 0;
         let myeCount = 0;
         let eryCount = 0
         let bmmode = document.getElementById('celltap').innerHTML;;
         var checkboxState = false;
-	function playMusic(name) { var audio = new Audio('./assets/sounds/'+name); audio.play(); }
+	function playMusic(name) { var audio = document.getElementById(name); audio.play(); }
         function incrementCount(cell) {
             totalCount++;
             document.getElementById('totalCount').innerText = totalCount < 10 ? '0' + totalCount : totalCount;
@@ -444,7 +448,7 @@ tr:hover {
                 alert("Đã đếm đủ "+nu+" tế bào có nhân!")
                 report();
             }
-	    playMusic('sound_a1.mp3');
+	    playMusic('sound_a1');
         }
 	let isReport = false;
         function openNewPage(text) {
@@ -455,7 +459,7 @@ tr:hover {
 
         function report() {
 	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
-	    playMusic('sound_e1.mp3');
+	    playMusic('sound_e1');
             myeCount = 0;
             eryCount = 0;
             let countAll = [];
@@ -567,7 +571,7 @@ tr:hover {
         }
 
         function reset(c = 1) {
-	    playMusic('sound_f1.mp3');
+	    playMusic('sound_f1');
             let confirmAction = c ? confirm("Bạn có chắc chắn muốn reset lại không?") : 1;
             if (confirmAction) {
                 myeCount = 0;
@@ -586,7 +590,7 @@ tr:hover {
             let confirmAction = confirm("Bạn có chắc chắn muốn chuyển chế độ đếm không?\n Lưu ý: Dữ liệu cũ sẽ bị xóa.");
 	    if(!confirmAction) return;
             checkboxState = !checkboxState;
-	    playMusic('sound_b1.mp3');
+	    playMusic('sound_b1');
             let wbcmode = `<div class="cell mye1" onclick="incrementCount(this)" title="Tế bào non - Blast">
             <div class="cell-counter">0</div>
         </div>
