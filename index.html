@@ -267,11 +267,39 @@
             /* Internet Explorer/Edge */
             user-select: none;
         }
+table {
+	display: table;
+	border-collapse: separate;
+	border-spacing: 0px;
+	justify-content: space-between;
+        font-family: system-ui;
+	width: 490px;
+	margin: 4px;
+}
+
+th,
+td {
+	padding: 4px;
+	text-align: left;
+	font-size: 16px;
+	white-space: nowrap;
+	border-bottom: 1px solid #ddd;
+	min-width: 60px;
+}
+
+tr {
+	margin: auto;
+	text-align: center;
+}
+
+tr:hover {
+	background-color: #d9a7d9;
+}
     </style>
 </head>
 
-<body id="app" style="transform-origin:center;transform-box: fill-box; " onclick="resizeContent()">
-    <div id="main" style="width: 500px;display:none;">
+<body id="app" style="transform-origin:top center;transform-box: fill-box; " onclick="resizeContent()">
+    <div id="main" style="width: 500px;height: 100vh;;display:none;">
         <div class="counter">
             <span style=" width: 30px; padding: 0px;cursor: pointer;" id="cb3" onclick="changemode()" title="Thay đổi chế độ đếm">
                 <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -313,7 +341,7 @@
             </span>
             <span style="width: 30px;height: 30px;cursor: pointer;" onclick="reset()" title="Reset">
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="no-select">
-                    <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" fill="#6563ff" />
+                    <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" fill="red" />
                 </svg> </span>
         </div>
         <br />
@@ -402,7 +430,7 @@
         let totalCount = 0;
         let myeCount = 0;
         let eryCount = 0
-        const bmmode = document.getElementById('celltap').innerHTML;;
+        let bmmode = document.getElementById('celltap').innerHTML;;
         var checkboxState = false;
 	function playMusic(name) { var audio = new Audio('./assets/sounds/'+name); audio.play(); }
         function incrementCount(cell) {
@@ -418,51 +446,15 @@
             }
 	    playMusic('sound_a1.mp3');
         }
-
+	let isReport = false;
         function openNewPage(text) {
-            const newPageContent = ` <!DOCTYPE html>
-		<html lang="vi"> <head> 
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="icon" type="image/png" href="https://drphe.github.io/BM/assets/images/app_splash.png">
-		<title>Thống kê</title>
-		<style>
-table {
-	display: inline-block;
-	border-collapse: separate;
-	border-spacing: 0px;
-	justify-content: space-between;
-    font-family: system-ui;
-}
-
-th,
-td {
-	padding: 4px;
-	text-align: left;
-	font-size: 13px;
-	white-space: nowrap;
-	border-bottom: 1px solid #ddd;
-	min-width: 60px;
-}
-
-tr {
-	margin: auto;
-	text-align: center;
-}
-
-tr:hover {
-	background-color: #d9a7d9;
-}
-
-	</style>
-		 </head> 
-		<body> ${text}</body> </html>`;
-            const newWindow = window.open();
-            newWindow.document.write(newPageContent);
-            newWindow.document.close();
+	    isReport = true;
+	    bmmode = document.getElementById('celltap').innerHTML;
+	    document.getElementById('celltap').innerHTML = text;
         }
 
         function report() {
+	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
 	    playMusic('sound_e1.mp3');
             myeCount = 0;
             eryCount = 0;
@@ -590,8 +582,11 @@ tr:hover {
         }
 
         function changemode() {
+	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
+            let confirmAction = confirm("Bạn có chắc chắn muốn chuyển chế độ đếm không?\n Lưu ý: Dữ liệu cũ sẽ bị xóa.");
+	    if(!confirmAction) return;
             checkboxState = !checkboxState;
-	    	    playMusic('sound_b1.mp3');
+	    playMusic('sound_b1.mp3');
             let wbcmode = `<div class="cell mye1" onclick="incrementCount(this)" title="Tế bào non - Blast">
             <div class="cell-counter">0</div>
         </div>
