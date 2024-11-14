@@ -434,7 +434,8 @@ tr:hover {
         let totalCount = 0;
         let myeCount = 0;
         let eryCount = 0
-        let bmmode = document.getElementById('celltap').innerHTML;;
+        const Bmmode = document.getElementById('celltap').innerHTML;
+        let bmmode = document.getElementById('celltap').innerHTML;
         var checkboxState = false;
 	function playMusic(name) { var audio = document.getElementById(name); audio.play(); }
         function incrementCount(cell) {
@@ -452,14 +453,13 @@ tr:hover {
         }
 	let isReport = false;
         function openNewPage(text) {
-	    isReport = true;
 	    bmmode = document.getElementById('celltap').innerHTML;
 	    document.getElementById('celltap').innerHTML = text;
         }
 
         function report() {
 	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
-	    playMusic('sound_e1');
+	    playMusic('sound_e1');isReport = true;
             myeCount = 0;
             eryCount = 0;
             let countAll = [];
@@ -577,6 +577,7 @@ tr:hover {
                 myeCount = 0;
                 eryCount = 0;
                 totalCount = 0;
+	   	if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;}
                 document.getElementById('totalCount').innerText = '00';
                 let allCell = document.querySelectorAll('.cell-counter');
                 allCell.forEach((cel) => {
@@ -640,7 +641,7 @@ tr:hover {
             <div class="cell-counter">0</div>
         </div>`;
             reset(0);
-            document.getElementById('celltap').innerHTML = checkboxState ? wbcmode : bmmode;
+            document.getElementById('celltap').innerHTML = checkboxState ? wbcmode : Bmmode;
         }
 
         function resizeContent() {
