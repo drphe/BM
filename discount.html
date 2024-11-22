@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,6 +15,7 @@
             justify-content: center;
             align-items: center;
         }
+
         .container {
             background-color: white;
             padding: 20px;
@@ -22,16 +24,19 @@
             width: 100%;
             max-width: 400px;
         }
+
         h1 {
             font-size: 20px;
             margin-bottom: 10px;
             text-align: center;
         }
+
         label {
             display: block;
             margin-top: 10px;
             font-weight: bold;
         }
+
         input {
             width: calc(100% - 40px);
             padding: 10px;
@@ -41,10 +46,12 @@
             border-radius: 4px;
             display: inline-block;
         }
+
         .input-group {
             display: flex;
             align-items: center;
         }
+
         .input-group span {
             padding: 10px;
             background-color: #f9f9f9;
@@ -52,6 +59,7 @@
             border-left: none;
             border-radius: 0 4px 4px 0;
         }
+
         button {
             background-color: #007bff;
             color: white;
@@ -61,75 +69,87 @@
             cursor: pointer;
             width: 100%;
         }
+
         button:hover {
             background-color: #0056b3;
         }
+
         .result {
             margin-top: 20px;
             padding: 10px;
             background-color: #f9f9f9;
             border: 1px solid #ccc;
             border-radius: 4px;
-	    min-height:50px;
+            min-height: 50px;
         }
+
         input#stockCode {
-            text-transform: uppercase; /* Chuyển tự động thành chữ in hoa */
+            text-transform: uppercase;
+            /* Chuyển tự động thành chữ in hoa */
         }
     </style>
     <style>
         table {
             width: 100%;
             border-collapse: collapse;
-	   font-size:14px;
+            font-size: 14px;
         }
-        table, th, td {
+
+        table,
+        th,
+        td {
             border: 1px solid black;
         }
-        th, td {
+
+        th,
+        td {
             padding: 8px;
             text-align: left;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <h1>Phân Tích Cổ Phiếu</h1>
         <label for="stockCode">Mã Cổ Phiếu</label>
         <input type="text" id="stockCode" value="ACB" placeholder="Nhập mã cổ phiếu...">
-        
+
         <label for="recoveryRate">Mức Hồi Phục (%)</label>
         <div class="input-group">
-            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="5">
+            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="10">
         </div>
-        
+
         <button onclick="analyzeStock()">Trả Kết Quả</button>
-        <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div><br/>
-<table id="resultsTable">
-    <thead>
-        <tr>
-            <th>Drawdown (%)</th>
-            <th>Đỉnh</th>
-            <th>Ngày (Đỉnh)</th>
-            <th>Đáy</th>
-            <th>Ngày (Đáy)</th>
-        </tr>
-    </thead>
-    <tbody>
-        <!-- Data will be populated here -->
-    </tbody>
-</table>
+        <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div><br />
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Tạo đỉnh</th>
+                    <th>Giá</th>
+                    <th>Tạo đáy</th>
+                    <th>Giá</th>
+                    <th>Chiết khấu (%)</th>
+                    <th>Hồi phục (%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Data will be populated here -->
+            </tbody>
+        </table>
     </div>
 
 
     <script>
-	var recoverpercent = 1;
+        var recoverpercent = 1;
+
         function analyzeStock() {
             // Lấy giá trị từ các ô nhập liệu
             const stockCode = document.getElementById("stockCode").value.trim().toUpperCase();
             const recoveryRate = parseFloat(document.getElementById("recoveryRate").value);
 
             // Kiểm tra đầu vào
-            if (!stockCode || stockCode.length <3) {
+            if (!stockCode || stockCode.length < 3) {
                 document.getElementById("resultBox").innerText = "Vui lòng nhập mã cổ phiếu hợp lệ.";
                 return;
             }
@@ -137,172 +157,191 @@
                 document.getElementById("resultBox").innerText = "Vui lòng nhập mức hồi phục hợp lệ.";
                 return;
             }
-	    recoverpercent = 1 + recoveryRate/100;
+            recoverpercent = 1 + recoveryRate / 100;
             // Xử lý dữ liệu 
-	    fetchData(stockCode);
-		console.log(stockCode)
+            fetchData(stockCode);
+            console.log(stockCode)
         }
 
-	var ohlc = [],
-	    closep = [];
-	function formatTimestamp(timestamp) {
-	    // Chuyển đổi timestamp (giây) sang milliseconds
-	    const date = new Date(timestamp * 1000);
+        var ohlc = [],
+            closep = [];
 
-	    // Lấy ngày, tháng và năm
-	    const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
-	    const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
-	    const year = String(date.getFullYear()).slice(-2); // Lấy 2 chữ số cuối của năm
+        function formatTimestamp(timestamp) {
+            // Chuyển đổi timestamp (giây) sang milliseconds
+            const date = new Date(timestamp * 1000);
 
-	    // Trả về định dạng dd/mm/yy
-	    return `${day}/${month}/${year}`;
-	}
-function getCurrentDate() {
-    const t = new Date;
-    return t.getFullYear() + "-" + String(t.getMonth() + 1)
-        .padStart(2, "0") + "-" + String(t.getDate())
-        .padStart(2, "0")
-}
-	async function fetchData(code) {
-		const apiUrl = "https://mastrade.masvn.com/api/v1/tradingview/history?symbol="+code+"&resolution=1D&from=1420070400&to=" + parseInt(Date.parse(getCurrentDate()) / 1000);
-	    try {
-	        const response = await fetch(apiUrl);
-	        if (!response.ok) {
-	            throw new Error('Network response was not ok');
-	        }
-	        const data = await response.json();
+            // Lấy ngày, tháng và năm
+            const day = String(date.getDate()).padStart(2, '0'); // Đảm bảo 2 chữ số
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+            const year = String(date.getFullYear()).slice(-2); // Lấy 2 chữ số cuối của năm
 
-	        for (var i = 0; i < data.t.length; i += 1) {
-	            let k = 1000;
-	            ohlc.push({
-	                "time": parseInt(data.t[i]),
-	                "open": parseFloat(data.o[i]),
-	                "high": parseFloat(data.h[i]),
-	                "low": parseFloat(data.l[i]),
-	                "close": parseFloat(data.c[i])
-	            });
-	            closep.push({
-	                "time": data.t[i],
-	                "value": parseFloat(data.c[i])
-	            });
-	        }
-	        var drawdown = findRecoveries(closep.slice(-1000));
-	        console.log(drawdown);
-		var sampleData =[];
-		for (let i = 1; i < drawdown.length; i++) {sampleData.push(drawdown[i].drawdown)}
-		const ci = calculateConfidenceInterval(sampleData);
-            	renderResults(drawdown.slice(-3))
-		const mockResult = `Kết quả tính toán cho mã: ${code}<br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức sụt giảm trung bình trước khi có nhịp hồi phục là ${ci.mean.toFixed(2)}<br/> 95% mức chiết khấu trong khoảng [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/> Dưới đây là bảng 3 lần hồi phục gần đây nhất.`;
+            // Trả về định dạng dd/mm/yy
+            return `${day}/${month}/${year}`;
+        }
 
-            // Hiển thị kết quả
-            document.getElementById("resultBox").innerHTML = mockResult;
-	    } catch (error) {
-	        console.error('There has been a problem with your fetch operation:', error);
-            	document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi kh lấy dữ liệu<br/> ${error}`;
-	    }
-	}
-function calculateConfidenceInterval(data) {
-    if (data.length === 0) return null; // Kiểm tra nếu mảng trống
+        function getCurrentDate() {
+            const t = new Date;
+            return t.getFullYear() + "-" + String(t.getMonth() + 1)
+                .padStart(2, "0") + "-" + String(t.getDate())
+                .padStart(2, "0")
+        }
+        async function fetchData(code) {
+            const apiUrl = "https://mastrade.masvn.com/api/v1/tradingview/history?symbol=" + code + "&resolution=1D&from=1420070400&to=" + parseInt(Date.parse(getCurrentDate()) / 1000);
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                const data = await response.json();
 
-    const n = data.length;
-    const mean = data.reduce((sum, value) => sum + value, 0) / n;
+                for (var i = 0; i < data.t.length; i += 1) {
+                    let k = 1000;
+                    ohlc.push({
+                        "time": parseInt(data.t[i]),
+                        "open": parseFloat(data.o[i]),
+                        "high": parseFloat(data.h[i]),
+                        "low": parseFloat(data.l[i]),
+                        "close": parseFloat(data.c[i])
+                    });
+                    closep.push({
+                        "time": data.t[i],
+                        "value": parseFloat(data.c[i])
+                    });
+                }
+                var drawdown = findRecoveries(closep.slice(-1000));
+                console.log(drawdown);
+                var sampleData = [];
+                for (let i = 1; i < drawdown.length; i++) {
+                    sampleData.push(drawdown[i].drawdown)
+                }
+                const ci = calculateConfidenceInterval(sampleData);
+                renderResults(drawdown.slice(-3))
+                const mockResult = `Kết quả tính toán cho mã: ${code}<br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức sụt giảm trung bình trước khi có nhịp hồi phục là ${ci.mean.toFixed(2)}<br/> 95% mức chiết khấu trong khoảng [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/> Dưới đây là bảng 3 lần hồi phục gần đây nhất.`;
 
-    // Tính độ lệch chuẩn
-    const variance = data.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / (n - 1);
-    const standardDeviation = Math.sqrt(variance);
+                // Hiển thị kết quả
+                document.getElementById("resultBox").innerHTML = mockResult;
+            } catch (error) {
+                console.error('There has been a problem with your fetch operation:', error);
+                document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi kh lấy dữ liệu<br/> ${error}`;
+            }
+        }
 
-    // Sai số chuẩn
-    const standardError = standardDeviation / Math.sqrt(n);
+        function calculateConfidenceInterval(data) {
+            if (data.length === 0) return null; // Kiểm tra nếu mảng trống
 
-    // Giá trị Z cho mức tin cậy 95%
-    const zScore = 1.96;
+            const n = data.length;
+            const mean = data.reduce((sum, value) => sum + value, 0) / n;
 
-    // Khoảng tin cậy
-    const marginOfError = zScore * standardError;
-    const lowerBound = mean - marginOfError;
-    const upperBound = mean + marginOfError;
+            // Tính độ lệch chuẩn
+            const variance = data.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / (n - 1);
+            const standardDeviation = Math.sqrt(variance);
 
-    return {
-        mean,
-        lowerBound,
-        upperBound,
-        marginOfError,
-    };
-}
-	function findRecoveries(data) {
-	    const results = [];
-	    let peak = data[0].value; // Giá đỉnh ban đầu
-	    let tpeak = data[0].time; // Giá đỉnh ban đầu
-	    let trough = data[0].value; // Giá đáy ban đầu
-	    let ttrough = data[0].time; // Giá đáy ban đầu
-	    let inDecline = false; // Trạng thái đang sụt giảm, mặc định là không
-	    for (let i = 1; i < data.length; i++) {
-	        if (!inDecline) { // đang tăng
-	            if (data[i].value < peak) { // Bắt đầu sụt giảm
-	                inDecline = true;
-	                trough = data[i].value;
-	                ttrough = data[i].time;
-	            } else {
-	                peak = data[i].value; // Cập nhật đỉnh nếu vẫn tăng
-	                tpeak = data[i].time;
-	                inDecline = false;
-	            }
-	        } else { // đang giảm 
-	            if (trough > data[i].value) {
-	                trough = data[i].value; // Cập nhật đáy nếu vẫn giảm
-	                ttrough = data[i].time
-	                inDecline = true;
-	            } else {
-	                const recoveryThreshold = trough * recoverpercent; // Ngưỡng hồi phục
-	                if (data[i].value > peak) {
-	                    peak = data[i].value; // Cập nhật đỉnh nếu giá hồi vượt đỉnh (không có đợt giảm sâu)
-	                    tpeak = data[i].time;
-	                    inDecline = false;
-	                } else {
-	                    if (data[i].value >= recoveryThreshold) { // giá vượt ngưỡng  phục hồi
-	                        const recoveryDate = data[i].time; // Thời điểm hồi phục
-	                        results.push({
-	                            drawdown: (1 - trough / peak) * 100,
-	                            start: peak,
-	                            startDate: formatTimestamp(tpeak),
-	                            bottom: trough,
-	                            bottomDate: formatTimestamp(ttrough),
-	                            recoveryDate: formatTimestamp(recoveryDate),
-	                            recoveryPrice: data[i].value,
-	                        });
-	                        inDecline = false; // Xác nhận hồi phục
-	                        peak = data[i].value; // Reset đỉnh
-	                    } else {
-	                        // chưa xác nhận đã hồi phục, tiếp tục giảm
-	                        inDecline = true;
-	                    }
-	                }
-	            }
-	        }
-	    }
-	    return results;
-	}
-</script>
-<script>
+            // Sai số chuẩn
+            const standardError = standardDeviation / Math.sqrt(n);
 
-function renderResults(results) {
-    const tableBody = document.querySelector('#resultsTable tbody');
-    tableBody.innerHTML = '';  // Clear existing table data
+            // Giá trị Z cho mức tin cậy 95%
+            const zScore = 1.96;
 
-    // Loop through results array and add rows to the table
-    results.forEach(result => {
-        const row = document.createElement('tr');
-        
-        row.innerHTML = `
-            <td>${result.drawdown.toFixed(2)}</td>
-            <td>${result.start.toFixed(0)}</td>
+            // Khoảng tin cậy
+            const marginOfError = zScore * standardError;
+            const lowerBound = mean - marginOfError;
+            const upperBound = mean + marginOfError;
+
+            return {
+                mean,
+                lowerBound,
+                upperBound,
+                marginOfError,
+            };
+        }
+
+        function findRecoveries(data) {
+            const results = [];
+            let peak = data[0].value; // Giá đỉnh ban đầu
+            let tpeak = data[0].time; // Giá đỉnh ban đầu
+            let trough = data[0].value; // Giá đáy ban đầu
+            let ttrough = data[0].time; // Giá đáy ban đầu
+            let inDecline = false; // Trạng thái đang sụt giảm, mặc định là không
+            let recor = [],
+                ishoi = false;
+            for (let i = 1; i < data.length; i++) {
+                if (!inDecline) { // đang tăng
+                    if (data[i].value < peak) { // Bắt đầu sụt giảm
+                        if (ishoi) {
+                            recor.push((peak / trough - 1) * 100);
+                            ishoi = false
+                        }
+
+                        inDecline = true;
+                        trough = data[i].value;
+                        ttrough = data[i].time;
+                    } else {
+                        peak = data[i].value; // Cập nhật đỉnh nếu vẫn tăng
+                        tpeak = data[i].time;
+                        inDecline = false;
+                    }
+                } else { // đang giảm 
+                    if (trough > data[i].value) {
+                        trough = data[i].value; // Cập nhật đáy nếu vẫn giảm
+                        ttrough = data[i].time
+                        inDecline = true;
+                    } else {
+                        const recoveryThreshold = trough * recoverpercent; // Ngưỡng hồi phục
+                        if (data[i].value > peak) {
+                            peak = data[i].value; // Cập nhật đỉnh nếu giá hồi vượt đỉnh (không có đợt giảm sâu)
+                            tpeak = data[i].time;
+                            inDecline = false;
+                        } else {
+                            if (data[i].value >= recoveryThreshold) { // giá vượt ngưỡng  phục hồi
+                                const recoveryDate = data[i].time; // Thời điểm hồi phục
+                                results.push({
+                                    drawdown: (1 - trough / peak) * 100,
+                                    start: peak,
+                                    startDate: formatTimestamp(tpeak),
+                                    bottom: trough,
+                                    bottomDate: formatTimestamp(ttrough),
+                                    recoveryDate: formatTimestamp(recoveryDate),
+                                    recoveryPrice: data[i].value,
+                                    recover: 0,
+                                });
+                                ishoi = true;
+                                inDecline = false; // Xác nhận hồi phục
+                                peak = data[i].value; // Reset đỉnh
+                            } else {
+                                // chưa xác nhận đã hồi phục, tiếp tục giảm
+                                inDecline = true;
+                            }
+                        }
+                    }
+                }
+            }
+            for (i = 0; i < results.length; i++) {
+                results[i].recover = recor[i];
+            }
+            return results;
+        }
+    </script>
+    <script>
+        function renderResults(results) {
+            const tableBody = document.querySelector('#resultsTable tbody');
+            tableBody.innerHTML = ''; // Clear existing table data
+
+            // Loop through results array and add rows to the table
+            results.forEach(result => {
+                const row = document.createElement('tr');
+
+                row.innerHTML = `
             <td>${result.startDate}</td>
-            <td>${result.bottom.toFixed(0)}</td>
+            <td>${result.start.toFixed(0)}</td>
             <td>${result.bottomDate}</td>
+            <td>${result.bottom.toFixed(0)}</td>
+            <td>${result.drawdown.toFixed(2)}</td>
+            <td>${result.recover.toFixed(2)}</td>
         `;
-        tableBody.appendChild(row);
-    });
-}
-</script>
+                tableBody.appendChild(row);
+            });
+        }
+    </script>
 </body>
+
 </html>
