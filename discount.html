@@ -113,7 +113,7 @@
     <div class="container">
         <h1>Phân Tích Cổ Phiếu</h1>
         <label for="stockCode">Mã Cổ Phiếu</label>
-        <input type="text" id="stockCode" value="ACB" placeholder="Nhập mã cổ phiếu...">
+        <input type="text" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
 
         <label for="recoveryRate">Mức Hồi Phục (%)</label>
         <div class="input-group">
@@ -218,7 +218,7 @@
                 const ci = calculateConfidenceInterval(sampleData);
                 const ci2 = calculateConfidenceInterval(sampleData2);
                 renderResults(drawdown.slice(-3))
-                const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> Mức chiết khấu hiện tại là ${ckht}%.`;
+                const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
 
                 // Hiển thị kết quả
                 document.getElementById("resultBox").innerHTML = mockResult;
@@ -319,7 +319,7 @@
             for (i = 0; i < results.length; i++) {
                 results[i].recover = recor[i];
             }
-	    ckht = ((1- trough/peak)*100).toFixed(2)
+	    ckht =`Mức chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`
             return results;
         }
     </script>
