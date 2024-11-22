@@ -437,7 +437,7 @@ tr:hover {
         const Bmmode = document.getElementById('celltap').innerHTML;
         let bmmode = document.getElementById('celltap').innerHTML;
         var checkboxState = false;
-	function playMusic(name) { var audio = document.getElementById(name); audio.play(); }
+	function playMusic(name) {} //var audio = document.getElementById(name); audio.play(); }
         function incrementCount(cell) {
             totalCount++;
             document.getElementById('totalCount').innerText = totalCount < 10 ? '0' + totalCount : totalCount;
@@ -509,13 +509,13 @@ tr:hover {
                     eryCount += cellCount;
                     countAll.push(cellCount);
                 });
-                ['mye1', 'mye2', 'neu1', 'neu2', 'neu3', 'neu4', 'eos1', 'eos2', 'eos3', 'eos4', 'lym', 'plasma', 'baso'].forEach((text) => {
+                ['mye1', 'mye2', 'neu1', 'neu2', 'neu3', 'neu4', 'eos1', 'eos2', 'eos3', 'eos4', 'mono', 'baso'].forEach((text) => {
                     let cellCounter = document.querySelector('.' + text + ' .cell-counter');
                     let cellCount = parseInt(cellCounter.innerText);
                     myeCount += cellCount;
                     countAll.push(cellCount);
                 });
-                ['mono', 'mega', 'otherA', 'otherB', 'otherC', 'otherC', 'otherD', 'otherE'].forEach((text) => {
+                ['lym','plasma', 'mega', 'otherA', 'otherB', 'otherC', 'otherC', 'otherD', 'otherE'].forEach((text) => {
                     let cellCounter = document.querySelector('.' + text + ' .cell-counter');
                     let cellCount = parseInt(cellCounter.innerText);
                     countAll.push(cellCount);
@@ -548,16 +548,16 @@ tr:hover {
                 <tr><td>Band ái toan</td><td>${countAll[12]}</td><td>${percent(countAll[12])}</td><td>0-1</td></tr>
                 <tr><td>Bạch cầu đoạn trung tính</td><td>${countAll[9]}</td><td> ${percent(countAll[9])}</td><td>25-41</td></tr>
                 <tr><td>Bạch cầu đoạn ái toan</td><td>${countAll[13]}</td><td> ${percent(countAll[13])}</td><td>1-4</td></tr>
-                <tr><td>Bạch cầu đoạn ái kiềm</td><td>${countAll[16]}</td><td> ${percent(countAll[16])}</td><td>0-1</td></tr>
+                <tr><td>Bạch cầu đoạn ái kiềm</td><td>${countAll[15]}</td><td> ${percent(countAll[15])}</td><td>0-1</td></tr>
                 <tr style="background-color: #24207c;color: white;"><td>DÒNG HỒNG CẦU (Erythoid)</td><td>${eryCount}</td><td>${percent(eryCount)}</td><td></td></tr>
                 <tr><td>Tiền nguyên hồng cầu</td><td>${countAll[0]}</td><td> ${percent(countAll[0])}</td><td>0-1</td></tr>
                 <tr><td>Nguyên hồng cầu ái kiềm</td><td>${countAll[1]}</td><td>${percent(countAll[1])}</td><td>0.1-4</td></tr>
                 <tr><td>Nguyên hồng cầu đa sắc</td><td>${countAll[2]}</td><td>${percent(countAll[2])}</td><td>0.8-8</td></tr>
                 <tr><td>Nguyên hồng cầu ái toan</td><td>${countAll[3]}</td><td> ${percent(countAll[3])}</td><td>2.6-12</td></tr>
-                <tr style="background-color: #24207c;color: white;"><td>DÒNG ĐƠN NHÂN</td><td> ${countAll[14]+countAll[15]+countAll[17]} </td><td>${percent(countAll[14]+countAll[15]+countAll[17])}</td><td></td></tr>
-                <tr><td>Lympho</td><td>${countAll[14]}</td><td>${percent(countAll[14])}</td><td>11-26</td></tr>
-                <tr><td>Tương bào</td><td>${countAll[15]}</td><td> ${percent(countAll[15])}</td><td>0-2</td></tr>
-                <tr><td>Mono</td><td>${countAll[17]}</td><td> ${percent(countAll[17])}</td><td>0-2</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG ĐƠN NHÂN</td><td> ${countAll[14]+countAll[16]+countAll[17]} </td><td>${percent(countAll[14]+countAll[16]+countAll[17])}</td><td></td></tr>
+                <tr><td>Lympho</td><td>${countAll[16]}</td><td>${percent(countAll[16])}</td><td>11-26</td></tr>
+                <tr><td>Tương bào</td><td>${countAll[17]}</td><td> ${percent(countAll[17])}</td><td>0-2</td></tr>
+                <tr><td>Mono</td><td>${countAll[14]}</td><td> ${percent(countAll[14])}</td><td>0-2</td></tr>
                 <tr style="background-color: #24207c;color: white;"><td>DÒNG KHÁC</td><td></td><td></td><td></td></tr>
                 <tr><td>Tế bào khác A</td><td>${countAll[19]}</td><td>${percent(countAll[19])}</td></tr>
                 <tr><td>Tế bào khác B</td><td>${countAll[20]}</td><td>${percent(countAll[20])}</td></tr>
