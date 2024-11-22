@@ -216,7 +216,7 @@
                 }
                 const ci = calculateConfidenceInterval(sampleData);
                 renderResults(drawdown.slice(-3))
-                const mockResult = `Kết quả tính toán cho mã: ${code}<br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức sụt giảm trung bình trước khi có nhịp hồi phục là ${ci.mean.toFixed(2)}<br/> 95% mức chiết khấu trong khoảng [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/> Dưới đây là bảng 3 lần hồi phục gần đây nhất.`;
+                const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức sụt giảm trung bình trước khi có nhịp hồi phục là ${ci.mean.toFixed(2)}<br/> 95% mức chiết khấu trong khoảng [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/> Dưới đây là bảng 3 lần hồi phục gần đây nhất.`;
 
                 // Hiển thị kết quả
                 document.getElementById("resultBox").innerHTML = mockResult;
