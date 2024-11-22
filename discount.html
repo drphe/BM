@@ -117,7 +117,7 @@
 
         <label for="recoveryRate">Mức Hồi Phục (%)</label>
         <div class="input-group">
-            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="10">
+            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="7">
         </div>
 
         <button onclick="analyzeStock()">Trả Kết Quả</button>
@@ -165,7 +165,7 @@
 
         var ohlc = [],
             closep = [];
-
+	let ckht = 0;
         function formatTimestamp(timestamp) {
             // Chuyển đổi timestamp (giây) sang milliseconds
             const date = new Date(timestamp * 1000);
@@ -208,15 +208,17 @@
                         "value": parseFloat(data.c[i])
                     });
                 }
-                var drawdown = findRecoveries(closep.slice(-1000));
+                var drawdown = findRecoveries(closep.slice(-1500));
                 console.log(drawdown);
-                var sampleData = [];
+                var sampleData = [],sampleData2 = [];
                 for (let i = 1; i < drawdown.length; i++) {
                     sampleData.push(drawdown[i].drawdown)
+                    sampleData2.push(drawdown[i].recover)
                 }
                 const ci = calculateConfidenceInterval(sampleData);
+                const ci2 = calculateConfidenceInterval(sampleData2);
                 renderResults(drawdown.slice(-3))
-                const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức sụt giảm trung bình trước khi có nhịp hồi phục là ${ci.mean.toFixed(2)}<br/> 95% mức chiết khấu trong khoảng [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/> Dưới đây là bảng 3 lần hồi phục gần đây nhất.`;
+                const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> Mức chiết khấu hiện tại là ${ckht}%.`;
 
                 // Hiển thị kết quả
                 document.getElementById("resultBox").innerHTML = mockResult;
@@ -254,7 +256,6 @@
                 marginOfError,
             };
         }
-
         function findRecoveries(data) {
             const results = [];
             let peak = data[0].value; // Giá đỉnh ban đầu
@@ -318,6 +319,7 @@
             for (i = 0; i < results.length; i++) {
                 results[i].recover = recor[i];
             }
+	    ckht = ((1- trough/peak)*100).toFixed(2)
             return results;
         }
     </script>
@@ -329,7 +331,6 @@
             // Loop through results array and add rows to the table
             results.forEach(result => {
                 const row = document.createElement('tr');
-
                 row.innerHTML = `
             <td>${result.startDate}</td>
             <td>${result.start.toFixed(0)}</td>
