@@ -180,7 +180,7 @@
 
         var ohlc = [],
             closep = [];
-	let ckht = 0;
+	let ckht = ``;
         function formatTimestamp(timestamp) {
             // Chuyển đổi timestamp (giây) sang milliseconds
             const date = new Date(timestamp * 1000);
@@ -239,7 +239,7 @@
                 document.getElementById("resultBox").innerHTML = mockResult;
             } catch (error) {
                 console.error('There has been a problem with your fetch operation:', error);
-                document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi kh lấy dữ liệu<br/> ${error}`;
+                document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi không lấy được dữ liệu<br/> ${error}`;
             }
         }
 
@@ -334,7 +334,8 @@
             for (i = 0; i < results.length; i++) {
                 results[i].recover = recor[i];
             }
-	    ckht =`Mức chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;
+		ckht='';
+		if(data[data.length-1].value < peak) {ckht+=`Mức chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;}
 		if(data[data.length-1].value > trough) {ckht+=`<br/>Đã hồi phục:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;}
             return results;
         }
