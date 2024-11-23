@@ -7,8 +7,9 @@
     <title>Phân Tích Cổ Phiếu</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+	    font-family: Inter, Nunito Sans, Lexend, Noto Sans,Arial,  sans-serif;
+	    font-size:14px;
+            background-color: #fff;
             margin: 20px;
             padding: 0;
             display: flex;
@@ -17,7 +18,7 @@
         }
 
         .container {
-            background-color: white;
+            background-color: #f4f4f9;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
@@ -335,8 +336,8 @@
                 results[i].recover = recor[i];
             }
 		ckht='';
-		if(data[data.length-1].value < peak) {ckht+=`Mức chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;}
-		if(data[data.length-1].value > trough) {ckht+=`<br/>Đã hồi phục:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;}
+		if(data[data.length-1].value < peak) {ckht+=`Chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;}
+		if(data[data.length-1].value > trough) {ckht+=`<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;}
             return results;
         }
     </script>

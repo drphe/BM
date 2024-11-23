@@ -17,7 +17,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background-color: rgba(0,0,0,.3);
+    background-color: rgba(0,0,0,.1);
 }
 
 .loading-container .lds-roller {
@@ -427,9 +427,7 @@ async function layKQKDGstock() {
     if (kqkd) {
         await taoTable(kqkd.data);
         console.log(kqkd)
-        createNotification("Tải dữ liệu thành công!")
     }
-    else createNotification("Tải dữ liệu bị lỗi!")
 }
 
 function taoTable(data) {
