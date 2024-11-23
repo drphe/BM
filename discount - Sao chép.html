@@ -5,18 +5,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân Tích Cổ Phiếu</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
-            font-family: Inter, Nunito Sans, Lexend, Noto Sans, Arial, sans-serif;
-            font-size: 14px;
+	    font-family: Inter, Nunito Sans, Lexend, Noto Sans,Arial,  sans-serif;
+	    font-size:14px;
             background-color: #fff;
             margin: 20px;
             padding: 0;
             display: flex;
             justify-content: center;
             align-items: center;
-	    height:90vh;
         }
 
         .container {
@@ -26,7 +24,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
-	    height:400px!important;
         }
 
         h1 {
@@ -63,11 +60,9 @@
         }
 
         button {
-            font-family: Inter, Nunito Sans, Lexend, Noto Sans, Arial, sans-serif;
-            font-size: 14px;
             background-color: #007bff;
             color: white;
-            padding: 8px;
+            padding: 10px;
             border: none;
             border-radius: 4px;
             cursor: pointer;
@@ -79,11 +74,12 @@
         }
 
         .result {
+            margin-top: 20px;
             padding: 10px;
             background-color: #f9f9f9;
             border: 1px solid #ccc;
             border-radius: 4px;
-            min-height: 200px;
+            min-height: 50px;
         }
 
         input#stockCode {
@@ -98,35 +94,32 @@
             font-size: 14px;
         }
 
+        table,
+        th,
+        td {
+            border: 1px solid black;
+        }
 
         th,
         td {
             padding: 8px;
             text-align: left;
         }
-
-        ::-webkit-scrollbar-track {
-            box-shadow: inset 0 0 0 grey;
-            border-radius: 1px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 10px
-        }
-
-        ::-webkit-scrollbar {
-            width: 5px;
-            height: 5px;
-            background: transparent;
-        }
-.tabGroup { display: flex; margin-bottom: 10px; margin-top: 10px; } 
-.tab-g { padding: 10px 20px; cursor: pointer; border: 1px solid #ccc; border-bottom: none; } 
-.tab-g.active { background-color: #007bff; color: white; }
-tbody tr:not(:last-child) {
-  border-bottom: 1px solid #ccc;
+::-webkit-scrollbar-track {
+	box-shadow: inset 0 0 0 grey;
+	border-radius: 1px;
 }
-thead {  border-bottom: 1px solid #ccc;}
+
+::-webkit-scrollbar-thumb {
+	background: #ccc;
+	border-radius: 10px
+}
+
+::-webkit-scrollbar {
+	width: 5px;
+	height: 5px;
+	background: transparent;
+}
     </style>
 </head>
 
@@ -135,16 +128,10 @@ thead {  border-bottom: 1px solid #ccc;}
         <h1>Phân Tích Cổ Phiếu</h1>
         <label for="stockCode">Mã Cổ Phiếu</label>
         <input type="text" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
-        <button onclick="analyzeStock()">Thống kê</button>
-	<div class="tabGroup">
-			<div class="tab-g active" onclick="selectTab('resultBox')">Kết quả</div> 
-			<div class="tab-g" onclick="selectTab('scratter')">Biểu đồ phân tán</div>
-			<div class="tab-g" onclick="selectTab('table')">Bảng dữ liệu</div> 
-	</div>
-        <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div>
-        <canvas id="stockChart" width="800" height="450"  style="display:none;"></canvas>
-        <table id="resultsTable" style="display:none;height:220px; overflow:auto;">
-            <thead style="position">
+        <button onclick="analyzeStock()">Thống kê các mức chiết khấu</button>
+        <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div><br />
+        <table id="resultsTable">
+            <thead>
                 <tr>
                     <th>Tạo đỉnh</th>
                     <th>Giá</th>
@@ -160,13 +147,12 @@ thead {  border-bottom: 1px solid #ccc;}
         </table>
     </div>
 
+
     <script>
-        let ckht = ``, stockCode='';
-        analyzeStock();
-        // phân tích
         function analyzeStock() {
             // Lấy giá trị từ các ô nhập liệu
-            stockCode = document.getElementById("stockCode").value.trim().toUpperCase();
+            const stockCode = document.getElementById("stockCode").value.trim().toUpperCase();
+
             // Kiểm tra đầu vào
             if (!stockCode || stockCode.length < 3) {
                 document.getElementById("resultBox").innerText = "Vui lòng nhập mã cổ phiếu hợp lệ.";
@@ -175,16 +161,9 @@ thead {  border-bottom: 1px solid #ccc;}
 
             // Xử lý dữ liệu 
             fetchData(stockCode);
-	    selectTab('resultBox')
         }
-function selectTab(tabName) { 
-	const tabs = document.querySelectorAll('.tab-g'); 
-	tabs.forEach(tab => { tab.classList.remove('active'); }); 
-	document.querySelector(`.tab-g[onclick="selectTab('${tabName}')"]`).classList.add('active'); 
-	if(tabName =='table') {document.getElementById("resultsTable").style.display = 'block';document.getElementById("stockChart").style.display = 'none';document.getElementById("resultBox").style.display = 'none';}
-	if(tabName =='scratter') {document.getElementById("stockChart").style.display = 'block';document.getElementById("resultsTable").style.display = 'none';document.getElementById("resultBox").style.display = 'none';}
-	if(tabName =='resultBox') {document.getElementById("resultBox").style.display = 'block';document.getElementById("resultsTable").style.display = 'none';document.getElementById("stockChart").style.display = 'none';}
-}
+	analyzeStock();
+	let ckht = ``;
         function formatTimestamp(timestamp) {
             // Chuyển đổi timestamp (giây) sang milliseconds
             const date = new Date(timestamp * 1000);
@@ -212,8 +191,7 @@ function selectTab(tabName) {
                     throw new Error('Network response was not ok');
                 }
                 const data = await response.json();
-                var ohlc = [],
-                    closep = [];
+        	var ohlc = [], closep = [];
                 for (var i = 0; i < data.t.length; i += 1) {
                     let k = 1000;
                     ohlc.push({
@@ -229,16 +207,16 @@ function selectTab(tabName) {
                     });
                 }
                 var drawdown = findRecoveries(closep);
-                var sampleData = [],
-                    sampleData2 = [];
+                var sampleData = [],sampleData2 = [];
                 for (let i = 1; i < drawdown.length; i++) {
                     sampleData.push(drawdown[i].drawdown)
                     sampleData2.push(drawdown[i].recover)
                 }
                 const ci = calculateConfidenceInterval(sampleData);
                 const ci2 = calculateConfidenceInterval(sampleData2);
-                renderResults(drawdown.slice(-20))
+                renderResults(drawdown.slice(-10))
                 const mockResult = `Kết quả thống kê cho mã: <b title="Số lần tạo đáy và hồi phục thành công">${code} (${drawdown.length})</b><br/>Mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
+
                 // Hiển thị kết quả
                 document.getElementById("resultBox").innerHTML = mockResult;
             } catch (error) {
@@ -246,7 +224,13 @@ function selectTab(tabName) {
                 document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi không lấy được dữ liệu<br/> ${error}`;
             }
         }
-
+	function calculateIntervalRecoverAfterDrawdown(data, currentDiscount){
+		const filteredData = data.filter(item => item.drawdown >= currentDiscount); 
+		const sortedRecoveries = filteredData.map(item => item.recover).sort((a, b) => a - b); 
+		const percentileIndex = Math.ceil(0.1 * sortedRecoveries.length) - 1; 
+		const recoveryAt80Percentile = sortedRecoveries[percentileIndex]; 
+		return `Mức hồi phục với xác suất 90% là: ${recoveryAt80Percentile.toFixed(2)}%<i title="Số nhịp giảm lớn hơn hiện tại">(${filteredData.length})</i>`;
+	}
         function calculateConfidenceInterval(data) {
             if (data.length === 0) return null; // Kiểm tra nếu mảng trống
 
@@ -275,20 +259,17 @@ function selectTab(tabName) {
                 marginOfError,
             };
         }
-
-        function calculateMA(data, period) {
-            return data.map((_, index) => {
-                if (index < period - 1) return null;
-                const slice = data.slice(index - period + 1, index + 1);
-                const average = slice.reduce((sum, val) => sum + val, 0) / period;
-                return average;
-            });
-        }
-
+function calculateMA(data, period) {
+    return data.map((_, index) => {
+        if (index < period - 1) return null;
+        const slice = data.slice(index - period + 1, index + 1);
+        const average = slice.reduce((sum, val) => sum + val, 0) / period;
+        return average;
+    });
+}
         function findRecoveries(data) {
             const results = [];
-            var ab = data.map(s => s.value);
-            var ma10 = calculateMA(ab, 20); // tính MA10
+		var ab = data.map(s=> s.value); var ma10 = calculateMA(ab,20);// tính MA10
             let peak = data[0].value; // Giá đỉnh ban đầu
             let tpeak = data[0].time; // Giá đỉnh ban đầu
             let trough = data[0].value; // Giá đáy ban đầu
@@ -316,7 +297,7 @@ function selectTab(tabName) {
                             tpeak = data[i].time;
                             inDecline = false;
                         } else {
-                            // điều kiện xác nhận hồi phục khi đáy ở dưới ma20 và giá hồi phục vượt được ma20
+				// điều kiện xác nhận hồi phục khi đáy ở dưới ma20 và giá hồi phục vượt được ma20
                             if (data[i].value > ma10[i] && trough < ma10[i]) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
                                 const recoveryDate = data[i].time; // Thời điểm hồi phục
                                 results.push({
@@ -340,30 +321,31 @@ function selectTab(tabName) {
                     }
                 }
             }
-            // lọc các đợt drawdown <2% do sideway nằm trong biên độ nhỏ
-            const output = results.filter(item => item.drawdown > 2);
-            // tính mức hồi phục bằng đỉnh mới- đáy cũ
-            for (i = 0; i < output.length - 1; i++) {
-                output[i].recover = 100 * output[i + 1].start / output[i].bottom - 100;
+		// lọc các đợt drawdown <2% do sideway nằm trong biên độ nhỏ
+		const output = results.filter(item => item.drawdown > 2);
+		// tính mức hồi phục bằng đỉnh mới- đáy cũ
+            for (i = 0; i < output.length-1; i++) {
+                output[i].recover = 100*output[i+1].start/output[i].bottom - 100;
             }
-            output[output.length - 1].recover = 100 * peak / output[output.length - 1].bottom - 100; // tính mức recover
+                output[output.length-1].recover = 100*peak/output[output.length-1].bottom - 100;// tính mức recover
 
-            ckht = ''; //reset ckht;
-            if (data[data.length - 1].value < peak) {
-                let gg = ((1 - data[data.length - 1].value / peak) * 100).toFixed(2);
-                ckht += `Chiết khấu hiện tại: ${gg}% - Đỉnh ngày ${formatTimestamp(tpeak)}.<br/>${predict(output, gg)}`;
-            }
-            if (data[data.length - 1].value > trough) {
-                ckht += `<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;
-            }
+		ckht='';//reset ckht;
+		if(data[data.length-1].value < peak) {
+			let gg = ((1- data[data.length-1].value/peak)*100).toFixed(2);
+			ckht+=`Chiết khấu hiện tại: ${gg}% - Đỉnh ngày ${formatTimestamp(tpeak)}.<br/>${calculateIntervalRecoverAfterDrawdown(output,gg)}`;
+		}
+		if(data[data.length-1].value > trough) {
+			ckht+=`<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;
+		}
 
             return output;
         }
-        // vẽ bảng
+    </script>
+    <script>
         function renderResults(results) {
             const tableBody = document.querySelector('#resultsTable tbody');
             tableBody.innerHTML = ''; // Clear existing table data
-            results.reverse();
+		results.reverse();
             // Loop through results array and add rows to the table
             results.forEach(result => {
                 const row = document.createElement('tr');
@@ -377,115 +359,6 @@ function selectTab(tabName) {
         `;
                 tableBody.appendChild(row);
             });
-        }
-	let chartInstance;
-        //Dự báo
-        function predict(data, dropValue) {
-            // Tính toán hồi quy tuyến tính
-            function calculateRegression(data) {
-                const n = data.length;
-                // Tính trung bình của x (drop) và y (recovery)
-                const meanX = data.reduce((sum, point) => sum + point.drawdown, 0) / n;
-                const meanY = data.reduce((sum, point) => sum + point.recover, 0) / n;
-
-                // Tính Covariance và Variance
-                let covariance = 0;
-                let varianceX = 0;
-
-                data.forEach(point => {
-                    covariance += (point.drawdown - meanX) * (point.recover - meanY);
-                    varianceX += Math.pow(point.drawdown - meanX, 2);
-                });
-
-                // Tính slope (a) và intercept (b)
-                const slope = covariance / varianceX;
-                const intercept = meanY - slope * meanX;
-
-                return {
-                    slope,
-                    intercept
-                };
-            }
-
-            // Dự báo mức hồi phục
-            function predictRecovery(drop, model) {
-                const {
-                    slope,
-                    intercept
-                } = model;
-                return slope * drop + intercept;
-            }
-
-            // Xây dựng mô hình hồi quy
-            const model = calculateRegression(data);
-
-            // Chuẩn bị dữ liệu cho biểu đồ
-            const scatterData = data.map(point => ({
-                x: point.drawdown,
-                y: point.recover
-            }));
-            const regressionLine = [];
-            for (let x = Math.min(...data.map(d => d.drawdown)) - 5; x <= Math.max(...data.map(d => d.drawdown)) + 5; x += 1) {
-                regressionLine.push({
-                    x: x,
-                    y: predictRecovery(x, model)
-                });
-            }
-
-	  if (chartInstance) {
-    		chartInstance.destroy();
-  		}
-            // Vẽ biểu đồ với Chart.js
-            const ctx = document.getElementById('stockChart').getContext('2d');
-            chartInstance = new Chart(ctx, {
-                type: 'scatter',
-                data: {
-                    datasets: [{
-                            label: 'Actual Data',
-                            data: scatterData,
-                            backgroundColor: 'blue',
-                        },
-                        {
-                            label: 'Regression Line',
-                            data: regressionLine,
-                            type: 'line',
-                            borderColor: 'red',
-                            fill: false,
-                            pointRadius: 0,
-                        },
-                    ],
-                },
-                options: {
-                    responsive: true,
-                    plugins: {
-                        legend: {
-                            position: 'top',
-                        },
-                        title: {
-                            display: false,
-                            text: stockCode+' Recovery vs Drop (Regression Analysis)',
-                        },
-                    },
-                    scales: {
-                        x: {
-                            type: 'linear',
-                            position: 'bottom',
-                            title: {
-                                display: true,
-                                text: stockCode + '- Drawdown (%)',
-                            },
-                        },
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Recovery (%)',
-                            },
-                        },
-                    },
-                },
-            });
-            const predictedRecovery = predictRecovery(dropValue, model);
-            return `Dự báo mức hồi phục là: ${predictedRecovery.toFixed(2)}%`;
         }
     </script>
 </body>
