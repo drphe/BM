@@ -215,7 +215,7 @@
                 const ci = calculateConfidenceInterval(sampleData);
                 const ci2 = calculateConfidenceInterval(sampleData2);
                 renderResults(drawdown.slice(-10))
-                const mockResult = `Kết quả thống kê cho mã: <b>${code} (${drawdown.length})</b><br/>Mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
+                const mockResult = `Kết quả thống kê cho mã: <b title="Số lần tạo đáy và hồi phục thành công">${code} (${drawdown.length})</b><br/>Mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
 
                 // Hiển thị kết quả
                 document.getElementById("resultBox").innerHTML = mockResult;
@@ -224,7 +224,13 @@
                 document.getElementById("resultBox").innerHTML = `Mã cổ phiếu không hợp lệ, hoặc lỗi không lấy được dữ liệu<br/> ${error}`;
             }
         }
-
+	function calculateIntervalRecoverAfterDrawdown(data, currentDiscount){
+		const filteredData = data.filter(item => item.drawdown >= currentDiscount); 
+		const sortedRecoveries = filteredData.map(item => item.recover).sort((a, b) => a - b); 
+		const percentileIndex = Math.ceil(0.1 * sortedRecoveries.length) - 1; 
+		const recoveryAt80Percentile = sortedRecoveries[percentileIndex]; 
+		return `Mức hồi phục với xác suất 90% là: ${recoveryAt80Percentile.toFixed(2)}%<i title="Số nhịp giảm lớn hơn hiện tại">(${filteredData.length})</i>`;
+	}
         function calculateConfidenceInterval(data) {
             if (data.length === 0) return null; // Kiểm tra nếu mảng trống
 
@@ -321,10 +327,16 @@ function calculateMA(data, period) {
             for (i = 0; i < output.length-1; i++) {
                 output[i].recover = 100*output[i+1].start/output[i].bottom - 100;
             }
-                output[output.length-1].recover = 100*peak/output[output.length-1].bottom - 100;
-		ckht='';
-		if(data[data.length-1].value < peak) {ckht+=`Chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;}
-		if(data[data.length-1].value > trough) {ckht+=`<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;}
+                output[output.length-1].recover = 100*peak/output[output.length-1].bottom - 100;// tính mức recover
+
+		ckht='';//reset ckht;
+		if(data[data.length-1].value < peak) {
+			let gg = ((1- data[data.length-1].value/peak)*100).toFixed(2);
+			ckht+=`Chiết khấu hiện tại: ${gg}% - Đỉnh ngày ${formatTimestamp(tpeak)}.<br/>${calculateIntervalRecoverAfterDrawdown(output,gg)}`;
+		}
+		if(data[data.length-1].value > trough) {
+			ckht+=`<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;
+		}
 
             return output;
         }
