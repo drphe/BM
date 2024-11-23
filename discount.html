@@ -133,7 +133,7 @@
 
         <label for="recoveryRate">Mức Hồi Phục (%)</label>
         <div class="input-group">
-            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="7">
+            <input type="number" id="recoveryRate" placeholder="Nhập mức hồi phục..." value="5">
         </div>
 
         <button onclick="analyzeStock()">Trả Kết Quả</button>
@@ -233,7 +233,7 @@
                 }
                 const ci = calculateConfidenceInterval(sampleData);
                 const ci2 = calculateConfidenceInterval(sampleData2);
-                renderResults(drawdown.slice(-3))
+                renderResults(drawdown.slice(-5))
                 const mockResult = `Kết quả tính toán cho mã: <b>${code}</b><br/> Với mức phục hồi tối thiểu ${(100*recoverpercent-100).toFixed(2)}% từ mức đáy thì mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
 
                 // Hiển thị kết quả
@@ -272,8 +272,17 @@
                 marginOfError,
             };
         }
+function calculateMA(data, period) {
+    return data.map((_, index) => {
+        if (index < period - 1) return null;
+        const slice = data.slice(index - period + 1, index + 1);
+        const average = slice.reduce((sum, val) => sum + val, 0) / period;
+        return average;
+    });
+}
         function findRecoveries(data) {
             const results = [];
+		var ab = data.map(s=> s.value); var ma20 = calculateMA(ab,20);// tính MA20
             let peak = data[0].value; // Giá đỉnh ban đầu
             let tpeak = data[0].time; // Giá đỉnh ban đầu
             let trough = data[0].value; // Giá đáy ban đầu
@@ -288,7 +297,6 @@
                             recor.push((peak / trough - 1) * 100);
                             ishoi = false
                         }
-
                         inDecline = true;
                         trough = data[i].value;
                         ttrough = data[i].time;
@@ -309,7 +317,8 @@
                             tpeak = data[i].time;
                             inDecline = false;
                         } else {
-                            if (data[i].value >= recoveryThreshold) { // giá vượt ngưỡng  phục hồi
+
+                            if (data[i].value >= recoveryThreshold) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
                                 const recoveryDate = data[i].time; // Thời điểm hồi phục
                                 results.push({
                                     drawdown: (1 - trough / peak) * 100,
