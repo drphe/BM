@@ -291,6 +291,7 @@ function calculateMA(data, period) {
                             tpeak = data[i].time;
                             inDecline = false;
                         } else {
+				// điều kiện xác nhận hồi phục khi đáy ở dưới ma20 và giá hồi phục vượt được ma20
                             if (data[i].value > ma10[i] && trough < ma10[i]) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
                                 const recoveryDate = data[i].time; // Thời điểm hồi phục
                                 results.push({
@@ -314,14 +315,17 @@ function calculateMA(data, period) {
                     }
                 }
             }
-		console.log(results)
-            for (i = 0; i < results.length-1; i++) {
-                results[i].recover = 100*results[i+1].start/results[i+1].bottom - 100;
+		// lọc các đợt drawdown <2% do sideway nằm trong biên độ nhỏ
+		const output = results.filter(item => item.drawdown > 2);
+		// tính mức hồi phục bằng đỉnh mới- đáy cũ
+            for (i = 0; i < output.length-1; i++) {
+                output[i].recover = 100*output[i+1].start/output[i].bottom - 100;
             }
+                output[output.length-1].recover = 100*peak/output[output.length-1].bottom - 100;
 		ckht='';
 		if(data[data.length-1].value < peak) {ckht+=`Chiết khấu hiện tại: ${((1- data[data.length-1].value/peak)*100).toFixed(2)}% - Đỉnh ngày ${formatTimestamp(tpeak)}.`;}
 		if(data[data.length-1].value > trough) {ckht+=`<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;}
-		const output = results.filter(item => item.drawdown > 2);
+
             return output;
         }
     </script>
