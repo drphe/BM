@@ -485,7 +485,13 @@ function selectTab(tabName) {
                 },
             });
             const predictedRecovery = predictRecovery(dropValue, model);
-            return `Dự báo mức hồi phục là: ${predictedRecovery.toFixed(2)}%`;
+		const mean = arr => arr.reduce((sum,val)=> sum+val, 0)/arr.length;
+		const meanRecovery = mean(data.map(d=> d.recover));
+		const stadndardDeviation = Math.sqrt(data.reduce((sum,val) => sum + Math.pow(val.recover - predictRecovery(val.drawdown, model),2),0)/data.length);
+		const zScore = (predictedRecovery - meanRecovery)/stadndardDeviation;
+		const probability = 100-100*(1/(1+Math.exp(-zScore)));
+
+            return `Dự báo mức hồi phục là: ${predictedRecovery.toFixed(2)}% (xs ${probability.toFixed(1)}%)`;
         }
     </script>
 </body>
