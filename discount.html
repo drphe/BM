@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Phân Tích Cổ Phiếu</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-annotation@3.0.1/dist/chartjs-plugin-annotation.min.js"></script>
     <style>
         body {
             font-family: Inter, Nunito Sans, Lexend, Noto Sans, Arial, sans-serif;
@@ -16,7 +17,7 @@
             display: flex;
             justify-content: center;
             align-items: center;
-	    height:90vh;
+            height: 90vh;
         }
 
         .container {
@@ -26,7 +27,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
-	    height:400px!important;
+            height: 400px !important;
         }
 
         h1 {
@@ -120,13 +121,32 @@
             height: 5px;
             background: transparent;
         }
-.tabGroup { display: flex; margin-bottom: 10px; margin-top: 10px; } 
-.tab-g { padding: 10px 20px; cursor: pointer; border: 1px solid #ccc; border-bottom: none; } 
-.tab-g.active { background-color: #007bff; color: white; }
-tbody tr:not(:last-child) {
-  border-bottom: 1px solid #ccc;
-}
-thead {  border-bottom: 1px solid #ccc;}
+
+        .tabGroup {
+            display: flex;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+
+        .tab-g {
+            padding: 10px 20px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-bottom: none;
+        }
+
+        .tab-g.active {
+            background-color: #007bff;
+            color: white;
+        }
+
+        tbody tr:not(:last-child) {
+            border-bottom: 1px solid #ccc;
+        }
+
+        thead {
+            border-bottom: 1px solid #ccc;
+        }
     </style>
 </head>
 
@@ -136,13 +156,13 @@ thead {  border-bottom: 1px solid #ccc;}
         <label for="stockCode">Mã Cổ Phiếu</label>
         <input type="text" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
         <button onclick="analyzeStock()">Thống kê</button>
-	<div class="tabGroup">
-			<div class="tab-g active" onclick="selectTab('resultBox')">Kết quả</div> 
-			<div class="tab-g" onclick="selectTab('scratter')">Biểu đồ phân tán</div>
-			<div class="tab-g" onclick="selectTab('table')">Bảng dữ liệu</div> 
-	</div>
+        <div class="tabGroup">
+            <div class="tab-g active" onclick="selectTab('resultBox')">Kết quả</div>
+            <div class="tab-g" onclick="selectTab('scratter')">Biểu đồ phân tán</div>
+            <div class="tab-g" onclick="selectTab('table')">Bảng dữ liệu</div>
+        </div>
         <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div>
-        <canvas id="stockChart" width="800" height="450"  style="display:none;"></canvas>
+        <canvas id="stockChart" width="800" height="450" style="display:none;"></canvas>
         <table id="resultsTable" style="display:none;height:220px; overflow:auto;">
             <thead style="position">
                 <tr>
@@ -161,7 +181,8 @@ thead {  border-bottom: 1px solid #ccc;}
     </div>
 
     <script>
-        let ckht = ``, stockCode='';
+        let ckht = ``,
+            stockCode = '';
         analyzeStock();
         // phân tích
         function analyzeStock() {
@@ -175,16 +196,32 @@ thead {  border-bottom: 1px solid #ccc;}
 
             // Xử lý dữ liệu 
             fetchData(stockCode);
-	    selectTab('resultBox')
+            selectTab('resultBox')
         }
-function selectTab(tabName) { 
-	const tabs = document.querySelectorAll('.tab-g'); 
-	tabs.forEach(tab => { tab.classList.remove('active'); }); 
-	document.querySelector(`.tab-g[onclick="selectTab('${tabName}')"]`).classList.add('active'); 
-	if(tabName =='table') {document.getElementById("resultsTable").style.display = 'block';document.getElementById("stockChart").style.display = 'none';document.getElementById("resultBox").style.display = 'none';}
-	if(tabName =='scratter') {document.getElementById("stockChart").style.display = 'block';document.getElementById("resultsTable").style.display = 'none';document.getElementById("resultBox").style.display = 'none';}
-	if(tabName =='resultBox') {document.getElementById("resultBox").style.display = 'block';document.getElementById("resultsTable").style.display = 'none';document.getElementById("stockChart").style.display = 'none';}
-}
+
+        function selectTab(tabName) {
+            const tabs = document.querySelectorAll('.tab-g');
+            tabs.forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelector(`.tab-g[onclick="selectTab('${tabName}')"]`).classList.add('active');
+            if (tabName == 'table') {
+                document.getElementById("resultsTable").style.display = 'block';
+                document.getElementById("stockChart").style.display = 'none';
+                document.getElementById("resultBox").style.display = 'none';
+            }
+            if (tabName == 'scratter') {
+                document.getElementById("stockChart").style.display = 'block';
+                document.getElementById("resultsTable").style.display = 'none';
+                document.getElementById("resultBox").style.display = 'none';
+            }
+            if (tabName == 'resultBox') {
+                document.getElementById("resultBox").style.display = 'block';
+                document.getElementById("resultsTable").style.display = 'none';
+                document.getElementById("stockChart").style.display = 'none';
+            }
+        }
+
         function formatTimestamp(timestamp) {
             // Chuyển đổi timestamp (giây) sang milliseconds
             const date = new Date(timestamp * 1000);
@@ -237,6 +274,7 @@ function selectTab(tabName) {
                 }
                 const ci = calculateConfidenceInterval(sampleData);
                 const ci2 = calculateConfidenceInterval(sampleData2);
+
                 renderResults(drawdown.slice(-20))
                 const mockResult = `Kết quả thống kê cho mã: <b title="Số lần tạo đáy và hồi phục thành công">${code} (${drawdown.length})</b><br/>Mức chiết khấu trung bình là ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}].<br/>Mức hồi phục trung bình là ${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]<br/> ${ckht}`;
                 // Hiển thị kết quả
@@ -272,7 +310,9 @@ function selectTab(tabName) {
                 mean,
                 lowerBound,
                 upperBound,
+                standardDeviation,
                 marginOfError,
+                n
             };
         }
 
@@ -349,12 +389,15 @@ function selectTab(tabName) {
             output[output.length - 1].recover = 100 * peak / output[output.length - 1].bottom - 100; // tính mức recover
 
             ckht = ''; //reset ckht;
-            if (data[data.length - 1].value < peak) {
+            if (data[data.length - 1].value*1.02 < peak) {
                 let gg = ((1 - data[data.length - 1].value / peak) * 100).toFixed(2);
-                ckht += `Chiết khấu hiện tại: ${gg}% - Đỉnh ngày ${formatTimestamp(tpeak)}.<br/>${predict(output, gg)}`;
-            }
+                ckht += `Chiết khấu hiện tại từ đỉnh ${formatTimestamp(tpeak)}: ${gg}%.<br/>${predict(output, gg)}`;
+            }else {
+                let gg = output[output.length-1].drawdown.toFixed(2);
+                ckht += `Chiết khấu từ đỉnh cũ ${output[output.length-1].startDate}: ${gg}%.<br/>${predict(output, gg)}`;
+	    }
             if (data[data.length - 1].value > trough) {
-                ckht += `<br/>Đã hồi phục từ đáy:  ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% - Đáy ngày ${formatTimestamp(ttrough)}`;
+                ckht += `<br/>Đã hồi phục từ đáy ${formatTimestamp(ttrough)}: ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% `;
             }
 
             return output;
@@ -378,7 +421,7 @@ function selectTab(tabName) {
                 tableBody.appendChild(row);
             });
         }
-	let chartInstance;
+        let chartInstance;
         //Dự báo
         function predict(data, dropValue) {
             // Tính toán hồi quy tuyến tính
@@ -425,28 +468,36 @@ function selectTab(tabName) {
                 y: point.recover
             }));
             const regressionLine = [];
-            for (let x = Math.min(...data.map(d => d.drawdown)) - 5; x <= Math.max(...data.map(d => d.drawdown)) + 5; x += 1) {
+            for (let x = Math.min(...data.map(d => d.drawdown)) - 0; x <= Math.max(...data.map(d => d.drawdown)) + 5; x += 1) {
                 regressionLine.push({
                     x: x,
                     y: predictRecovery(x, model)
                 });
             }
 
-	  if (chartInstance) {
-    		chartInstance.destroy();
-  		}
+            function findRecoveryLevel(recoveryArray) {
+                recoveryArray = recoveryArray.filter(obj => obj.drawdown >= dropValue);
+                recoveryArray.sort((a, b) => a.recover - b.recover);
+                const index = Math.ceil(recoveryArray.length * 0.1);
+                //console.log(recoveryArray, index)
+                return recoveryArray[index];
+            }
+            let probabilitys = findRecoveryLevel(data).recover
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
             // Vẽ biểu đồ với Chart.js
             const ctx = document.getElementById('stockChart').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'scatter',
                 data: {
                     datasets: [{
-                            label: 'Actual Data',
+                            label: 'GT thực',
                             data: scatterData,
                             backgroundColor: 'blue',
                         },
                         {
-                            label: 'Regression Line',
+                            label: 'Hồi quy',
                             data: regressionLine,
                             type: 'line',
                             borderColor: 'red',
@@ -463,8 +514,36 @@ function selectTab(tabName) {
                         },
                         title: {
                             display: false,
-                            text: stockCode+' Recovery vs Drop (Regression Analysis)',
+                            text: stockCode + ' Recovery vs Drop (Regression Analysis)',
                         },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: probabilitys,
+                                    yMax: probabilitys,
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 2,
+                                    label: {
+                                        enabled: true,
+                                        content: 'Target Line',
+                                        position: 'start', // Vị trí nhãn (start, end, center)
+                                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                                        font: {
+                                            size: 12,
+                                            weight: 'bold',
+                                        },
+                                    }
+                                },
+                                line2: {
+                                    type: 'line',
+                                    xMin: dropValue,
+                                    xMax: dropValue,
+                                    borderColor: 'gray',
+                                    borderWidth: 2
+                                }
+                            }
+                        }
                     },
                     scales: {
                         x: {
@@ -472,26 +551,65 @@ function selectTab(tabName) {
                             position: 'bottom',
                             title: {
                                 display: true,
-                                text: stockCode + '- Drawdown (%)',
+                                text: stockCode + '- Chiết khấu (%)',
                             },
                         },
                         y: {
                             title: {
                                 display: true,
-                                text: 'Recovery (%)',
+                                text: 'Hồi phục (%)',
                             },
                         },
                     },
                 },
             });
-            const predictedRecovery = predictRecovery(dropValue, model);
-		const mean = arr => arr.reduce((sum,val)=> sum+val, 0)/arr.length;
-		const meanRecovery = mean(data.map(d=> d.recover));
-		const stadndardDeviation = Math.sqrt(data.reduce((sum,val) => sum + Math.pow(val.recover - predictRecovery(val.drawdown, model),2),0)/data.length);
-		const zScore = (predictedRecovery - meanRecovery)/stadndardDeviation;
-		const probability = 100-100*(1/(1+Math.exp(-zScore)));
+            // tương quan
+            const dropLevels = data.map(d => d.drawdown);
+            const recoveryLevels = data.map(d => d.recover);
 
-            return `Dự báo mức hồi phục là: ${predictedRecovery.toFixed(2)}% (xs ${probability.toFixed(1)}%)`;
+            const correlation = calculateCorrelation(dropLevels, recoveryLevels);
+            const regression = linearRegression(dropLevels, recoveryLevels);
+            const tValue = tTestCorrelation(correlation, dropLevels.length);
+            const df = dropLevels.length - 2;
+            const significant = isSignificant(tValue, df);
+
+            return `------<br/>Hệ số tương quan: ${correlation.toFixed(2)}<br/>Hệ số hồi quy: Slope = ${regression.slope.toFixed(2)}, Intercept = ${regression.intercept.toFixed(2)}<br>Giá trị t: ${tValue.toFixed(2)}, Mối tương quan ${significant} ý nghĩa thống kê.<br/>------<br/>Dự báo mức hồi phục là: ${probabilitys.toFixed(2)}% (xs 90%)`;
+        }
+
+        function calculateCorrelation(x, y) {
+            const n = x.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const sumY2 = y.reduce((sum, yi) => sum + yi * yi, 0);
+            const numerator = (n * sumXY) - (sumX * sumY);
+            const denominator = Math.sqrt((n * sumX2 - sumX * sumX) * (n * sumY2 - sumY * sumY));
+            return numerator / denominator;
+        }
+
+        function linearRegression(x, y) {
+            const n = x.length;
+            const sumX = x.reduce((a, b) => a + b, 0);
+            const sumY = y.reduce((a, b) => a + b, 0);
+            const sumXY = x.reduce((sum, xi, i) => sum + xi * y[i], 0);
+            const sumX2 = x.reduce((sum, xi) => sum + xi * xi, 0);
+            const slope = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+            const intercept = (sumY - slope * sumX) / n;
+            return {
+                slope,
+                intercept
+            };
+        }
+
+        function tTestCorrelation(r, n) {
+            const t = r * Math.sqrt((n - 2) / (1 - r * r));
+            return t;
+        }
+
+        function isSignificant(tValue, df, alpha = 0.05) {
+            const criticalValue = 2.306;
+            return Math.abs(tValue) > criticalValue ? 'có' : 'không';
         }
     </script>
 </body>
