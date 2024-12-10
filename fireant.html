@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html data-theme="dark">
+<meta charset="utf-8">
+
+<head>
+    <title>Báo cáo tài chính</title>
+</head>
+<style>
+:root {
+    --backgroundColor: rgb(255, 255, 255);
+    --textColor: #000;
+    --white: white;
+    --black: black;
+    --headercl: linear-gradient(180deg, #fff, #ddd);
+    --selected: #106ba3;
+    --boxshadow: rgba(16, 22, 26, .15);
+    --bgcolor: #a7b6c2;
+    --bp3tab: #182026;
+    --bp3button: #f5f8fa;
+    --tabcl:#fff;
+    --cpocl: rgb(255, 255, 255);
+    --cpot: rgb(92, 112, 128);
+    --chov: #f5f5f5;
+    --cbdcl: #eeeff2;
+    --legend: #f5f8fa;
+    --bgcltab: #bfccd6;
+    --bgcltabselected: #f5f8fa;
+}
+body {
+    font-size: 14px;
+    font-weight: 400;
+    background-color: var(--backgroundColor) !important;
+    color: var(--black);
+    line-height: 1.5em;
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+    margin: 4px;
+    text-align: left;
+}
+
+tr:first-child {
+    position: sticky;
+    top: 0;
+}
+
+tbody tr:hover {
+    background-color: var(--chov);
+}
+
+tbody td {
+    text-align: left;
+    padding: 4px;
+    border-bottom: 1px solid var(--cbdcl);
+    color: var(--black);
+}
+
+.highlighted {
+    background-color: rgb(185 189 210);
+}
+
+.header {
+    top: 0;
+    width: 100%;
+    padding: 4px;
+    box-sizing: border-box;
+    background-color: var(--backgroundColor);
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+
+th,
+td {
+    padding: 8px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    max-with: 250px;
+}
+
+th {
+    background-color: var(--thcl);
+    border-bottom: 1px solid var(--cbdcl);
+    text-align: center;
+    color: var(--black);
+    padding: 4px;
+    font-weight: 500;
+}
+
+option {
+    background: var(--backgroundColor);
+}
+
+select,
+input {
+    color: var(--black);
+    background: transparent;
+    border: none;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 80px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+input[type="text"] {
+    text-transform: uppercase;
+}
+
+select {
+    width: 180px;
+    padding: 8px;
+    border-radius: 4px;
+}
+
+button {
+    background: var(--bgcolor);
+    color: var(--black);
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--cbdcl);
+    width: 60px
+}
+
+button:hover {
+    cursor: pointer;
+    background: var(--backgroundColor);
+}
+
+#data {
+    border: 1px solid #ddff;
+    overflow-y: auto;
+    height: calc(100vh - 85px);
+}
+
+.downloadfile {
+    position: absolute;
+    top: 40px;
+    right: 8px;
+    z-index: 10;
+    max-width: 350px;
+    max-height: 400px;
+    overflow: auto;
+    background-color: var(--backgroundColor);
+    border: 1px solid var(--cbdcl);
+    border-radius: 3px;
+}
+
+.downloadfile::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+    background: transparent;
+}
+
+.news-style a {
+    text-decoration: auto;
+    color: var(--cpot);
+}
+
+.news-style {
+    margin-bottom: 2px;
+    padding: 10px;
+    padding-left: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-radius: 0.125rem;
+    background: var(--bp3button);
+}
+
+.news-style:hover {
+    cursor: pointer;
+    background-color: var(--chov);
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 0 grey;
+    border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #ccc;
+    border-radius: 10px
+}
+
+::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+    background: transparent;
+}
+
+/* thông báo */
+.f2notification {
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: arial;
+    position: fixed;
+    bottom: 0;
+    z-index: 999999;
+    left: 0;
+    background-color: rgb(179 133 133);
+    color: white;
+    padding: 10px;
+    margin-left: 15px;
+    margin-bottom: 30px;
+    animation-name: slideIn;
+    animation-duration: 2s;
+}
+
+@keyframes slideIn {
+    from {
+        left: -100px;
+        opacity: 0;
+    }
+
+    to {
+        left: 0;
+        opacity: 1;
+    }
+}
+
+.f2notification.hide {
+    opacity: 0;
+    transition: opacity .5s ease-out;
+}
+
+.download-container {
+    position: fixed;
+    right: 40px;
+    display: inline-block;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 30px;
+    box-shadow: 0 0 20px 0 gray;
+    cursor: pointer;
+    font-size: 12px;
+    z-index: 999
+}
+
+#download-text-container {
+    color: var(--black);
+    background: var(--bgcolor);
+    bottom: 50px;
+    width: 100px;
+    text-align: center;
+}
+
+#download-text-container:hover {
+    background: var(--bgcltab);
+}
+</style>
+
+<body>
+    <div id="dauvao" class="header">
+        <div style="max-height: 75px;">Mã cổ phiếu: <input type="text" length="3" value="" id="mack" /> Báo cáo: <select id="type">
+                <option value="1">Bảng cân đối kế toán</option>
+                <option value="2">Kết quả kinh doanh</option>
+                <option value="3">Lưu chuyển tiền trực tiếp</option>
+                <option value="4">Lưu chuyển tiền gián tiếp</option>
+            </select>
+            <br /> Đơn vị:<select id="donvi" style="width:120px;">
+                <option value="1000000000">Tỷ đồng</option>
+                <option value="1000000">Triệu đồng</option>
+                <option value="1000">Nghìn đồng</option>
+                <option value="1">Đồng</option>
+            </select> Chu kỳ: <select id="quy" style="width:80px;">
+                <option value="1">Quý</option>
+                <option value="0">Năm</option>
+            </select> Số cột: <input type="number" value="8" id="socot" style="width:40px;" />
+        </div>
+        <div>
+            <button type="button" id="getData" style="width:50px;" title="Tải dữ liệu mới">Load</button>
+            <button type="button" id="download-pdf" style="width:50px;" title="Tải báo cáo tài chính (file gốc)" style="width:100px;">Full</button>
+        </div>
+    </div>
+    <div id="downloadbctc" class="downloadfile"></div>
+    <div id="data">
+        <div class="loading-container">
+            <div class="lds-roller">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+    </div>
+    <div id="download-text-container" class="download-container"><span class="save">Save as CSV</span></div>
+    <script src="./finance.js"></script>
+</body>
+
+</html>
