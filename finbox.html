@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://finbox.vn/favicon/favicon-32x32.png">
+    <title>JSON to Table</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h3> Danh sách cổ phiếu khuyến nghị của Finbox.vn</h3>
+    <label for="monthSelect">Chọn tháng:</label>
+    <select id="monthSelect">
+        <option value="">--Chọn tháng--</option>
+    </select>
+    <table id="dataTable"></table>
+
+    <script>
+        const url = "https://derivative.finbox.vn/api/app_new/tradingbox/all";
+        const options = {
+            headers: {
+                "accept": "application/json, text/plain, */*",
+                "content-type": "application/json;charset=UTF-8",
+                "user-id": "64a7da9d7368c37d8ddf4a92"
+            },
+            method: "POST",
+            body: JSON.stringify({
+                category: "star"
+            })
+        };
+
+        fetch(url, options)
+            .then(response => response.json())
+            .then(data => {
+                var thongke = [],
+                    title = [];
+                if (data.monthData) {
+                    for (var i = 0; i < data.monthData.length; i++) {
+                        let temp = data.monthData[i];
+                        title.push(temp.title);
+                        for (const key in temp.tickerData) {
+                            if (temp.tickerData.hasOwnProperty(key)) {
+                                temp.tickerData[key] = parseIndividualLine(temp.tickerData[key]);
+                            }
+                        }
+                        thongke.push(temp);
+                    }
+                }
+                // tạo nút chọn tháng
+                if (title) {
+                    // Thêm các tùy chọn vào dropdown
+
+                    const monthSelect = document.getElementById('monthSelect');
+                    document.getElementById('monthSelect').addEventListener('change', handleMonthChange);
+                    title.forEach(month => {
+                        const option = document.createElement('option');
+                        option.value = month;
+                        option.textContent = month;
+                        monthSelect.appendChild(option);
+                    });
+
+                    function handleMonthChange() {
+                        const selectedMonth = monthSelect.value;
+                        if (selectedMonth) {
+                            processMonth(selectedMonth);
+                        }
+                    }
+
+                    function processMonth(m) {
+                        let index = title.findIndex(month => month === m);
+                        generateTable(thongke[index].tickerData);
+                    }
+                }
+
+                // lấy tháng gần nhất và in ra bảng các mã khuyến nghị
+                generateTable(thongke[0].tickerData);
+
+                console.log(title)
+            })
+            .catch(error => console.error("Error fetching data:", error));
+
+        function parseIndividualLine(line) {
+            try {
+                return JSON.parse(line);
+            } catch (error) {
+                console.error("Error parsing line:", line, error);
+                return null;
+            }
+        }
+
+        function formatDate(dateString) {
+            const year = dateString.substring(0, 4);
+            const month = dateString.substring(4, 6);
+            const day = dateString.substring(6, 8);
+            return `${day}/${month}/${year}`;
+        }
+
+        function convertToPercentage(decimal) {
+            return (decimal * 100).toFixed(2) + '%';
+        }
+
+        function generateTable(data) {
+            const table = document.getElementById('dataTable');
+            table.innerHTML = '';
+            const headers = ["Mã", "Rating", "Giá", "+/- Giá", "Ngày KN", "Giá KN", "Ngày chốt", "Giá chốt", "Lợi nhuận"];
+
+            // Tạo hàng tiêu đề
+            const headerRow = document.createElement('tr');
+            headers.forEach(header => {
+                const th = document.createElement('th');
+                th.textContent = header;
+                headerRow.appendChild(th);
+            });
+            table.appendChild(headerRow);
+
+            // Tạo các hàng dữ liệu
+            for (const key in data) {
+                if (data.hasOwnProperty(key)) {
+                    const row = document.createElement('tr');
+                    const item = data[key];
+                    const values = [
+                        item.ticker,
+                        item.rating,
+                        item.priceFlat,
+                        convertToPercentage(item.pricePercent),
+                        formatDate(item.buyDate),
+                        item.buyPrice,
+                        formatDate(item.date), // Assuming "Ngày chốt" is the same as "date"
+                        item.priceFlat, // Assuming "Giá chốt" is the same as "priceFlat"
+                        convertToPercentage(item.profit)
+                    ];
+                    values.forEach(value => {
+                        const td = document.createElement('td');
+                        td.textContent = value;
+                        row.appendChild(td);
+                    });
+                    table.appendChild(row);
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
