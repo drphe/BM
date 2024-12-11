@@ -234,3 +234,92 @@ document.body.addEventListener("click", function(e) {
 function loading(i = !0) {
     document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
 }
+
+// tạo popup hiển thị thông tin
+var myPopup, myInterval;
+
+function createPopup(data) {
+    myPopup && !myPopup.closed && myPopup.close();
+    myPopup = window.open("", "popup", `width=640,height=500,top=${parseInt((window.screen.height - 500) / 2)},left=${parseInt((window.screen.width - 640) / 2)}`);
+    var html = `<html>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+                <title>${data.title}</title>
+    </hea
+
+    <body>
+        <div id="load">
+            <div class="loading-container">
+                <div class="lds-roller">
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+        </div>
+<div style="float:right;display: flex;margin-right: 20px;">
+    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="font-size" width="0.8em" height="0.8em" fill="currentColor" aria-hidden="true">
+        <path d="M920 416H616c-4.4 0-8 3.6-8 8v112c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-56h60v320h-46c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h164c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8h-46V480h60v56c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V424c0-4.4-3.6-8-8-8zM656 296V168c0-4.4-3.6-8-8-8H104c-4.4 0-8 3.6-8 8v128c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-64h168v560h-92c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-92V232h168v64c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8z"></path>
+    </svg>
+    <input type="range" min="80" max="160" value="100" id="Range"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="font-size" width="1em" height="1em" fill="currentColor" aria-hidden="true">
+        <path d="M920 416H616c-4.4 0-8 3.6-8 8v112c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-56h60v320h-46c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h164c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8h-46V480h60v56c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V424c0-4.4-3.6-8-8-8zM656 296V168c0-4.4-3.6-8-8-8H104c-4.4 0-8 3.6-8 8v128c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-64h168v560h-92c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-92V232h168v64c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8z"></path>
+    </svg>
+</div>
+        <div  id="maincontainer" style="padding-left:10px;font-size: 14px;"> ${data.contentHtml} 
+        <br />
+        <div>${data.source ?"<a href=\""+data.source+"\" target = \"_blank\">Đọc bài gốc tại đây</a>":""}</div>
+	</div>
+
+    </body>
+</html>`;
+    myPopup.document.write(html);
+    onImagesLoaded(myPopup.document.body, function() {
+        myPopup.document.getElementById("load")
+            .innerHTML = "";
+        var images = myPopup.document.getElementsByTagName("img");
+        for (const image of images) {
+            if (image.width < 20 || image.height < 20) {
+                image.style.display = "none";
+            } else {
+                image.setAttribute("style", "max-width:95%;")
+                image.setAttribute("align", "middle")
+            }
+        }
+    });
+    myPopup.document.querySelector('#load')
+        .addEventListener('click', () => {
+            myPopup.document.getElementById("load")
+                .innerHTML = ""
+        })
+    myPopup.document.addEventListener("keyup", function(e) {
+        27 === e.keyCode && (e.preventDefault(), myPopup.close())
+    })
+    myPopup.document.querySelector('#Range')
+        .addEventListener('click', () => {
+            var e = myPopup.document.getElementById("maincontainer");
+            k = myPopup.document.getElementById("Range"),
+                k.title = k.value + " %",
+                e.style.fontSize = k.value + "%"
+        })
+    clearTimeout(myInterval);
+    myPopup.addEventListener("blur", () => {
+        myInterval = setTimeout(() => {
+            myPopup.close();
+        }, 300000);
+    });
+
+    function onImagesLoaded(container, event) {
+        var images = container.getElementsByTagName("img");
+        var loaded = images.length;
+        0 == loaded && event();
+        for (var i = 0; i < images.length; i++) images[i].complete ? loaded-- : images[i].addEventListener("load", function() {
+            loaded--, 0 == loaded && event()
+        }), 0 == loaded && event();
+    }
+}
