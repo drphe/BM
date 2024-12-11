@@ -1,0 +1,381 @@
+<html data-theme="light">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Tổng hợp Báo cáo phân tích </title>
+    <style>
+body {
+    font-size: 14px;
+    margin: auto;
+    padding: 10px;
+    overflow: scroll;
+    background-color: var(--backgroundColor) !important;
+    color: var(--black);
+    font-family: Roboto, Helvetica, Arial, sans-serif;
+}
+
+.news-item img {
+    width: -webkit-fill-available;
+}
+
+.main-content>div:first-child {
+    text-align: center;
+    flex: 1 1
+}
+
+.news-item {
+    background-color: #e1ecff;
+    padding: 16px 20px;
+    border-radius: 16px;
+    display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    position: relative;
+    max-width: 420px;
+    max-height: 380px;
+    overflow-y: auto;
+}
+
+.news-content {
+    flex: 1 1;
+    display: flex;
+    flex-direction: column;
+    row-gap: 16px;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow-y: scroll;
+    align-content: baseline;
+}
+
+.main-content {
+    flex-direction: row;
+    align-items: stretch;
+}
+
+.information .items {
+    row-gap: 50px;
+    display: flex;
+    flex-wrap: nowrap;
+    flex-direction: row;
+    justify-content: center;
+    margin: 6px;
+    padding: 4px;
+    text-align: center;
+}
+
+.very_good {
+    color: #d52fff
+}
+
+.good {
+    color: #5bc036;
+}
+
+.neutral {
+    color: #ffc42e
+}
+
+.bad {
+    color: #d02b24;
+}
+
+.very_bad {
+    color: #10b9ee;
+}
+
+.inter .label {
+    display: flex;
+    justify-content: center;
+    column-gap: 4px;
+}
+
+.information .items .info-item>div:first-child {
+    font-weight: 600;
+    margin: 8px;
+}
+
+.strategy {
+    padding: 10px;
+    flex-direction: column;
+}
+
+.prediction-section .heading {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.strategy .heading {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.news-item .news-title {
+    color: #464646;
+    font-weight: 700;
+    font-size: 16px;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 0 grey;
+    border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background: #ccc;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    width: 100%
+}
+
+.tooltiptext p {
+    color: white;
+}
+
+.tooltip .tooltiptext {
+    visibility: hidden;
+    background-color: #e1ecff;
+    border: 1px solid #fff;
+    color: white;
+    padding: 4px;
+    text-align: left;
+    border-radius: 6px;
+    padding: 4px 4px 0;
+    position: absolute;
+    z-index: 10000;
+    bottom: 100%;
+    left: 0%;
+}
+
+.inter strong {
+    font-weight: 500;
+}
+
+.heading {
+    padding-top: 12px;
+}
+
+.heading:hover {
+    cursor: pointer;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}
+
+table {
+    width: 100%;
+    text-align: left;
+    border-collapse: collapse;
+    border-spacing: 0;
+    font-size: 14px;
+}
+
+th {
+    background-color: var(--thcl);
+    border-bottom: 1px solid var(--cbdcl);
+    text-align: center;
+    color: var(--black);
+    padding: 4px;
+    font-weight: 500;
+}
+
+tr:nth-child(even) {
+    /*background-color: #f2f2f2;*/
+}
+
+tbody tr:hover {
+    background-color: var(--chov);
+}
+
+tbody td {
+    text-align: left;
+    padding: 4px;
+    border-bottom: 1px solid var(--cbdcl);
+    color: var(--black);
+}
+
+td {
+    display: table-cell;
+    vertical-align: inherit;
+}
+
+.topsec {
+    margin: auto;
+    display: grid;
+    border-radius: 6px;
+    padding: 10px 0 10px 0;
+}
+
+.tooltiptextsec {
+    border-radius: 10px;
+    border: 1px solid #fff;
+    padding: 8px;
+    visibility: hidden;
+    z-index: 999;
+    position: absolute;
+    background: #181615;
+    color: #fff;
+    width: 500px;
+    max-height: 300px;
+    overflow-y: auto;
+    margin-left: 100px;
+}
+
+.tooltiptextsec strong {
+    font-weight: 600
+}
+
+.topsecrow:hover {
+    cursor: pointer;
+}
+
+.topsecrow:hover .tooltiptextsec {
+    visibility: visible;
+}
+
+.news-style:hover {
+    cursor: pointer;
+    background-color: var(--chov);
+}
+
+.news-style {
+    flex-grow: 1;
+    display: inline-block;
+    color: var(--textColor);
+    margin-left: 6px;
+    margin-right: 4px;
+    font-size: 14px;
+    display: flex;
+    flex-direction: row;
+    -webkit-box-align: start;
+    align-items: center;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+}
+
+body table.table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: inherit;
+    border-spacing: 0 1px;
+    margin-top: -1px;
+}
+
+.containers {
+    max-width: 900px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    overflow-y: scroll;
+    align-content: baseline;
+}
+
+.button {
+    text-decoration: none;
+    font-weight: 500;
+    margin: 4px;
+    cursor: pointer;
+    color: var(--black);
+    border: 1px solid var(--cbdcl);
+    margin: 4px;
+    padding: 6px 2px;
+    background-color: var(--headercl);
+    border-radius: 6px 6px 0px 0px;
+}
+
+#button {
+    border-bottom: 1px solid var(--bp3button);
+    padding: 0px;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 200px;
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background: var(--bgcolor);
+    color: var(--black);
+    border-radius: 4px;
+    padding: 8px;
+    border: 1px solid var(--bgcolor);
+    width: 60px;
+}
+
+button:hover {
+    cursor: pointer;
+    background: var(--backgroundColor);
+}
+
+.active {
+    background-color: #137cbd;
+    background-image: linear-gradient(180deg, hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, 0));
+    box-shadow: inset 0 0 0 1px rgba(16, 22, 26, .4), inset 0 -1px 0 rgba(16, 22, 26, .2);
+    color: #fff;
+    padding: 6px 2px;
+    margin: 4px;
+}
+
+/* thông báo */
+.f2notification {
+    border-radius: 5px;
+    font-size: 16px;
+    font-family: arial;
+    position: fixed;
+    bottom: 0;
+    z-index: 999999;
+    left: 0;
+    background-color: rgb(179 133 133);
+    color: white;
+    padding: 10px;
+    margin-left: 15px;
+    margin-bottom: 30px;
+    animation-name: slideIn;
+    animation-duration: 2s;
+}
+
+@keyframes slideIn {
+    from {
+        left: -100px;
+        opacity: 0;
+    }
+
+    to {
+        left: 0;
+        opacity: 1;
+    }
+}
+
+.f2notification.hide {
+    opacity: 0;
+    transition: opacity .5s ease-out;
+}
+    </style>
+    <link rel="stylesheet" type="text/css" href="loading.css">
+</head>
+
+<body>
+    <div id="button" style="height: 30px;display: flex;align-items: center;">
+        <a class="button active" id="getBCPTTT">Phân tích thị trường</a>
+        <a class="button" id="getBCPTCP">Phân tích cổ phiếu</a>
+    </div>
+    <div id="noidung" class="containers"></div>
+    <div id="load" class="lod"></div>
+    <script src="fialda.js"></script>
+</body>
+
+</html>
