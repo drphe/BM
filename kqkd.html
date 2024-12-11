@@ -1,367 +1,371 @@
 <html data-theme="light">
 
 <head>
-<link rel="icon" href="https://gstock.vn/favicon_light.ico?light>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link rel="icon" href="https://gstock.vn/favicon_light.ico?light>
+    <meta http-equiv=" Content-Type" content="text/html; charset=utf-8">
     <title>Cập nhật báo cáo kết quả kinh doanh - Gstock </title>
 
     <style>
-.loading-container {
-    position: fixed;
-    height: 100%;
-    width: 100%;
-    top: 0;
-    left: 0;
-    z-index: 100000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: rgba(0,0,0,.0);
-}
+        .loading-container {
+            position: fixed;
+            height: 100%;
+            width: 100%;
+            top: 0;
+            left: 0;
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: rgba(0, 0, 0, .0);
+        }
 
-.loading-container .lds-roller {
-    display: inline-block;
-    position: relative;
-    width: 64px;
-    height: 64px
-}
+        .loading-container .lds-roller {
+            display: inline-block;
+            position: relative;
+            width: 64px;
+            height: 64px
+        }
 
-.loading-container .lds-roller div {
-    -webkit-animation: lds-roller 1.2s cubic-bezier(.5,0,.5,1) infinite;
-    animation: lds-roller 1.2s cubic-bezier(.5,0,.5,1) infinite;
-    -webkit-transform-origin: 32px 32px;
-    transform-origin: 32px 32px
-}
+        .loading-container .lds-roller div {
+            -webkit-animation: lds-roller 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
+            animation: lds-roller 1.2s cubic-bezier(.5, 0, .5, 1) infinite;
+            -webkit-transform-origin: 32px 32px;
+            transform-origin: 32px 32px
+        }
 
-.loading-container .lds-roller div:after {
-    content: " ";
-    display: block;
-    position: absolute;
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #ff0;
-    margin: -3px 0 0 -3px
-}
+        .loading-container .lds-roller div:after {
+            content: " ";
+            display: block;
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #ff0;
+            margin: -3px 0 0 -3px
+        }
 
-.loading-container .lds-roller div:first-child {
-    -webkit-animation-delay: -36ms;
-    animation-delay: -36ms
-}
+        .loading-container .lds-roller div:first-child {
+            -webkit-animation-delay: -36ms;
+            animation-delay: -36ms
+        }
 
-.loading-container .lds-roller div:first-child:after {
-    top: 50px;
-    left: 50px
-}
+        .loading-container .lds-roller div:first-child:after {
+            top: 50px;
+            left: 50px
+        }
 
-.loading-container .lds-roller div:nth-child(2) {
-    -webkit-animation-delay: -72ms;
-    animation-delay: -72ms
-}
+        .loading-container .lds-roller div:nth-child(2) {
+            -webkit-animation-delay: -72ms;
+            animation-delay: -72ms
+        }
 
-.loading-container .lds-roller div:nth-child(2):after {
-    top: 54px;
-    left: 45px
-}
+        .loading-container .lds-roller div:nth-child(2):after {
+            top: 54px;
+            left: 45px
+        }
 
-.loading-container .lds-roller div:nth-child(3) {
-    -webkit-animation-delay: -.108s;
-    animation-delay: -.108s
-}
+        .loading-container .lds-roller div:nth-child(3) {
+            -webkit-animation-delay: -.108s;
+            animation-delay: -.108s
+        }
 
-.loading-container .lds-roller div:nth-child(3):after {
-    top: 57px;
-    left: 39px
-}
+        .loading-container .lds-roller div:nth-child(3):after {
+            top: 57px;
+            left: 39px
+        }
 
-.loading-container .lds-roller div:nth-child(4) {
-    -webkit-animation-delay: -.144s;
-    animation-delay: -.144s
-}
+        .loading-container .lds-roller div:nth-child(4) {
+            -webkit-animation-delay: -.144s;
+            animation-delay: -.144s
+        }
 
-.loading-container .lds-roller div:nth-child(4):after {
-    top: 58px;
-    left: 32px
-}
+        .loading-container .lds-roller div:nth-child(4):after {
+            top: 58px;
+            left: 32px
+        }
 
-.loading-container .lds-roller div:nth-child(5) {
-    -webkit-animation-delay: -.18s;
-    animation-delay: -.18s
-}
+        .loading-container .lds-roller div:nth-child(5) {
+            -webkit-animation-delay: -.18s;
+            animation-delay: -.18s
+        }
 
-.loading-container .lds-roller div:nth-child(5):after {
-    top: 57px;
-    left: 25px
-}
+        .loading-container .lds-roller div:nth-child(5):after {
+            top: 57px;
+            left: 25px
+        }
 
-.loading-container .lds-roller div:nth-child(6) {
-    -webkit-animation-delay: -.216s;
-    animation-delay: -.216s
-}
+        .loading-container .lds-roller div:nth-child(6) {
+            -webkit-animation-delay: -.216s;
+            animation-delay: -.216s
+        }
 
-.loading-container .lds-roller div:nth-child(6):after {
-    top: 54px;
-    left: 19px
-}
+        .loading-container .lds-roller div:nth-child(6):after {
+            top: 54px;
+            left: 19px
+        }
 
-.loading-container .lds-roller div:nth-child(7) {
-    -webkit-animation-delay: -.252s;
-    animation-delay: -.252s
-}
+        .loading-container .lds-roller div:nth-child(7) {
+            -webkit-animation-delay: -.252s;
+            animation-delay: -.252s
+        }
 
-.loading-container .lds-roller div:nth-child(7):after {
-    top: 50px;
-    left: 14px
-}
+        .loading-container .lds-roller div:nth-child(7):after {
+            top: 50px;
+            left: 14px
+        }
 
-.loading-container .lds-roller div:nth-child(8) {
-    -webkit-animation-delay: -.288s;
-    animation-delay: -.288s
-}
+        .loading-container .lds-roller div:nth-child(8) {
+            -webkit-animation-delay: -.288s;
+            animation-delay: -.288s
+        }
 
-.loading-container .lds-roller div:nth-child(8):after {
-    top: 45px;
-    left: 10px
-}
+        .loading-container .lds-roller div:nth-child(8):after {
+            top: 45px;
+            left: 10px
+        }
 
-@-webkit-keyframes lds-roller {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg)
-    }
+        @-webkit-keyframes lds-roller {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg)
+            }
 
-    to {
-        -webkit-transform: rotate(1turn);
-        transform: rotate(1turn)
-    }
-}
+            to {
+                -webkit-transform: rotate(1turn);
+                transform: rotate(1turn)
+            }
+        }
 
-@keyframes lds-roller {
-    0% {
-        -webkit-transform: rotate(0deg);
-        transform: rotate(0deg)
-    }
+        @keyframes lds-roller {
+            0% {
+                -webkit-transform: rotate(0deg);
+                transform: rotate(0deg)
+            }
 
-    to {
-        -webkit-transform: rotate(1turn);
-        transform: rotate(1turn)
-    }
-}
+            to {
+                -webkit-transform: rotate(1turn);
+                transform: rotate(1turn)
+            }
+        }
 
-/*lightweight chart*/
-:root {
-    --backgroundColor: rgb(255, 255, 255);
-    --textColor: #000;
-    --white: white;
-    --black: black;
-    --headercl: linear-gradient(180deg, #fff, #ddd);
-    --selected: #106ba3;
-    --boxshadow: rgba(16, 22, 26, .15);
-    --bgcolor: #a7b6c2;
-    --bp3tab: #182026;
-    --bp3button: #f5f8fa;
-    --tabcl:#fff;
-    --cpocl: rgb(255, 255, 255);
-    --cpot: rgb(92, 112, 128);
-    --chov: #f5f5f5;
-    --cbdcl: #eeeff2;
-    --legend: #f5f8fa;
-    --bgcltab: #bfccd6;
-    --bgcltabselected: #f5f8fa;
-}
-
-
-.customLegend {
-color: var(--bp3tab);
-font-weight: 400;
-}
-
-:root {
-    --thcl: #f2f2f2;
-}
+        /*lightweight chart*/
+        :root {
+            --backgroundColor: rgb(255, 255, 255);
+            --textColor: #000;
+            --white: white;
+            --black: black;
+            --headercl: linear-gradient(180deg, #fff, #ddd);
+            --selected: #106ba3;
+            --boxshadow: rgba(16, 22, 26, .15);
+            --bgcolor: #a7b6c2;
+            --bp3tab: #182026;
+            --bp3button: #f5f8fa;
+            --tabcl: #fff;
+            --cpocl: rgb(255, 255, 255);
+            --cpot: rgb(92, 112, 128);
+            --chov: #f5f5f5;
+            --cbdcl: #eeeff2;
+            --legend: #f5f8fa;
+            --bgcltab: #bfccd6;
+            --bgcltabselected: #f5f8fa;
+        }
 
 
-body {
-    font-size: 14px;
-    font-weight: 400;
-    background-color: var(--backgroundColor) !important;
-    color: var(--black);
-    line-height: 1.5em;
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    margin: 4px;
-    text-align: left;
-}
+        .customLegend {
+            color: var(--bp3tab);
+            font-weight: 400;
+        }
 
-.h1,
-.h2,
-.h3,
-.h4,
-.h5,
-.h6,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    font-family: Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.5em;
-    margin-top: 0;
-    margin-bottom: .5em;
-    color: rgba(0, 0, 0, .85);
-    font-weight: 500;
-}
+        :root {
+            --thcl: #f2f2f2;
+        }
 
-.h5,
-h5 {
-    font-size: 1.25em;
-}
 
-table {
-    text-align: left;
-    border-radius: 2px 2px 0 0;
-    border-collapse: collapse;
-    border-spacing: 0;
-    table-layout: fixed;
-    width:100%
-}
-thead tr:first-child {
-    position: sticky;
-    top: 0;
-}
-th {
-    background-color: var(--thcl);
-    border-bottom: 1px solid var(--cbdcl);
-    text-align: center;
-    color: var(--black);
-    padding: 4px;
-    font-weight: 500;
-}
+        body {
+            font-size: 14px;
+            font-weight: 400;
+            background-color: var(--backgroundColor) !important;
+            color: var(--black);
+            line-height: 1.5em;
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            margin: 4px;
+            text-align: left;
+        }
 
-tr:nth-child(even) {
-    /*background-color: #f2f2f2;*/
-}
+        .h1,
+        .h2,
+        .h3,
+        .h4,
+        .h5,
+        .h6,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.5em;
+            margin-top: 0;
+            margin-bottom: .5em;
+            color: rgba(0, 0, 0, .85);
+            font-weight: 500;
+        }
 
-tbody tr:hover {
-    background-color: var(--chov);
-}
+        .h5,
+        h5 {
+            font-size: 1.25em;
+        }
 
-tbody td {
-    text-align: left;
-    padding: 4px;
-    border-bottom: 1px solid var(--cbdcl);
-    color: var(--black);
-}
+        table {
+            text-align: left;
+            border-radius: 2px 2px 0 0;
+            border-collapse: collapse;
+            border-spacing: 0;
+            table-layout: fixed;
+            width: 100%
+        }
 
-.ant-table {
+        thead tr:first-child {
+            position: sticky;
+            top: 0;
+        }
 
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    font-variant: tabular-nums;
-    line-height: 1.5715;
-    list-style: none;
-    font-feature-settings: "tnum", "tnum";
-    position: relative;
-    font-size: 14px;
-    border-radius: 2px;
-}
+        th {
+            background-color: var(--thcl);
+            border-bottom: 1px solid var(--cbdcl);
+            text-align: center;
+            color: var(--black);
+            padding: 4px;
+            font-weight: 500;
+        }
 
-input[type="text"],
-input[type="number"] {
-    width: 200px;
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid #ccc;
-}
+        tr:nth-child(even) {
+            /*background-color: #f2f2f2;*/
+        }
 
-button {
-    background: var(--bgcolor);
-    color: var(--black);
-    padding: 8px;
-    border-radius: 4px;
-    border: 1px solid var(--bgcolor);
-    width: 60px
-}
+        tbody tr:hover {
+            background-color: var(--chov);
+        }
 
-button:hover {
-    cursor: pointer;
-    background:var(--backgroundColor);
-}
+        tbody td {
+            text-align: left;
+            padding: 4px;
+            border-bottom: 1px solid var(--cbdcl);
+            color: var(--black);
+        }
 
-.download-container {
-    position: fixed;
-    right: 40px;
-    display: inline-block;
-    color: white;
-    padding: 10px 20px;
-    border-radius: 30px;
-    box-shadow: 0 0 20px 0 gray;
-    cursor: pointer;
-    font-size: 12px;
-    z-index: 999
-}
+        .ant-table {
 
-#download-text-container {
-    color: var(--black);
-    background: var(--bgcolor);
-    bottom: 50px;
-    width: 100px;
-    text-align: center;
-}
-#download-text-container:hover{
-    background: var(--bgcltab);
-}
-::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 0 grey;
-    border-radius: 1px;
-}
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-variant: tabular-nums;
+            line-height: 1.5715;
+            list-style: none;
+            font-feature-settings: "tnum", "tnum";
+            position: relative;
+            font-size: 14px;
+            border-radius: 2px;
+        }
 
-::-webkit-scrollbar-thumb {
-    background: #ccc;
-    border-radius: 10px
-}
+        input[type="text"],
+        input[type="number"] {
+            width: 200px;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
 
-::-webkit-scrollbar {
-    width: 4px;
-    height: 6px;
-    background: transparent;
-}
+        button {
+            background: var(--bgcolor);
+            color: var(--black);
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--bgcolor);
+            width: 60px
+        }
 
-/* thông báo */
-.f2notification {
-    border-radius: 5px;
-    font-size: 16px;
-    font-family: arial;
-    position: fixed;
-    bottom: 0;
-    z-index: 999999;
-    left: 0;
-    background-color: rgb(179 133 133);
-    color: white;
-    padding: 10px;
-    margin-left: 15px;
-    margin-bottom: 30px;
-    animation-name: slideIn;
-    animation-duration: 2s;
-}
+        button:hover {
+            cursor: pointer;
+            background: var(--backgroundColor);
+        }
 
-@keyframes slideIn {
-    from {
-        left: -100px;
-        opacity: 0;
-    }
+        .download-container {
+            position: fixed;
+            right: 40px;
+            display: inline-block;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 30px;
+            box-shadow: 0 0 20px 0 gray;
+            cursor: pointer;
+            font-size: 12px;
+            z-index: 999
+        }
 
-    to {
-        left: 0;
-        opacity: 1;
-    }
-}
+        #download-text-container {
+            color: var(--black);
+            background: var(--bgcolor);
+            bottom: 50px;
+            width: 100px;
+            text-align: center;
+        }
 
-.f2notification.hide {
-    opacity: 0;
-    transition: opacity .5s ease-out;
-}
+        #download-text-container:hover {
+            background: var(--bgcltab);
+        }
+
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 0 grey;
+            border-radius: 1px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px
+        }
+
+        ::-webkit-scrollbar {
+            width: 4px;
+            height: 6px;
+            background: transparent;
+        }
+
+        /* thông báo */
+        .f2notification {
+            border-radius: 5px;
+            font-size: 16px;
+            font-family: arial;
+            position: fixed;
+            bottom: 0;
+            z-index: 999999;
+            left: 0;
+            background-color: rgb(179 133 133);
+            color: white;
+            padding: 10px;
+            margin-left: 15px;
+            margin-bottom: 30px;
+            animation-name: slideIn;
+            animation-duration: 2s;
+        }
+
+        @keyframes slideIn {
+            from {
+                left: -100px;
+                opacity: 0;
+            }
+
+            to {
+                left: 0;
+                opacity: 1;
+            }
+        }
+
+        .f2notification.hide {
+            opacity: 0;
+            transition: opacity .5s ease-out;
+        }
     </style>
 </head>
 
@@ -382,223 +386,2185 @@ button:hover {
     <div id="noidung" class="ant-table">
     </div>
     <div id="load"></div>
-<script>
-/*!
- * @license
- * Anh Phê - F2chart extension version 2.3.68
- */
-const emptyData ='<div style="margin:auto;text-align: center;padding:10px;"> <svg width="90"  height="60" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg></div>'
+    <script>
+        /*!
+         * @license
+         * Anh Phê - F2chart extension version 2.3.68
+         */
+        const emptyData = '<div style="margin:auto;text-align: center;padding:10px;"> <svg width="90"  height="60" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg></div>'
 
-const titleArr=["Mã","Ngành","Doanh thu thuần (Tỷ VNĐ)","Lãi ròng (Tỷ VNĐ)","Doanh thu thuần (%YoY)","Lãi ròng (%YoY)","Giá (D)","Khối lượng GD (D)","Vốn hoá (Tỷ VNĐ - D)","ROE","Ngày cập nhật"],sector=[{Id:"316",Name:"Đại lý và môi giới bất động sản",Level:3,ParentId:"95",SectorCode:"LAB0"},{Id:"128",Name:"Đại lý quảng cáo",Level:3,ParentId:"24",SectorCode:"CAA0"},{Id:"217",Name:"Đóng tàu, thuyền",Level:3,ParentId:"64",SectorCode:"HOA0"},{Id:"150",Name:"Xử lý ô nhiễm và các dịch vụ quản lý chất thải khác",Level:3,ParentId:"35",SectorCode:"DDB0"},{Id:"151",Name:"Xử lý và tiêu hủy chất thải",Level:3,ParentId:"35",SectorCode:"DDC0"},{Id:"12",Name:"Xây dựng và Bất động sản",Level:1,SectorCode:"L000"},{Id:"329",Name:"Xây dựng nhà ở, khu dân cư, cao ốc",Level:3,ParentId:"98",SectorCode:"LDI0"},{Id:"328",Name:"Xây dựng hệ thống tiện ích",Level:3,ParentId:"98",SectorCode:"LDH0"},{Id:"25",Name:"Xây dựng hạ tầng viễn thông",Level:2,ParentId:"2",SectorCode:"BE00"},{Id:"120",Name:"Xây dựng hạ tầng viễn thông",Level:3,ParentId:"25",SectorCode:"BEA0"},{Id:"325",Name:"Xây dựng cầu đường, đường cao tốc",Level:3,ParentId:"98",SectorCode:"LDE0"},{Id:"327",Name:"Xây dựng công trình khác",Level:3,ParentId:"98",SectorCode:"LDG0"},{Id:"326",Name:"Xây dựng công nghiệp nặng và dân dụng khác",Level:3,ParentId:"98",SectorCode:"LDF0"},{Id:"119",Name:"Xuất bản báo, ấn phẩm, sách",Level:3,ParentId:"23",SectorCode:"BDB0"},{Id:"255",Name:"Xay sát các loại hạt và hạt có dầu",Level:3,ParentId:"73",SectorCode:"HXI0"},{Id:"79",Name:"Vật liệu xây dựng & Nội thất",Level:2,ParentId:"8",SectorCode:"HD01"},{Id:"182",Name:"Vận tải đường thủy nội địa",Level:3,ParentId:"50",SectorCode:"KAD0"},{Id:"50",Name:"Vận tải đường thủy",Level:2,ParentId:"11",SectorCode:"KA00"},{Id:"311",Name:"Vận tải đường sắt đường dài",Level:3,ParentId:"93",SectorCode:"KGA0"},{Id:"93",Name:"Vận tải đường sắt",Level:2,ParentId:"11",SectorCode:"KG00"},{Id:"309",Name:"Vận tải đường bộ chuyên biệt",Level:3,ParentId:"92",SectorCode:"KFF0"},{Id:"92",Name:"Vận tải đường bộ",Level:2,ParentId:"11",SectorCode:"KF00"},{Id:"302",Name:"Vận tải đường bộ",Level:3,ParentId:"90",SectorCode:"KDG0"},{Id:"303",Name:"Vận tải đường bộ",Level:3,ParentId:"92",SectorCode:"KFB0"},{Id:"312",Name:"Vận tải đường biển, ven biển, hồ lớn",Level:3,ParentId:"50",SectorCode:"KAC0"},{Id:"11",Name:"Vận tải và kho bãi",Level:1,SectorCode:"K000"},{Id:"310",Name:"Vận tải trung chuyển và vận tải hành khách bằng đường bộ khác",Level:3,ParentId:"92",SectorCode:"KFG0"},{Id:"313",Name:"Vận tải hàng không đã được xếp lịch",Level:3,ParentId:"94",SectorCode:"KHA0"},{Id:"94",Name:"Vận tải hàng không",Level:2,ParentId:"11",SectorCode:"KH00"},{Id:"305",Name:"Vận chuyển du lịch khác",Level:3,ParentId:"91",SectorCode:"KEB0"},{Id:"304",Name:"Vận chuyển du lịch bằng đường bộ",Level:3,ParentId:"91",SectorCode:"KEA0"},{Id:"91",Name:"Vận chuyển du lịch",Level:2,ParentId:"11",SectorCode:"KE00"},{Id:"113",Name:"Viễn thông không dây (ngoại trừ vệ tinh)",Level:3,ParentId:"20",SectorCode:"BAB0"},{Id:"116",Name:"Viễn thông có dây",Level:3,ParentId:"21",SectorCode:"BBC0"},{Id:"117",Name:"Viễn thông có dây",Level:3,ParentId:"23",SectorCode:"BDA0"},{Id:"141",Name:"Tư vấn xây dựng",Level:3,ParentId:"31",SectorCode:"CFG0"},{Id:"31",Name:"Tư vấn kiến trúc, xây dựng",Level:2,ParentId:"3",SectorCode:"CF00"},{Id:"32",Name:"Tư vấn kiến trúc, xây dựng",Level:2,ParentId:"4",SectorCode:"DA00"},{Id:"134",Name:"Tư vấn giáo dục",Level:3,ParentId:"30",SectorCode:"CEE0"},{Id:"318",Name:"Tư vấn bất động sản",Level:3,ParentId:"95",SectorCode:"LAD0"},{Id:"30",Name:"Tư vấn & Hỗ trợ KD",Level:2,ParentId:"3",SectorCode:"CE00"},{Id:"133",Name:"Tư vấn & Hỗ trợ KD",Level:3,ParentId:"30",SectorCode:"CED0"},{Id:"9",Name:"Tài chính và bảo hiểm",Level:1,SectorCode:"I000"},{Id:"78",Name:"Trồng và chế biến gỗ",Level:2,ParentId:"8",SectorCode:"HC01"},{Id:"77",Name:"Trồng và chế biến cao su",Level:2,ParentId:"8",SectorCode:"HB01"},{Id:"263",Name:"Trồng trọt cây lương thực và các loại hạt có dầu",Level:3,ParentId:"76",SectorCode:"HAD0"},{Id:"262",Name:"Trồng trọt cây có hạt và các loại trái cây",Level:3,ParentId:"76",SectorCode:"HAC0"},{Id:"261",Name:"Trồng trọt các loại cây khác",Level:3,ParentId:"76",SectorCode:"HAB0"},{Id:"266",Name:"Trồng rừng lấy gỗ",Level:3,ParentId:"78",SectorCode:"HCC0"},{Id:"76",Name:"Trồng cây có hạt và cây ăn trái",Level:2,ParentId:"8",SectorCode:"HA01"},{Id:"107",Name:"Trạm xăng  ",Level:3,ParentId:"16",SectorCode:"ADB0"},{Id:"106",Name:"Trạm xăng",Level:3,ParentId:"16",SectorCode:"ADA0"},{Id:"126",Name:"Trò chơi, cá cược",Level:3,ParentId:"27",SectorCode:"CCE0"},{Id:"283",Name:"Truyền tải, kiểm soát và phân phối điện",Level:3,ParentId:"87",SectorCode:"JEB0"},{Id:"23",Name:"Truyền thông",Level:2,ParentId:"2",SectorCode:"BD00"},{Id:"24",Name:"Truyền thông",Level:2,ParentId:"3",SectorCode:"CA00"},{Id:"276",Name:"Trung gian tín dụng có nhận tiền gửi",Level:3,ParentId:"29",SectorCode:"IAC0"},{Id:"277",Name:"Trung gian tín dụng có nhận tiền gửi",Level:3,ParentId:"82",SectorCode:"IDA0"},{Id:"10",Name:"Tiện ích",Level:1,SectorCode:"J000"},{Id:"254",Name:"Thực phẩm khác",Level:3,ParentId:"73",SectorCode:"HXH0"},{Id:"125",Name:"Thể thao",Level:3,ParentId:"27",SectorCode:"CCD0"},{Id:"149",Name:"Thu gom chất thải",Level:3,ParentId:"35",SectorCode:"DDA0"},{Id:"22",Name:"Thiết bị viễn thông",Level:2,ParentId:"2",SectorCode:"BC00"},{Id:"118",Name:"Thiết bị viễn thông",Level:3,ParentId:"22",SectorCode:"BCA0"},{Id:"300",Name:"Sắp xếp vận tải hàng hóa",Level:3,ParentId:"90",SectorCode:"KDE0"},{Id:"299",Name:"Sắp xếp vận tải hàng hóa",Level:3,ParentId:"88",SectorCode:"KBH0"},{Id:"240",Name:"Sản xuất động cơ, tua bin và thiết bị truyền tải điện",Level:3,ParentId:"72",SectorCode:"HWA0"},{Id:"236",Name:"Sản xuất đồ điện gia dụng",Level:3,ParentId:"71",SectorCode:"HVB0"},{Id:"56",Name:"Sản xuất đồ uống",Level:2,ParentId:"8",SectorCode:"HG00"},{Id:"194",Name:"Sản xuất đồ uống",Level:3,ParentId:"67",SectorCode:"HRA0"},{Id:"193",Name:"Sản xuất đồ uống",Level:3,ParentId:"56",SectorCode:"HGC0"},{Id:"251",Name:"Sản xuất đường và bánh kẹo",Level:3,ParentId:"73",SectorCode:"HXE0"},{Id:"75",Name:"Sản xuất xăng dầu và phụ phẩm",Level:2,ParentId:"8",SectorCode:"HE02"},{Id:"208",Name:"Sản xuất xà phòng, chất tẩy rửa",Level:3,ParentId:"61",SectorCode:"HLE0"},{Id:"271",Name:"Sản xuất xi măng và các sản phẩm bê tông",Level:3,ParentId:"79",SectorCode:"HDE0"},{Id:"220",Name:"Sản xuất xe cơ giới",Level:3,ParentId:"64",SectorCode:"HOD0"},{Id:"216",Name:"Sản xuất và chế biến nhôm",Level:3,ParentId:"63",SectorCode:"HNA0"},{Id:"270",Name:"Sản xuất tủ bếp và nội thất hộ gia đình",Level:3,ParentId:"79",SectorCode:"HDD0"},{Id:"73",Name:"Sản xuất thực phẩm",Level:2,ParentId:"8",SectorCode:"HX00"},{Id:"253",Name:"Sản xuất thức ăn cho động vật",Level:3,ParentId:"73",SectorCode:"HXG0"},{Id:"269",Name:"Sản xuất thủy tinh và các sản phẩm thủy tinh",Level:3,ParentId:"79",SectorCode:"HDC0"},{Id:"70",Name:"Sản xuất thép",Level:2,ParentId:"8",SectorCode:"HU00"},{Id:"234",Name:"Sản xuất thép",Level:3,ParentId:"70",SectorCode:"HUB0"},{Id:"197",Name:"Sản xuất thuốc và dược phẩm",Level:3,ParentId:"58",SectorCode:"HIA0"},{Id:"207",Name:"Sản xuất thuốc trừ sâu, phân bón và các loại hóa chất nông nghiệp",Level:3,ParentId:"61",SectorCode:"HLD0"},{Id:"74",Name:"Sản xuất thuốc lá",Level:2,ParentId:"8",SectorCode:"HY00"},{Id:"256",Name:"Sản xuất thuốc lá",Level:3,ParentId:"74",SectorCode:"HYA0"},{Id:"246",Name:"Sản xuất thiết bị, máy móc công nghiệp",Level:3,ParentId:"72",SectorCode:"HWG0"},{Id:"72",Name:"Sản xuất thiết bị, máy móc",Level:2,ParentId:"8",SectorCode:"HW00"},{Id:"239",Name:"Sản xuất thiết bị, dụng cụ điện khác",Level:3,ParentId:"71",SectorCode:"HVE0"},{Id:"71",Name:"Sản xuất thiết bị, dụng cụ điện",Level:2,ParentId:"8",SectorCode:"HV00"},{Id:"238",Name:"Sản xuất thiết bị điện chiếu sáng",Level:3,ParentId:"71",SectorCode:"HVD0"},{Id:"237",Name:"Sản xuất thiết bị điện",Level:3,ParentId:"71",SectorCode:"HVC0"},{Id:"224",Name:"Sản xuất thiết bị truyền thông từ tính và quang học",Level:3,ParentId:"65",SectorCode:"HPD0"},{Id:"223",Name:"Sản xuất thiết bị truyền thông",Level:3,ParentId:"65",SectorCode:"HPC0"},{Id:"245",Name:"Sản xuất thiết bị nông nghiệp, xây dựng và khai khoáng",Level:3,ParentId:"72",SectorCode:"HWF0"},{Id:"232",Name:"Sản xuất sợi, vải thành phẩm",Level:3,ParentId:"69",SectorCode:"HTB0"},{Id:"69",Name:"Sản xuất sợi, vải",Level:2,ParentId:"8",SectorCode:"HT00"},{Id:"231",Name:"Sản xuất sợi",Level:3,ParentId:"69",SectorCode:"HTA0"},{Id:"233",Name:"Sản xuất sắt, thép và hợp kim fero",Level:3,ParentId:"70",SectorCode:"HUA0"},{Id:"65",Name:"Sản xuất sản phẩm điện tử, vi tính",Level:2,ParentId:"8",SectorCode:"HP00"},{Id:"259",Name:"Sản xuất sản phẩm xăng dầu và than đá khác",Level:3,ParentId:"75",SectorCode:"HuC0"},{Id:"230",Name:"Sản xuất sản phẩm từ khoáng chất phi kim khác",Level:3,ParentId:"68",SectorCode:"HSA0"},{Id:"68",Name:"Sản xuất sản phẩm từ khoáng chất phi kim ",Level:2,ParentId:"8",SectorCode:"HS00"},{Id:"67",Name:"Sản xuất sản phẩm thủy tinh",Level:2,ParentId:"8",SectorCode:"HR00"},{Id:"252",Name:"Sản xuất sản phẩm sữa",Level:3,ParentId:"73",SectorCode:"HXF0"},{Id:"66",Name:"Sản xuất sản phẩm nhựa và cao su",Level:2,ParentId:"8",SectorCode:"HQ00"},{Id:"190",Name:"Sản xuất sản phẩm may mặc dệt kim",Level:3,ParentId:"55",SectorCode:"HFC0"},{Id:"189",Name:"Sản xuất sản phẩm may mặc công nghiệp",Level:3,ParentId:"55",SectorCode:"HFB0"},{Id:"215",Name:"Sản xuất sản phẩm kim loại tổng hợp khác",Level:3,ParentId:"62",SectorCode:"HMF0"},{Id:"206",Name:"Sản xuất sơn và chất kết dính",Level:3,ParentId:"61",SectorCode:"HLC0"},{Id:"219",Name:"Sản xuất phụ tùng xe cơ giới",Level:3,ParentId:"64",SectorCode:"HOC0"},{Id:"188",Name:"Sản xuất phụ kiện và các sản phẩm may mặc khác",Level:3,ParentId:"55",SectorCode:"HFA0"},{Id:"115",Name:"Sản xuất phần mềm",Level:3,ParentId:"21",SectorCode:"BBB0"},{Id:"64",Name:"Sản xuất phương tiện vận tải",Level:2,ParentId:"8",SectorCode:"HO00"},{Id:"229",Name:"Sản xuất nhựa, cao su tổng hợp, sợi tổng hợp nhân tạo",Level:3,ParentId:"77",SectorCode:"HBA0"},{Id:"228",Name:"Sản xuất nhựa, cao su tổng hợp, sợi tổng hợp nhân tạo",Level:3,ParentId:"66",SectorCode:"HQG0"},{Id:"258",Name:"Sản xuất nhựa đường, vật liệu lợp mái và chất bão hòa",Level:3,ParentId:"75",SectorCode:"HuB0"},{Id:"63",Name:"Sản xuất nhôm và sản phẩm nhôm",Level:2,ParentId:"8",SectorCode:"HN00"},{Id:"222",Name:"Sản xuất máy tính và thiết bị vi ngoại",Level:3,ParentId:"65",SectorCode:"HPB0"},{Id:"244",Name:"Sản xuất máy móc với mục đích chung khác",Level:3,ParentId:"72",SectorCode:"HWE0"},{Id:"242",Name:"Sản xuất máy móc cơ khí",Level:3,ParentId:"72",SectorCode:"HWC0"},{Id:"243",Name:"Sản xuất máy móc công nghiệp dịch vụ và thương mại",Level:3,ParentId:"72",SectorCode:"HWD0"},{Id:"214",Name:"Sản xuất lò hơi, thùng chứa và container vận chuyển",Level:3,ParentId:"62",SectorCode:"HME0"},{Id:"221",Name:"Sản xuất linh kiện bán dẫn và các linh kiện điện tử khác",Level:3,ParentId:"65",SectorCode:"HPA0"},{Id:"209",Name:"Sản xuất kết cấu kim loại",Level:3,ParentId:"62",SectorCode:"HMA0"},{Id:"212",Name:"Sản xuất kiến trúc và kết cấu kim loại",Level:3,ParentId:"62",SectorCode:"HMC0"},{Id:"62",Name:"Sản xuất kim loại tổng hợp",Level:2,ParentId:"8",SectorCode:"HM00"},{Id:"213",Name:"Sản xuất kim loại tổng hợp",Level:3,ParentId:"62",SectorCode:"HMD0"},{Id:"210",Name:"Sản xuất khác",Level:3,ParentId:"62",SectorCode:"HMB0"},{Id:"211",Name:"Sản xuất khác",Level:3,ParentId:"66",SectorCode:"HQC0"},{Id:"241",Name:"Sản xuất hệ thống thông gió, sưởi ấm, điều hòa nhiệt độ và thiết bị làm lạnh",Level:3,ParentId:"72",SectorCode:"HWB0"},{Id:"205",Name:"Sản xuất hóa chất cơ bản",Level:3,ParentId:"61",SectorCode:"HLB0"},{Id:"61",Name:"Sản xuất hóa chất",Level:2,ParentId:"8",SectorCode:"HL00"},{Id:"265",Name:"Sản xuất gỗ ốp, ván ép và các sản phẩm gỗ lắp ghép",Level:3,ParentId:"78",SectorCode:"HCB0"},{Id:"268",Name:"Sản xuất gạch ốp lát",Level:3,ParentId:"79",SectorCode:"HDB0"},{Id:"267",Name:"Sản xuất gạch",Level:3,ParentId:"79",SectorCode:"HDA0"},{Id:"60",Name:"Sản xuất giấy và sản phẩm giấy",Level:2,ParentId:"8",SectorCode:"HK00"},{Id:"59",Name:"Sản xuất giày dép",Level:2,ParentId:"8",SectorCode:"HJ00"},{Id:"198",Name:"Sản xuất giày dép",Level:3,ParentId:"59",SectorCode:"HJA0"},{Id:"57",Name:"Sản xuất dụng cụ và thiết bị y tế",Level:2,ParentId:"8",SectorCode:"HH00"},{Id:"196",Name:"Sản xuất dụng cụ và thiết bị y tế",Level:3,ParentId:"57",SectorCode:"HHB0"},{Id:"58",Name:"Sản xuất dược phẩm",Level:2,ParentId:"8",SectorCode:"HI00"},{Id:"195",Name:"Sản xuất dao kéo và dụng cụ cầm tay",Level:3,ParentId:"57",SectorCode:"HHA0"},{Id:"235",Name:"Sản xuất các thiết bị điện và dụng cụ khác",Level:3,ParentId:"71",SectorCode:"HVA0"},{Id:"218",Name:"Sản xuất các thiết bị vận tải khác",Level:3,ParentId:"64",SectorCode:"HOB0"},{Id:"203",Name:"Sản xuất các sản phẩm từ giấy",Level:3,ParentId:"60",SectorCode:"HKC0"},{Id:"201",Name:"Sản xuất các sản phẩm nhựa",Level:3,ParentId:"60",SectorCode:"HKB0"},{Id:"202",Name:"Sản xuất các sản phẩm nhựa",Level:3,ParentId:"66",SectorCode:"HQB0"},{Id:"55",Name:"Sản xuất các sản phẩm may mặc",Level:2,ParentId:"8",SectorCode:"HF00"},{Id:"204",Name:"Sản xuất các sản phẩm hóa chất khác",Level:3,ParentId:"61",SectorCode:"HLA0"},{Id:"264",Name:"Sản xuất các sản phẩm gỗ khác",Level:3,ParentId:"78",SectorCode:"HCA0"},{Id:"227",Name:"Sản xuất các sản phẩm cao su",Level:3,ParentId:"66",SectorCode:"HQF0"},{Id:"250",Name:"Sản xuất các loại thực phẩm khác",Level:3,ParentId:"73",SectorCode:"HXD0"},{Id:"249",Name:"Sản xuất bánh và bánh mì các loại",Level:3,ParentId:"73",SectorCode:"HXC0"},{Id:"192",Name:"Sản xuất bia",Level:3,ParentId:"56",SectorCode:"HGB0"},{Id:"87",Name:"Sản xuất & Phân phối Điện",Level:2,ParentId:"10",SectorCode:"JE00"},{Id:"8",Name:"Sản xuất",Level:1,SectorCode:"H000"},{Id:"226",Name:"Sản phẩm từ nhựa",Level:3,ParentId:"66",SectorCode:"HQE0"},{Id:"187",Name:"Sơ chế và đóng gói thủy sản",Level:3,ParentId:"54",SectorCode:"HEB0"},{Id:"4073016",Name:"Sơ chế và đóng gói thủy sản",Level:3,ParentId:"73",SectorCode:"HXJ0"},{Id:"35",Name:"Quản lý và tái chế chất thải",Level:2,ParentId:"4",SectorCode:"DD00"},{Id:"145",Name:"Quản lý chương trình nguồn nhân lực",Level:3,ParentId:"33",SectorCode:"DBC0"},{Id:"21",Name:"Phần mềm",Level:2,ParentId:"2",SectorCode:"BB00"},{Id:"114",Name:"Phần mềm",Level:3,ParentId:"21",SectorCode:"BBA0"},{Id:"154",Name:"Phòng trọ và nhà trọ",Level:3,ParentId:"37",SectorCode:"EBB0"},{Id:"177",Name:"Phân phối đồ nội thất và đồ dùng gia đình",Level:3,ParentId:"46",SectorCode:"GCB0"},{Id:"178",Name:"Phân phối đồ nội thất và đồ dùng gia đình",Level:3,ParentId:"48",SectorCode:"GEA0"},{Id:"169",Name:"Phân phối xe cơ giới và phụ tùng xe cơ giới",Level:3,ParentId:"44",SectorCode:"GAD0"},{Id:"48",Name:"Phân phối vật liệu xây dựng",Level:2,ParentId:"7",SectorCode:"GE00"},{Id:"181",Name:"Phân phối vật liệu xây dựng",Level:3,ParentId:"48",SectorCode:"GEC0"},{Id:"175",Name:"Phân phối thực phẩm, tạp hóa",Level:3,ParentId:"45",SectorCode:"GBG0"},{Id:"176",Name:"Phân phối thuốc lá",Level:3,ParentId:"45",SectorCode:"GBH0"},{Id:"174",Name:"Phân phối sản phẩm nuôi trồng thô",Level:3,ParentId:"45",SectorCode:"GBF0"},{Id:"47",Name:"Phân phối sản phẩm dầu khí",Level:2,ParentId:"7",SectorCode:"GD00"},{Id:"46",Name:"Phân phối nội thất",Level:2,ParentId:"7",SectorCode:"GC00"},{Id:"168",Name:"Phân phối máy móc, thiết bị và vật tư",Level:3,ParentId:"44",SectorCode:"GAC0"},{Id:"86",Name:"Phân phối khí đốt thiên nhiên",Level:2,ParentId:"10",SectorCode:"JD00"},{Id:"281",Name:"Phân phối khí đốt thiên nhiên",Level:3,ParentId:"86",SectorCode:"JDA0"},{Id:"172",Name:"Phân phối hóa chất và các sản phẩm liên quan",Level:3,ParentId:"45",SectorCode:"GBE0"},{Id:"173",Name:"Phân phối hóa chất và các sản phẩm liên quan",Level:3,ParentId:"47",SectorCode:"GDA0"},{Id:"45",Name:"Phân phối hàng tiêu dùng",Level:2,ParentId:"7",SectorCode:"GB00"},{Id:"44",Name:"Phân phối hàng lâu bền",Level:2,ParentId:"7",SectorCode:"GA00"},{Id:"180",Name:"Phân phối gỗ xẻ và vật liệu xây dựng khác",Level:3,ParentId:"48",SectorCode:"GEB0"},{Id:"179",Name:"Phân phối dầu và các sản phẩm dầu khí",Level:3,ParentId:"47",SectorCode:"GDB0"},{Id:"171",Name:"Phân phối dược phẩm và tạp hóa dược",Level:3,ParentId:"45",SectorCode:"GBD0"},{Id:"165",Name:"Phân phối các mặt hàng điện, điện tử",Level:3,ParentId:"44",SectorCode:"GAA0"},{Id:"166",Name:"Phân phối các mặt hàng tiêu dùng khác",Level:3,ParentId:"44",SectorCode:"GAB0"},{Id:"167",Name:"Phân phối các mặt hàng tiêu dùng khác",Level:3,ParentId:"45",SectorCode:"GBB0"},{Id:"170",Name:"Phân phối bia, rượu, thức uống có cồn",Level:3,ParentId:"45",SectorCode:"GBC0"},{Id:"7",Name:"Phân phối",Level:1,SectorCode:"G000"},{Id:"282",Name:"Phát điện",Level:3,ParentId:"87",SectorCode:"JEA0"},{Id:"317",Name:"Phát triển bất động sản",Level:3,ParentId:"95",SectorCode:"LAC0"},{Id:"85",Name:"Nước, chất thải và các hệ thống khác",Level:2,ParentId:"10",SectorCode:"JC00"},{Id:"191",Name:"Nước giải khát",Level:3,ParentId:"56",SectorCode:"HGA0"},{Id:"54",Name:"Nuôi và chế biến thủy sản",Level:2,ParentId:"8",SectorCode:"HE00"},{Id:"186",Name:"Nuôi trồng thủy sản",Level:3,ParentId:"54",SectorCode:"HEA0"},{Id:"98",Name:"Nhà thầu xây dựng",Level:2,ParentId:"12",SectorCode:"LD00"},{Id:"321",Name:"Nhà thầu về nền móng, cấu trúc và bề mặt ngoài",Level:3,ParentId:"97",SectorCode:"LCB0"},{Id:"322",Name:"Nhà thầu về nền móng, cấu trúc và bề mặt ngoài",Level:3,ParentId:"98",SectorCode:"LDB0"},{Id:"320",Name:"Nhà thầu thiết bị xây dựng",Level:3,ParentId:"98",SectorCode:"LDA0"},{Id:"319",Name:"Nhà thầu thiết bị xây dựng",Level:3,ParentId:"97",SectorCode:"LCA0"},{Id:"324",Name:"Nhà thầu hoàn thiện xây dựng",Level:3,ParentId:"98",SectorCode:"LDD0"},{Id:"323",Name:"Nhà thầu chuyên môn khác",Level:3,ParentId:"98",SectorCode:"LDC0"},{Id:"97",Name:"Nhà thầu chuyên môn",Level:2,ParentId:"12",SectorCode:"LC00"},{Id:"199",Name:"Nhà máy sản xuất bột giấy, giấy và giấy bìa",Level:3,ParentId:"60",SectorCode:"HKA0"},{Id:"200",Name:"Nhà máy sản xuất bột giấy, giấy và giấy bìa",Level:3,ParentId:"66",SectorCode:"HQA0"},{Id:"152",Name:"Nhà hàng đầy đủ dịch vụ",Level:3,ParentId:"36",SectorCode:"EAA0"},{Id:"82",Name:"Ngân hàng",Level:2,ParentId:"9",SectorCode:"ID00"},{Id:"273",Name:"Môi giới chứng khoán và hàng hóa",Level:3,ParentId:"81",SectorCode:"ICA0"},{Id:"257",Name:"Lọc dầu",Level:3,ParentId:"75",SectorCode:"HuA0"},{Id:"298",Name:"Lưu trữ và kho bãi",Level:3,ParentId:"88",SectorCode:"KBG0"},{Id:"124",Name:"Khu vui chơi giải trí",Level:3,ParentId:"27",SectorCode:"CCC0"},{Id:"96",Name:"Khu công nghiệp",Level:2,ParentId:"12",SectorCode:"LB00"},{Id:"156",Name:"Khoan giếng dầu và khí đốt",Level:3,ParentId:"38",SectorCode:"FAB0"},{Id:"159",Name:"Khai thác đá và khoáng sản phi kim",Level:3,ParentId:"40",SectorCode:"FCB0"},{Id:"160",Name:"Khai thác đá và khoáng sản phi kim",Level:3,ParentId:"42",SectorCode:"FDA0"},{Id:"40",Name:"Khai thác đá",Level:2,ParentId:"6",SectorCode:"FC00"},{Id:"41",Name:"Khai thác đá",Level:2,ParentId:"8",SectorCode:"HA00"},{Id:"158",Name:"Khai thác đá",Level:3,ParentId:"40",SectorCode:"FCA0"},{Id:"161",Name:"Khai thác than",Level:3,ParentId:"42",SectorCode:"FDB0"},{Id:"43",Name:"Khai thác quặng kim loại",Level:2,ParentId:"6",SectorCode:"FE00"},{Id:"164",Name:"Khai thác quặng kim loại",Level:3,ParentId:"43",SectorCode:"FEC0"},{Id:"42",Name:"Khai thác khoáng sản phi kim",Level:2,ParentId:"6",SectorCode:"FD00"},{Id:"6",Name:"Khai khoáng",Level:1,SectorCode:"F000"},{Id:"53",Name:"In ấn",Level:2,ParentId:"8",SectorCode:"HD00"},{Id:"185",Name:"In ấn",Level:3,ParentId:"53",SectorCode:"HDA0"},{Id:"90",Name:"Hỗ trợ vận tải",Level:2,ParentId:"11",SectorCode:"KD00"},{Id:"289",Name:"Hỗ trợ vận tải",Level:3,ParentId:"88",SectorCode:"KBC0"},{Id:"52",Name:"Hỗ trợ nông nghiệp",Level:2,ParentId:"8",SectorCode:"HC00"},{Id:"39",Name:"Hỗ trợ khai thác than",Level:2,ParentId:"6",SectorCode:"FB00"},{Id:"38",Name:"Hỗ trợ khai thác dầu khí",Level:2,ParentId:"6",SectorCode:"FA00"},{Id:"163",Name:"Hỗ trợ cho khai thác kim loại",Level:3,ParentId:"43",SectorCode:"FEB0"},{Id:"162",Name:"Hỗ trợ cho khai thác khoáng sản phi kim",Level:3,ParentId:"43",SectorCode:"FEA0"},{Id:"155",Name:"Hỗ trợ cho khai thác dầu và khí đốt",Level:3,ParentId:"38",SectorCode:"FAA0"},{Id:"308",Name:"Hệ thống trung chuyển nội đô",Level:3,ParentId:"92",SectorCode:"KFE0"},{Id:"279",Name:"Hệ thống thủy lợi và cung cấp nước",Level:3,ParentId:"84",SectorCode:"JBA0"},{Id:"84",Name:"Hệ thống cung cấp và xử lý nước",Level:2,ParentId:"10",SectorCode:"JB00"},{Id:"260",Name:"Hạt, cây giống thương mại",Level:3,ParentId:"76",SectorCode:"HAA0"},{Id:"272",Name:"Hãng bảo hiểm",Level:3,ParentId:"80",SectorCode:"IBA0"},{Id:"275",Name:"Hoạt động đầu tư tài chính khác",Level:3,ParentId:"29",SectorCode:"IAB0"},{Id:"28",Name:"Hoạt động đầu tư tài chính",Level:2,ParentId:"3",SectorCode:"CD00"},{Id:"29",Name:"Hoạt động đầu tư tài chính",Level:2,ParentId:"9",SectorCode:"IA00"},{Id:"295",Name:"Hoạt động hỗ trợ vận tải đường thủy",Level:3,ParentId:"88",SectorCode:"KBF0"},{Id:"296",Name:"Hoạt động hỗ trợ vận tải đường thủy",Level:3,ParentId:"90",SectorCode:"KDD0"},{Id:"297",Name:"Hoạt động hỗ trợ vận tải đường thủy",Level:3,ParentId:"50",SectorCode:"KAB0"},{Id:"301",Name:"Hoạt động hỗ trợ vận tải đường sắt",Level:3,ParentId:"90",SectorCode:"KDF0"},{Id:"293",Name:"Hoạt động hỗ trợ vận tải đường hàng không",Level:3,ParentId:"89",SectorCode:"KCA0"},{Id:"292",Name:"Hoạt động hỗ trợ vận tải đường hàng không",Level:3,ParentId:"88",SectorCode:"KBE0"},{Id:"294",Name:"Hoạt động hỗ trợ vận tải đường hàng không",Level:3,ParentId:"90",SectorCode:"KDC0"},{Id:"291",Name:"Hoạt động hỗ trợ vận tải đường bộ",Level:3,ParentId:"90",SectorCode:"KDB0"},{Id:"290",Name:"Hoạt động hỗ trợ vận tải đường bộ",Level:3,ParentId:"88",SectorCode:"KBD0"},{Id:"248",Name:"Giết mổ và chế biến thịt động vật",Level:3,ParentId:"73",SectorCode:"HXB0"},{Id:"132",Name:"Giám định, kiểm định",Level:3,ParentId:"30",SectorCode:"CEC0"},{Id:"147",Name:"Dịch vụ đặt phòng và tour du lịch",Level:3,ParentId:"34",SectorCode:"DCC0"},{Id:"306",Name:"Dịch vụ đưa thư và chuyển phát nhanh",Level:3,ParentId:"92",SectorCode:"KFC0"},{Id:"36",Name:"Dịch vụ ăn uống",Level:2,ParentId:"5",SectorCode:"EA00"},{Id:"27",Name:"Dịch vụ vui chơi giải trí",Level:2,ParentId:"3",SectorCode:"CC00"},{Id:"144",Name:"Dịch vụ việc làm",Level:3,ParentId:"34",SectorCode:"DCA0"},{Id:"143",Name:"Dịch vụ việc làm",Level:3,ParentId:"33",SectorCode:"DBB0"},{Id:"20",Name:"Dịch vụ viễn thông",Level:2,ParentId:"2",SectorCode:"BA00"},{Id:"112",Name:"Dịch vụ viễn thông",Level:3,ParentId:"20",SectorCode:"BAA0"},{Id:"140",Name:"Dịch vụ tư vấn xây dựng",Level:3,ParentId:"31",SectorCode:"CFF0"},{Id:"131",Name:"Dịch vụ tư vấn quản lý, khoa học và kỹ thuật khác",Level:3,ParentId:"30",SectorCode:"CEB0"},{Id:"127",Name:"Dịch vụ tư vấn quản lý",Level:3,ParentId:"28",SectorCode:"CDA0"},{Id:"139",Name:"Dịch vụ tư vấn môi trường",Level:3,ParentId:"31",SectorCode:"CFE0"},{Id:"129",Name:"Dịch vụ truyền thông",Level:3,ParentId:"24",SectorCode:"CAB0"},{Id:"138",Name:"Dịch vụ thiết kế nội thất",Level:3,ParentId:"31",SectorCode:"CFD0"},{Id:"130",Name:"Dịch vụ thiết kế công nghiệp",Level:3,ParentId:"30",SectorCode:"CEA0"},{Id:"307",Name:"Dịch vụ taxi",Level:3,ParentId:"92",SectorCode:"KFD0"},{Id:"5",Name:"Dịch vụ lưu trú và ăn uống",Level:1,SectorCode:"E000"},{Id:"37",Name:"Dịch vụ lưu trú",Level:2,ParentId:"5",SectorCode:"EB00"},{Id:"137",Name:"Dịch vụ kiến trúc cảnh quan",Level:3,ParentId:"31",SectorCode:"CFC0"},{Id:"136",Name:"Dịch vụ kiến trúc",Level:3,ParentId:"31",SectorCode:"CFB0"},{Id:"135",Name:"Dịch vụ khảo sát địa lý và bản đồ",Level:3,ParentId:"31",SectorCode:"CFA0"},{Id:"148",Name:"Dịch vụ hỗ trợ cơ sở vật chất, thiết bị",Level:3,ParentId:"34",SectorCode:"DCD0"},{Id:"4",Name:"Dịch vụ hỗ trợ  ",Level:1,SectorCode:"D000"},{Id:"34",Name:"Dịch vụ hỗ trợ  ",Level:2,ParentId:"4",SectorCode:"DC00"},{Id:"33",Name:"Dịch vụ hỗ trợ",Level:2,ParentId:"4",SectorCode:"DB00"},{Id:"288",Name:"Dịch vụ cảng và kho bãi đường thủy",Level:3,ParentId:"88",SectorCode:"KBB0"},{Id:"26",Name:"Dịch vụ chăm sóc y tế",Level:2,ParentId:"3",SectorCode:"CB00"},{Id:"142",Name:"Dịch vụ chăm sóc người chết",Level:3,ParentId:"33",SectorCode:"DBA0"},{Id:"3",Name:"Dịch vụ chuyên môn",Level:1,SectorCode:"C000"},{Id:"104",Name:"Cửa hàng đồ nội thất",Level:3,ParentId:"15",SectorCode:"ACA0"},{Id:"105",Name:"Cửa hàng đồ nội thất",Level:3,ParentId:"46",SectorCode:"GCA0"},{Id:"19",Name:"Cửa hàng tổng hợp",Level:2,ParentId:"1",SectorCode:"AG00"},{Id:"111",Name:"Cửa hàng tổng hợp",Level:3,ParentId:"19",SectorCode:"AGA0"},{Id:"18",Name:"Cửa hàng thiết bị điện tử",Level:2,ParentId:"1",SectorCode:"AF00"},{Id:"110",Name:"Cửa hàng thiết bị điện tử",Level:3,ParentId:"18",SectorCode:"AFB0"},{Id:"103",Name:"Cửa hàng sách, ấn bản và âm nhạc",Level:3,ParentId:"14",SectorCode:"ABB0"},{Id:"100",Name:"Cửa hàng phụ tùng xe hơi",Level:3,ParentId:"13",SectorCode:"AAB0"},{Id:"109",Name:"Cửa hàng máy tính và phần mềm",Level:3,ParentId:"18",SectorCode:"AFA0"},{Id:"101",Name:"Cửa hàng dụng cụ, văn phòng phẩm và quà tặng",Level:3,ParentId:"14",SectorCode:"ABA0"},{Id:"102",Name:"Cửa hàng dụng cụ, văn phòng phẩm và quà tặng",Level:3,ParentId:"45",SectorCode:"GBA0"},{Id:"89",Name:"Cảng và kho bãi hàng không",Level:2,ParentId:"11",SectorCode:"KC00"},{Id:"88",Name:"Cảng và kho bãi",Level:2,ParentId:"11",SectorCode:"KB00"},{Id:"278",Name:"Công trình xử lý nước thải",Level:3,ParentId:"83",SectorCode:"JAA0"},{Id:"2",Name:"Công nghệ và thông tin",Level:1,SectorCode:"B000"},{Id:"123",Name:"Công nghiệp giải trí, vui chơi khác",Level:3,ParentId:"27",SectorCode:"CCB0"},{Id:"274",Name:"Các hoạt động đầu tư tài chính khác",Level:3,ParentId:"29",SectorCode:"IAA0"},{Id:"284",Name:"Các hoạt động hỗ trợ vận tải khác",Level:3,ParentId:"88",SectorCode:"KBA0"},{Id:"286",Name:"Các hoạt động hỗ trợ vận tải khác",Level:3,ParentId:"92",SectorCode:"KFA0"},{Id:"285",Name:"Các hoạt động hỗ trợ vận tải khác",Level:3,ParentId:"90",SectorCode:"KDA0"},{Id:"287",Name:"Các hoạt động hỗ trợ vận tải khác",Level:3,ParentId:"50",SectorCode:"KAA0"},{Id:"184",Name:"Các hoạt động hỗ trợ cho trồng trọt",Level:3,ParentId:"52",SectorCode:"HCA0"},{Id:"157",Name:"Các hoạt động hỗ trợ cho khai thác than",Level:3,ParentId:"39",SectorCode:"FBA0"},{Id:"146",Name:"Các dịch vụ hỗ trợ khác",Level:3,ParentId:"34",SectorCode:"DCB0"},{Id:"122",Name:"Cá cược và đánh bạc",Level:3,ParentId:"27",SectorCode:"CCA0"},{Id:"280",Name:"Cung cấp hơi nước và điều hòa không khí",Level:3,ParentId:"85",SectorCode:"JCA0"},{Id:"81",Name:"Chứng khoán",Level:2,ParentId:"9",SectorCode:"IC00"},{Id:"153",Name:"Chỗ ở cho khách du lịch",Level:3,ParentId:"37",SectorCode:"EBA0"},{Id:"83",Name:"Chất thải & Môi trường",Level:2,ParentId:"10",SectorCode:"JA00"},{Id:"183",Name:"Chăn nuôi heo",Level:3,ParentId:"51",SectorCode:"HBA0"},{Id:"51",Name:"Chăn nuôi gia súc, gia cầm",Level:2,ParentId:"8",SectorCode:"HB00"},{Id:"314",Name:"Cho thuê bất động sản",Level:3,ParentId:"95",SectorCode:"LAA0"},{Id:"315",Name:"Cho thuê bất động sản",Level:3,ParentId:"96",SectorCode:"LBA0"},{Id:"121",Name:"Bệnh viện",Level:3,ParentId:"26",SectorCode:"CBA0"},{Id:"95",Name:"Bất động sản",Level:2,ParentId:"12",SectorCode:"LA00"},{Id:"247",Name:"Bảo quản rau quả và sản xuất thực phẩm chuyên biệt",Level:3,ParentId:"73",SectorCode:"HXA0"},{Id:"80",Name:"Bảo hiểm",Level:2,ParentId:"9",SectorCode:"IB00"},{Id:"99",Name:"Bán lẻ xe hơi",Level:3,ParentId:"13",SectorCode:"AAA0"},{Id:"17",Name:"Bán lẻ vật liệu xây dựng",Level:2,ParentId:"1",SectorCode:"AE00"},{Id:"108",Name:"Bán lẻ vật liệu xây dựng",Level:3,ParentId:"17",SectorCode:"AEA0"},{Id:"16",Name:"Bán lẻ sản phẩm dầu khí",Level:2,ParentId:"1",SectorCode:"AD00"},{Id:"15",Name:"Bán lẻ nội thất",Level:2,ParentId:"1",SectorCode:"AC00"},{Id:"14",Name:"Bán lẻ hàng tiêu dùng",Level:2,ParentId:"1",SectorCode:"AB00"},{Id:"13",Name:"Bán lẻ hàng lâu bền",Level:2,ParentId:"1",SectorCode:"AA00"},{Id:"1",Name:"Bán lẻ",Level:1,SectorCode:"A000"},{Id:"225",Name:"Bao bì, đóng gói bằng nhựa",Level:3,ParentId:"66",SectorCode:"HQD0"}];
-let kqkd;
-loading(1);
+        const titleArr = ["Mã", "Ngành", "Doanh thu thuần (Tỷ VNĐ)", "Lãi ròng (Tỷ VNĐ)", "Doanh thu thuần (%YoY)", "Lãi ròng (%YoY)", "Giá (D)", "Khối lượng GD (D)", "Vốn hoá (Tỷ VNĐ - D)", "ROE", "Ngày cập nhật"],
+            sector = [{
+                Id: "316",
+                Name: "Đại lý và môi giới bất động sản",
+                Level: 3,
+                ParentId: "95",
+                SectorCode: "LAB0"
+            }, {
+                Id: "128",
+                Name: "Đại lý quảng cáo",
+                Level: 3,
+                ParentId: "24",
+                SectorCode: "CAA0"
+            }, {
+                Id: "217",
+                Name: "Đóng tàu, thuyền",
+                Level: 3,
+                ParentId: "64",
+                SectorCode: "HOA0"
+            }, {
+                Id: "150",
+                Name: "Xử lý ô nhiễm và các dịch vụ quản lý chất thải khác",
+                Level: 3,
+                ParentId: "35",
+                SectorCode: "DDB0"
+            }, {
+                Id: "151",
+                Name: "Xử lý và tiêu hủy chất thải",
+                Level: 3,
+                ParentId: "35",
+                SectorCode: "DDC0"
+            }, {
+                Id: "12",
+                Name: "Xây dựng và Bất động sản",
+                Level: 1,
+                SectorCode: "L000"
+            }, {
+                Id: "329",
+                Name: "Xây dựng nhà ở, khu dân cư, cao ốc",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDI0"
+            }, {
+                Id: "328",
+                Name: "Xây dựng hệ thống tiện ích",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDH0"
+            }, {
+                Id: "25",
+                Name: "Xây dựng hạ tầng viễn thông",
+                Level: 2,
+                ParentId: "2",
+                SectorCode: "BE00"
+            }, {
+                Id: "120",
+                Name: "Xây dựng hạ tầng viễn thông",
+                Level: 3,
+                ParentId: "25",
+                SectorCode: "BEA0"
+            }, {
+                Id: "325",
+                Name: "Xây dựng cầu đường, đường cao tốc",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDE0"
+            }, {
+                Id: "327",
+                Name: "Xây dựng công trình khác",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDG0"
+            }, {
+                Id: "326",
+                Name: "Xây dựng công nghiệp nặng và dân dụng khác",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDF0"
+            }, {
+                Id: "119",
+                Name: "Xuất bản báo, ấn phẩm, sách",
+                Level: 3,
+                ParentId: "23",
+                SectorCode: "BDB0"
+            }, {
+                Id: "255",
+                Name: "Xay sát các loại hạt và hạt có dầu",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXI0"
+            }, {
+                Id: "79",
+                Name: "Vật liệu xây dựng & Nội thất",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HD01"
+            }, {
+                Id: "182",
+                Name: "Vận tải đường thủy nội địa",
+                Level: 3,
+                ParentId: "50",
+                SectorCode: "KAD0"
+            }, {
+                Id: "50",
+                Name: "Vận tải đường thủy",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KA00"
+            }, {
+                Id: "311",
+                Name: "Vận tải đường sắt đường dài",
+                Level: 3,
+                ParentId: "93",
+                SectorCode: "KGA0"
+            }, {
+                Id: "93",
+                Name: "Vận tải đường sắt",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KG00"
+            }, {
+                Id: "309",
+                Name: "Vận tải đường bộ chuyên biệt",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFF0"
+            }, {
+                Id: "92",
+                Name: "Vận tải đường bộ",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KF00"
+            }, {
+                Id: "302",
+                Name: "Vận tải đường bộ",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDG0"
+            }, {
+                Id: "303",
+                Name: "Vận tải đường bộ",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFB0"
+            }, {
+                Id: "312",
+                Name: "Vận tải đường biển, ven biển, hồ lớn",
+                Level: 3,
+                ParentId: "50",
+                SectorCode: "KAC0"
+            }, {
+                Id: "11",
+                Name: "Vận tải và kho bãi",
+                Level: 1,
+                SectorCode: "K000"
+            }, {
+                Id: "310",
+                Name: "Vận tải trung chuyển và vận tải hành khách bằng đường bộ khác",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFG0"
+            }, {
+                Id: "313",
+                Name: "Vận tải hàng không đã được xếp lịch",
+                Level: 3,
+                ParentId: "94",
+                SectorCode: "KHA0"
+            }, {
+                Id: "94",
+                Name: "Vận tải hàng không",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KH00"
+            }, {
+                Id: "305",
+                Name: "Vận chuyển du lịch khác",
+                Level: 3,
+                ParentId: "91",
+                SectorCode: "KEB0"
+            }, {
+                Id: "304",
+                Name: "Vận chuyển du lịch bằng đường bộ",
+                Level: 3,
+                ParentId: "91",
+                SectorCode: "KEA0"
+            }, {
+                Id: "91",
+                Name: "Vận chuyển du lịch",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KE00"
+            }, {
+                Id: "113",
+                Name: "Viễn thông không dây (ngoại trừ vệ tinh)",
+                Level: 3,
+                ParentId: "20",
+                SectorCode: "BAB0"
+            }, {
+                Id: "116",
+                Name: "Viễn thông có dây",
+                Level: 3,
+                ParentId: "21",
+                SectorCode: "BBC0"
+            }, {
+                Id: "117",
+                Name: "Viễn thông có dây",
+                Level: 3,
+                ParentId: "23",
+                SectorCode: "BDA0"
+            }, {
+                Id: "141",
+                Name: "Tư vấn xây dựng",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFG0"
+            }, {
+                Id: "31",
+                Name: "Tư vấn kiến trúc, xây dựng",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CF00"
+            }, {
+                Id: "32",
+                Name: "Tư vấn kiến trúc, xây dựng",
+                Level: 2,
+                ParentId: "4",
+                SectorCode: "DA00"
+            }, {
+                Id: "134",
+                Name: "Tư vấn giáo dục",
+                Level: 3,
+                ParentId: "30",
+                SectorCode: "CEE0"
+            }, {
+                Id: "318",
+                Name: "Tư vấn bất động sản",
+                Level: 3,
+                ParentId: "95",
+                SectorCode: "LAD0"
+            }, {
+                Id: "30",
+                Name: "Tư vấn & Hỗ trợ KD",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CE00"
+            }, {
+                Id: "133",
+                Name: "Tư vấn & Hỗ trợ KD",
+                Level: 3,
+                ParentId: "30",
+                SectorCode: "CED0"
+            }, {
+                Id: "9",
+                Name: "Tài chính và bảo hiểm",
+                Level: 1,
+                SectorCode: "I000"
+            }, {
+                Id: "78",
+                Name: "Trồng và chế biến gỗ",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HC01"
+            }, {
+                Id: "77",
+                Name: "Trồng và chế biến cao su",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HB01"
+            }, {
+                Id: "263",
+                Name: "Trồng trọt cây lương thực và các loại hạt có dầu",
+                Level: 3,
+                ParentId: "76",
+                SectorCode: "HAD0"
+            }, {
+                Id: "262",
+                Name: "Trồng trọt cây có hạt và các loại trái cây",
+                Level: 3,
+                ParentId: "76",
+                SectorCode: "HAC0"
+            }, {
+                Id: "261",
+                Name: "Trồng trọt các loại cây khác",
+                Level: 3,
+                ParentId: "76",
+                SectorCode: "HAB0"
+            }, {
+                Id: "266",
+                Name: "Trồng rừng lấy gỗ",
+                Level: 3,
+                ParentId: "78",
+                SectorCode: "HCC0"
+            }, {
+                Id: "76",
+                Name: "Trồng cây có hạt và cây ăn trái",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HA01"
+            }, {
+                Id: "107",
+                Name: "Trạm xăng  ",
+                Level: 3,
+                ParentId: "16",
+                SectorCode: "ADB0"
+            }, {
+                Id: "106",
+                Name: "Trạm xăng",
+                Level: 3,
+                ParentId: "16",
+                SectorCode: "ADA0"
+            }, {
+                Id: "126",
+                Name: "Trò chơi, cá cược",
+                Level: 3,
+                ParentId: "27",
+                SectorCode: "CCE0"
+            }, {
+                Id: "283",
+                Name: "Truyền tải, kiểm soát và phân phối điện",
+                Level: 3,
+                ParentId: "87",
+                SectorCode: "JEB0"
+            }, {
+                Id: "23",
+                Name: "Truyền thông",
+                Level: 2,
+                ParentId: "2",
+                SectorCode: "BD00"
+            }, {
+                Id: "24",
+                Name: "Truyền thông",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CA00"
+            }, {
+                Id: "276",
+                Name: "Trung gian tín dụng có nhận tiền gửi",
+                Level: 3,
+                ParentId: "29",
+                SectorCode: "IAC0"
+            }, {
+                Id: "277",
+                Name: "Trung gian tín dụng có nhận tiền gửi",
+                Level: 3,
+                ParentId: "82",
+                SectorCode: "IDA0"
+            }, {
+                Id: "10",
+                Name: "Tiện ích",
+                Level: 1,
+                SectorCode: "J000"
+            }, {
+                Id: "254",
+                Name: "Thực phẩm khác",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXH0"
+            }, {
+                Id: "125",
+                Name: "Thể thao",
+                Level: 3,
+                ParentId: "27",
+                SectorCode: "CCD0"
+            }, {
+                Id: "149",
+                Name: "Thu gom chất thải",
+                Level: 3,
+                ParentId: "35",
+                SectorCode: "DDA0"
+            }, {
+                Id: "22",
+                Name: "Thiết bị viễn thông",
+                Level: 2,
+                ParentId: "2",
+                SectorCode: "BC00"
+            }, {
+                Id: "118",
+                Name: "Thiết bị viễn thông",
+                Level: 3,
+                ParentId: "22",
+                SectorCode: "BCA0"
+            }, {
+                Id: "300",
+                Name: "Sắp xếp vận tải hàng hóa",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDE0"
+            }, {
+                Id: "299",
+                Name: "Sắp xếp vận tải hàng hóa",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBH0"
+            }, {
+                Id: "240",
+                Name: "Sản xuất động cơ, tua bin và thiết bị truyền tải điện",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWA0"
+            }, {
+                Id: "236",
+                Name: "Sản xuất đồ điện gia dụng",
+                Level: 3,
+                ParentId: "71",
+                SectorCode: "HVB0"
+            }, {
+                Id: "56",
+                Name: "Sản xuất đồ uống",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HG00"
+            }, {
+                Id: "194",
+                Name: "Sản xuất đồ uống",
+                Level: 3,
+                ParentId: "67",
+                SectorCode: "HRA0"
+            }, {
+                Id: "193",
+                Name: "Sản xuất đồ uống",
+                Level: 3,
+                ParentId: "56",
+                SectorCode: "HGC0"
+            }, {
+                Id: "251",
+                Name: "Sản xuất đường và bánh kẹo",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXE0"
+            }, {
+                Id: "75",
+                Name: "Sản xuất xăng dầu và phụ phẩm",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HE02"
+            }, {
+                Id: "208",
+                Name: "Sản xuất xà phòng, chất tẩy rửa",
+                Level: 3,
+                ParentId: "61",
+                SectorCode: "HLE0"
+            }, {
+                Id: "271",
+                Name: "Sản xuất xi măng và các sản phẩm bê tông",
+                Level: 3,
+                ParentId: "79",
+                SectorCode: "HDE0"
+            }, {
+                Id: "220",
+                Name: "Sản xuất xe cơ giới",
+                Level: 3,
+                ParentId: "64",
+                SectorCode: "HOD0"
+            }, {
+                Id: "216",
+                Name: "Sản xuất và chế biến nhôm",
+                Level: 3,
+                ParentId: "63",
+                SectorCode: "HNA0"
+            }, {
+                Id: "270",
+                Name: "Sản xuất tủ bếp và nội thất hộ gia đình",
+                Level: 3,
+                ParentId: "79",
+                SectorCode: "HDD0"
+            }, {
+                Id: "73",
+                Name: "Sản xuất thực phẩm",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HX00"
+            }, {
+                Id: "253",
+                Name: "Sản xuất thức ăn cho động vật",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXG0"
+            }, {
+                Id: "269",
+                Name: "Sản xuất thủy tinh và các sản phẩm thủy tinh",
+                Level: 3,
+                ParentId: "79",
+                SectorCode: "HDC0"
+            }, {
+                Id: "70",
+                Name: "Sản xuất thép",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HU00"
+            }, {
+                Id: "234",
+                Name: "Sản xuất thép",
+                Level: 3,
+                ParentId: "70",
+                SectorCode: "HUB0"
+            }, {
+                Id: "197",
+                Name: "Sản xuất thuốc và dược phẩm",
+                Level: 3,
+                ParentId: "58",
+                SectorCode: "HIA0"
+            }, {
+                Id: "207",
+                Name: "Sản xuất thuốc trừ sâu, phân bón và các loại hóa chất nông nghiệp",
+                Level: 3,
+                ParentId: "61",
+                SectorCode: "HLD0"
+            }, {
+                Id: "74",
+                Name: "Sản xuất thuốc lá",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HY00"
+            }, {
+                Id: "256",
+                Name: "Sản xuất thuốc lá",
+                Level: 3,
+                ParentId: "74",
+                SectorCode: "HYA0"
+            }, {
+                Id: "246",
+                Name: "Sản xuất thiết bị, máy móc công nghiệp",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWG0"
+            }, {
+                Id: "72",
+                Name: "Sản xuất thiết bị, máy móc",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HW00"
+            }, {
+                Id: "239",
+                Name: "Sản xuất thiết bị, dụng cụ điện khác",
+                Level: 3,
+                ParentId: "71",
+                SectorCode: "HVE0"
+            }, {
+                Id: "71",
+                Name: "Sản xuất thiết bị, dụng cụ điện",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HV00"
+            }, {
+                Id: "238",
+                Name: "Sản xuất thiết bị điện chiếu sáng",
+                Level: 3,
+                ParentId: "71",
+                SectorCode: "HVD0"
+            }, {
+                Id: "237",
+                Name: "Sản xuất thiết bị điện",
+                Level: 3,
+                ParentId: "71",
+                SectorCode: "HVC0"
+            }, {
+                Id: "224",
+                Name: "Sản xuất thiết bị truyền thông từ tính và quang học",
+                Level: 3,
+                ParentId: "65",
+                SectorCode: "HPD0"
+            }, {
+                Id: "223",
+                Name: "Sản xuất thiết bị truyền thông",
+                Level: 3,
+                ParentId: "65",
+                SectorCode: "HPC0"
+            }, {
+                Id: "245",
+                Name: "Sản xuất thiết bị nông nghiệp, xây dựng và khai khoáng",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWF0"
+            }, {
+                Id: "232",
+                Name: "Sản xuất sợi, vải thành phẩm",
+                Level: 3,
+                ParentId: "69",
+                SectorCode: "HTB0"
+            }, {
+                Id: "69",
+                Name: "Sản xuất sợi, vải",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HT00"
+            }, {
+                Id: "231",
+                Name: "Sản xuất sợi",
+                Level: 3,
+                ParentId: "69",
+                SectorCode: "HTA0"
+            }, {
+                Id: "233",
+                Name: "Sản xuất sắt, thép và hợp kim fero",
+                Level: 3,
+                ParentId: "70",
+                SectorCode: "HUA0"
+            }, {
+                Id: "65",
+                Name: "Sản xuất sản phẩm điện tử, vi tính",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HP00"
+            }, {
+                Id: "259",
+                Name: "Sản xuất sản phẩm xăng dầu và than đá khác",
+                Level: 3,
+                ParentId: "75",
+                SectorCode: "HuC0"
+            }, {
+                Id: "230",
+                Name: "Sản xuất sản phẩm từ khoáng chất phi kim khác",
+                Level: 3,
+                ParentId: "68",
+                SectorCode: "HSA0"
+            }, {
+                Id: "68",
+                Name: "Sản xuất sản phẩm từ khoáng chất phi kim ",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HS00"
+            }, {
+                Id: "67",
+                Name: "Sản xuất sản phẩm thủy tinh",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HR00"
+            }, {
+                Id: "252",
+                Name: "Sản xuất sản phẩm sữa",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXF0"
+            }, {
+                Id: "66",
+                Name: "Sản xuất sản phẩm nhựa và cao su",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HQ00"
+            }, {
+                Id: "190",
+                Name: "Sản xuất sản phẩm may mặc dệt kim",
+                Level: 3,
+                ParentId: "55",
+                SectorCode: "HFC0"
+            }, {
+                Id: "189",
+                Name: "Sản xuất sản phẩm may mặc công nghiệp",
+                Level: 3,
+                ParentId: "55",
+                SectorCode: "HFB0"
+            }, {
+                Id: "215",
+                Name: "Sản xuất sản phẩm kim loại tổng hợp khác",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HMF0"
+            }, {
+                Id: "206",
+                Name: "Sản xuất sơn và chất kết dính",
+                Level: 3,
+                ParentId: "61",
+                SectorCode: "HLC0"
+            }, {
+                Id: "219",
+                Name: "Sản xuất phụ tùng xe cơ giới",
+                Level: 3,
+                ParentId: "64",
+                SectorCode: "HOC0"
+            }, {
+                Id: "188",
+                Name: "Sản xuất phụ kiện và các sản phẩm may mặc khác",
+                Level: 3,
+                ParentId: "55",
+                SectorCode: "HFA0"
+            }, {
+                Id: "115",
+                Name: "Sản xuất phần mềm",
+                Level: 3,
+                ParentId: "21",
+                SectorCode: "BBB0"
+            }, {
+                Id: "64",
+                Name: "Sản xuất phương tiện vận tải",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HO00"
+            }, {
+                Id: "229",
+                Name: "Sản xuất nhựa, cao su tổng hợp, sợi tổng hợp nhân tạo",
+                Level: 3,
+                ParentId: "77",
+                SectorCode: "HBA0"
+            }, {
+                Id: "228",
+                Name: "Sản xuất nhựa, cao su tổng hợp, sợi tổng hợp nhân tạo",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQG0"
+            }, {
+                Id: "258",
+                Name: "Sản xuất nhựa đường, vật liệu lợp mái và chất bão hòa",
+                Level: 3,
+                ParentId: "75",
+                SectorCode: "HuB0"
+            }, {
+                Id: "63",
+                Name: "Sản xuất nhôm và sản phẩm nhôm",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HN00"
+            }, {
+                Id: "222",
+                Name: "Sản xuất máy tính và thiết bị vi ngoại",
+                Level: 3,
+                ParentId: "65",
+                SectorCode: "HPB0"
+            }, {
+                Id: "244",
+                Name: "Sản xuất máy móc với mục đích chung khác",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWE0"
+            }, {
+                Id: "242",
+                Name: "Sản xuất máy móc cơ khí",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWC0"
+            }, {
+                Id: "243",
+                Name: "Sản xuất máy móc công nghiệp dịch vụ và thương mại",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWD0"
+            }, {
+                Id: "214",
+                Name: "Sản xuất lò hơi, thùng chứa và container vận chuyển",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HME0"
+            }, {
+                Id: "221",
+                Name: "Sản xuất linh kiện bán dẫn và các linh kiện điện tử khác",
+                Level: 3,
+                ParentId: "65",
+                SectorCode: "HPA0"
+            }, {
+                Id: "209",
+                Name: "Sản xuất kết cấu kim loại",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HMA0"
+            }, {
+                Id: "212",
+                Name: "Sản xuất kiến trúc và kết cấu kim loại",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HMC0"
+            }, {
+                Id: "62",
+                Name: "Sản xuất kim loại tổng hợp",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HM00"
+            }, {
+                Id: "213",
+                Name: "Sản xuất kim loại tổng hợp",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HMD0"
+            }, {
+                Id: "210",
+                Name: "Sản xuất khác",
+                Level: 3,
+                ParentId: "62",
+                SectorCode: "HMB0"
+            }, {
+                Id: "211",
+                Name: "Sản xuất khác",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQC0"
+            }, {
+                Id: "241",
+                Name: "Sản xuất hệ thống thông gió, sưởi ấm, điều hòa nhiệt độ và thiết bị làm lạnh",
+                Level: 3,
+                ParentId: "72",
+                SectorCode: "HWB0"
+            }, {
+                Id: "205",
+                Name: "Sản xuất hóa chất cơ bản",
+                Level: 3,
+                ParentId: "61",
+                SectorCode: "HLB0"
+            }, {
+                Id: "61",
+                Name: "Sản xuất hóa chất",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HL00"
+            }, {
+                Id: "265",
+                Name: "Sản xuất gỗ ốp, ván ép và các sản phẩm gỗ lắp ghép",
+                Level: 3,
+                ParentId: "78",
+                SectorCode: "HCB0"
+            }, {
+                Id: "268",
+                Name: "Sản xuất gạch ốp lát",
+                Level: 3,
+                ParentId: "79",
+                SectorCode: "HDB0"
+            }, {
+                Id: "267",
+                Name: "Sản xuất gạch",
+                Level: 3,
+                ParentId: "79",
+                SectorCode: "HDA0"
+            }, {
+                Id: "60",
+                Name: "Sản xuất giấy và sản phẩm giấy",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HK00"
+            }, {
+                Id: "59",
+                Name: "Sản xuất giày dép",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HJ00"
+            }, {
+                Id: "198",
+                Name: "Sản xuất giày dép",
+                Level: 3,
+                ParentId: "59",
+                SectorCode: "HJA0"
+            }, {
+                Id: "57",
+                Name: "Sản xuất dụng cụ và thiết bị y tế",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HH00"
+            }, {
+                Id: "196",
+                Name: "Sản xuất dụng cụ và thiết bị y tế",
+                Level: 3,
+                ParentId: "57",
+                SectorCode: "HHB0"
+            }, {
+                Id: "58",
+                Name: "Sản xuất dược phẩm",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HI00"
+            }, {
+                Id: "195",
+                Name: "Sản xuất dao kéo và dụng cụ cầm tay",
+                Level: 3,
+                ParentId: "57",
+                SectorCode: "HHA0"
+            }, {
+                Id: "235",
+                Name: "Sản xuất các thiết bị điện và dụng cụ khác",
+                Level: 3,
+                ParentId: "71",
+                SectorCode: "HVA0"
+            }, {
+                Id: "218",
+                Name: "Sản xuất các thiết bị vận tải khác",
+                Level: 3,
+                ParentId: "64",
+                SectorCode: "HOB0"
+            }, {
+                Id: "203",
+                Name: "Sản xuất các sản phẩm từ giấy",
+                Level: 3,
+                ParentId: "60",
+                SectorCode: "HKC0"
+            }, {
+                Id: "201",
+                Name: "Sản xuất các sản phẩm nhựa",
+                Level: 3,
+                ParentId: "60",
+                SectorCode: "HKB0"
+            }, {
+                Id: "202",
+                Name: "Sản xuất các sản phẩm nhựa",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQB0"
+            }, {
+                Id: "55",
+                Name: "Sản xuất các sản phẩm may mặc",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HF00"
+            }, {
+                Id: "204",
+                Name: "Sản xuất các sản phẩm hóa chất khác",
+                Level: 3,
+                ParentId: "61",
+                SectorCode: "HLA0"
+            }, {
+                Id: "264",
+                Name: "Sản xuất các sản phẩm gỗ khác",
+                Level: 3,
+                ParentId: "78",
+                SectorCode: "HCA0"
+            }, {
+                Id: "227",
+                Name: "Sản xuất các sản phẩm cao su",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQF0"
+            }, {
+                Id: "250",
+                Name: "Sản xuất các loại thực phẩm khác",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXD0"
+            }, {
+                Id: "249",
+                Name: "Sản xuất bánh và bánh mì các loại",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXC0"
+            }, {
+                Id: "192",
+                Name: "Sản xuất bia",
+                Level: 3,
+                ParentId: "56",
+                SectorCode: "HGB0"
+            }, {
+                Id: "87",
+                Name: "Sản xuất & Phân phối Điện",
+                Level: 2,
+                ParentId: "10",
+                SectorCode: "JE00"
+            }, {
+                Id: "8",
+                Name: "Sản xuất",
+                Level: 1,
+                SectorCode: "H000"
+            }, {
+                Id: "226",
+                Name: "Sản phẩm từ nhựa",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQE0"
+            }, {
+                Id: "187",
+                Name: "Sơ chế và đóng gói thủy sản",
+                Level: 3,
+                ParentId: "54",
+                SectorCode: "HEB0"
+            }, {
+                Id: "4073016",
+                Name: "Sơ chế và đóng gói thủy sản",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXJ0"
+            }, {
+                Id: "35",
+                Name: "Quản lý và tái chế chất thải",
+                Level: 2,
+                ParentId: "4",
+                SectorCode: "DD00"
+            }, {
+                Id: "145",
+                Name: "Quản lý chương trình nguồn nhân lực",
+                Level: 3,
+                ParentId: "33",
+                SectorCode: "DBC0"
+            }, {
+                Id: "21",
+                Name: "Phần mềm",
+                Level: 2,
+                ParentId: "2",
+                SectorCode: "BB00"
+            }, {
+                Id: "114",
+                Name: "Phần mềm",
+                Level: 3,
+                ParentId: "21",
+                SectorCode: "BBA0"
+            }, {
+                Id: "154",
+                Name: "Phòng trọ và nhà trọ",
+                Level: 3,
+                ParentId: "37",
+                SectorCode: "EBB0"
+            }, {
+                Id: "177",
+                Name: "Phân phối đồ nội thất và đồ dùng gia đình",
+                Level: 3,
+                ParentId: "46",
+                SectorCode: "GCB0"
+            }, {
+                Id: "178",
+                Name: "Phân phối đồ nội thất và đồ dùng gia đình",
+                Level: 3,
+                ParentId: "48",
+                SectorCode: "GEA0"
+            }, {
+                Id: "169",
+                Name: "Phân phối xe cơ giới và phụ tùng xe cơ giới",
+                Level: 3,
+                ParentId: "44",
+                SectorCode: "GAD0"
+            }, {
+                Id: "48",
+                Name: "Phân phối vật liệu xây dựng",
+                Level: 2,
+                ParentId: "7",
+                SectorCode: "GE00"
+            }, {
+                Id: "181",
+                Name: "Phân phối vật liệu xây dựng",
+                Level: 3,
+                ParentId: "48",
+                SectorCode: "GEC0"
+            }, {
+                Id: "175",
+                Name: "Phân phối thực phẩm, tạp hóa",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBG0"
+            }, {
+                Id: "176",
+                Name: "Phân phối thuốc lá",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBH0"
+            }, {
+                Id: "174",
+                Name: "Phân phối sản phẩm nuôi trồng thô",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBF0"
+            }, {
+                Id: "47",
+                Name: "Phân phối sản phẩm dầu khí",
+                Level: 2,
+                ParentId: "7",
+                SectorCode: "GD00"
+            }, {
+                Id: "46",
+                Name: "Phân phối nội thất",
+                Level: 2,
+                ParentId: "7",
+                SectorCode: "GC00"
+            }, {
+                Id: "168",
+                Name: "Phân phối máy móc, thiết bị và vật tư",
+                Level: 3,
+                ParentId: "44",
+                SectorCode: "GAC0"
+            }, {
+                Id: "86",
+                Name: "Phân phối khí đốt thiên nhiên",
+                Level: 2,
+                ParentId: "10",
+                SectorCode: "JD00"
+            }, {
+                Id: "281",
+                Name: "Phân phối khí đốt thiên nhiên",
+                Level: 3,
+                ParentId: "86",
+                SectorCode: "JDA0"
+            }, {
+                Id: "172",
+                Name: "Phân phối hóa chất và các sản phẩm liên quan",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBE0"
+            }, {
+                Id: "173",
+                Name: "Phân phối hóa chất và các sản phẩm liên quan",
+                Level: 3,
+                ParentId: "47",
+                SectorCode: "GDA0"
+            }, {
+                Id: "45",
+                Name: "Phân phối hàng tiêu dùng",
+                Level: 2,
+                ParentId: "7",
+                SectorCode: "GB00"
+            }, {
+                Id: "44",
+                Name: "Phân phối hàng lâu bền",
+                Level: 2,
+                ParentId: "7",
+                SectorCode: "GA00"
+            }, {
+                Id: "180",
+                Name: "Phân phối gỗ xẻ và vật liệu xây dựng khác",
+                Level: 3,
+                ParentId: "48",
+                SectorCode: "GEB0"
+            }, {
+                Id: "179",
+                Name: "Phân phối dầu và các sản phẩm dầu khí",
+                Level: 3,
+                ParentId: "47",
+                SectorCode: "GDB0"
+            }, {
+                Id: "171",
+                Name: "Phân phối dược phẩm và tạp hóa dược",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBD0"
+            }, {
+                Id: "165",
+                Name: "Phân phối các mặt hàng điện, điện tử",
+                Level: 3,
+                ParentId: "44",
+                SectorCode: "GAA0"
+            }, {
+                Id: "166",
+                Name: "Phân phối các mặt hàng tiêu dùng khác",
+                Level: 3,
+                ParentId: "44",
+                SectorCode: "GAB0"
+            }, {
+                Id: "167",
+                Name: "Phân phối các mặt hàng tiêu dùng khác",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBB0"
+            }, {
+                Id: "170",
+                Name: "Phân phối bia, rượu, thức uống có cồn",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBC0"
+            }, {
+                Id: "7",
+                Name: "Phân phối",
+                Level: 1,
+                SectorCode: "G000"
+            }, {
+                Id: "282",
+                Name: "Phát điện",
+                Level: 3,
+                ParentId: "87",
+                SectorCode: "JEA0"
+            }, {
+                Id: "317",
+                Name: "Phát triển bất động sản",
+                Level: 3,
+                ParentId: "95",
+                SectorCode: "LAC0"
+            }, {
+                Id: "85",
+                Name: "Nước, chất thải và các hệ thống khác",
+                Level: 2,
+                ParentId: "10",
+                SectorCode: "JC00"
+            }, {
+                Id: "191",
+                Name: "Nước giải khát",
+                Level: 3,
+                ParentId: "56",
+                SectorCode: "HGA0"
+            }, {
+                Id: "54",
+                Name: "Nuôi và chế biến thủy sản",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HE00"
+            }, {
+                Id: "186",
+                Name: "Nuôi trồng thủy sản",
+                Level: 3,
+                ParentId: "54",
+                SectorCode: "HEA0"
+            }, {
+                Id: "98",
+                Name: "Nhà thầu xây dựng",
+                Level: 2,
+                ParentId: "12",
+                SectorCode: "LD00"
+            }, {
+                Id: "321",
+                Name: "Nhà thầu về nền móng, cấu trúc và bề mặt ngoài",
+                Level: 3,
+                ParentId: "97",
+                SectorCode: "LCB0"
+            }, {
+                Id: "322",
+                Name: "Nhà thầu về nền móng, cấu trúc và bề mặt ngoài",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDB0"
+            }, {
+                Id: "320",
+                Name: "Nhà thầu thiết bị xây dựng",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDA0"
+            }, {
+                Id: "319",
+                Name: "Nhà thầu thiết bị xây dựng",
+                Level: 3,
+                ParentId: "97",
+                SectorCode: "LCA0"
+            }, {
+                Id: "324",
+                Name: "Nhà thầu hoàn thiện xây dựng",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDD0"
+            }, {
+                Id: "323",
+                Name: "Nhà thầu chuyên môn khác",
+                Level: 3,
+                ParentId: "98",
+                SectorCode: "LDC0"
+            }, {
+                Id: "97",
+                Name: "Nhà thầu chuyên môn",
+                Level: 2,
+                ParentId: "12",
+                SectorCode: "LC00"
+            }, {
+                Id: "199",
+                Name: "Nhà máy sản xuất bột giấy, giấy và giấy bìa",
+                Level: 3,
+                ParentId: "60",
+                SectorCode: "HKA0"
+            }, {
+                Id: "200",
+                Name: "Nhà máy sản xuất bột giấy, giấy và giấy bìa",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQA0"
+            }, {
+                Id: "152",
+                Name: "Nhà hàng đầy đủ dịch vụ",
+                Level: 3,
+                ParentId: "36",
+                SectorCode: "EAA0"
+            }, {
+                Id: "82",
+                Name: "Ngân hàng",
+                Level: 2,
+                ParentId: "9",
+                SectorCode: "ID00"
+            }, {
+                Id: "273",
+                Name: "Môi giới chứng khoán và hàng hóa",
+                Level: 3,
+                ParentId: "81",
+                SectorCode: "ICA0"
+            }, {
+                Id: "257",
+                Name: "Lọc dầu",
+                Level: 3,
+                ParentId: "75",
+                SectorCode: "HuA0"
+            }, {
+                Id: "298",
+                Name: "Lưu trữ và kho bãi",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBG0"
+            }, {
+                Id: "124",
+                Name: "Khu vui chơi giải trí",
+                Level: 3,
+                ParentId: "27",
+                SectorCode: "CCC0"
+            }, {
+                Id: "96",
+                Name: "Khu công nghiệp",
+                Level: 2,
+                ParentId: "12",
+                SectorCode: "LB00"
+            }, {
+                Id: "156",
+                Name: "Khoan giếng dầu và khí đốt",
+                Level: 3,
+                ParentId: "38",
+                SectorCode: "FAB0"
+            }, {
+                Id: "159",
+                Name: "Khai thác đá và khoáng sản phi kim",
+                Level: 3,
+                ParentId: "40",
+                SectorCode: "FCB0"
+            }, {
+                Id: "160",
+                Name: "Khai thác đá và khoáng sản phi kim",
+                Level: 3,
+                ParentId: "42",
+                SectorCode: "FDA0"
+            }, {
+                Id: "40",
+                Name: "Khai thác đá",
+                Level: 2,
+                ParentId: "6",
+                SectorCode: "FC00"
+            }, {
+                Id: "41",
+                Name: "Khai thác đá",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HA00"
+            }, {
+                Id: "158",
+                Name: "Khai thác đá",
+                Level: 3,
+                ParentId: "40",
+                SectorCode: "FCA0"
+            }, {
+                Id: "161",
+                Name: "Khai thác than",
+                Level: 3,
+                ParentId: "42",
+                SectorCode: "FDB0"
+            }, {
+                Id: "43",
+                Name: "Khai thác quặng kim loại",
+                Level: 2,
+                ParentId: "6",
+                SectorCode: "FE00"
+            }, {
+                Id: "164",
+                Name: "Khai thác quặng kim loại",
+                Level: 3,
+                ParentId: "43",
+                SectorCode: "FEC0"
+            }, {
+                Id: "42",
+                Name: "Khai thác khoáng sản phi kim",
+                Level: 2,
+                ParentId: "6",
+                SectorCode: "FD00"
+            }, {
+                Id: "6",
+                Name: "Khai khoáng",
+                Level: 1,
+                SectorCode: "F000"
+            }, {
+                Id: "53",
+                Name: "In ấn",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HD00"
+            }, {
+                Id: "185",
+                Name: "In ấn",
+                Level: 3,
+                ParentId: "53",
+                SectorCode: "HDA0"
+            }, {
+                Id: "90",
+                Name: "Hỗ trợ vận tải",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KD00"
+            }, {
+                Id: "289",
+                Name: "Hỗ trợ vận tải",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBC0"
+            }, {
+                Id: "52",
+                Name: "Hỗ trợ nông nghiệp",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HC00"
+            }, {
+                Id: "39",
+                Name: "Hỗ trợ khai thác than",
+                Level: 2,
+                ParentId: "6",
+                SectorCode: "FB00"
+            }, {
+                Id: "38",
+                Name: "Hỗ trợ khai thác dầu khí",
+                Level: 2,
+                ParentId: "6",
+                SectorCode: "FA00"
+            }, {
+                Id: "163",
+                Name: "Hỗ trợ cho khai thác kim loại",
+                Level: 3,
+                ParentId: "43",
+                SectorCode: "FEB0"
+            }, {
+                Id: "162",
+                Name: "Hỗ trợ cho khai thác khoáng sản phi kim",
+                Level: 3,
+                ParentId: "43",
+                SectorCode: "FEA0"
+            }, {
+                Id: "155",
+                Name: "Hỗ trợ cho khai thác dầu và khí đốt",
+                Level: 3,
+                ParentId: "38",
+                SectorCode: "FAA0"
+            }, {
+                Id: "308",
+                Name: "Hệ thống trung chuyển nội đô",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFE0"
+            }, {
+                Id: "279",
+                Name: "Hệ thống thủy lợi và cung cấp nước",
+                Level: 3,
+                ParentId: "84",
+                SectorCode: "JBA0"
+            }, {
+                Id: "84",
+                Name: "Hệ thống cung cấp và xử lý nước",
+                Level: 2,
+                ParentId: "10",
+                SectorCode: "JB00"
+            }, {
+                Id: "260",
+                Name: "Hạt, cây giống thương mại",
+                Level: 3,
+                ParentId: "76",
+                SectorCode: "HAA0"
+            }, {
+                Id: "272",
+                Name: "Hãng bảo hiểm",
+                Level: 3,
+                ParentId: "80",
+                SectorCode: "IBA0"
+            }, {
+                Id: "275",
+                Name: "Hoạt động đầu tư tài chính khác",
+                Level: 3,
+                ParentId: "29",
+                SectorCode: "IAB0"
+            }, {
+                Id: "28",
+                Name: "Hoạt động đầu tư tài chính",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CD00"
+            }, {
+                Id: "29",
+                Name: "Hoạt động đầu tư tài chính",
+                Level: 2,
+                ParentId: "9",
+                SectorCode: "IA00"
+            }, {
+                Id: "295",
+                Name: "Hoạt động hỗ trợ vận tải đường thủy",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBF0"
+            }, {
+                Id: "296",
+                Name: "Hoạt động hỗ trợ vận tải đường thủy",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDD0"
+            }, {
+                Id: "297",
+                Name: "Hoạt động hỗ trợ vận tải đường thủy",
+                Level: 3,
+                ParentId: "50",
+                SectorCode: "KAB0"
+            }, {
+                Id: "301",
+                Name: "Hoạt động hỗ trợ vận tải đường sắt",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDF0"
+            }, {
+                Id: "293",
+                Name: "Hoạt động hỗ trợ vận tải đường hàng không",
+                Level: 3,
+                ParentId: "89",
+                SectorCode: "KCA0"
+            }, {
+                Id: "292",
+                Name: "Hoạt động hỗ trợ vận tải đường hàng không",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBE0"
+            }, {
+                Id: "294",
+                Name: "Hoạt động hỗ trợ vận tải đường hàng không",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDC0"
+            }, {
+                Id: "291",
+                Name: "Hoạt động hỗ trợ vận tải đường bộ",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDB0"
+            }, {
+                Id: "290",
+                Name: "Hoạt động hỗ trợ vận tải đường bộ",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBD0"
+            }, {
+                Id: "248",
+                Name: "Giết mổ và chế biến thịt động vật",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXB0"
+            }, {
+                Id: "132",
+                Name: "Giám định, kiểm định",
+                Level: 3,
+                ParentId: "30",
+                SectorCode: "CEC0"
+            }, {
+                Id: "147",
+                Name: "Dịch vụ đặt phòng và tour du lịch",
+                Level: 3,
+                ParentId: "34",
+                SectorCode: "DCC0"
+            }, {
+                Id: "306",
+                Name: "Dịch vụ đưa thư và chuyển phát nhanh",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFC0"
+            }, {
+                Id: "36",
+                Name: "Dịch vụ ăn uống",
+                Level: 2,
+                ParentId: "5",
+                SectorCode: "EA00"
+            }, {
+                Id: "27",
+                Name: "Dịch vụ vui chơi giải trí",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CC00"
+            }, {
+                Id: "144",
+                Name: "Dịch vụ việc làm",
+                Level: 3,
+                ParentId: "34",
+                SectorCode: "DCA0"
+            }, {
+                Id: "143",
+                Name: "Dịch vụ việc làm",
+                Level: 3,
+                ParentId: "33",
+                SectorCode: "DBB0"
+            }, {
+                Id: "20",
+                Name: "Dịch vụ viễn thông",
+                Level: 2,
+                ParentId: "2",
+                SectorCode: "BA00"
+            }, {
+                Id: "112",
+                Name: "Dịch vụ viễn thông",
+                Level: 3,
+                ParentId: "20",
+                SectorCode: "BAA0"
+            }, {
+                Id: "140",
+                Name: "Dịch vụ tư vấn xây dựng",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFF0"
+            }, {
+                Id: "131",
+                Name: "Dịch vụ tư vấn quản lý, khoa học và kỹ thuật khác",
+                Level: 3,
+                ParentId: "30",
+                SectorCode: "CEB0"
+            }, {
+                Id: "127",
+                Name: "Dịch vụ tư vấn quản lý",
+                Level: 3,
+                ParentId: "28",
+                SectorCode: "CDA0"
+            }, {
+                Id: "139",
+                Name: "Dịch vụ tư vấn môi trường",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFE0"
+            }, {
+                Id: "129",
+                Name: "Dịch vụ truyền thông",
+                Level: 3,
+                ParentId: "24",
+                SectorCode: "CAB0"
+            }, {
+                Id: "138",
+                Name: "Dịch vụ thiết kế nội thất",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFD0"
+            }, {
+                Id: "130",
+                Name: "Dịch vụ thiết kế công nghiệp",
+                Level: 3,
+                ParentId: "30",
+                SectorCode: "CEA0"
+            }, {
+                Id: "307",
+                Name: "Dịch vụ taxi",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFD0"
+            }, {
+                Id: "5",
+                Name: "Dịch vụ lưu trú và ăn uống",
+                Level: 1,
+                SectorCode: "E000"
+            }, {
+                Id: "37",
+                Name: "Dịch vụ lưu trú",
+                Level: 2,
+                ParentId: "5",
+                SectorCode: "EB00"
+            }, {
+                Id: "137",
+                Name: "Dịch vụ kiến trúc cảnh quan",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFC0"
+            }, {
+                Id: "136",
+                Name: "Dịch vụ kiến trúc",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFB0"
+            }, {
+                Id: "135",
+                Name: "Dịch vụ khảo sát địa lý và bản đồ",
+                Level: 3,
+                ParentId: "31",
+                SectorCode: "CFA0"
+            }, {
+                Id: "148",
+                Name: "Dịch vụ hỗ trợ cơ sở vật chất, thiết bị",
+                Level: 3,
+                ParentId: "34",
+                SectorCode: "DCD0"
+            }, {
+                Id: "4",
+                Name: "Dịch vụ hỗ trợ  ",
+                Level: 1,
+                SectorCode: "D000"
+            }, {
+                Id: "34",
+                Name: "Dịch vụ hỗ trợ  ",
+                Level: 2,
+                ParentId: "4",
+                SectorCode: "DC00"
+            }, {
+                Id: "33",
+                Name: "Dịch vụ hỗ trợ",
+                Level: 2,
+                ParentId: "4",
+                SectorCode: "DB00"
+            }, {
+                Id: "288",
+                Name: "Dịch vụ cảng và kho bãi đường thủy",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBB0"
+            }, {
+                Id: "26",
+                Name: "Dịch vụ chăm sóc y tế",
+                Level: 2,
+                ParentId: "3",
+                SectorCode: "CB00"
+            }, {
+                Id: "142",
+                Name: "Dịch vụ chăm sóc người chết",
+                Level: 3,
+                ParentId: "33",
+                SectorCode: "DBA0"
+            }, {
+                Id: "3",
+                Name: "Dịch vụ chuyên môn",
+                Level: 1,
+                SectorCode: "C000"
+            }, {
+                Id: "104",
+                Name: "Cửa hàng đồ nội thất",
+                Level: 3,
+                ParentId: "15",
+                SectorCode: "ACA0"
+            }, {
+                Id: "105",
+                Name: "Cửa hàng đồ nội thất",
+                Level: 3,
+                ParentId: "46",
+                SectorCode: "GCA0"
+            }, {
+                Id: "19",
+                Name: "Cửa hàng tổng hợp",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AG00"
+            }, {
+                Id: "111",
+                Name: "Cửa hàng tổng hợp",
+                Level: 3,
+                ParentId: "19",
+                SectorCode: "AGA0"
+            }, {
+                Id: "18",
+                Name: "Cửa hàng thiết bị điện tử",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AF00"
+            }, {
+                Id: "110",
+                Name: "Cửa hàng thiết bị điện tử",
+                Level: 3,
+                ParentId: "18",
+                SectorCode: "AFB0"
+            }, {
+                Id: "103",
+                Name: "Cửa hàng sách, ấn bản và âm nhạc",
+                Level: 3,
+                ParentId: "14",
+                SectorCode: "ABB0"
+            }, {
+                Id: "100",
+                Name: "Cửa hàng phụ tùng xe hơi",
+                Level: 3,
+                ParentId: "13",
+                SectorCode: "AAB0"
+            }, {
+                Id: "109",
+                Name: "Cửa hàng máy tính và phần mềm",
+                Level: 3,
+                ParentId: "18",
+                SectorCode: "AFA0"
+            }, {
+                Id: "101",
+                Name: "Cửa hàng dụng cụ, văn phòng phẩm và quà tặng",
+                Level: 3,
+                ParentId: "14",
+                SectorCode: "ABA0"
+            }, {
+                Id: "102",
+                Name: "Cửa hàng dụng cụ, văn phòng phẩm và quà tặng",
+                Level: 3,
+                ParentId: "45",
+                SectorCode: "GBA0"
+            }, {
+                Id: "89",
+                Name: "Cảng và kho bãi hàng không",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KC00"
+            }, {
+                Id: "88",
+                Name: "Cảng và kho bãi",
+                Level: 2,
+                ParentId: "11",
+                SectorCode: "KB00"
+            }, {
+                Id: "278",
+                Name: "Công trình xử lý nước thải",
+                Level: 3,
+                ParentId: "83",
+                SectorCode: "JAA0"
+            }, {
+                Id: "2",
+                Name: "Công nghệ và thông tin",
+                Level: 1,
+                SectorCode: "B000"
+            }, {
+                Id: "123",
+                Name: "Công nghiệp giải trí, vui chơi khác",
+                Level: 3,
+                ParentId: "27",
+                SectorCode: "CCB0"
+            }, {
+                Id: "274",
+                Name: "Các hoạt động đầu tư tài chính khác",
+                Level: 3,
+                ParentId: "29",
+                SectorCode: "IAA0"
+            }, {
+                Id: "284",
+                Name: "Các hoạt động hỗ trợ vận tải khác",
+                Level: 3,
+                ParentId: "88",
+                SectorCode: "KBA0"
+            }, {
+                Id: "286",
+                Name: "Các hoạt động hỗ trợ vận tải khác",
+                Level: 3,
+                ParentId: "92",
+                SectorCode: "KFA0"
+            }, {
+                Id: "285",
+                Name: "Các hoạt động hỗ trợ vận tải khác",
+                Level: 3,
+                ParentId: "90",
+                SectorCode: "KDA0"
+            }, {
+                Id: "287",
+                Name: "Các hoạt động hỗ trợ vận tải khác",
+                Level: 3,
+                ParentId: "50",
+                SectorCode: "KAA0"
+            }, {
+                Id: "184",
+                Name: "Các hoạt động hỗ trợ cho trồng trọt",
+                Level: 3,
+                ParentId: "52",
+                SectorCode: "HCA0"
+            }, {
+                Id: "157",
+                Name: "Các hoạt động hỗ trợ cho khai thác than",
+                Level: 3,
+                ParentId: "39",
+                SectorCode: "FBA0"
+            }, {
+                Id: "146",
+                Name: "Các dịch vụ hỗ trợ khác",
+                Level: 3,
+                ParentId: "34",
+                SectorCode: "DCB0"
+            }, {
+                Id: "122",
+                Name: "Cá cược và đánh bạc",
+                Level: 3,
+                ParentId: "27",
+                SectorCode: "CCA0"
+            }, {
+                Id: "280",
+                Name: "Cung cấp hơi nước và điều hòa không khí",
+                Level: 3,
+                ParentId: "85",
+                SectorCode: "JCA0"
+            }, {
+                Id: "81",
+                Name: "Chứng khoán",
+                Level: 2,
+                ParentId: "9",
+                SectorCode: "IC00"
+            }, {
+                Id: "153",
+                Name: "Chỗ ở cho khách du lịch",
+                Level: 3,
+                ParentId: "37",
+                SectorCode: "EBA0"
+            }, {
+                Id: "83",
+                Name: "Chất thải & Môi trường",
+                Level: 2,
+                ParentId: "10",
+                SectorCode: "JA00"
+            }, {
+                Id: "183",
+                Name: "Chăn nuôi heo",
+                Level: 3,
+                ParentId: "51",
+                SectorCode: "HBA0"
+            }, {
+                Id: "51",
+                Name: "Chăn nuôi gia súc, gia cầm",
+                Level: 2,
+                ParentId: "8",
+                SectorCode: "HB00"
+            }, {
+                Id: "314",
+                Name: "Cho thuê bất động sản",
+                Level: 3,
+                ParentId: "95",
+                SectorCode: "LAA0"
+            }, {
+                Id: "315",
+                Name: "Cho thuê bất động sản",
+                Level: 3,
+                ParentId: "96",
+                SectorCode: "LBA0"
+            }, {
+                Id: "121",
+                Name: "Bệnh viện",
+                Level: 3,
+                ParentId: "26",
+                SectorCode: "CBA0"
+            }, {
+                Id: "95",
+                Name: "Bất động sản",
+                Level: 2,
+                ParentId: "12",
+                SectorCode: "LA00"
+            }, {
+                Id: "247",
+                Name: "Bảo quản rau quả và sản xuất thực phẩm chuyên biệt",
+                Level: 3,
+                ParentId: "73",
+                SectorCode: "HXA0"
+            }, {
+                Id: "80",
+                Name: "Bảo hiểm",
+                Level: 2,
+                ParentId: "9",
+                SectorCode: "IB00"
+            }, {
+                Id: "99",
+                Name: "Bán lẻ xe hơi",
+                Level: 3,
+                ParentId: "13",
+                SectorCode: "AAA0"
+            }, {
+                Id: "17",
+                Name: "Bán lẻ vật liệu xây dựng",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AE00"
+            }, {
+                Id: "108",
+                Name: "Bán lẻ vật liệu xây dựng",
+                Level: 3,
+                ParentId: "17",
+                SectorCode: "AEA0"
+            }, {
+                Id: "16",
+                Name: "Bán lẻ sản phẩm dầu khí",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AD00"
+            }, {
+                Id: "15",
+                Name: "Bán lẻ nội thất",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AC00"
+            }, {
+                Id: "14",
+                Name: "Bán lẻ hàng tiêu dùng",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AB00"
+            }, {
+                Id: "13",
+                Name: "Bán lẻ hàng lâu bền",
+                Level: 2,
+                ParentId: "1",
+                SectorCode: "AA00"
+            }, {
+                Id: "1",
+                Name: "Bán lẻ",
+                Level: 1,
+                SectorCode: "A000"
+            }, {
+                Id: "225",
+                Name: "Bao bì, đóng gói bằng nhựa",
+                Level: 3,
+                ParentId: "66",
+                SectorCode: "HQD0"
+            }];
+        let kqkd;
+        loading(1);
 
-function loading(i = !0) {
-    document.getElementById("load")
-        .innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : "";
-}
-var themes = 'light';
-
-async function layKQKDGstock() {
-    const e = await fetch("https://gstock.vn/api/v1/analysis/list-stocks-updated", {
-        headers: {
-            accept: "*/*",
-            "accept-language": "vi,en;q=0.9,en-US;q=0.8",
-            authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjg1MDAsImlhdCI6MTY4OTk1MTQxMX0.GtNEpMBujjKc5qeuOtLEtEWw5I9pTakZ2JKrorV4iYc",
-            "content-type": "application/json",
-            "sec-ch-ua": '"Not.A/Brand";v="8", "Chromium";v="114", "Microsoft Edge";v="114"',
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": '"Windows"',
-            "sec-fetch-dest": "empty",
-            "sec-fetch-mode": "cors",
-            "sec-fetch-site": "same-origin"
-        },
-        referrer: "https://gstock.vn/cong-cu/cap-nhat-kqkd",
-        referrerPolicy: "strict-origin-when-cross-origin",
-        body: null,
-        method: "POST",
-        mode: "cors",
-        credentials: "include"
-    });
-    kqkd = await e.json();
-    document.getElementById("top")
-        .style.display = "block";
-    if (kqkd) {
-        await taoTable(kqkd.data);
-        console.log(kqkd)
-    }
-}
-
-function taoTable(data) {
-    var table = document.createElement('table');
-    table.id = "ket-qua-kinh-doanh"
-    var thead = document.createElement('thead');
-    var tbody = document.createElement('tbody');
-    var colgroup = document.createElement('colgroup');
-    var headRow = document.createElement('tr');
-    titleArr.forEach(function (el) {
-        var th = document.createElement('th');
-        var col = document.createElement('col');
-        col.setAttribute("style", "width:auto;")
-        th.rowspan = 2
-        th.appendChild(document.createTextNode(el));
-        headRow.appendChild(th);
-        colgroup.appendChild(col);
-    });
-    thead.appendChild(headRow);
-    table.appendChild(thead);
-    table.appendChild(colgroup);
-    // Tạo nội dung bảng
-    data.forEach(function (el) {
-        var tr = document.createElement('tr');
-        cTd(el.Code, tr, 1)
-        cTd(gsector(el.Sector), tr)
-        cTd(num2(parseFloat(el.periodValue.revenue) / 1e6), tr, 2)
-        cTd(num2(parseFloat(el.periodValue.profit) / 1e6), tr, 2)
-        cTd(num1(el[800]) + " %", tr, 2)
-        cTd(num1(el[804]) + " %", tr, 2)
-        cTd(num0(el[200]), tr)
-        cTd(num0(el[201]), tr)
-        cTd(num2(parseFloat(el[100]) / 1e9), tr)
-        cTd(num2(el[512]) + " %", tr)
-        cTd(formatDateTime(el.KqkdDate), tr)
-        tbody.appendChild(tr);
-    })
-    table.appendChild(tbody);
-    // Thêm bảng vào trang HTML
-    document.getElementById("tieude")
-        .innerHTML = `Kết quả kinh doanh quý ${kqkd.termCode}/${kqkd.yearPeriod} (Số kết quả: ${data.length}) `
-    document.getElementById("noidung")
-        .innerHTML = ""
-    document.getElementById("noidung")
-        .appendChild(table);
-    loading(0);
-}
-
-function num0(s) {
-    return s.toLocaleString('en-US', {
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0
-    })
-}
-
-function num1(s) {
-    return s.toLocaleString('en-US', {
-        minimumFractionDigits: 1,
-        maximumFractionDigits: 1
-    })
-}
-
-function num2(s) {
-    return s.toLocaleString('en-US', {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-    })
-}
-
-function gsector(r) {
-    var n = sector.find(function (n) {
-        return n.Id === r
-    });
-    return n ? n.Name : ""
-}
-
-function cTd(d, t, isMck = 0) {
-    var td = document.createElement('td');
-    if (isMck == 1) {
-        td.id = d;
-    }
-    if (isMck == 2) td.setAttribute("style", `color:${parseFloat(d)>0? "green": "red"};`)
-    td.appendChild(document.createTextNode(d));
-    t.appendChild(td);
-}
-
-function formatDateTime(dateString) {
-    var date = new Date(dateString);
-    var day = date.getDate()
-        .toString()
-        .padStart(2, '0');
-    var month = (date.getMonth() + 1)
-        .toString()
-        .padStart(2, '0');
-    var year = date.getFullYear();
-    var hour = date.getHours()
-        .toString()
-        .padStart(2, '0');
-    var minute = date.getMinutes()
-        .toString()
-        .padStart(2, '0');
-    return `${day}/${month}/${year} ${hour}:${minute}`;
-}
-
-function download_table_as_csv(table_id, separator = ',') {
-    var rows = document.querySelectorAll('table#' + table_id + ' tr');
-    var csv = [];
-    for (var i = 0; i < rows.length; i++) {
-        var row = [],
-            cols = rows[i].querySelectorAll('td, th');
-        for (var j = 0; j < cols.length; j++) {
-            var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '')
-                .replace(/(\s\s)/gm, ' ')
-            data = data.replace(/"/g, '""');
-            row.push('"' + data + '"');
+        function loading(i = !0) {
+            document.getElementById("load")
+                .innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : "";
         }
-        csv.push(row.join(separator));
-    }
-    var csv_string = '\uFEFF' + csv.join('\n');
-    var filename = 'export_' + table_id + '_' + new Date()
-        .toLocaleDateString() + '.csv';
-    var link = document.createElement('a');
-    link.style.display = 'none';
-    link.setAttribute('target', '_blank');
-    link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
-    link.setAttribute('download', filename);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-}
-document.getElementById('download-text-container')
-    .addEventListener('click', () => download_table_as_csv("ket-qua-kinh-doanh"));
-layKQKDGstock();
-window.addEventListener('dblclick', (event) => {
-    let e = window.getSelection()
-        .toString()
-        .trim()
-        .toUpperCase();
-    if (e == event.target.id && e.length == 3) {
-        if (event.ctrlKey) chrome.tabs.create({
-            url: "fireant.html?q=" + e
-        })
-        else a("tomtat.html?q=" + e)
-    }
-})
-const input = document.querySelector('input');
-input.addEventListener('input', () => {
-    //input.value = input.value.toUpperCase();
-    if (3 == input.value.length || 2 == input.value.length) {
-        mack = kqkd.data.filter(t => t.Code.toLowerCase()
-            .includes(input.value.toLowerCase()))
-        taoTable(mack);
-        if (!mack.length) {
+        var themes = 'light';
+
+        async function layKQKDGstock() {
+            const e = await fetch("https://gstock.vn/api/v1/analysis/list-stocks-updated", {
+                headers: {
+                    accept: "*/*",
+                    "accept-language": "vi,en;q=0.9,en-US;q=0.8",
+                    authorization: "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOjg1MDAsImlhdCI6MTY4OTk1MTQxMX0.GtNEpMBujjKc5qeuOtLEtEWw5I9pTakZ2JKrorV4iYc",
+                    "content-type": "application/json",
+                    "sec-ch-ua": '"Not.A/Brand";v="8", "Chromium";v="114", "Microsoft Edge";v="114"',
+                    "sec-ch-ua-mobile": "?0",
+                    "sec-ch-ua-platform": '"Windows"',
+                    "sec-fetch-dest": "empty",
+                    "sec-fetch-mode": "cors",
+                    "sec-fetch-site": "same-origin"
+                },
+                referrer: "https://gstock.vn/cong-cu/cap-nhat-kqkd",
+                referrerPolicy: "strict-origin-when-cross-origin",
+                body: null,
+                method: "POST",
+                mode: "cors",
+                credentials: "include"
+            });
+            kqkd = await e.json();
+            document.getElementById("top")
+                .style.display = "block";
+            if (kqkd) {
+                await taoTable(kqkd.data);
+                console.log(kqkd)
+            }
+        }
+
+        function taoTable(data) {
+            var table = document.createElement('table');
+            table.id = "ket-qua-kinh-doanh"
+            var thead = document.createElement('thead');
+            var tbody = document.createElement('tbody');
+            var colgroup = document.createElement('colgroup');
+            var headRow = document.createElement('tr');
+            titleArr.forEach(function(el) {
+                var th = document.createElement('th');
+                var col = document.createElement('col');
+                col.setAttribute("style", "width:auto;")
+                th.rowspan = 2
+                th.appendChild(document.createTextNode(el));
+                headRow.appendChild(th);
+                colgroup.appendChild(col);
+            });
+            thead.appendChild(headRow);
+            table.appendChild(thead);
+            table.appendChild(colgroup);
+            // Tạo nội dung bảng
+            data.forEach(function(el) {
+                var tr = document.createElement('tr');
+                cTd(el.Code, tr, 1)
+                cTd(gsector(el.Sector), tr)
+                cTd(num2(parseFloat(el.periodValue.revenue) / 1e6), tr, 2)
+                cTd(num2(parseFloat(el.periodValue.profit) / 1e6), tr, 2)
+                cTd(num1(el[800]) + " %", tr, 2)
+                cTd(num1(el[804]) + " %", tr, 2)
+                cTd(num0(el[200]), tr)
+                cTd(num0(el[201]), tr)
+                cTd(num2(parseFloat(el[100]) / 1e9), tr)
+                cTd(num2(el[512]) + " %", tr)
+                cTd(formatDateTime(el.KqkdDate), tr)
+                tbody.appendChild(tr);
+            })
+            table.appendChild(tbody);
+            // Thêm bảng vào trang HTML
+            document.getElementById("tieude")
+                .innerHTML = `Kết quả kinh doanh quý ${kqkd.termCode}/${kqkd.yearPeriod} (Số kết quả: ${data.length}) `
             document.getElementById("noidung")
-                .innerHTML += emptyData
+                .innerHTML = ""
+            document.getElementById("noidung")
+                .appendChild(table);
+            loading(0);
         }
-    }
-});
-document.getElementById("find")
-    .addEventListener('click', () => findMACK());
 
-function findMACK() {
-    let t = document.getElementById("searchCK")
-    let a = t.value.toLowerCase(),
-        mack = []
-    mack = kqkd.data.filter(t => (t.Code + " " + gsector(t.Sector))
-        .toLowerCase()
-        .includes(a))
-    mack.length ? taoTable(mack) : (taoTable(kqkd.data), createNotification("Không tìm thấy!"))
-}
+        function num0(s) {
+            return s.toLocaleString('en-US', {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            })
+        }
 
-</script>
+        function num1(s) {
+            return s.toLocaleString('en-US', {
+                minimumFractionDigits: 1,
+                maximumFractionDigits: 1
+            })
+        }
+
+        function num2(s) {
+            return s.toLocaleString('en-US', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            })
+        }
+
+        function gsector(r) {
+            var n = sector.find(function(n) {
+                return n.Id === r
+            });
+            return n ? n.Name : ""
+        }
+
+        function cTd(d, t, isMck = 0) {
+            var td = document.createElement('td');
+            if (isMck == 1) {
+                td.id = d;
+            }
+            if (isMck == 2) td.setAttribute("style", `color:${parseFloat(d)>0? "green": "red"};`)
+            td.appendChild(document.createTextNode(d));
+            t.appendChild(td);
+        }
+
+        function formatDateTime(dateString) {
+            var date = new Date(dateString);
+            var day = date.getDate()
+                .toString()
+                .padStart(2, '0');
+            var month = (date.getMonth() + 1)
+                .toString()
+                .padStart(2, '0');
+            var year = date.getFullYear();
+            var hour = date.getHours()
+                .toString()
+                .padStart(2, '0');
+            var minute = date.getMinutes()
+                .toString()
+                .padStart(2, '0');
+            return `${day}/${month}/${year} ${hour}:${minute}`;
+        }
+
+        function download_table_as_csv(table_id, separator = ',') {
+            var rows = document.querySelectorAll('table#' + table_id + ' tr');
+            var csv = [];
+            for (var i = 0; i < rows.length; i++) {
+                var row = [],
+                    cols = rows[i].querySelectorAll('td, th');
+                for (var j = 0; j < cols.length; j++) {
+                    var data = cols[j].innerText.replace(/(\r\n|\n|\r)/gm, '')
+                        .replace(/(\s\s)/gm, ' ')
+                    data = data.replace(/"/g, '""');
+                    row.push('"' + data + '"');
+                }
+                csv.push(row.join(separator));
+            }
+            var csv_string = '\uFEFF' + csv.join('\n');
+            var filename = 'export_' + table_id + '_' + new Date()
+                .toLocaleDateString() + '.csv';
+            var link = document.createElement('a');
+            link.style.display = 'none';
+            link.setAttribute('target', '_blank');
+            link.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv_string));
+            link.setAttribute('download', filename);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+        document.getElementById('download-text-container')
+            .addEventListener('click', () => download_table_as_csv("ket-qua-kinh-doanh"));
+        layKQKDGstock();
+        window.addEventListener('dblclick', (event) => {
+            let e = window.getSelection()
+                .toString()
+                .trim()
+                .toUpperCase();
+            if (e == event.target.id && e.length == 3) {
+                if (event.ctrlKey) chrome.tabs.create({
+                    url: "fireant.html?q=" + e
+                })
+                else a("tomtat.html?q=" + e)
+            }
+        })
+        const input = document.querySelector('input');
+        input.addEventListener('input', () => {
+            //input.value = input.value.toUpperCase();
+            if (3 == input.value.length || 2 == input.value.length) {
+                mack = kqkd.data.filter(t => t.Code.toLowerCase()
+                    .includes(input.value.toLowerCase()))
+                taoTable(mack);
+                if (!mack.length) {
+                    document.getElementById("noidung")
+                        .innerHTML += emptyData
+                }
+            }
+        });
+        document.getElementById("find")
+            .addEventListener('click', () => findMACK());
+
+        function findMACK() {
+            let t = document.getElementById("searchCK")
+            let a = t.value.toLowerCase(),
+                mack = []
+            mack = kqkd.data.filter(t => (t.Code + " " + gsector(t.Sector))
+                .toLowerCase()
+                .includes(a))
+            mack.length ? taoTable(mack) : (taoTable(kqkd.data), createNotification("Không tìm thấy!"))
+        }
+    </script>
 
 </body>
 

@@ -264,7 +264,7 @@
                     });
                 }
                 var drawdown = findRecoveries(closep);
-		console.log(drawdown);
+                console.log(drawdown);
                 var sampleData = [],
                     sampleData2 = [];
                 for (let i = 1; i < drawdown.length; i++) {
@@ -388,13 +388,13 @@
             output[output.length - 1].recover = 100 * peak / output[output.length - 1].bottom - 100; // tính mức recover
 
             ckht = ''; //reset ckht;
-            if (data[data.length - 1].value*1.02 < peak) {
+            if (data[data.length - 1].value * 1.02 < peak) {
                 let gg = ((1 - data[data.length - 1].value / peak) * 100).toFixed(2);
                 ckht += `Chiết khấu hiện tại từ đỉnh ${formatTimestamp(tpeak)}: ${gg}%.<br/>${predict(output, gg)}`;
-            }else {
-                let gg = output[output.length-1].drawdown.toFixed(2);
+            } else {
+                let gg = output[output.length - 1].drawdown.toFixed(2);
                 ckht += `Chiết khấu từ đỉnh cũ ${output[output.length-1].startDate}: ${gg}%.<br/>${predict(output, gg)}`;
-	    }
+            }
             if (data[data.length - 1].value > trough) {
                 ckht += `<br/>Đã hồi phục từ đáy ${formatTimestamp(ttrough)}: ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% `;
             }
@@ -489,7 +489,7 @@
             const ctx = document.getElementById('stockChart').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'scatter',
-		height:'250',
+                height: '250',
                 data: {
                     datasets: [{
                             label: 'GT thực',
@@ -510,7 +510,7 @@
                     responsive: true,
                     plugins: {
                         legend: {
-			    display:false,
+                            display: false,
                             position: 'top',
                         },
                         title: {
