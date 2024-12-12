@@ -1,36 +1,35 @@
-        function checkDevice() {
-		const userAgent = navigator.userAgent.toLowerCase(); 
-		const isMobile = /iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent); 
-		const isTablet = /ipad|android|tablet/i.test(userAgent); 
-		const isDesktop = !isMobile && !isTablet; 
-            if (isMobile || window.innerWidth <= 768) {
-                document.querySelector('.containers').style.display = 'block';
-            } else {
-                document.querySelector('.containers').style.display = 'grid';
-            }
-        }
-        window.addEventListener('resize', checkDevice);
-        window.addEventListener('load', checkDevice);
+function checkDevice() {
+    const userAgent = navigator.userAgent.toLowerCase();
+    const isMobile = /iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent);
+    const isTablet = /ipad|android|tablet/i.test(userAgent);
+    const isDesktop = !isMobile && !isTablet;
+    if (isMobile || window.innerWidth <= 768) {
+        document.querySelector('.containers').style.display = 'block';
+    } else {
+        document.querySelector('.containers').style.display = 'grid';
+    }
+}
+window.addEventListener('resize', checkDevice);
+window.addEventListener('load', checkDevice);
 
 const emptyData = '<div style="margin:auto;text-align: center;padding:50px;"> <svg width="90"  height="60" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg></div>'
 var POST, BCPT, container = document.getElementById("noidung");
-getBCPTTT();
+
 async function getBCPTCP(s = '') {
     loading(!0)
-   try{
-    var d = new Date()
-    var year = d.getFullYear();
-    var month = d.getMonth() + 1;
-    var day = d.getDate();
-    var year2 = (month < 4) ? (year - 1) : year
-    var month2 = (month < 4) ? (month + 9) : (month - 3)
-    url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
-    var res = await fetch(url);
-    var data = await res.json();
-    POST = data.result
-    await taoTable(POST);
-    }catch(e){
-    }
+    try {
+        var d = new Date()
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        var year2 = (month < 4) ? (year - 1) : year
+        var month2 = (month < 4) ? (month + 9) : (month - 3)
+        url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
+        var res = await fetch(url);
+        var data = await res.json();
+        POST = data.result
+        await taoTable(POST);
+    } catch (e) {}
     loading(0)
 }
 async function taoTable(P) {
@@ -41,7 +40,7 @@ async function taoTable(P) {
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
     var headRow = document.createElement('tr');
-  ["MÃ", "ĐV PHÁT HÀNH", "TIÊU ĐỀ", "NGÀY", "GIÁ", "THAY ĐỔI", ""].forEach(function(el) {
+    ["MÃ", "ĐV PHÁT HÀNH", "TIÊU ĐỀ", "NGÀY", "GIÁ", "THAY ĐỔI", ""].forEach(function(el) {
         var th = document.createElement('th');
         th.rowspan = 2
         th.appendChild(document.createTextNode(el));
@@ -80,22 +79,21 @@ async function taoTable(P) {
         }
     }
     table.appendChild(tbody);
-    if(symbols.length) {
-	await container.appendChild(table) ;
-	}else {
-		container.innerHTML = emptyData;
-	};
+    if (symbols.length) {
+        await container.appendChild(table);
+    } else {
+        container.innerHTML = emptyData;
+    };
 }
 async function getBCPTTT() {
     loading(!0)
-    try{
-    var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReport?pageNumber=1&pageSize=30'
-    var res = await fetch(url);
-    var data = await res.json();
-    POST = data.result.items
-    createBang(POST)
-    }catch(e){
-    }
+    try {
+        var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReport?pageNumber=1&pageSize=30'
+        var res = await fetch(url);
+        var data = await res.json();
+        POST = data.result.items
+        createBang(POST)
+    } catch (e) {}
     loading(0)
 }
 
@@ -114,6 +112,14 @@ function createBang(P) {
             s.style = "line-height: 24px;width:400px;font-size:14px;text-decoration: none; color:var(--blue);",
                 l.appendChild(s),
                 container.appendChild(l)
+            l.onclick = (e) => {
+                e.preventDefault();
+                let id = e.target.id.match(/\d+/g);
+                getnews(id);
+            };
+
+
+
         }
     }
 }
@@ -132,28 +138,26 @@ function convertDateToYYYYMMDD(date, sep = '') {
     }
     return string.join(sep);
 }
-document.querySelector('#noidung').addEventListener('click', async function(e) {
-    let id = e.target.id.match(/\d+/g);
+async function getnews(id) {
     var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReportDetail?id=' + id
     if (id) {
-	try{
-        var res = await fetch(url);
-        var resd = await res.json();
-        var data = resd.result;
-        var d = new Date(data.reportDate)
-        var year = d.getFullYear();
-        var month = d.getMonth() + 1;
-        var day = d.getDate();
-        var html = `<div class="ant-modal-confirm-body-wrapper"><div class="ant-modal-confirm-body"><span class="ant-modal-confirm-title"><div>${data.title}</div></span><div class="ant-modal-confirm-content"><div class=""><div id="popup-ff841b85-1d1f-d49d-1ed0-90bf3abae314" style="margin-top: 0px;"><div class=""><div><div class="border-bottom"><span class="bg-color-main" style="height: 2px; width: 50px; position: relative; top: 1px; display: block;"></span></div><table class="table" style="font-size: 12px;"><colgroup><col style="width: 150px;"><col></colgroup><tbody><tr><th class="border-bottom content-not-padding color">Nguồn báo cáo</th><td class="border-bottom color">${data.reporter}</td></tr><tr><th class="border-bottom content-not-padding color">Ngày báo cáo</th><td class="border-bottom color">${day}-${month}-${year}</td></tr><tr><th class="border-bottom content-not-padding color">File</th><td class="border-bottom "><a href="https://cdn.fialda.com/Attachment/AnalysisReport/${convertDateToYYYYMMDD(data.reportDate)}_-_${data.attachment}" class="" target="_blank"><button type="submit" class="btn btn-ico btn-primary" style="height: 25px; width: 200px;"><span>Xem nội dung chi tiết</span><span><i class="ico ico-cloud-download"></i></span></button></a></td></tr></tbody></table><div class="mt-px color2">${data.content}</div></div></div></div></div></div></div></div>`
-        var temp = {
-            "contentHtml": html,
-            "title": data.title
-        }
-        createPopup(temp)
-	}catch(e){
-	}
+        try {
+            var res = await fetch(url);
+            var resd = await res.json();
+            var data = resd.result;
+            var d = new Date(data.reportDate)
+            var year = d.getFullYear();
+            var month = d.getMonth() + 1;
+            var day = d.getDate();
+            var html = `<div class="ant-modal-confirm-body-wrapper"><div class="ant-modal-confirm-body"><span class="ant-modal-confirm-title"><div>${data.title}</div></span><div class="ant-modal-confirm-content"><div class=""><div id="popup-ff841b85-1d1f-d49d-1ed0-90bf3abae314" style="margin-top: 0px;"><div class=""><div><div class="border-bottom"><span class="bg-color-main" style="height: 2px; width: 50px; position: relative; top: 1px; display: block;"></span></div><table class="table" style="font-size: 12px;"><colgroup><col style="width: 150px;"><col></colgroup><tbody><tr><th class="border-bottom content-not-padding color">Nguồn báo cáo</th><td class="border-bottom color">${data.reporter}</td></tr><tr><th class="border-bottom content-not-padding color">Ngày báo cáo</th><td class="border-bottom color">${day}-${month}-${year}</td></tr><tr><th class="border-bottom content-not-padding color">File</th><td class="border-bottom "><a href="https://cdn.fialda.com/Attachment/AnalysisReport/${convertDateToYYYYMMDD(data.reportDate)}_-_${data.attachment}" class="" target="_blank"><button type="submit" class="btn btn-ico btn-primary" style="height: 25px; width: 200px;"><span>Xem nội dung chi tiết</span><span><i class="ico ico-cloud-download"></i></span></button></a></td></tr></tbody></table><div class="mt-px color2">${data.content}</div></div></div></div></div></div></div></div>`
+            var temp = {
+                "contentHtml": html,
+                "title": data.title
+            }
+            showPopup(temp.contentHtml)
+        } catch (e) {}
     }
-})
+}
 
 window.addEventListener('dblclick', (event) => {
     let e = window.getSelection().toString().trim().toUpperCase();
@@ -180,8 +184,8 @@ buttons.forEach(b => {
                 case "getBCPTCP":
                     getBCPTCP();
                     break;
-                case "getTP":
-                    getBCTraiPhieu();
+                case "finbox":
+                    fetchArticles();
                     break;
                 default:
             }
@@ -191,135 +195,18 @@ buttons.forEach(b => {
     });
 });
 
-async function getBCTraiPhieu() {
-    loading(!0), document.getElementById("serch").style.display = "none";
-    var e = await fetch("https://vbma.org.vn/vi/reports/quarterly"),
-        t = await fetch("https://vbma.org.vn/vi/reports/weekly"),
-        n = await e.text(),
-        a = await t.text();
-    async function i(e) {
-        for (var t = (new DOMParser).parseFromString(e, "text/html").getElementsByClassName("post-item"),
-                n = [], a = 0; a < t.length; a++) {
-            var i = {
-                title: t[a].getElementsByClassName("post-title")[0].innerText,
-                link: "https://vbma.org.vn" + t[a].getElementsByClassName("download-link")[0].href.slice(51)
-            };
-            n.push(i)
-        }
-        for (a = 0; a < n.length; a++) {
-            let e = document.createElement("div");
-            e.setAttribute("class", "news-style");
-            let t = document.createElement("a");
-            e.title = n[a].title;
-            t.innerHTML = n[a].title;
-	    t.target="_blank";
-            t.href = n[a].link;
-            t.style = "line-height: 24px;width:400px;font-size:14px;text-decoration: none; color:var(--blue);";
-            e.appendChild(t);
-            container.appendChild(e);
-        }
-    }
-    container.innerHTML = ""
-    container.style.removeProperty("grid")
-    await i(a)
-    await i(n)
-    loading(0)
-}
+
 document.addEventListener("keyup", function(e) {
-    27 === e.keyCode && (e.preventDefault(), window.close())
+    if (27 === e.keyCode) {
+        let popup = document.querySelector(".popup");
+        popup.style.display = "none";
+
+    }
 })
 document.body.addEventListener("click", function(e) {
-    document.getElementById("load").contains(e.target) && loading(0)
+    document.getElementById("load").contains(e.target) && loading(0);
+    const closeButton = document.querySelector(".popup-close");
+    let popup = document.querySelector(".popup");
+    closeButton.contains(e.target) && (popup.style.display = "none");
+
 });
-function loading(i = !0) {
-    document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
-}
-
-// tạo popup hiển thị thông tin
-var myPopup, myInterval;
-
-function createPopup(data) {
-    myPopup && !myPopup.closed && myPopup.close();
-    myPopup = window.open("", "popup", `width=640,height=500,top=${parseInt((window.screen.height - 500) / 2)},left=${parseInt((window.screen.width - 640) / 2)}`);
-    var html = `<html>
-	<meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <head>
-                <title>${data.title}</title>
-    </hea
-
-    <body>
-        <div id="load">
-            <div class="loading-container">
-                <div class="lds-roller">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-            </div>
-        </div>
-<div style="float:right;display: flex;margin-right: 20px;">
-    <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="font-size" width="0.8em" height="0.8em" fill="currentColor" aria-hidden="true">
-        <path d="M920 416H616c-4.4 0-8 3.6-8 8v112c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-56h60v320h-46c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h164c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8h-46V480h60v56c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V424c0-4.4-3.6-8-8-8zM656 296V168c0-4.4-3.6-8-8-8H104c-4.4 0-8 3.6-8 8v128c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-64h168v560h-92c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-92V232h168v64c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8z"></path>
-    </svg>
-    <input type="range" min="80" max="160" value="100" id="Range"><svg viewBox="64 64 896 896" focusable="false" class="" data-icon="font-size" width="1em" height="1em" fill="currentColor" aria-hidden="true">
-        <path d="M920 416H616c-4.4 0-8 3.6-8 8v112c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8v-56h60v320h-46c-4.4 0-8 3.6-8 8v48c0 4.4 3.6 8 8 8h164c4.4 0 8-3.6 8-8v-48c0-4.4-3.6-8-8-8h-46V480h60v56c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V424c0-4.4-3.6-8-8-8zM656 296V168c0-4.4-3.6-8-8-8H104c-4.4 0-8 3.6-8 8v128c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8v-64h168v560h-92c-4.4 0-8 3.6-8 8v56c0 4.4 3.6 8 8 8h264c4.4 0 8-3.6 8-8v-56c0-4.4-3.6-8-8-8h-92V232h168v64c0 4.4 3.6 8 8 8h56c4.4 0 8-3.6 8-8z"></path>
-    </svg>
-</div>
-        <div  id="maincontainer" style="padding-left:10px;font-size: 14px;"> ${data.contentHtml} 
-        <br />
-        <div>${data.source ?"<a href=\""+data.source+"\" target = \"_blank\">Đọc bài gốc tại đây</a>":""}</div>
-	</div>
-
-    </body>
-</html>`;
-    myPopup.document.write(html);
-    onImagesLoaded(myPopup.document.body, function() {
-        myPopup.document.getElementById("load")
-            .innerHTML = "";
-        var images = myPopup.document.getElementsByTagName("img");
-        for (const image of images) {
-            if (image.width < 20 || image.height < 20) {
-                image.style.display = "none";
-            } else {
-                image.setAttribute("style", "max-width:95%;")
-                image.setAttribute("align", "middle")
-            }
-        }
-    });
-    myPopup.document.querySelector('#load')
-        .addEventListener('click', () => {
-            myPopup.document.getElementById("load")
-                .innerHTML = ""
-        })
-    myPopup.document.addEventListener("keyup", function(e) {
-        27 === e.keyCode && (e.preventDefault(), myPopup.close())
-    })
-    myPopup.document.querySelector('#Range')
-        .addEventListener('click', () => {
-            var e = myPopup.document.getElementById("maincontainer");
-            k = myPopup.document.getElementById("Range"),
-                k.title = k.value + " %",
-                e.style.fontSize = k.value + "%"
-        })
-    clearTimeout(myInterval);
-    myPopup.addEventListener("blur", () => {
-        myInterval = setTimeout(() => {
-            myPopup.close();
-        }, 300000);
-    });
-
-    function onImagesLoaded(container, event) {
-        var images = container.getElementsByTagName("img");
-        var loaded = images.length;
-        0 == loaded && event();
-        for (var i = 0; i < images.length; i++) images[i].complete ? loaded-- : images[i].addEventListener("load", function() {
-            loaded--, 0 == loaded && event()
-        }), 0 == loaded && event();
-    }
-}
