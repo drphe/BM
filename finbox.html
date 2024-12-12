@@ -9,7 +9,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            margin: auto;
+	    max-width:768px;
         }
         table {
             width: 100%;
@@ -28,6 +29,9 @@
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
+	select, option {
+	    padding:4px;
+	}
         .button {
             background-color: #4CAF50;
             border: none;
@@ -142,7 +146,7 @@
         function generateTable(data) {
             const table = document.getElementById('dataTable');
             table.innerHTML = '';
-            const headers = ["Mã", "Rating", "Giá", "+/- Giá", "Ngày KN", "Giá KN", "Ngày chốt", "Giá chốt", "Lợi nhuận"];
+            const headers = ["Mã", "Rating","Ngày KN", "Giá KN", "Ngày chốt", "Giá chốt", "Lợi nhuận"];
 
             // Tạo hàng tiêu đề
             const headerRow = document.createElement('tr');
@@ -161,8 +165,6 @@
                     const values = [
                         item.ticker,
                         item.rating,
-                        item.priceFlat,
-                        convertToPercentage(item.pricePercent),
                         formatDate(item.buyDate),
                         item.buyPrice,
                         formatDate(item.date), // Assuming "Ngày chốt" is the same as "date"
