@@ -289,6 +289,7 @@ function showPopup(content) {
 	    overflow:scroll;
 	    line-height: 24px;
         }
+	.popup-content span {color:black!important;}
         .popup-close {
             margin-top: 10px;
             padding: 5px 10px;

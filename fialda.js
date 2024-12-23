@@ -159,18 +159,7 @@ async function getnews(id) {
     }
 }
 
-window.addEventListener('dblclick', (event) => {
-    let e = window.getSelection().toString().trim().toUpperCase();
-    if (e.length == 3 && POST.hasOwnProperty(e)) {
-        if (event.ctrlKey) chrome.tabs.create({
-            url: "fireant.html?q=" + e
-        })
-        else chrome.runtime.sendMessage({
-            action: "openPop",
-            code: e
-        })
-    }
-})
+
 const button = document.getElementById("button")
 let buttons = button.querySelectorAll('.button');
 buttons.forEach(b => {

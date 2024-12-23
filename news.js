@@ -104,6 +104,7 @@ function showPopup(content) {
 	    height:500px;
 	    overflow:scroll;
         }
+
         .popup-close {
             margin-top: 10px;
             padding: 5px 10px;
