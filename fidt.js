@@ -3,6 +3,7 @@ var POSTS, NEWS;
 var noidung = document.getElementById("noidung");
 var pre = document.getElementById("pre")
 const mailicon = `<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M29.3334 15.3337V20.667C29.3334 25.3337 26.6667 27.3337 22.6667 27.3337H9.33341C5.33341 27.3337 2.66675 25.3337 2.66675 20.667V11.3337C2.66675 6.66699 5.33341 4.66699 9.33341 4.66699H16.0001" stroke="#3CA116" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M9.33325 12L13.5066 15.3333C14.8799 16.4267 17.1333 16.4267 18.5066 15.3333" stroke="#3CA116" stroke-width="2" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M25.9733 3.75992L26.3466 4.51991C26.5333 4.89324 26.9999 5.23992 27.4133 5.31992L27.92 5.39992C29.44 5.65325 29.8 6.77325 28.7066 7.87992L28.2399 8.34657C27.9333 8.66657 27.76 9.27991 27.8533 9.70658L27.92 9.98659C28.3333 11.8266 27.36 12.5332 25.76 11.5732L25.4133 11.3732C24.9999 11.1332 24.3333 11.1332 23.92 11.3732L23.5733 11.5732C21.9599 12.5466 20.9866 11.8266 21.4133 9.98659L21.4799 9.70658C21.5733 9.27991 21.4 8.66657 21.0933 8.34657L20.6266 7.87992C19.5333 6.77325 19.8933 5.65325 21.4133 5.39992L21.92 5.31992C22.32 5.25325 22.7999 4.89324 22.9866 4.51991L23.3599 3.75992C24.0799 2.30659 25.2533 2.30659 25.9733 3.75992Z" stroke="#3CA116" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`
+
 function loading(i = !0) {
     document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
 }
@@ -10,10 +11,10 @@ function loading(i = !0) {
 getFIDTpredic();
 
 document.addEventListener("keyup", function(e) {
-   if( 27 === e.keyCode){
+    if (27 === e.keyCode) {
         let popup = document.querySelector(".popup");
         popup.style.display = "none";
-}
+    }
 })
 
 document.body.addEventListener("click", function(e) {
@@ -30,8 +31,8 @@ buttons.forEach(b => {
         var type = e.target.id
         if (type && type != "button") {
             pre.innerHTML = "", document.querySelector(".strategy").innerHTML = ``;
-	    document.getElementById("pres").style.display = "none";
-	    buttons.forEach(btn => btn.classList.remove('active'));
+            document.getElementById("pres").style.display = "none";
+            buttons.forEach(btn => btn.classList.remove('active'));
             b.classList.add('active');
             switch (type) {
                 case "get5":
@@ -57,7 +58,7 @@ buttons.forEach(b => {
                     await getFIDTpredic();
                     noidung.innerHTML = ""
             }
-            
+
         }
     });
 });
@@ -77,20 +78,21 @@ async function getFIDTnews() {
     };
     var res = await fetch("https://guru.fidt.vn/do-action", requestOptions)
     var data = await res.json();
-    NEWS = data.news.data; console.log(NEWS)
-	noidung.innerHTML ='';
-NEWS.forEach(article => {
+    NEWS = data.news.data;
+    console.log(NEWS)
+    noidung.innerHTML = '';
+    NEWS.forEach(article => {
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
         let s = document.createElement("a"),
             n = new Date(article.date_created);
-            l.title = article.block ? "Tin độc quyền !" : article.title,
+        l.title = article.block ? "Tin độc quyền !" : article.title,
             s.innerHTML = article.title + `<br/> Ngày đăng: ${timeAgo(article.date_created)}`
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
             l.appendChild(s),
             l.innerHTML += '<span style="float:right;margin: 4px; style="width:50px; height: 50px;">' + mailicon + '</span><br/>';
         noidung.appendChild(l);
-	noidung.style.display ="block";
+        noidung.style.display = "block";
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(article.content);
@@ -129,13 +131,13 @@ async function getFIDTpredic() {
         </div>
     </div>
 </div></div>`;
-	document.querySelector(".strategy").innerHTML = `<div class="" style="color:#000;font-weight:400;">${k.point_of_view}</div><div class="heading tooltip">Chiến lược giao dịch </div><div class="inter">${k.strategy}</div>`;
+        document.querySelector(".strategy").innerHTML = `<div class="" style="color:#000;font-weight:400;">${k.point_of_view}</div><div class="heading tooltip">Chiến lược giao dịch </div><div class="inter">${k.strategy}</div>`;
         let m = document.createElement("div");
         m.setAttribute("class", "main-content");
         m.innerHTML = predic
         pre.appendChild(m);
-	noidung.style.display = "none";
-	document.getElementById("pres").style.display = "block";
+        noidung.style.display = "none";
+        document.getElementById("pres").style.display = "block";
     }).catch(error => console.log('error', error));
     loading(0)
 }
@@ -176,19 +178,19 @@ async function get(id) {
 
 function createlist(arrs, id) {
     noidung.innerHTML = ""
-arrs.forEach(arr => {
+    arrs.forEach(arr => {
 
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
         let s = document.createElement("a"),
             n = new Date(arr.postedAt);
-            l.title = arr.headline,
+        l.title = arr.headline,
             s.innerHTML = arr.title + `<br/>Ngày đăng: ${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
             l.appendChild(s),
             l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.image + '" style="width:50px; height: 50px;"/></span><br/>';
         noidung.appendChild(l);
-	noidung.style.display = "block";
+        noidung.style.display = "block";
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(arr.contentHtml);
@@ -214,6 +216,7 @@ function timeAgo(dateString) {
         return `${Math.round(minutes)} phút trước`;
     }
 }
+
 function getStatus(s) {
     switch (s) {
         case "very_good":
