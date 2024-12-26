@@ -8,7 +8,6 @@ function loading(i = !0) {
     document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
 }
 
-getFIDTpredic();
 
 document.addEventListener("keyup", function(e) {
     if (27 === e.keyCode) {
@@ -23,6 +22,10 @@ document.body.addEventListener("click", function(e) {
     closeButton.contains(e.target) && (popup.style.display = "none");
 
 });
+
+getFIDTnews();
+pre.innerHTML = "", document.querySelector(".strategy").innerHTML = ``;
+document.getElementById("pres").style.display = "none";
 
 const button = document.getElementById("button")
 let buttons = button.querySelectorAll('.button');
@@ -79,7 +82,6 @@ async function getFIDTnews() {
     var res = await fetch("https://guru.fidt.vn/do-action", requestOptions)
     var data = await res.json();
     NEWS = data.news.data;
-    console.log(NEWS)
     noidung.innerHTML = '';
     NEWS.forEach(article => {
         let l = document.createElement("div");
