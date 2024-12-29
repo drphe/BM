@@ -6,32 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="https://finbox.vn/favicon/favicon-32x32.png">
     <title>Danh sách khuyến nghị Finbox</title>
+    <link rel="stylesheet" type="text/css" href="loading.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: auto;
-	    max-width:768px;
+            max-width: 768px;
         }
+
         table {
             width: 100%;
             border-collapse: collapse;
             margin-bottom: 20px;
         }
-        th, td {
+
+        th,
+        td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #4CAF50;
             color: white;
         }
+
         tr:nth-child(even) {
             background-color: #f2f2f2;
         }
-	select, option {
-	    padding:4px;
-	}
+
+        select,
+        option {
+            padding: 4px;
+        }
+
         .button {
             background-color: #4CAF50;
             border: none;
@@ -45,6 +54,7 @@
             cursor: pointer;
             border-radius: 4px;
         }
+
         .button:hover {
             background-color: #45a049;
         }
@@ -52,14 +62,20 @@
 </head>
 
 <body>
+    <div id="load"></div>
     <h3> Danh sách cổ phiếu khuyến nghị của Finbox.vn</h3>
     <label for="monthSelect">Chọn tháng:</label>
     <select id="monthSelect">
         <option value="">--Chọn tháng--</option>
     </select>
-    <table id="dataTable"></table>
-
+    <div style="max-height: calc(100vh - 100px); overflow: scroll;">
+        <table id="dataTable"></table>
+    </div>
     <script>
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
+        loading(1)
         const url = "https://derivative.finbox.vn/api/app_new/tradingbox/all";
         const options = {
             headers: {
@@ -118,8 +134,6 @@
 
                 // lấy tháng gần nhất và in ra bảng các mã khuyến nghị
                 generateTable(thongke[0].tickerData);
-
-                console.log(title)
             })
             .catch(error => console.error("Error fetching data:", error));
 
@@ -146,7 +160,7 @@
         function generateTable(data) {
             const table = document.getElementById('dataTable');
             table.innerHTML = '';
-            const headers = ["Mã", "Rating","Ngày KN", "Giá KN", "Ngày chốt", "Giá chốt", "Lợi nhuận"];
+            const headers = ["Mã", "Rating", "Ngày KN", "Giá KN", "Ngày chốt", "Giá chốt", "Lợi nhuận"];
 
             // Tạo hàng tiêu đề
             const headerRow = document.createElement('tr');
@@ -156,29 +170,36 @@
                 headerRow.appendChild(th);
             });
             table.appendChild(headerRow);
+            loading(0);
+            const dataArray = Object.values(data);
 
-            // Tạo các hàng dữ liệu
-            for (const key in data) {
-                if (data.hasOwnProperty(key)) {
-                    const row = document.createElement('tr');
-                    const item = data[key];
-                    const values = [
-                        item.ticker,
-                        item.rating,
-                        formatDate(item.buyDate),
-                        item.buyPrice,
-                        formatDate(item.date), // Assuming "Ngày chốt" is the same as "date"
-                        item.priceFlat, // Assuming "Giá chốt" is the same as "priceFlat"
-                        convertToPercentage(item.profit)
-                    ];
-                    values.forEach(value => {
-                        const td = document.createElement('td');
-                        td.textContent = value;
-                        row.appendChild(td);
-                    });
-                    table.appendChild(row);
-                }
+            function datetime(dateString) {
+                const year = parseInt(dateString.slice(0, 4));
+                const month = parseInt(dateString.slice(4, 6)) - 1;
+                const day = parseInt(dateString.slice(6, 8));
+                return new Date(year, month, day);
             }
+            dataArray.sort((b, a) => datetime(a.buyDate) - datetime(b.buyDate));
+            console.log(dataArray);
+            // Tạo các hàng dữ liệu
+            dataArray.forEach(item => {
+                const row = document.createElement('tr');
+                const values = [
+                    item.ticker,
+                    item.rating,
+                    formatDate(item.buyDate),
+                    item.buyPrice,
+                    formatDate(item.date), // Assuming "Ngày chốt" is the same as "date"
+                    item.priceFlat, // Assuming "Giá chốt" is the same as "priceFlat"
+                    convertToPercentage(item.profit)
+                ];
+                values.forEach(value => {
+                    const td = document.createElement('td');
+                    td.textContent = value;
+                    row.appendChild(td);
+                });
+                table.appendChild(row);
+            });
         }
     </script>
 </body>

@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" sizes="32x32" href="https://fmarket.vn/favicon.ico">
+    <title>Dữ liệu quỹ mở | Quỹ cổ phiếu</title>
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <style>
+        #myTable {
+            width: 100%;
+            border-collapse: collapse;
+            overflow-x: auto;
+            /* Hiển thị thanh cuộn ngang */
+            box-sizing: border-box;
+        }
+
+        #myTable th,
+        #myTable td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        #myTable th {
+            background-color: #f2f2f2;
+        }
+
+        #myTable tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        #myTable td.selected {
+            background-color: #add8e6;
+            /* Màu hiệu ứng */
+        }
+
+        * {
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            margin: 0px;
+        }
+
+        #app {
+            max-width: 100%;
+            max-height: calc(100vh - 100px);
+            overflow: scroll;
+        }
+
+        /* CSS cho popup */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ccc;
+            padding: 10px;
+            background-color: #fff;
+            z-index: 1000;
+        }
+
+        .popup table {
+            width: 400px;
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+
+        .popup table,
+        .popup th,
+        .popup td {
+            border: 1px solid #000;
+            width: max-content;
+        }
+
+        .popup th,
+        .popup td {
+            padding: 8px;
+            text-align: left;
+        }
+
+        .popup-close {
+            cursor: pointer;
+            color: red;
+            float: right;
+            font-size: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="load"></div>
+    <div style="color: #24cf24;background-color: #423232;padding: 8px;width: 100%;margin: auto;text-align: center;font-size: 18px;">
+        <h3>TOP CỔ PHIẾU CÁC QUỸ CỔ PHIẾU NẮM GIỮ NHIỀU</h3>
+        <div id='date' style="color:white; ">(Theo số liệu Fmarket tính đến: DD/MM/YYYY)</div>
+    </div>
+    <div id="app"></div>
+    <p><i>* Tỉ trọng tính theo %<br /> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i></p>
+    <div id="popup" class="popup">
+        <span> Danh mục cổ phiếu nắm giữ </span>
+        <span id="closePopup" class="popup-close">&times;</span>
+        <table id="dataTable">
+            <thead>
+                <tr>
+                    <th>Mã</th>
+                    <th>Giá</th>
+                    <th>+/-(%)</th>
+                    <th>Ngành</th>
+                    <th>Tỷ trọng</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Rows will be added here dynamically -->
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function showDs(data) {
+            const popup = document.getElementById('popup');
+            const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
+            tbody.innerHTML = '';
+            data.forEach(item => {
+                const row = tbody.insertRow();
+                row.insertCell().textContent = item.stockCode;
+                row.insertCell().textContent = item.price;
+                row.insertCell().textContent = item.changeFromPreviousPercent;
+                row.insertCell().textContent = item.industry;
+                row.insertCell().textContent = item.netAssetPercent;
+            });
+            popup.style.display = 'block';
+        };
+
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('popup').style.display = 'none';
+        });
+
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
+
+        function timestampToDate(timestamp) {
+            const date = new Date(timestamp);
+            const day = date.getDate().toString().padStart(2, '0');
+            const month = (date.getMonth() + 1).toString().padStart(2, '0');
+            const year = date.getFullYear();
+            return `(Theo số liệu Fmarket tính đến: ${day}/${month}/${year})`;
+        }
+        loading(1);
+        var ccq = [];
+        var topHolding = [];
+        async function fetchData() {
+            const url = "https://api.fmarket.vn/res/products/filter";
+            const headers = {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "vi",
+                "content-type": "application/json"
+            };
+            const body = JSON.stringify({
+                "types": ["NEW_FUND", "TRADING_FUND"],
+                "issuerIds": [],
+                "sortOrder": "DESC",
+                "sortField": "navTo12Months",
+                "page": 1,
+                "pageSize": 100,
+                "isIpo": false,
+                "fundAssetTypes": ["STOCK"],
+                "bondRemainPeriods": [],
+                "searchField": "",
+                "isBuyByReward": false,
+                "thirdAppIds": []
+            });
+
+            try {
+                const response = await fetch(url, {
+                    method: "POST",
+                    headers: headers,
+                    body: body,
+                    mode: "cors",
+                    credentials: "omit"
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                document.querySelector("#date").innerHTML = timestampToDate(result.time);
+                displayDataInTable(result.data.rows); // Hiển thị dữ liệu trong bảng
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        async function displayDataInTable(data) {
+            // Tạo bảng HTML
+            ccq = data;
+            await fetchSequentially(ccq);
+            console.log(ccq)
+            data.sort((b, a) => a.owner.shortName.localeCompare(b.owner.shortName));
+            console.log(topHolding.slice(0, 25));
+            let top20 = topHolding.slice(0, 25).map(item => item.stockCode);
+
+            const table = document.createElement("table");
+            table.border = "1";
+            table.style.borderCollapse = "collapse";
+            table.style.width = "100%";
+            table.id = "myTable";
+
+            // Tạo hàng tiêu đề
+            const thead = document.createElement("thead");
+            const headerRow = document.createElement("tr");
+            const headers = ["Cty Quản lý", "Quỹ mở", "% YTD", "% 1 năm", "% 2 năm"].concat(top20); // Thay đổi theo API
+            headers.forEach(header => {
+                const th = document.createElement("th");
+                th.textContent = header;
+                th.style.padding = "8px";
+                th.style.textAlign = "left";
+                th.style.backgroundColor = "#5e3c3c";
+                th.style.color = "white";
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Tạo hàng dữ liệu
+            const tbody = document.createElement("tbody");
+            data.forEach(item => {
+                const row = document.createElement("tr");
+
+                const hsbcCell = document.createElement("td");
+                hsbcCell.textContent = item.owner.shortName || "N/A"; // cty quản lý
+                hsbcCell.title = item.owner.shortName || "N/A"
+                hsbcCell.style.padding = "8px";
+                hsbcCell.style.backgroundColor = "#a4e8e8"
+                row.appendChild(hsbcCell);
+
+                const codeCell = document.createElement("td");
+                codeCell.textContent = item.shortName || "N/A"; // Tcode
+                codeCell.title = item.name || "N/A"; // Tcode
+                codeCell.style.fontWeight = "bold";
+                codeCell.style.padding = "8px";
+                row.appendChild(codeCell);
+                codeCell.onclick = function() {
+                    showDs(item.productTopHoldingList);
+                };
+
+                const navytdCell = document.createElement("td");
+                navytdCell.textContent = item.productNavChange.navToLastYear || "-"; // ytd
+                navytdCell.style.padding = "8px";
+                navytdCell.style.color = "rgb(21 250 32)";
+                navytdCell.style.backgroundColor = "#5e3c3c";
+                navytdCell.style.textAlign = 'center';
+                row.appendChild(navytdCell);
+
+                const nav1yCell = document.createElement("td");
+                nav1yCell.textContent = item.productNavChange.navTo12Months || "-"; // 1y
+                nav1yCell.style.padding = "8px";
+                nav1yCell.style.color = "rgb(21 250 32)";
+                nav1yCell.style.backgroundColor = "#5e3c3c";
+                nav1yCell.style.textAlign = 'center';
+                row.appendChild(nav1yCell);
+
+                const nav2yCell = document.createElement("td");
+                nav2yCell.textContent = item.productNavChange.navTo24Months || "-"; // 2y
+                nav2yCell.style.padding = "8px";
+                nav2yCell.style.color = "rgb(21 250 32)";
+                nav2yCell.style.backgroundColor = "#5e3c3c";
+                nav2yCell.style.textAlign = 'center';
+                row.appendChild(nav2yCell);
+
+                top20.forEach(code => { // duyệt từng đối tượng
+                    let dulieus = item.productTopHoldingList || [];
+                    const dulieu = dulieus.find(s => s.stockCode === code) || {};
+                    const cells = document.createElement("td");
+                    cells.textContent = dulieu.netAssetPercent || " "; // từng mã
+                    cells.style.padding = "8px";
+                    row.appendChild(cells);
+                })
+
+                tbody.appendChild(row);
+            });
+            table.appendChild(tbody);
+
+            // Thêm bảng vào DOM
+            document.getElementById("app").appendChild(table);
+            loading(0);
+            table.addEventListener('click', function(event) {
+                if (event.target.tagName === 'TD') {
+                    document.querySelectorAll('#myTable td').forEach(td => td.classList.remove('selected'));
+
+                    // Thêm hiệu ứng cho ô vừa chọn
+                    event.target.classList.add('selected');
+                }
+            });
+        }
+
+        // Gọi hàm để in kết quả ra bảng
+        fetchData();
+
+        async function fetchSequentially(data) {
+            for (const s of data) {
+                try {
+                    const result = await fetchProductDetails(s.id); // Gọi hàm customFetch thay cho fetch
+                    console.log("Processed result:", s.shortName); // Xử lý dữ liệu nếu cần
+                } catch (error) {
+                    console.error("Error processing URL:", s, error);
+                }
+            }
+        }
+
+
+        function addObjectToArray(array, obj, uniqueKey) {
+            const existingItem = array.find(item => item[uniqueKey] === obj[uniqueKey]);
+            if (existingItem) {
+                existingItem.count += 1;
+            } else {
+                obj.count = 1;
+                array.push(obj);
+            }
+            array.sort((a, b) => b.count - a.count);
+        }
+
+
+        async function fetchProductDetails(productId) {
+
+            const url = `https://api.fmarket.vn/res/products/${productId}`;
+            const headers = {
+                "accept": "application/json, text/plain, */*",
+                "accept-language": "vi",
+            };
+
+            try {
+                const response = await fetch(url, {
+                    method: "GET",
+                    headers: headers,
+                    mode: "cors",
+                    credentials: "include"
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const result = await response.json();
+                let tem = ccq.findIndex(s => s.id == productId);
+                ccq[tem].productTopHoldingList = result.data.productTopHoldingList;
+                result.data.productTopHoldingList.forEach(stock => {
+                    addObjectToArray(topHolding, stock, "stockCode")
+                });
+
+            } catch (error) {
+                console.error("Error fetching product details:", productId);
+            }
+        }
+    </script>
+</body>
+
+</html>
