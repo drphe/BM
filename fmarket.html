@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" sizes="32x32" href="https://fmarket.vn/favicon.ico">
-    <title>Dữ liệu quỹ mở | Quỹ cổ phiếu</title>
+    <title>Dữ liệu quỹ mở</title>
     <link rel="stylesheet" type="text/css" href="loading.css">
     <style>
         #myTable {
@@ -92,11 +92,11 @@
 <body>
     <div id="load"></div>
     <div style="color: #24cf24;background-color: #423232;padding: 8px;width: 100%;margin: auto;text-align: center;font-size: 18px;">
-        <h3>TOP CỔ PHIẾU CÁC QUỸ CỔ PHIẾU NẮM GIỮ NHIỀU</h3>
+        <h3>TOP CỔ PHIẾU CÁC QUỸ NẮM GIỮ NHIỀU NHẤT</h3>
         <div id='date' style="color:white; ">(Theo số liệu Fmarket tính đến: DD/MM/YYYY)</div>
     </div>
     <div id="app"></div>
-    <p align="center"><i>* Tỉ trọng tính theo %<br /> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i></p>
+    <p align="center"><span style="background-color:#a4e8e8;border:1px solid #000;margin:2px; pading:2px;"> Quỹ cổ phiếu</span><span style="background-color:#fff;border:1px solid #000;margin:2px; pading:2px;">Quỹ cân bằng</span><i>Tỉ trọng tính theo %<br/> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i><br/></p>
     <div id="popup" class="popup">
         <span> Danh mục cổ phiếu nắm giữ </span>
         <span id="closePopup" class="popup-close">&times;</span>
@@ -165,7 +165,7 @@
                 "page": 1,
                 "pageSize": 100,
                 "isIpo": false,
-                "fundAssetTypes": ["STOCK"],
+                "fundAssetTypes": ["STOCK","BALANCED"],
                 "bondRemainPeriods": [],
                 "searchField": "",
                 "isBuyByReward": false,
@@ -233,11 +233,12 @@
                 hsbcCell.textContent = item.owner.shortName || "N/A"; // cty quản lý
                 hsbcCell.title = item.owner.shortName || "N/A"
                 hsbcCell.style.padding = "8px";
-                hsbcCell.style.backgroundColor = "#a4e8e8"
+                hsbcCell.style.backgroundColor = item.dataFundAssetType.code == "STOCK"?"#a4e8e8": "white";
                 row.appendChild(hsbcCell);
 
+
                 const codeCell = document.createElement("td");
-                codeCell.textContent = item.shortName || "N/A"; // Tcode
+                codeCell.textContent = item.shortName || "N/A";
                 codeCell.title = item.name || "N/A"; // Tcode
                 codeCell.style.fontWeight = "bold";
                 codeCell.style.padding = "8px";
