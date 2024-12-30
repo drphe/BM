@@ -7,6 +7,7 @@
     <title>Công cụ chứng khoán </title>
 </head>
 <script src="highchart.11.1.js"></script>
+    <link rel="stylesheet" type="text/css" href="loading.css">
 <style>
     .container {
         display: flex;
@@ -25,7 +26,7 @@
         background-color: #f4f4f9;
         padding: 10px;
         overflow: auto;
-        border-radius: 4px;
+        border-radius: 10px;
     }
 
     ::-webkit-scrollbar-track {
@@ -242,6 +243,7 @@
 </style>
 
 <body>
+    <div id="load"></div>
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
@@ -250,7 +252,7 @@
             <div class="tab" onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
             <div class="tab selected" onclick="fetchData()">Đối tượng giao dịch</div>
             <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
-	    <span style="font-size: 16px;font-weight: 700;">Phân tích cổ phiếu</span>
+	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
             <div class="tab" onclick="fetchData(5)">Biểu đồ Tradingview</div>
             <div class="tab" onclick="showPopup()">Mức chiết khấu CP</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
@@ -294,6 +296,9 @@
         </div>
     </div>
     <script>
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
 	const overlay = document.getElementById('overlay'); 
         const showButton = document.getElementById('showButton');
         const hiddenElement = document.getElementById('hiddenElement');
@@ -322,7 +327,7 @@
 
         // Ẩn đối tượng khi click ra ngoài 
         document.addEventListener('click', function(event) {
-            var righttab = window.innerWidth > 768;
+            var righttab = window.innerWidth > 800;
 	    var overlay = document.getElementById('overlay'); 
             if (!hiddenElement.contains(event.target) && !showButton.contains(event.target)) {
                 if (hiddenElement.classList.contains('visible')) {
@@ -352,7 +357,7 @@
         }
 
         function hidemenu() {
-            var righttab = window.innerWidth > 800;
+            var righttab = window.innerWidth > 768;
             hiddenElement.classList.remove('visible');
 	    overlay.style.display = 'none'; 
             showButton.style.display = righttab ? 'none' : 'block';
@@ -446,6 +451,7 @@
                 toggleElement();
                 return;
             }
+	    loading(!0)
             var apiUrl = "https://api-finance-t19.24hmoney.vn/v1/ios/stock/statistic-investor-history?symbol=10";
             try {
                 const response = await fetch(apiUrl);
@@ -531,7 +537,7 @@
                     chart: {
                         type: 'spline',
                         height: '500',
-                        width: window.innerWidth > 768 ? window.innerWidth - 300 : window.innerWidth,
+                        width: window.innerWidth > 800 ? window.innerWidth - 300 : window.innerWidth,
                         margin: [],
                         style: {
                             fontSize: "14px",
@@ -617,9 +623,10 @@
 
                 //ve bieu do
                 Highcharts.chart('myChart', config);
-
+		loading(0)
             } catch (error) {
                 console.error('There has been a problem with your fetch operation:', error);
+		loading(0)
             }
             toggleElement();
         }

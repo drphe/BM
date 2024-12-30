@@ -9,9 +9,6 @@
     <script src="./code/highcharts.js"></script>
     <script src="./code/accessibility.js"></script>
     <script src="./code/mouse-wheel-zoom.js"></script>
-
-
-
 </head>
 <style>
     .module {
@@ -151,13 +148,12 @@
     .bolai {
         padding: 6px 2px 2px 2px;
         border-radius: 3px;
-        box-shadow: inset 0 0 0 1px var(--boxshadow), 0 0 0 var(--boxshadow), 0 0 0 var(--boxshadow);
         background-color: var(--backgroundColor);
     }
 </style>
-
+    <link rel="stylesheet" type="text/css" href="loading.css">
 <body>
-
+    <div id="load"></div>
     <div class="module">
         <div class="bolai">
             <div id="changenganhtime" style="float: right;margin-right: 10px;">
@@ -182,6 +178,9 @@
     </div>
 
     <script>
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
         function isStockMarketOpen() {
             const now = new Date();
             const dayOfWeek = now.getDay();
@@ -205,7 +204,7 @@
         let buttonn = buttonnganh.querySelectorAll('.bp3-tab');
         const buttonnganhtime = document.getElementById("changenganhtime")
         let buttonnt = buttonnganhtime.querySelectorAll('.bp3-button');
-
+	loading(!0)
         var chart4, refreshnganh;
         var periodk = 'day',
             typek = false;
@@ -442,6 +441,7 @@
                 for (var i = 0; i < seri.length; i++) chart4.series[i].update(seri[i]);
             }, 3000);
             chart4.hideLoading();
+	    loading(0)
         }
     </script>
 
