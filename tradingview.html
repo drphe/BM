@@ -1,0 +1,299 @@
+<html>
+<meta charset="UTF-8">
+
+<head>
+    <title>Biểu đồ kỹ thuật </title>
+    <link rel="stylesheet" type="text/css" href="./library/main.css">
+    <link rel="stylesheet" type="text/css" href="./library/loading.css">
+    <style>
+tr,
+td {
+    min-width: 0px;
+    border: none;
+}
+
+body::-webkit-scrollbar {
+    display: none !important;
+}
+
+body {
+    max-width: 100%;
+    margin: 0 auto;
+    font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
+    font-size: 14px;
+    line-height: 24px;
+    font-weight: 500;
+    background-color: var(--chartbg);
+}
+
+.tophead {
+    display: flex;
+    height: 40px;
+    align-items: center;
+    justify-content: space-between;
+    color: var(--text);
+    background-color: var(--bgcl);
+    margin: 0px;
+}
+
+.title {
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.suggestions {
+    /*display: block;*/
+    position: absolute;
+    top: 40px;
+    z-index: 1001;
+    left: 0px;
+    /*border: 1px;*/
+}
+
+li.item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+li.item:hover {
+    box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+}
+
+.suggestions .item {
+    border-bottom: solid 1px var(--bdcl);
+    margin-bottom: 2px;
+    padding: 6px;
+    padding-left: 0.5rem;
+    cursor: pointer;
+    font-size: 0.875rem;
+    border-radius: 0.125rem;
+    background: var(--bgcl);
+    color: var(--black);
+}
+
+ol,
+ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+#listCK {
+    width: 300px;
+    max-height: 200px;
+    overflow: auto;
+    background-color: var(--bgcl);
+    border-radius: 3px;
+    box-shadow: 0 0 0 1px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+}
+
+.menu {
+    position: fixed;
+    right: 5px;
+    top: 35px;
+    box-shadow: rgba(16, 22, 26, 0.1) 0px 0px 0px 1px, rgba(16, 22, 26, 0.2) 0px 2px 4px, rgba(16, 22, 26, 0.2) 0px 8px 24px;
+    transform: scale(1);
+    border-radius: 3px;
+    display: inline-block;
+    z-index: 1001;
+    padding: 2px;
+    width: 150px;
+    background-color: var(--pocl);
+    color: var(--pot);
+}
+
+.menu .rows {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    border-radius: 2px;
+    color: inherit;
+    line-height: 20px;
+    padding: 5px 7px;
+    text-decoration: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    justify-content: space-between;
+}
+
+.menu .rows:hover {
+    background-color: var(--hov);
+    cursor: pointer;
+}
+
+:root {
+    --bgcl: white;
+    --bgbt: #f5f8fa;
+    --white: white;
+    --black: black;
+    --gray: #fafafa;
+    --hov: #f5f5f5;
+    --lie: #106ba3;
+    --bdcl: #eeeff2;
+    --bdin: rgba(66, 153, 225, 0.3);
+    --pocl: rgb(255, 255, 255);
+    --pot: rgb(92, 112, 128);
+    --clbt: #f5f8fa;
+    --chartbg: white;
+    --text: black;
+    --bdchart: rgb(0 2 6 / 13%);
+}
+
+[data-theme="dark"] {
+    --bgcl: #30404d;
+    --bgbt: #394b59;
+    --white: black;
+    --black: white;
+    --gray: black;
+    --hov: rgba(130, 150, 160, .15);
+    --lie: #48aff0;
+    --bdcl: black;
+    --bdin: black;
+    --pocl: #30404d;
+    --pot: white;
+    --clbt: #394b59;
+    --tooltip: #5a0fb5;
+    --chartbg: rgb(24, 28, 39);
+    --text: #b2b5be;
+    --bdchart: none;
+}
+
+.dumuaban td {
+    background-color: var(--bgbt);
+    color: var(--black);
+    border-color: var(--clbt);
+}
+
+.status {
+    color: #089981;
+    border-radius: 50%;
+    background-color: rgba(66, 153, 225, 0.1);
+    border: 1px solid rgba(66, 153, 225, 0.1);
+    scale: 0.8;
+}
+
+#mychartcontainers {
+    background: var(--white);
+}
+
+#mychartcontainers div {
+    margin-right: 0px;
+    border-color: var(--bdchart);
+}
+
+input:focus {
+    border: none;
+    outline: none;
+}
+
+/*check biểu đồ kỹ thuật*/
+.switch {
+    position: relative;
+    display: inline-block;
+    z-index: 100;
+}
+
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.slider {
+    scale: 0.8;
+    position: absolute;
+    cursor: pointer;
+    top: -10px;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+    border-radius: 24px;
+    box-shadow: none !important;
+    height: 20px;
+    width: 40px;
+}
+
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    vertical-align: middle;
+    border-radius: 18px;
+    left: 2px;
+    bottom: 1px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+
+input:checked+.slider {
+    background-color: #2196F3;
+}
+
+input:focus+.slider {
+    box-shadow: 0 0 1px #2196F3;
+}
+
+input:checked+.slider:before {
+    -webkit-transform: translateX(18px);
+    -ms-transform: translateX(18px);
+    transform: translateX(18px);
+}
+
+.slider.round {
+    border-radius: 34px;
+}
+
+.slider.round:before {
+    border-radius: 50%;
+}
+
+.clock {
+    font-size: 12px;
+    color: #a28282;
+}
+    </style>
+</head>
+
+<body>
+    <div class="tophead">
+        <div style="display: flex;align-items: center;">
+            <div class="title">Chỉ số VN-INDEX</div>
+            <div class="status"></div>
+            <div class="clock"></div>
+        </div>
+        <div><label class="switch" id="changeChart" title="Chuyển loại biểu đồ!" style="display: inline-block;margin-top: 18px;">
+                <input type="checkbox" id="tradingview">
+                <span class="slider"></span>
+            </label>
+            <a id="theodoi" target="_blank" style="float:right">
+                <button class="hover:bg-blue-700 text-white py-1 px-2 mx-1 my-0 rounded text-sm shadow hover:shadow-sm" title="Danh sách theo dõi" style="height: 36px;scale: 0.7;background-color: #5c7080;">
+                    <svg data-icon="list" class="inline-block text-gray-800" style="margin-top: 1px;fill:var(--white);" width="20" height="20" viewBox="0 0 16 16">
+                        <desc>list</desc>
+                        <path d="M1 3h14c.55 0 1-.45 1-1s-.45-1-1-1H1c-.55 0-1 .45-1 1s.45 1 1 1zm14 10H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1z" fill-rule="evenodd"></path>
+                    </svg>
+                </button>
+            </a>
+        </div>
+        <div class="suggestions">
+            <input class="input item completor-input" type="text" placeholder="Nhập mã chứng khoán" title="Nhập mã giao dịch!" id="searchCK" value="" style="height: 30px;width:300px; border:none;background-color: var(--bgcl);left:-500px;position:absolute;cursor:text" />
+            <ul id="listCK" style="display: none;" class="items border-t border-gray">
+            </ul>
+        </div>
+    </div>
+    <div class="menu" style="display: none;">
+        <!-- ContextMenu -->
+    </div>
+    <div id="mychartcontainers"></div>
+    <div id="load"></div>
+    <script src="./library/tv.js"></script>
+    <script src="./library/lunar.js"></script>
+    <script src="./library/tradingview.js"></script>
+</body>
+
+</html>
