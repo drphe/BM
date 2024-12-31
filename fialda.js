@@ -1,11 +1,3 @@
-var header = {
-    method: 'GET', // hoặc 'POST', 'PUT', v.v.
-    headers: {
-        'Content-Type': '*/*',
-        'Accept': 'application/json',
-    },
-    credentials: 'same-origin', // hoặc 'include' nếu cần gửi cookie
-};
 function checkDevice() {
     const userAgent = navigator.userAgent.toLowerCase();
     const isMobile = /iphone|ipod|android|blackberry|mini|windows\sce|palm/i.test(userAgent);
@@ -33,7 +25,7 @@ async function getBCPTCP(s = '') {
         var year2 = (month < 4) ? (year - 1) : year
         var month2 = (month < 4) ? (month + 9) : (month - 3)
         url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
-        var res = await fetch(url, header);
+        var res = await fetch(url);
         var data = await res.json();
         POST = data.result
         await taoTable(POST);
@@ -97,7 +89,7 @@ async function getBCPTTT() {
     loading(!0)
     try {
         var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReport?pageNumber=1&pageSize=30'
-        var res = await fetch(url, header);
+        var res = await fetch(url);
         var data = await res.json();
         POST = data.result.items
         createBang(POST)
