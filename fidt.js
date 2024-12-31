@@ -23,10 +23,6 @@ document.body.addEventListener("click", function(e) {
 
 });
 
-getFIDTnews();
-pre.innerHTML = "", document.querySelector(".strategy").innerHTML = ``;
-document.getElementById("pres").style.display = "none";
-
 const button = document.getElementById("button")
 let buttons = button.querySelectorAll('.button');
 buttons.forEach(b => {
@@ -68,7 +64,7 @@ buttons.forEach(b => {
 async function getFIDTnews() {
     loading(!0)
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "*/*");
+    myHeaders.append("Content-Type", "application/json");
     myHeaders.append("Accept", "application/json");
     var raw = JSON.stringify({
         "action": "READ",
@@ -77,7 +73,8 @@ async function getFIDTnews() {
     var requestOptions = {
         method: 'POST',
         headers: myHeaders,
-        body: raw
+        body: raw,
+	mode: "cors"
     };
     var res = await fetch("https://guru.fidt.vn/do-action", requestOptions)
     var data = await res.json();
@@ -102,10 +99,18 @@ async function getFIDTnews() {
     })
     loading(0)
 }
-
+getFIDTpredic();
 async function getFIDTpredic() {
     loading(!0)
-    await fetch("https://market-trending.fidt.vn/api/market-trend").then(response => response.text()).then(result => {
+var header = {
+  headers: {
+    "Accept": "*/*",
+    "If-None-Match": "\"3ntog0lnx7dcj\""
+  },
+  method: "GET",
+  mode: "cors"
+}
+    await fetch("https://market-trending.fidt.vn/api/market-trend", header).then(response => response.text()).then(result => {
         let g = JSON.parse(result)
         //console.log(g)
         let k = g.data[0]
