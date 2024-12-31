@@ -159,31 +159,21 @@
         width: 60px;
         height: 60px;
         background-color: rgba(0, 0, 0, 0.6);
-        /* Màu nền đen với độ trong suốt */
         border-radius: 50%;
-        /* Làm tròn hoàn toàn */
         color: white;
-        /* Màu chữ (ẩn nếu không cần chữ) */
         text-align: center;
         line-height: 60px;
-        /* Căn giữa chữ */
         cursor: pointer;
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        /* Đổ bóng nhẹ */
         transition: transform 0.3s ease, opacity 0.3s ease;
-        /* Hiệu ứng mượt */
         opacity: 0.8;
         /* Độ mờ */
     }
 
     .show-button:hover {
-        transform: scale(1.1);
-        /* Phóng to nhẹ khi hover */
         opacity: 1;
         /* Hiển thị rõ hơn khi hover */
     }
-
-
     .visible {
         right: 10px;
         /* Hiển thị đối tượng */
@@ -445,12 +435,10 @@
 
             const configIframe = iframeConfigs[iframe];
             if (configIframe) {
-		let hei = 40;
  	       if (/Mobi|Android/i.test(navigator.userAgent)) {
         	    (iframe ==9) && alert("Chức năng này hoạt động không tốt trên điện thoại!");
-		    hei = 100;
       	  	}
-                const style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - "+hei+"px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
+                const style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 50px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
                 document.querySelector('.existing-div').innerHTML = `<iframe style="${style}" src="${configIframe.src}"></iframe>`;
                 document.title = "Tool CK| " + configIframe.title;
                 toggleElement();

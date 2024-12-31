@@ -484,29 +484,28 @@ button {
 }
 /*bảng dư mua bán*/
 
-.dumuaban table {
+.tabledumuaban table, .dumuaban table {
     font-size: 13px;
     line-height: 20px;
     margin: auto;
     padding: 0px;
     display: block;
-    width: 100%;
 }
-.dumuaban tbody{
+.tabledumuaban tbody, .dumuaban tbody{
 background-color: #fff;
 }
-.dumuaban td {
+.tabledumuaban td, .dumuaban td {
     border: 1px solid var(--clbt);
     margin: 0px;
     padding: 0px;
 }
 
-.dumuaban span {
+.tabledumuaban span, .dumuaban span {
     padding: 2px;
     display: block;
     font-weight: 400;
 }
-.dumuaban th,
+.tabledumuaban th, .tabledumuaban td, .dumuaban th,
 .dumuaban td {
     text-align: center;
     font-size: 13px;

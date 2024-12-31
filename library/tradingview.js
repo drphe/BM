@@ -31,6 +31,10 @@
     async function getChart() {
         var lastWidth = window.innerWidth,
             lastHeight = window.innerHeight;
+ 	       if (/Mobi|Android/i.test(navigator.userAgent)) {
+        	    lastHeight = lastHeight-200;
+      	  	}
+
         statusText();
         items = allKey.find(c => c.code == lastSymbol);
         items.type == 'cw' && (tradingview = false);
@@ -388,6 +392,9 @@
             if (document.fullscreenElement) {
                 chart.resize(w, h);
             } else if (isMaxWidth) {
+ 	       if (/Mobi|Android/i.test(navigator.userAgent)) {
+        	    h = h-200;
+      	  	}
                 chart.resize(w, h - 40);
             }
         });
@@ -781,8 +788,7 @@
             var cel4 = `<span style=" ${getV("p", m.bb[0]) == m.c ? "background-color: rgba(255,42,78,.18);":""}">${f(getV("v",m.bb[0]))}</span><span>${f(getV("v",m.bb[1]))}</span><span>${f(getV("v",m.bb[2]))}</span>`;
             var cel5 = `<span style=" ${getV("p",m.bb[0]) == m.c ? "background-color: rgba(255,42,78,.18);":""}">${f(m.ss == "ATC"||m.ss == "ATO"?m.ss: getV("p",m.bb[0]))}</span><span>${f(getV("p", m.bb[1]))}</span><span>${f(getV("p",m.bb[2]))}</span>`;
             var cel6 = `<span >${m.s}</span><span>C: ${f(m.c)}</span><span>TC: ${f(m.frTr)}</span>`;
-            domElement.querySelector(".dumuaban")
-                .innerHTML = showDumua ? `<table><tbody>
+	    var tablehtml = `<table><tbody>
 		<tr><td style="text-align: left; width: 80px;">${cel1}</td>
 		<td style="text-align: center; width: 80px;">${cel2}</td>
 		<td style="text-align: right; width: 80px;">${cel3}</td></tr>
@@ -792,7 +798,13 @@
 		<tr><td style="text-align: left; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">${f(totalM)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frBvo)}</span></td>
 		<td style="text-align: center; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">Tổng</span><span style="background-color: rgba(255,42,90,.18)">Nước ngoài</span></td>
 		<td style="text-align: right; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">${f(totalB)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frSvo)}</span></td></tr>
-		</tbody></table>` : '';
+		</tbody></table>`;
+
+ 	    if (/Mobi|Android/i.test(navigator.userAgent)) {
+  		document.querySelector(".tabledumuaban").innerHTML = showDumua ? tablehtml : '';
+      	  	} else {
+            	domElement.querySelector(".dumuaban").innerHTML = showDumua ? tablehtml : '';
+	    }
         }
 	// tải dữ liệu giá
         async function getData() {
