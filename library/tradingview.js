@@ -644,7 +644,7 @@
                         if (ispop) {
                             var selectDiv = document.createElement('div');
                             selectDiv.id = "Indicator";
-                            selectDiv.style = `position:absolute; right:100px; top:30px; box-shadow: 0 0 0 1px rgba(16,22,26,.1), 0 2px 4px rgba(16,22,26,.2), 0 8px 24px rgba(16,22,26,.2);-webkit-transform: scale(1);transform: scale(1);border-radius: 3px;display: inline-block;z-index: 100;width:140px;padding:2px;background-color:#fff;color:#5c7080;`;
+                            selectDiv.style = `position:absolute; right:100px; top:30px; box-shadow: 0 0 0 1px rgba(16,22,26,.1), 0 2px 4px rgba(16,22,26,.2), 0 8px 24px rgba(16,22,26,.2);-webkit-transform: scale(1);transform: scale(1);border-radius: 3px;display: inline-block;z-index: 100;width:140px;padding:2px;background-color:#fff;color:#5c7080;z-index:10001;`;
                             var tindicator = localStorage.getItem("indicator");
                             selectDiv.innerHTML = `<a id="ma20-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">MA20<span style="float:right">${isMA20?tickicon2:''}</span></a>
 <a id="ma50-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">MA50<span style="float:right">${isMA50?tickicon2:''}</span></a>
