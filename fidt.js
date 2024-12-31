@@ -104,8 +104,7 @@ async function getFIDTpredic() {
     loading(!0)
 var header = {
   headers: {
-    "Accept": "*/*",
-    "If-None-Match": "\"3ntog0lnx7dcj\""
+    "Accept": "*/*"
   },
   method: "GET",
   mode: "cors"
