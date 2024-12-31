@@ -22,9 +22,12 @@ async function getBCPTCP(s = '') {
         var year = d.getFullYear();
         var month = d.getMonth() + 1;
         var day = d.getDate();
-        var year2 = (month < 4) ? (year - 1) : year
-        var month2 = (month < 4) ? (month + 9) : (month - 3)
-        url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
+	// Tạo đối tượng Date cho 3 tháng trước
+	var previousDate = new Date(year, month - 3, day);
+	var year2 = previousDate.getFullYear();
+	var month2 = previousDate.getMonth() + 1; // Thêm 1 vì getMonth() trả về giá trị từ 0-11
+	var day2 = previousDate.getDate();
+        url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day2}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
         var res = await fetch(url);
         var data = await res.json();
         POST = data.result
