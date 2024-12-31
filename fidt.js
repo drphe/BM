@@ -65,11 +65,19 @@ buttons.forEach(b => {
         }
     });
 });
+var header = {
+    method: 'GET', // hoặc 'POST', 'PUT', v.v.
+    headers: {
+        'Content-Type': '*/*',
+        'Accept': 'application/json',
+    },
+    credentials: 'same-origin', // hoặc 'include' nếu cần gửi cookie
+};
 
 async function getFIDTnews() {
     loading(!0)
     var myHeaders = new Headers();
-    myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Content-Type", "*/*");
     myHeaders.append("Accept", "application/json");
     var raw = JSON.stringify({
         "action": "READ",
@@ -106,7 +114,7 @@ async function getFIDTnews() {
 
 async function getFIDTpredic() {
     loading(!0)
-    await fetch("https://market-trending.fidt.vn/api/market-trend").then(response => response.text()).then(result => {
+    await fetch("https://market-trending.fidt.vn/api/market-trend", header).then(response => response.text()).then(result => {
         let g = JSON.parse(result)
         //console.log(g)
         let k = g.data[0]
