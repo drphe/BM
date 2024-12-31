@@ -249,8 +249,8 @@
         <div class="tabs">
 	    <span style="font-size: 16px;font-weight: 700;">Tin tức/ Thị trường</span>
             <div class="tab" onclick="fetchData(9)">Dashboard FIDT</div>
-            <div class="tab" onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
-            <div class="tab selected" onclick="fetchData()">Đối tượng giao dịch</div>
+            <div class="tab selected" onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+            <div class="tab" onclick="fetchData()">Đối tượng giao dịch</div>
             <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
 	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
             <div class="tab" onclick="fetchData(5)">Biểu đồ Tradingview</div>
@@ -637,14 +637,6 @@
         const ams = new URLSearchParams(window.location.search);
         const quote = ams.get("iframe");
         fetchData(quote ? quote : 4);
-
-        try {
-            const taball = document.querySelectorAll('.tab');
-            taball.forEach(tab => {
-                tab.classList.remove('selected');
-            });
-            document.querySelector(`.tab[onclick="fetchData(${quote})"]`).classList.add('selected');
-        } catch (e) {}
 
         function clock() {
             const t = document.querySelector(".clock"),
