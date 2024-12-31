@@ -445,7 +445,10 @@
 
             const configIframe = iframeConfigs[iframe];
             if (configIframe) {
-                const style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
+ 	       if (/Mobi|Android/i.test(navigator.userAgent) && iframe ==9 ) {
+        	    alert("Chức năng này hoạt động không tốt trên điện thoại!");
+      	  	}
+                const style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 40px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
                 document.querySelector('.existing-div').innerHTML = `<iframe style="${style}" src="${configIframe.src}"></iframe>`;
                 document.title = "Tool CK| " + configIframe.title;
                 toggleElement();
