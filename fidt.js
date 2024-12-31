@@ -70,6 +70,7 @@ async function getFIDTnews() {
     loading(!0)
     var myHeaders = new Headers();
     myHeaders.append("Content-Type", "application/json");
+    myHeaders.append("Accept", "application/json");
     var raw = JSON.stringify({
         "action": "READ",
         "resource": "idp.overview.news"
