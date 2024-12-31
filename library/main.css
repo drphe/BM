@@ -491,13 +491,24 @@ button {
     padding: 0px;
     display: block;
 }
+.tabledumuaban table {
+width: 100%; 
+border-collapse: collapse; 
+display: inline-table;
+}
 .tabledumuaban tbody, .dumuaban tbody{
 background-color: #fff;
 }
-.tabledumuaban td, .dumuaban td {
+.tabledumuaban td {
     border: 1px solid var(--clbt);
     margin: 0px;
     padding: 0px;
+}
+.dumuaban td {
+    border: 1px solid var(--clbt);
+    margin: 0px;
+    padding: 0px;
+    width:80px;
 }
 
 .tabledumuaban span, .dumuaban span {

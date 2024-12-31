@@ -34,7 +34,7 @@
  	       if (/Mobi|Android/i.test(navigator.userAgent)) {
         	    lastHeight = lastHeight-200;
       	  	}
-
+  		document.querySelector(".tabledumuaban").innerHTML =  '';
         statusText();
         items = allKey.find(c => c.code == lastSymbol);
         items.type == 'cw' && (tradingview = false);
@@ -789,15 +789,15 @@
             var cel5 = `<span style=" ${getV("p",m.bb[0]) == m.c ? "background-color: rgba(255,42,78,.18);":""}">${f(m.ss == "ATC"||m.ss == "ATO"?m.ss: getV("p",m.bb[0]))}</span><span>${f(getV("p", m.bb[1]))}</span><span>${f(getV("p",m.bb[2]))}</span>`;
             var cel6 = `<span >${m.s}</span><span>C: ${f(m.c)}</span><span>TC: ${f(m.frTr)}</span>`;
 	    var tablehtml = `<table><tbody>
-		<tr><td style="text-align: left; width: 80px;">${cel1}</td>
-		<td style="text-align: center; width: 80px;">${cel2}</td>
-		<td style="text-align: right; width: 80px;">${cel3}</td></tr>
-		<tr><td style="text-align: left; width: 80px;">${cel4}</td>
-		<td style="text-align: center; width: 80px;">${cel5}</td>
-		<td style="text-align: right; width: 80px;">${cel6}</td></tr>
-		<tr><td style="text-align: left; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">${f(totalM)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frBvo)}</span></td>
-		<td style="text-align: center; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">Tổng</span><span style="background-color: rgba(255,42,90,.18)">Nước ngoài</span></td>
-		<td style="text-align: right; width: 80px;"><span style="background-color: rgba(255,42,90,.18)">${f(totalB)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frSvo)}</span></td></tr>
+		<tr><td style="text-align: left;">${cel1}</td>
+		<td style="text-align: center;">${cel2}</td>
+		<td style="text-align: right;">${cel3}</td></tr>
+		<tr><td style="text-align: left;">${cel4}</td>
+		<td style="text-align: center; ">${cel5}</td>
+		<td style="text-align: right;">${cel6}</td></tr>
+		<tr><td style="text-align: left;"><span style="background-color: rgba(255,42,90,.18)">${f(totalM)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frBvo)}</span></td>
+		<td style="text-align: center; "><span style="background-color: rgba(255,42,90,.18)">Tổng</span><span style="background-color: rgba(255,42,90,.18)">Nước ngoài</span></td>
+		<td style="text-align: right;"><span style="background-color: rgba(255,42,90,.18)">${f(totalB)}</span><span style="background-color: rgba(255,42,90,.18)">${f(m.frSvo)}</span></td></tr>
 		</tbody></table>`;
 
  	    if (/Mobi|Android/i.test(navigator.userAgent)) {
