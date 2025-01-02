@@ -183,7 +183,7 @@
     })
     document.body.addEventListener("keydown", (event) => {
         const isAlphaNumeric = event.key.match(/^[a-zA-Z0-9]$/);
-        if (isAlphaNumeric && !isInputShow) showInput();
+        if (isAlphaNumeric && !isInputShow) {showInput();input.focus();}
     });
     function showInput(){
             document.querySelector(".suggestions").classList.add('popup');
@@ -191,7 +191,6 @@
             input.style.marginTop = (window.innerHeight - 250) / 2 + "px";
             input.style.position = "relative";
 	    isInputShow = true;
-	    input.focus();
 	    favour();
     }
     function exitInput() {
