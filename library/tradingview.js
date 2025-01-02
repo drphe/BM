@@ -678,7 +678,7 @@
             v = formatNumber(volume[volume.length - 1].value),
             ma1 = 0,
             ma2 = 0;
-        firstRow.innerHTML = `O: <span style="color: #2962FF">${o}</span> H: <span style="color: #2942FF">${h}</span> L: <span style="color: #2862FF">${l}</span> C: <span style="color: #2961fF">${c}</span> Vol: <span style="color: #2952FF">${v}</span> <br/> MA20: <span style="color: #2552FF">${ma1}</span> MA50: <span style="color: #1162FF">${ma2}</span></div>`;
+        firstRow.innerHTML = `O: <span style="color: #2962FF">${o}</span> H: <span style="color: #2942FF">${h}</span> L: <span style="color: #2862FF">${l}</span> C: <span style="color: #2961fF">${c}</span><br/>Vol: <span style="color: #2952FF">${v}</span> MA20: <span style="color: #2552FF">${ma1}</span> MA50: <span style="color: #1162FF">${ma2}</span></div>`;
 
         // Tạo tooltip
         const toolTipWidth = 80,
@@ -723,7 +723,7 @@
                         .toFixed(2);
                     let colorChange = ch > 0 ? 'green' : 'red';
                     toolTip.innerHTML = `<div style="color: ${'#2962FF'}">${symbolName}</div><div style="font-size: 24px; margin: 4px 0px; color: ${'black'}">${p} </div><div style = "font-weight : bold;font-size:12px;margin: 4px 0px;color: ${colorChange};">(${ch}/${chp}%)</div><div style="font-size:12px;color: ${'black'}">${dateStr}</div>`;
-                    firstRow.innerHTML = `O: <span style="color: #2962FF">${o}</span> H: <span style="color: #2942FF">${h}</span> L: <span style="color: #2862FF">${l}</span> C: <span style="color: #2961fF">${c}</span> Vol: <span style="color: #2952FF">${v}</span> <br/> MA20: <span style="color: #2552FF">${ma1}</span> MA50: <span style="color: #1162FF">${ma2}</span></div>`;
+                    firstRow.innerHTML = `O: <span style="color: #2962FF">${o}</span> H: <span style="color: #2942FF">${h}</span> L: <span style="color: #2862FF">${l}</span> C: <span style="color: #2961fF">${c}</span> <br/>Vol: <span style="color: #2952FF">${v}</span> MA20: <span style="color: #2552FF">${ma1}</span> MA50: <span style="color: #1162FF">${ma2}</span></div>`;
                     const y = param.point.y;
                     let left = param.point.x + toolTipMargin;
                     if (left > container.clientWidth - toolTipWidth) {
@@ -841,7 +841,11 @@
                     "time": data.t[i],
                     "value": parseFloat(data.c[i]) / parseFloat(data.c[i - 1]) - 1
                 });
-            }
+            }   
+		let thaydoi = change[change.length-1].value.toFixed(2);
+		let thaydoip = (changep[changep.length-1].value *100).toFixed(2);
+	    	document.querySelector(".clock").innerHTML = `<span style="color:${ccolor(thaydoi)}">${thaydoi} (${thaydoip}%)</span>`;
+
             ma20 = calculateSMA(closep, 20);
             ma50 = calculateSMA(closep, 50);
             ma150 = calculateSMA(closep, 150);
@@ -1013,7 +1017,13 @@
             }
             return emaData;
         }
-
+    function ccolor(s) {
+        if (s.price <= s.floor_price) return "rgb(0, 204, 204)";
+        else if (s.price < s.basic_price) return "#bb0000";
+        else if (s.price == s.basic_price) return "#d1d240";
+        else if (s.price < s.ceiling_price) return "#05bb00";
+        else return "#ff00ff";
+    }
         function getcolor(t, e) {
             return t > e ? "#62c3b3" : "#f9838c"
         }
