@@ -195,10 +195,13 @@ document.addEventListener("keyup", function(e) {
 
     }
 })
+
 document.body.addEventListener("click", function(e) {
     document.getElementById("load").contains(e.target) && loading(0);
     const closeButton = document.querySelector(".popup-close");
+    try{
     let popup = document.querySelector(".popup");
     closeButton.contains(e.target) && (popup.style.display = "none");
+    }catch(e){}
 
 });

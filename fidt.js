@@ -263,7 +263,7 @@ function showPopup(content) {
     closeButton.onclick = () => {
         popup.style.display = "none";
     };
-
+    popup.onclick = (event) => { if (event.target === popup) { popup.style.display = "none"; } };
     popup.appendChild(popupContent);
     popupContent.appendChild(closeButton);
     document.body.appendChild(popup);
@@ -290,6 +290,7 @@ function showPopup(content) {
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             max-width: 500px;
+	    width: -webkit-fill-available;
             text-align: left;
 	    height:500px;
 	    overflow:scroll;

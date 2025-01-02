@@ -8,7 +8,7 @@
     const mastradingviewURL = 'https://mastrade.masvn.com/api/v1/tradingview/history';
 
 	// khai báo biến
-    var tradingview = false, mack = [], theme = 'light';
+    var tradingview = localStorage.getItem('news'), mack = [], theme = 'light';
     var autoUpdate, items, urlParams = new URLSearchParams(window.location.search),
         lastSymbol = urlParams.get("q") || "VN-INDEX",
         title = document.querySelector(".title"),
@@ -26,7 +26,6 @@
     }
 
     setInterval(statusText, 1e4);
-
 	// lựa chọn kiểu chart tradingview hay lightweight
     async function getChart() {
         var lastWidth = window.innerWidth,
@@ -40,29 +39,24 @@
         items.type == 'cw' && (tradingview = false);
         if (items) {
             title.innerHTML = items.fullname_vi;
-            if (tradingview) {
-                myChart.innerHTML = `<iframe class="tradingviewfull" style="border:none;border-top: 1px solid #ddd;width:${lastWidth}px; height:${lastHeight-40}px !important;" referrerpolicy="no-referrer" ng-src="https://chart.finbox.vn/?userId=64a7da9d7368c37d8ddf4a92&popup=true&amp;symbol=${INDEXc(lastSymbol)}" allowfullscreen src="https://chart.finbox.vn/?popup=true&amp;symbol=${INDEXc(lastSymbol)}"></iframe>`;
-            } else {
                 clearInterval(autoUpdate);
                 await renderChart("mychartcontainers", lastWidth, lastHeight - 40, lastSymbol, true, theme, true);
-            }
+		let fillterCode = [];
+		if (lastSymbol !== "VN-INDEX") {fillterCode = lastSymbol}
+		AddNews(localStorage.getItem('news'),fillterCode);// lấy tin tức
         } else {
             createNotification("Mã chứng khoán, chứng quyền, Index không đúng!")
         }
     }
     getChart();
 	
-	// nút bấm chuyển tradingview
+	// nút bấm chuyển News
     var tradingviewCheckbox = document.getElementById("tradingview");
-    tradingviewCheckbox.checked = tradingview;
+    tradingviewCheckbox.checked = localStorage.getItem('news');
     tradingviewCheckbox.addEventListener("change", async function() {
-        tradingview = this.checked;
-        var changeChart = document.getElementById("changeChart");
-        changeChart.title = tradingview ? "Chuyển sang biểu đồ rút gọn!" : "Chuyển sang biểu đồ Tradingview!";
-        getChart();
+	localStorage.setItem('news',this.checked);
+	await AddNews(this.checked)
     });
-
-
 	// tự thay đổi kích thước biểu đồ
     window.addEventListener("resize", () => {
         if (!document.fullscreenElement && tradingview) {

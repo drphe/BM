@@ -73,7 +73,7 @@ function showPopup(content) {
     closeButton.onclick = () => {
         popup.style.display = "none";
     };
-
+    popup.onclick = (event) => { if (event.target === popup) { popup.style.display = "none"; } };
     popup.appendChild(popupContent);
     popupContent.appendChild(closeButton);
     document.body.appendChild(popup);
