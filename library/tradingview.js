@@ -120,7 +120,8 @@
             let a = t.target.value;
 	    showInput();
             t.target.value = a.toUpperCase();
-            if (1 < this.value.length){
+	    if (2 >= this.value.length) await favour();
+            else {
                 if (this.value.length >= 3) {
                     mack = allKey.filter(t => (t.code + " " + t.fullname_vi)
                         .toLowerCase()
@@ -128,9 +129,48 @@
                 } else {
                     listCK.setAttribute("style", "display:none!important")
                 }
-            }
+            } 
         }
     });
+
+        function saveStockList(stockList) {
+            localStorage.setItem('stockList', JSON.stringify(stockList));
+        }
+
+        function getStockList() {
+            const stockList = localStorage.getItem('stockList');
+            return stockList ? JSON.parse(stockList) : [];
+        }
+
+        // Thêm mã cổ phiếu vào danh sách
+        function addStockToList(stockCode) {
+            const stockList = getStockList();
+            if (!stockList.includes(stockCode)) {
+                stockList.push(stockCode);
+                saveStockList(stockList);
+                console.log(`Đã thêm mã cổ phiếu: ${stockCode}`);
+            } else {
+                console.log(`Mã cổ phiếu ${stockCode} đã có trong danh sách.`);
+            }
+        }
+
+        // Xóa mã cổ phiếu khỏi danh sách
+        function removeStockFromList(stockCode) {
+            const stockList = getStockList();
+            const updatedList = stockList.filter(code => code !== stockCode);
+            saveStockList(updatedList);
+            console.log(`Đã xóa mã cổ phiếu: ${stockCode}`);
+        }
+
+    const favour = () => {
+	let list = getStockList();
+	mack =[];
+	list.forEach(stock => {
+		let index = allKey.find(c => c.code == stock);
+		if(index) mack.push(index);
+	})
+        if (mack.length) n()
+    }
 
     document.querySelector("#theodoi")
         .addEventListener("click", function (e) {
@@ -162,6 +202,7 @@
             input.style.marginTop = (window.innerHeight - 250) / 2 + "px";
             input.style.position = "relative";
 	    isInputShow = true;
+	    favour();
     }
     function exitInput() {
         document.querySelector(".suggestions").classList.remove('popup');
@@ -453,7 +494,10 @@
         dumua.setAttribute("class", "dumuaban");
         dumua.style = `position: absolute; top: 40px; left:10px; z-index: 1000; font-size: 11px; line-height: 18px; margin:auto;`;
         legend.appendChild(dumua);
-
+	// check yeuthich
+	const stockList = getStockList();
+	let yeuthich = stockList.includes(symbolName)
+	
         async function addIndicator() {
             try {
                 chart.removePane(1)
@@ -635,7 +679,11 @@
                         localStorage.setItem('dumuaban', showDumua);
                         !showDumua && (domElement.querySelector(".dumuaban").innerHTML = "");
                         DuMuaBan();
-
+                        break;
+                    case "show-goiy":
+                        yeuthich = !yeuthich;
+			if(yeuthich) addStockToList(symbolName);
+			else removeStockFromList(symbolName);
                         break;
                     case "changeTypeChart":
                         isCandleStick = !isCandleStick
@@ -663,6 +711,7 @@
 <a id="bs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Mua bán chủ động<span style="float:right">${tindicator == "bs"?tickicon2:''}</span></a>
 <span style="border-top: 1px solid rgba(16,22,26,.15);display: block; margin: 5px;width:90%"></span>
 <a id="show-dumua" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Dư mua bán<span style="float:right">${showDumua?tickicon2:''}</span></a>
+<a id="show-goiy" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">DS gợi ý<span style="float:right">${yeuthich?tickicon2:''}</span></a>
 `;
                             indi.appendChild(selectDiv);
                         }
