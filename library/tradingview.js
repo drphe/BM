@@ -1018,11 +1018,9 @@
             return emaData;
         }
     function ccolor(s) {
-        if (s.price <= s.floor_price) return "rgb(0, 204, 204)";
-        else if (s.price < s.basic_price) return "#bb0000";
-        else if (s.price == s.basic_price) return "#d1d240";
-        else if (s.price < s.ceiling_price) return "#05bb00";
-        else return "#ff00ff";
+        if (s < 0) return "#bb0000";
+        else if (s == 0) return "#d1d240";
+        else return "#05bb00";
     }
         function getcolor(t, e) {
             return t > e ? "#62c3b3" : "#f9838c"
