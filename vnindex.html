@@ -1,7 +1,7 @@
 ﻿<html>
 
 <head>
-    <link rel="icon" type="image/x-icon" href="https://24hmoney.vn/favicon_2024.ico" />
+    <link rel="icon" type="image/png" href="library\icons\128.png" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Công cụ chứng khoán </title>
@@ -239,11 +239,11 @@
         <div class="tabs">
 	    <span style="font-size: 16px;font-weight: 700;">Tin tức/ Thị trường</span>
             <div class="tab" onclick="fetchData(9)">Dashboard FIDT</div>
-            <div class="tab selected" onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+            <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
             <div class="tab" onclick="fetchData()">Đối tượng giao dịch</div>
             <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
 	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
-            <div class="tab" onclick="fetchData(5)">Biểu đồ</div>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
             <div class="tab" onclick="showPopup()">Mức chiết khấu CP</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
@@ -626,7 +626,7 @@
 
         const ams = new URLSearchParams(window.location.search);
         const quote = ams.get("iframe");
-        fetchData(quote ? quote : 4);
+        fetchData(quote ? quote : 5);
 
         function clock() {
             const t = document.querySelector(".clock"),
