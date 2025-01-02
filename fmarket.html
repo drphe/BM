@@ -189,7 +189,6 @@
                 }
 
                 const result = await response.json();
-                document.querySelector("#date").innerHTML = timestampToDate(result.time);
                 displayDataInTable(result.data.rows); // Hiển thị dữ liệu trong bảng
             } catch (error) {
                 console.error("Error fetching data:", error);
@@ -199,8 +198,9 @@
         async function displayDataInTable(data) {
             // Tạo bảng HTML
             ccq = data;
+            document.querySelector("#date").innerHTML = timestampToDate(data[0].extra.lastNAVDate);
             await fetchSequentially(ccq);
-            console.log(ccq)
+
             data.sort((b, a) => a.owner.shortName.localeCompare(b.owner.shortName));
             console.log(topHolding.slice(0, 25));
             let top20 = topHolding.slice(0, 25).map(item => item.stockCode);
