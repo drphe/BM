@@ -28,7 +28,7 @@ body {
 
 .tophead {
     display: flex;
-    height: 40px;
+    height: 30px;
     align-items: center;
     justify-content: space-between;
     color: var(--text);
@@ -54,11 +54,6 @@ body {
     /*border: 1px;*/
 }
 
-li.item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
 
 li.item:hover {
     box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
@@ -74,6 +69,11 @@ li.item:hover {
     border-radius: 0.125rem;
     background: var(--bgcl);
     color: var(--black);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    box-sizing: border-box;
+    width: 300px;
 }
 
 ol,
@@ -145,24 +145,6 @@ ul {
     --bdchart: rgb(0 2 6 / 13%);
 }
 
-[data-theme="dark"] {
-    --bgcl: #30404d;
-    --bgbt: #394b59;
-    --white: black;
-    --black: white;
-    --gray: black;
-    --hov: rgba(130, 150, 160, .15);
-    --lie: #48aff0;
-    --bdcl: black;
-    --bdin: black;
-    --pocl: #30404d;
-    --pot: white;
-    --clbt: #394b59;
-    --tooltip: #5a0fb5;
-    --chartbg: rgb(24, 28, 39);
-    --text: #b2b5be;
-    --bdchart: none;
-}
 
 .tabledumuaban td, .dumuaban td {
     background-color: var(--bgbt);
@@ -261,6 +243,12 @@ input:checked+.slider:before {
     color: #a28282;
     font-size: 16px;
 }
+.news{
+    border: 2px solid #e4e9ed;
+    border-radius: 5px;
+}
+.news div:nth-child(odd) { background-color: #f0f0f0; /* Màu nền cho các thẻ div lẻ */ }
+
     </style>
 </head>
 
@@ -280,8 +268,7 @@ input:checked+.slider:before {
                     <svg data-icon="list" class="inline-block text-gray-800" style="margin-top: 1px;fill:var(--white);" width="20" height="20" viewBox="0 0 16 16">
                         <desc>list</desc>
                         <path d="M1 3h14c.55 0 1-.45 1-1s-.45-1-1-1H1c-.55 0-1 .45-1 1s.45 1 1 1zm14 10H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1z" fill-rule="evenodd"></path>
-                    </svg>
-                </button>
+                    </svg></button>
             </a>
         </div>
         <div class="suggestions">

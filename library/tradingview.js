@@ -110,7 +110,6 @@
     });
 
     input.addEventListener("input", async function(t) {
-        if (!tradingview) {
             let a = t.target.value;
 	    showInput();
             t.target.value = a.toUpperCase();
@@ -123,7 +122,6 @@
                 } else {
                     listCK.setAttribute("style", "display:none!important")
                 }
-            } 
         }
     });
 
@@ -183,12 +181,9 @@
             exitInput();
         }
     })
-    document.addEventListener("keydown", (event) => {
+    document.body.addEventListener("keydown", (event) => {
         const isAlphaNumeric = event.key.match(/^[a-zA-Z0-9]$/);
-        if (isAlphaNumeric) {
-            input.value == lastSymbol && (input.value = "");
-            input.focus(); // Focus vào ô input
-        }
+        if (isAlphaNumeric && !isInputShow) showInput();
     });
     function showInput(){
             document.querySelector(".suggestions").classList.add('popup');
@@ -196,6 +191,7 @@
             input.style.marginTop = (window.innerHeight - 250) / 2 + "px";
             input.style.position = "relative";
 	    isInputShow = true;
+	    input.focus();
 	    favour();
     }
     function exitInput() {
