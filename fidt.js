@@ -249,6 +249,7 @@ function showPopup(content) {
         popupContent.innerHTML = `<p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
+        popupContent.scrollTo({ top: 0, behavior: "smooth" });
         return;
     }
 
@@ -293,7 +294,7 @@ function showPopup(content) {
 	    width: -webkit-fill-available;
             text-align: left;
 	    height:500px;
-	    overflow:scroll;
+	    overflow-y:scroll;
 	    line-height: 24px;
         }
 	.popup-content span {color:black!important;}

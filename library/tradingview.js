@@ -57,16 +57,6 @@
 	localStorage.setItem('news',this.checked);
 	await AddNews(this.checked)
     });
-	// tự thay đổi kích thước biểu đồ
-    window.addEventListener("resize", () => {
-        if (!document.fullscreenElement && tradingview) {
-            var iframe = myChart.querySelector('.tradingviewfull');
-            let w = window.innerWidth,
-                h = window.innerHeight;
-            iframe.style.width = w + 'px';
-            iframe.style.height = (h - 40) + 'px';
-        }
-    });
 
 	// khu vực tìm kiếm, ô nhập
 	let isInputShow = false;
