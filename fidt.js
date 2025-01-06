@@ -104,7 +104,8 @@ async function getFIDTpredic() {
     loading(!0)
 var header = {
   headers: {
-    "Accept": "*/*"
+    "Accept": "*/*",
+ "User-Agent": navigator.userAgent
   },
   method: "GET",
   mode: "cors"
