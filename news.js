@@ -53,7 +53,6 @@ function showPopup(content) {
     closeButton.className = "popup-close";
     closeButton.textContent = "Close";
 
-
     // Nếu popup đã tồn tại, cập nhật nội dung
     if (popup) {
         const popupContent = popup.querySelector(".popup-content");
@@ -83,7 +82,7 @@ function showPopup(content) {
     // Áp dụng CSS cho popup
     const style = document.createElement("style");
     style.textContent = `
-	img {width: -webkit-fill-available;}
+	.popup img {width: -webkit-fill-available!important;height:auto!important;max-width:450px!important;}
         .popup {
             position: fixed;
             top: 0;
@@ -103,7 +102,7 @@ function showPopup(content) {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             text-align: left;
-	    height:500px;
+	    max-height:500px;
 	    overflow-y:scroll;
         }
 

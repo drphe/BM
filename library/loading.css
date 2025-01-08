@@ -1,3 +1,7 @@
+.popup-content a {
+    display: contents;
+    text-decoration: none;
+}
 .loading-container {
     position: fixed;
     height: 100%;

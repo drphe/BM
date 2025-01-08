@@ -42,8 +42,9 @@ function createlist(arrs) {
         l.title = arr.title,
             s.innerHTML = arr.title + `<br/>${howmuchtime(arr.created)} - ${arr.source}`;
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
+l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" style="width:50px; height: 50px;border-radius:5px;"/></span>';
             l.appendChild(s),
-            l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.featureImg + '" style="width:50px; height: 50px;"/></span><br/>';
+            l.innerHTML += '<br/>';
         contentId.appendChild(l);
         contentId.style.display = "block";
         l.onclick = (e) => {
@@ -100,7 +101,7 @@ function showPopup(content) {
     // Áp dụng CSS cho popup
     const style = document.createElement("style");
     style.textContent = `
-	.popup img {width: -webkit-fill-available!important;height:auto!important;}
+	.popup img {width: -webkit-fill-available!important;height:auto!important;max-width:450px!important;}
         .popup {
             position: fixed;
             top: 0;
@@ -120,7 +121,7 @@ function showPopup(content) {
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             max-width: 500px;
             text-align: left;
-	    height:500px;
+	    max-height:500px;
 	    width: -webkit-fill-available;
 	    overflow-y:scroll;
 	    line-height: 24px;

@@ -293,7 +293,7 @@ function showPopup(content) {
             max-width: 500px;
 	    width: -webkit-fill-available;
             text-align: left;
-	    height:500px;
+	    max-height:500px;
 	    overflow-y:scroll;
 	    line-height: 24px;
         }
