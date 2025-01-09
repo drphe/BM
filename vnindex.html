@@ -4,7 +4,7 @@
     <link rel="icon" type="image/png" href="library\icons\128.png" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ chứng khoán </title>
+    <title>Công cụ chứng khoán</title>
 </head>
 <script src="highchart.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="loading.css">
@@ -237,14 +237,15 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-	    <span style="font-size: 16px;font-weight: 700;">Tin tức/ Thị trường</span>
+	    <span style="font-size: 16px;font-weight: 700;">Tin tức, phân tích</span>
             <div class="tab" onclick="fetchData(9)">Nhận định FIDT</div>
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Theo dõi thị trường</span>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
             <div class="tab" onclick="fetchData()">Đối tượng giao dịch</div>
             <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
 	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
-            <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
@@ -433,7 +434,7 @@
       	  	}
                 const style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 40px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
                 document.querySelector('.existing-div').innerHTML = `<iframe style="${style}" src="${configIframe.src}"></iframe>`;
-                document.title = "Tool CK| " + configIframe.title;
+                document.title = "Công cụ chứng khoán| " + configIframe.title;
                 toggleElement();
                 return;
             }
