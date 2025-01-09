@@ -245,7 +245,6 @@
             <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
 	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
             <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
-            <div class="tab" onclick="showPopup()">Mức chiết khấu CP</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
@@ -358,13 +357,6 @@
 	    if (righttab && containertab.lastElementChild)  containertab.removeChild(containertab.lastElementChild);
         }
 
-        function showPopup() {
-            document.getElementById('popup').style.display = 'block';
-        }
-
-        function closePopup() {
-            document.getElementById('popup').style.display = 'none';
-        }
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('tab')) {
                 var text = event.target.innerText;

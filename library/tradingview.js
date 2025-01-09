@@ -561,33 +561,6 @@
                     });
                     mcdx_hot.setData(hotmcdx);
                     break;
-                case "bs":
-                    var BS = await getBuySell(symbolName, change);
-                    const BSline = chart.addHistogramSeries({
-                        title: 'Buy/Sell Line',
-                        color: '#f68c2f',
-                        lineWidth: 2,
-                        lineStyle: 0,
-                        axisLabelVisible: true,
-                        lastValueVisible: 0,
-                        priceLineVisible: false,
-                        crosshairMarkerVisible: true,
-                        pane: 1
-                    });
-                    BSline.setData(BS);
-                    var lineData = BS.map(s => ({
-                        time: s.time,
-                        value: 0
-                    }));
-                    var PriceLine = chart.addLineSeries({
-                        color: '#be1238',
-                        lineWidth: 1,
-                        lineStyle: 1,
-                        axisLabelVisible: true,
-                        pane: 1
-                    })
-                    PriceLine.setData(lineData);
-                    break;
                 default:
             }
         }
@@ -625,9 +598,7 @@
                         addIndicator();
                         break;
                     case "bs-indicator":
-                        current_indicator = "bs" == current_indicator ? "all" : "bs";
-                        localStorage.setItem('indicator', current_indicator);
-                        addIndicator();
+                        showDiscount(symbolName);
                         break;
                     case "ma20-indicator":
                         isMA20 = !isMA20
@@ -687,7 +658,7 @@
 <span style="border-top: 1px solid rgba(16,22,26,.15);display: block; margin: 5px;width:90%"></span>
 <a id="mcdx-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Dòng tiền MCDX<span style="float:right">${tindicator == "mcdx"?tickicon2:''}</span></a>
 <a id="rs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Relative Strength<span style="float:right">${tindicator == "rs"?tickicon2:''}</span></a>
-<a id="bs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Mua bán chủ động<span style="float:right">${tindicator == "bs"?tickicon2:''}</span></a>
+<a id="bs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Mức chiết khấu<span style="float:right"></span></a>
 <span style="border-top: 1px solid rgba(16,22,26,.15);display: block; margin: 5px;width:90%"></span>
 <a id="show-dumua" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Dư mua bán<span style="float:right">${showDumua?tickicon2:''}</span></a>
 <a id="show-goiy" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">DS gợi ý<span style="float:right">${yeuthich?tickicon2:''}</span></a>
@@ -939,23 +910,6 @@
             return slope(stockPrices, vnIndexPrices);
         }
 	
-	// lấy mua bán chủ động
-        async function getBuySell(s, data) {
-            const date = new Date();
-            var a = apifialda3 + 'api/services/app/StockInfo/GetTradingChartData?symbol=' + s + '&interval=1d&fromTime=2020-01-01&toTime=' + `${date.getFullYear()}-${(date.getMonth() + 1).toString().padStart(2, '0')}-${date.getDate().toString().padStart(2, '0')}`
-            var b = await fetch(a)
-            var c = await b.json();
-            var d = data.reverse();
-            var bs = [];
-            for (var i = 0; i < c.result.length; i++) {
-                bs.push({
-                    "time": d[i].time,
-                    "value": (c.result[i].buyValue - c.result[i].sellValue) / 1e9,
-                    "color": d[i].value > 0 ? '#179f89' : '#f55c68'
-                });
-            }
-            return bs.reverse();
-        }
 
         //tính RSI
         function calculateRSI(data, period) {

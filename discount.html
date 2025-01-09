@@ -12,17 +12,16 @@
             font-family: Inter, Nunito Sans, Lexend, Noto Sans, Arial, sans-serif;
             font-size: 14px;
             background-color: #fff;
-            margin: 20px;
-            padding: 4px;
+            margin: auto;
+            padding: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 90vh;
         }
 
         .container {
             background-color: #f4f4f9;
-            padding: 20px;
+            padding: 10px;
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
@@ -30,8 +29,8 @@
         }
 
         h1 {
-            font-size: 20px;
-            margin-bottom: 5px;
+            font-size: 16px;
+            margin: 5px;
             text-align: center;
         }
 
@@ -71,7 +70,6 @@
             border: none;
             border-radius: 4px;
             cursor: pointer;
-            width: 50%;
         }
 
         button:hover {
@@ -123,11 +121,10 @@
         .tabGroup {
             display: flex;
             margin-bottom: 10px;
-            margin-top: 10px;
         }
 
         .tab-g {
-            padding: 10px 20px;
+            padding: 6px 6px;
             cursor: pointer;
             border: 1px solid #ccc;
             border-bottom: none;
@@ -151,7 +148,6 @@
 <body>
     <div class="container">
         <h1>Phân Tích Cổ Phiếu</h1>
-        <label for="stockCode">Mã Cổ Phiếu</label>
         <input type="text" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
         <button onclick="analyzeStock()">Thống kê</button>
         <div class="tabGroup">
@@ -159,9 +155,9 @@
             <div class="tab-g" onclick="selectTab('scratter')">Biểu đồ phân tán</div>
             <div class="tab-g" onclick="selectTab('table')">Bảng dữ liệu</div>
         </div>
-        <div class="result" id="resultBox">Kết quả sẽ hiển thị tại đây...</div>
-        <canvas id="stockChart" style="display:none;height:220px;"></canvas>
-        <table id="resultsTable" style="display:none;height:240px; overflow:auto;">
+        <div class="result" style="height:230px;" id="resultBox">Kết quả sẽ hiển thị tại đây...</div>
+        <canvas id="stockChart" style="display:none;height:200px;"></canvas>
+        <table id="resultsTable" style="display:none;height:230px; overflow:auto;">
             <thead style="position">
                 <tr>
                     <th>Tạo đỉnh</th>
@@ -179,9 +175,10 @@
     </div>
 
     <script>
-        let ckht = ``,
-            stockCode = '';
-        analyzeStock();
+        const ams = new URLSearchParams(window.location.search);
+        let ckht = ``, stockCode =ams.get("code")||'VN-INDEX';
+	document.getElementById("stockCode").value = stockCode;
+        fetchData(stockCode);
         // phân tích
         function analyzeStock() {
             // Lấy giá trị từ các ô nhập liệu
@@ -489,7 +486,7 @@
             const ctx = document.getElementById('stockChart').getContext('2d');
             chartInstance = new Chart(ctx, {
                 type: 'scatter',
-                height: '250',
+                height: '180',
                 data: {
                     datasets: [{
                             label: 'GT thực',

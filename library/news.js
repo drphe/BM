@@ -30,7 +30,10 @@ async function getNews(list = []) {
         if (newsdata) createlist(newsdata);
     } catch (e) {}
 }
-
+function showDiscount(symbol){
+	var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 430px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
+	showPopup(iframeHtml);
+}
 function createlist(arrs) {
     let contentId = document.getElementById("content");
     contentId.innerHTML = "";
