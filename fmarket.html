@@ -7,6 +7,7 @@
     <link rel="icon" type="image/png" sizes="32x32" href="https://fmarket.vn/favicon.ico">
     <title>Dữ liệu quỹ mở</title>
     <link rel="stylesheet" type="text/css" href="loading.css">
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <style>
         #myTable {
             width: 100%;
@@ -97,9 +98,10 @@
     </div>
     <div id="app"></div>
     <p align="center">
-	<span style="background-color:#a4e8e8;border:1px solid #000;margin:4px; pading:4px;"> Quỹ cổ phiếu</span>
-	<span style="background-color:#fff;border:1px solid #000;margin:4px; pading:4px;">Quỹ cân bằng</span>
-	<i>Tỉ trọng tính theo %<br/> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i></p>
+        <span style="background-color:#a4e8e8;border:1px solid #000;margin:4px; pading:4px;"> Quỹ cổ phiếu</span>
+        <span style="background-color:#fff;border:1px solid #000;margin:4px; pading:4px;">Quỹ cân bằng</span>
+        <i>Tỉ trọng tính theo %<br /> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i>
+    </p>
     <div id="popup" class="popup">
         <span> Danh mục cổ phiếu nắm giữ </span>
         <span id="closePopup" class="popup-close">&times;</span>
@@ -120,6 +122,91 @@
     </div>
 
     <script>
+        function getNgayHienTai() {
+            const date = new Date();
+            const nam = date.getFullYear();
+            const thang = date.getMonth() + 1;
+            const ngay = date.getDate();
+            const ngayHienTai = `${nam}${thang.toString().padStart(2, "0")}${ngay.toString().padStart(2, "0")}`;
+            return ngayHienTai;
+        }
+
+        async function fmarketChart(id, nameCcq) {
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "isAllData": 0,
+                    "productId": id,
+                    "fromDate": "20000101",
+                    "toDate": getNgayHienTai(),
+                }),
+            };
+            var res = await fetch('https://api.fmarket.vn/res/product/get-nav-history', fetchOptions)
+            var data = await res.json();
+            if (data.status != 200 && loading(0)) {
+                return;
+            }
+            const unixTime = (e) => new Date(e).getTime();
+
+            // Chuyển đổi dữ liệu
+            const seriesData = data.data.map(t => ({
+                x: unixTime(t.navDate),
+                y: t.nav
+            }));
+
+            // Tạo biểu đồ
+            Highcharts.chart('lineChart', {
+                chart: {
+                    type: 'line',
+                    zooming: {
+                        type: 'x' // Zoom theo trục X, có thể đổi thành 'xy' để zoom cả hai trục
+                    }
+                },
+                title: {
+                    text: ''
+                },
+                xAxis: {
+                    type: 'datetime', // Dạng trục x là thời gian
+                    title: {
+                        text: 'Thời gian',
+                        enabled: false, // Ẩn legend
+                    }
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    enabled: false // Ẩn legend
+                },
+                tooltip: {
+                    xDateFormat: '%d/%m/%Y', // Định dạng thời gian trong tooltip
+                    shared: true
+                },
+                series: [{
+                    name: nameCcq,
+                    data: seriesData,
+                    color: '#2b908f'
+                }],
+                credits: {
+                    enabled: false // Bỏ dòng "Highcharts.com" ở góc
+                }
+            });
+
+        }
+
+        async function showChart(id, name) {
+            const popup = document.getElementById('load');
+            popup.innerHTML = `<div class="popup" style="display:block;"><span class="popup-close">&times;</span><div id="lineChart" style="width: 400px; height: 400px;"></div></div>`;
+	    popup.style.display = "none";
+            await fmarketChart(id, name);
+	    popup.style.display = "block";
+        }
+
         function showDs(data) {
             const popup = document.getElementById('popup');
             const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
@@ -134,6 +221,12 @@
             });
             popup.style.display = 'block';
         };
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('popup-close')) {
+                document.getElementById('load').innerHTML = '';
+            }
+        });
 
         document.getElementById('closePopup').addEventListener('click', function() {
             document.getElementById('popup').style.display = 'none';
@@ -168,7 +261,7 @@
                 "page": 1,
                 "pageSize": 100,
                 "isIpo": false,
-                "fundAssetTypes": ["STOCK","BALANCED"],
+                "fundAssetTypes": ["STOCK", "BALANCED"],
                 "bondRemainPeriods": [],
                 "searchField": "",
                 "isBuyByReward": false,
@@ -200,7 +293,7 @@
             ccq = data;
             document.querySelector("#date").innerHTML = timestampToDate(data[0].extra.lastNAVDate);
             await fetchSequentially(ccq);
-
+            console.log(ccq)
             data.sort((b, a) => a.owner.shortName.localeCompare(b.owner.shortName));
             console.log(topHolding.slice(0, 25));
             let top20 = topHolding.slice(0, 25).map(item => item.stockCode);
@@ -236,9 +329,8 @@
                 hsbcCell.textContent = item.owner.shortName || "N/A"; // cty quản lý
                 hsbcCell.title = item.owner.shortName || "N/A"
                 hsbcCell.style.padding = "8px";
-                hsbcCell.style.backgroundColor = item.dataFundAssetType.code == "STOCK"?"#a4e8e8": "white";
+                hsbcCell.style.backgroundColor = item.dataFundAssetType.code == "STOCK" ? "#a4e8e8" : "white";
                 row.appendChild(hsbcCell);
-
 
                 const codeCell = document.createElement("td");
                 codeCell.textContent = item.shortName || "N/A";
@@ -250,6 +342,7 @@
                     showDs(item.productTopHoldingList);
                 };
 
+
                 const navytdCell = document.createElement("td");
                 navytdCell.textContent = item.productNavChange.navToLastYear || "-"; // ytd
                 navytdCell.style.padding = "8px";
@@ -257,7 +350,9 @@
                 navytdCell.style.backgroundColor = "#5e3c3c";
                 navytdCell.style.textAlign = 'center';
                 row.appendChild(navytdCell);
-
+                navytdCell.onclick = function() {
+                    showChart(item.id, item.shortName);
+                };
                 const nav1yCell = document.createElement("td");
                 nav1yCell.textContent = item.productNavChange.navTo12Months || "-"; // 1y
                 nav1yCell.style.padding = "8px";
@@ -293,7 +388,6 @@
             table.addEventListener('click', function(event) {
                 if (event.target.tagName === 'TD') {
                     document.querySelectorAll('#myTable td').forEach(td => td.classList.remove('selected'));
-
                     // Thêm hiệu ứng cho ô vừa chọn
                     event.target.classList.add('selected');
                 }
