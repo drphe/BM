@@ -51,7 +51,7 @@ function showPopup(content) {
     let popup = document.querySelector(".popup");
     const closeButton = document.createElement("button");
     closeButton.className = "popup-close";
-    closeButton.textContent = "Close";
+    closeButton.textContent = "Đóng";
 
     // Nếu popup đã tồn tại, cập nhật nội dung
     if (popup) {
