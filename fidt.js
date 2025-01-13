@@ -137,7 +137,7 @@ var header = {
         </div>
     </div>
 </div></div>`;
-        document.querySelector(".strategy").innerHTML = `<div class="" style="color:#000;font-weight:400;">${k.point_of_view|''}</div><div class="heading tooltip">Chiến lược giao dịch </div><div class="inter">${k.strategy||''}</div>`;
+        document.querySelector(".strategy").innerHTML = `<div class="" style="color:#000;font-weight:400;">${k.point_of_view||''}</div><div class="heading tooltip">Chiến lược giao dịch </div><div class="inter">${k.strategy||''}</div>`;
         let m = document.createElement("div");
         m.setAttribute("class", "main-content");
         m.innerHTML = predic
