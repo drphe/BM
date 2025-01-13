@@ -485,6 +485,7 @@
             showDumua = localStorage.getItem("dumuaban");
             switch (current_indicator) {
                 case "rs":
+		    if (symbolName == "VN-INDEX") break;
                     var RS = await calculateRS(ohlc);
                     var RSsignal = await calculateEMA(RS, 20);
                     const RSline = chart.addLineSeries({
@@ -738,7 +739,6 @@
                     toolTip.style.top = top + 'px';
                 }
             } catch (e) {
-                console.log(e)
             }
         });
 	loading(0);
