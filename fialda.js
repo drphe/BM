@@ -30,9 +30,9 @@ async function getBCPTCP(s = '') {
         url = `https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetByFilter?fromDate=${year2}-${month2}-${day2}&toDate=${year}-${month}-${day}&symbols=${s.trim().toUpperCase()}`
         var res = await fetch(url);
         var data = await res.json();
-        POST = data.result
+        POST = data.result;
         await taoTable(POST);
-    } catch (e) {}
+    } catch (e) {console.log(e)}
     loading(0)
 }
 async function taoTable(P) {
@@ -43,7 +43,7 @@ async function taoTable(P) {
     var thead = document.createElement('thead');
     var tbody = document.createElement('tbody');
     var headRow = document.createElement('tr');
-    ["MÃ", "ĐV PHÁT HÀNH", "TIÊU ĐỀ", "NGÀY", "GIÁ", "THAY ĐỔI", ""].forEach(function(el) {
+    ["MÃ", "ĐV PHÁT HÀNH", "TIÊU ĐỀ", "NGÀY", "LINK"].forEach(function(el) {
         var th = document.createElement('th');
         th.rowspan = 2
         th.appendChild(document.createTextNode(el));
@@ -57,24 +57,17 @@ async function taoTable(P) {
         td.appendChild(document.createTextNode(d));
         t.appendChild(td);
     }
-    const symbols = Object.keys(POST);
-    const symbolstring = symbols.join(",")
-    var url = 'https://mastrade.masvn.com/api/v1/market/symbolLatest?symbolList=' + symbolstring
-    var res = await fetch(url)
-    var dataprice = await res.json();
+    const symbols = Object.keys(P);
+
     for (const symbol of symbols) {
         const reports = P[symbol];
         for (var i = 0; i < reports.length; i++) {
-            var index = dataprice.findIndex(x => x.s === symbol)
-            var change = `${dataprice[index].ch}/${(100*dataprice[index].r).toFixed(2)}%`
             var n = new Date(reports[i].reportDate);
             var tr = document.createElement('tr');
             cTd(symbol, tr)
             cTd(reports[i].reporter, tr)
             cTd(reports[i].title, tr)
             cTd(`${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`, tr)
-            cTd(dataprice[index].c, tr) //close
-            cTd(change, tr) //change
             var tdlink = document.createElement('td');
             tdlink.setAttribute("style", "text-align:center;");
             tdlink.innerHTML = `<a href="https://cdn.fialda.com/Attachment/AnalysisReport/${symbol}_-_${reports[i].attachment}"  target="_blank"><svg fill="var(--black)" width="10px" height="10px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M0 22.944q0 2.464 1.76 4.224l3.072 3.104q1.76 1.728 4.224 1.728t4.256-1.728l2.688-2.976q1.376-1.344 1.664-3.232t-0.512-3.552l-6.784 6.784q-0.576 0.576-1.408 0.576t-1.44-0.576l-2.816-2.816q-0.576-0.608-0.576-1.408t0.576-1.408l6.784-6.816q-1.632-0.8-3.52-0.512t-3.264 1.664l-2.944 2.72q-1.76 1.76-1.76 4.224zM9.792 20.256q0 0.832 0.576 1.408t1.408 0.576 1.408-0.576l8.48-8.48q0.576-0.576 0.576-1.408t-0.576-1.408q-0.608-0.576-1.44-0.576t-1.408 0.576l-8.448 8.48q-0.576 0.576-0.576 1.408zM14.336 7.968q-0.288 1.888 0.512 3.552l6.816-6.816q0.576-0.576 1.408-0.576t1.408 0.576l2.816 2.848q0.576 0.576 0.576 1.408t-0.576 1.408l-6.784 6.784q1.632 0.832 3.52 0.512t3.264-1.664l2.944-2.944q1.76-1.76 1.76-4.224t-1.76-4.256l-2.816-2.816q-1.76-1.76-4.224-1.76t-4.256 1.76l-2.944 2.944q-1.344 1.376-1.664 3.264z"></path></svg></a>`, tr.appendChild(tdlink);
@@ -83,7 +76,7 @@ async function taoTable(P) {
     }
     table.appendChild(tbody);
     if (symbols.length) {
-        await container.appendChild(table);
+        container.appendChild(table);
     } else {
         container.innerHTML = emptyData;
     };
