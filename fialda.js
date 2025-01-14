@@ -32,7 +32,7 @@ async function getBCPTCP(s = '') {
         var data = await res.json();
         POST = data.result;
         await taoTable(POST);
-    } catch (e) {console.log(e)}
+    } catch (e) {}
     loading(0)
 }
 async function taoTable(P) {
@@ -57,29 +57,22 @@ async function taoTable(P) {
         td.appendChild(document.createTextNode(d));
         t.appendChild(td);
     }
-    const symbols = Object.keys(P);
-
-    for (const symbol of symbols) {
-        const reports = P[symbol];
-        for (var i = 0; i < reports.length; i++) {
-            var n = new Date(reports[i].reportDate);
+	var listCP = Object.values(P).flat();
+	listCP.sort((a, b) => new Date(b.reportDate) - new Date(a.reportDate));
+	listCP.forEach(reports => {
+           var n = new Date(reports.reportDate);
             var tr = document.createElement('tr');
-            cTd(symbol, tr)
-            cTd(reports[i].reporter, tr)
-            cTd(reports[i].title, tr)
+            cTd(reports.symbol, tr)
+            cTd(reports.reporter, tr)
+            cTd(reports.title, tr)
             cTd(`${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`, tr)
             var tdlink = document.createElement('td');
             tdlink.setAttribute("style", "text-align:center;");
-            tdlink.innerHTML = `<a href="https://cdn.fialda.com/Attachment/AnalysisReport/${symbol}_-_${reports[i].attachment}"  target="_blank"><svg fill="var(--black)" width="10px" height="10px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M0 22.944q0 2.464 1.76 4.224l3.072 3.104q1.76 1.728 4.224 1.728t4.256-1.728l2.688-2.976q1.376-1.344 1.664-3.232t-0.512-3.552l-6.784 6.784q-0.576 0.576-1.408 0.576t-1.44-0.576l-2.816-2.816q-0.576-0.608-0.576-1.408t0.576-1.408l6.784-6.816q-1.632-0.8-3.52-0.512t-3.264 1.664l-2.944 2.72q-1.76 1.76-1.76 4.224zM9.792 20.256q0 0.832 0.576 1.408t1.408 0.576 1.408-0.576l8.48-8.48q0.576-0.576 0.576-1.408t-0.576-1.408q-0.608-0.576-1.44-0.576t-1.408 0.576l-8.448 8.48q-0.576 0.576-0.576 1.408zM14.336 7.968q-0.288 1.888 0.512 3.552l6.816-6.816q0.576-0.576 1.408-0.576t1.408 0.576l2.816 2.848q0.576 0.576 0.576 1.408t-0.576 1.408l-6.784 6.784q1.632 0.832 3.52 0.512t3.264-1.664l2.944-2.944q1.76-1.76 1.76-4.224t-1.76-4.256l-2.816-2.816q-1.76-1.76-4.224-1.76t-4.256 1.76l-2.944 2.944q-1.344 1.376-1.664 3.264z"></path></svg></a>`, tr.appendChild(tdlink);
+            tdlink.innerHTML = `<a href="https://cdn.fialda.com/Attachment/AnalysisReport/${reports.symbol}_-_${reports.attachment}"  target="_blank"><svg fill="var(--black)" width="10px" height="10px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M0 22.944q0 2.464 1.76 4.224l3.072 3.104q1.76 1.728 4.224 1.728t4.256-1.728l2.688-2.976q1.376-1.344 1.664-3.232t-0.512-3.552l-6.784 6.784q-0.576 0.576-1.408 0.576t-1.44-0.576l-2.816-2.816q-0.576-0.608-0.576-1.408t0.576-1.408l6.784-6.816q-1.632-0.8-3.52-0.512t-3.264 1.664l-2.944 2.72q-1.76 1.76-1.76 4.224zM9.792 20.256q0 0.832 0.576 1.408t1.408 0.576 1.408-0.576l8.48-8.48q0.576-0.576 0.576-1.408t-0.576-1.408q-0.608-0.576-1.44-0.576t-1.408 0.576l-8.448 8.48q-0.576 0.576-0.576 1.408zM14.336 7.968q-0.288 1.888 0.512 3.552l6.816-6.816q0.576-0.576 1.408-0.576t1.408 0.576l2.816 2.848q0.576 0.576 0.576 1.408t-0.576 1.408l-6.784 6.784q1.632 0.832 3.52 0.512t3.264-1.664l2.944-2.944q1.76-1.76 1.76-4.224t-1.76-4.256l-2.816-2.816q-1.76-1.76-4.224-1.76t-4.256 1.76l-2.944 2.944q-1.344 1.376-1.664 3.264z"></path></svg></a>`, tr.appendChild(tdlink);
             tbody.appendChild(tr);
-        }
-    }
+	})
     table.appendChild(tbody);
-    if (symbols.length) {
-        container.appendChild(table);
-    } else {
-        container.innerHTML = emptyData;
-    };
+    container.appendChild(table);
 }
 async function getBCPTTT() {
     loading(!0)
