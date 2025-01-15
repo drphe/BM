@@ -296,13 +296,18 @@ function showPopup(content) {
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            max-width: 500px;
+            width: 100%;
 	    width: -webkit-fill-available;
             text-align: left;
 	    max-height:500px;
 	    overflow-y:scroll;
 	    line-height: 24px;
         }
+@media (min-width: 768px) {
+  .popup-content {
+    width: 70%; /* Chiều rộng khi màn hình lớn hơn 768px */
+  }
+}
 	.popup-content span {color:black!important;}
         .popup-close {
             margin-top: 10px;
