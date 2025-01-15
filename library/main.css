@@ -536,4 +536,16 @@ background-color: #fff;
   background-color:#1f1f3952;
     flex-direction: column;
 }
+.popup-content {
+    animation-name: fly-in;
+    animation-duration: 0.3s;
+}
+@keyframes fly-in {
+    from {
+        transform: scale(0.4)
+    }
 
+    to {
+        transform: scale(1.01)
+    }
+}

@@ -37,6 +37,12 @@ buttons.forEach(b => {
                 case "get5":
                     await getFIDTnews()
                     break;
+                case "get8":
+                    await get(8);
+                    break;
+                case "get7":
+                    await get(7);
+                    break;
                 case "get4":
                     await get(4);
                     break;

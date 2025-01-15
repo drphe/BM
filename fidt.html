@@ -355,6 +355,19 @@
             --bgcltab: #bfccd6;
             --bgcltabselected: #f5f8fa;
         }
+.popup-content {
+    animation-name: fly-in;
+    animation-duration: 0.3s;
+}
+@keyframes fly-in {
+    from {
+        transform: scale(0.4)
+    }
+
+    to {
+        transform: scale(1.01)
+    }
+}
     </style>
     <link rel="stylesheet" type="text/css" href="loading.css">
 </head>
@@ -363,10 +376,12 @@
     <div id="button" style="display: flex;align-items: flex-start;">
         <a class="button active" id="get0" title="Tổng quan thị trường">Tổng quan</a>
         <a class="button" id="get5" title="tin tức">Tin tức</a>
+        <a class="button" id="get7" title="Flash note">Flash Note</a>
         <a class="button" id="get4" title="Báo cáo tuần">Báo cáo tuần</a>
         <a class="button" id="get3" title="Báo cáo ngành và cổ phiếu">Ngành & cổ phiếu</a>
         <a class="button" id="get2" title="Báo cáo chuyên đề">Chuyên đề</a>
         <a class="button" id="get1" title="Báo cáo chiến lược tháng">Chiến lược</a>
+        <a class="button" id="get8" title="Workshop">Workshop</a>
     </div>
     <div style="height: calc(100vh - 50px);overflow: scroll;" id="pres">
         <div id="pre" class="card"></div>

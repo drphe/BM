@@ -351,6 +351,19 @@
             opacity: 0;
             transition: opacity .5s ease-out;
         }
+.popup-content {
+    animation-name: fly-in;
+    animation-duration: 0.3s;
+}
+@keyframes fly-in {
+    from {
+        transform: scale(0.4)
+    }
+
+    to {
+        transform: scale(1.01)
+    }
+}
     </style>
     <link rel="stylesheet" type="text/css" href="loading.css">
 </head>
