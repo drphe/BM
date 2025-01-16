@@ -258,7 +258,7 @@ function showPopup(content, title) {
     // Nếu popup đã tồn tại, cập nhật nội dung
     if (popup) {
         const popupContent = popup.querySelector(".popup-content");
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
         popupContent.scrollTo({
@@ -274,7 +274,7 @@ function showPopup(content, title) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";
@@ -307,6 +307,7 @@ function showPopup(content, title) {
         .popup-content {
             background: white;
             padding: 20px;
+	    padding-top:0px;
             border-radius: 8px;
             box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             width: 100%;

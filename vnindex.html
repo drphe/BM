@@ -1,4 +1,4 @@
-﻿<html>
+﻿<html data-theme="dark">
 
 <head>
     <link rel="icon" type="image/png" href="library\icons\128.png" />
@@ -6,12 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Công cụ chứng khoán</title>
 </head>
-<script src="highchart.11.1.js"></script>
     <link rel="stylesheet" type="text/css" href="loading.css">
 <style>
+
+:root {
+    --backgroundColor: rgb(255, 255, 255);
+    --textColor: #000;
+    --white: white;
+    --black: black;
+    --headercl: linear-gradient(180deg, #fff, #ddd);
+    --selected: #106ba3;
+    --boxshadow: rgba(16, 22, 26, .15);
+    --bgcolor: #a7b6c2;
+    --bp3tab: #182026;
+    --bp3button: #f5f8fa;
+    --tabcl:#fff;
+    --cpocl: rgb(255, 255, 255);
+    --cpot: rgb(92, 112, 128);
+    --chov: #f5f5f5;
+    --cbdcl: #eeeff2;
+    --legend: #f5f8fa;
+    --bgcltab: #bfccd6;
+    --bgcltabselected: #f5f8fa;
+}
+
+[data-theme="dark"] {
+    --backgroundColor: rgb(24, 28, 39);
+    --textColor: rgb(178, 181, 190);
+    --white: black;
+    --black: white;
+    --headercl: #153959;
+    --selected: #ffffff90;
+    --boxshadow: rgba(16,22,26,.4);
+    --bgcolor: #202b33;
+    --bp3tab: #fff;
+    --bp3button: #639abf;
+    --tabcl: #30404d;
+    --cpocl: #30404d;
+    --cpot: white;
+    --chov: rgba(130, 150, 160, .15);
+    --cbdcl: black;
+    --legend: black;
+    --bgcltab: #1b2329;
+    --bgcltabselected: #293742;
+}
     .container {
         display: flex;
         justify-content: space-between;
+	background-color: var(--headercl);
     }
 
     .existing-div {
@@ -23,11 +65,45 @@
 
     .tabs {
         width: 240px;
-        background-color: #f4f4f9;
+        background-color: #2d2d3c; /* Lighter dark background */
         padding: 10px;
         overflow: auto;
         border-radius: 10px;
+        color: #e4e4e4; /* Light text for contrast */
     }
+
+    .exit,
+    .tab {
+        padding: 8px 20px;
+        background-color: #39394a; /* Subtle light-dark button background */
+        border: 1px solid #4a4a5b; /* Subtle border */
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 16px;
+        margin-top: 5px;
+        color: #e4e4e4; /* Light text */
+        text-align: center;
+    }
+
+    .exit:hover,
+    .tab:hover {
+        background-color: #4f4f60; /* Slightly lighter hover background */
+        border-color: #777; /* Highlighted border */
+        color: #ffc078; /* Orange-yellow hover text */
+    }
+
+    .tab:active {
+        background-color: #454556; /* Slightly darker active state */
+        transform: scale(0.98);
+    }
+
+    .tab.selected {
+        background-color: #5a5a6a; /* Highlighted selected tab */
+        color: #ffc078; /* Orange-yellow text for selected tab */
+        border-color: #ffa94d; /* Accent orange border */
+    }
+
 
     ::-webkit-scrollbar-track {
         box-shadow: inset 0 0 0 grey;
@@ -44,90 +120,10 @@
         height: 5px;
         background: transparent;
     }
-
-    .exit,
-    .tab {
-        padding: 8px 20px;
-        /* Khoảng cách nội dung trong nút */
-        background-color: #f0f0f0;
-        /* Màu nền mặc định */
-        border: 1px solid #ccc;
-        /* Viền nút */
-        border-radius: 5px;
-        /* Bo góc nút */
-        cursor: pointer;
-        /* Con trỏ chuyển thành ngón tay khi hover */
-        transition: all 0.3s ease;
-        /* Hiệu ứng mượt mà */
-        font-size: 16px;
-        /* Cỡ chữ */
-        margin-top: 5px;
-        color: #333;
-        /* Màu chữ */
-        text-align: center;
-        /* Căn giữa nội dung */
-    }
-
-    .exit:hover,
-    .tab:hover {
-        background-color:#007bff;
-        /* Đổi màu nền khi hover */
-        border-color: #999;
-	color: #fff;
-        /* Đổi màu viền khi hover */
-    }
-
-    .tab:active {
-        background-color: #d0d0d0;
-        /* Màu nền khi nhấn nút */
-        transform: scale(0.98);
-        /* Thu nhỏ nút khi nhấn */
-    }
-
-    .tab.selected {
-        background-color: #007bff;
-        /* Màu nền cho nút được chọn */
-        color: #fff;
-        /* Màu chữ cho nút được chọn */
-        border-color: #0056b3;
-        /* Màu viền nút được chọn */
-    }
-
     body {
         font-family: Inter, Nunito Sans, Lexend, Noto Sans, sans-serif;
         font-size: 14px;
         margin: 0px;
-    }
-
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 100%;
-        height: 100%;
-        border: 1px solid #ccc;
-        background-color: white;
-        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        z-index: 1000;
-    }
-
-    .popup iframe {
-        width: 100%;
-        height: 100%;
-        border: none;
-    }
-
-    .popup .close-btn {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        background-color: red;
-        color: white;
-        border: none;
-        padding: 5px 10px;
-        cursor: pointer;
     }
 
     .overlay {
@@ -167,16 +163,13 @@
         box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         transition: transform 0.3s ease, opacity 0.3s ease;
         opacity: 0.8;
-        /* Độ mờ */
     }
 
     .show-button:hover {
         opacity: 1;
-        /* Hiển thị rõ hơn khi hover */
     }
     .visible {
         right: 0px;
-        /* Hiển thị đối tượng */
     }
 
     .header {
@@ -190,7 +183,7 @@
         padding: 4px 2px 0px 4px;
         height: 30px;
         align-items: center;
-        margin-bottom: 1px;
+        margin-bottom: 0px;
     }
 
     .hed {
@@ -241,7 +234,7 @@
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
             <div class="tab " onclick="fetchData(13)">Giá hàng hóa FIDT</div>
-            <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
             <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
             <div class="tab " onclick="fetchData(11)">Định giá VN-INDEX</div>
             <div class="tab " onclick="fetchData(12)">Tỷ giá USD/VND</div>
@@ -281,10 +274,6 @@
         <div class="existing-div" id="myChart" height="500" orientation="portrait"></div>
         <div class="" id="righclick"></div>
         <div class="overlay" id="overlay"></div>
-        <div class="popup" id="popup">
-            <button class="close-btn" onclick="closePopup()">Đóng</button>
-            <iframe src="discount.html" id="popupiframe" title="Tính mức chiết khấu"></iframe>
-        </div>
     </div>
     <script>
         function loading(i = !0) {
@@ -381,7 +370,7 @@
         function gety(s) {
             return parseFloat(s / 1e9)
         }
-        async function fetchData(iframe = false) {
+        async function fetchData(iframe = 1) {
             const iframeConfigs = {
                 1: {
                     src: "nganh.html",
@@ -455,182 +444,6 @@
                 return;
             }
 	    loading(!0)
-            var apiUrl = "https://api-finance-t19.24hmoney.vn/v1/ios/stock/statistic-investor-history?symbol=10";
-            try {
-                const response = await fetch(apiUrl);
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-                const widata = await response.json();
-
-                var arrayFinal = [],
-                    tudoanh = [],
-                    khoingoai = [],
-                    canhan = [],
-                    tochuc = [],
-                    close = [],
-                    seriesName = [];
-                widata.data.forEach(n => {
-                    close.push(parseFloat(n.close_value))
-                    seriesName.push(getdaymonth(n.trading_date))
-                    tudoanh.push(gety(n.proprietary_buy - n.proprietary_sell))
-                    tochuc.push(gety(n.local_institutional_buy - n.local_institutional_sell))
-                    canhan.push(gety(n.local_individual_buy - n.local_individual_sell))
-                    khoingoai.push(gety(n.foreign_buy - n.foreign_sell))
-                })
-                arrayFinal.push({
-                    name: "Tổ chức trong nước ròng",
-                    data: tochuc.reverse(),
-                    type: "column"
-                })
-                arrayFinal.push({
-                    name: "Cá nhân trong nước ròng",
-                    data: canhan.reverse(),
-                    type: "column",
-                    visible: true
-                })
-                arrayFinal.push({
-                    name: "Tự doanh dòng",
-                    data: tudoanh.reverse(),
-                    type: "column",
-                    visible: true
-                })
-                arrayFinal.push({
-                    name: "Nước ngoài ròng",
-                    data: khoingoai.reverse(),
-                    type: "column",
-                    visible: true
-                })
-                arrayFinal.push({
-                    name: 'VNINDEX',
-                    data: close.reverse(),
-                    type: "spline",
-                    visible: true,
-                    yAxis: 'gia'
-                })
-
-                const dx = function(t) {
-                    var e = new Date(t);
-                    return e.getDate() + "/" + (e.getMonth() + 1) + "/" + e.getFullYear()
-                };
-
-                let y1 = {
-                        title: {
-                            text: 'tá»·'
-                        },
-                        labels: {
-                            style: {
-                                color: Highcharts.getOptions().colors[0]
-                            }
-                        }
-                    },
-                    y2 = {
-                        title: {
-                            text: ''
-                        },
-                        labels: {
-                            style: {
-                                color: Highcharts.getOptions().colors[0]
-                            }
-                        },
-                        opposite: 1
-                    };
-
-                var config = {
-                    chart: {
-                        type: 'spline',
-                        height: '500',
-                        width: window.innerWidth > 800 ? window.innerWidth - 300 : window.innerWidth,
-                        margin: [],
-                        style: {
-                            fontSize: "14px",
-                        },
-                        zoomType: 'x',
-                        backgroundColor: 'transparent'
-                    },
-                    title: {
-                        text: 'Giao dịch cá mập'
-                    },
-                    xAxis: {
-                        categories: seriesName.reverse(),
-                        labels: {
-                            enabled: true
-                        }
-                    },
-                    yAxis: [{
-                        title: {
-                            text: 'tỷ đồng'
-                        },
-                        gridLineWidth: 0,
-                        plotLines: [{
-                            value: 0,
-                            color: Highcharts.getOptions()
-                                .colors[4],
-                            width: 0.1
-                        }],
-                        labels: {
-                            style: {
-                                color: Highcharts.getOptions()
-                                    .colors[0]
-                            }
-                        }
-                    }, {
-                        id: 'gia',
-                        title: {
-                            text: "VNINDEX"
-                        },
-                        opposite: true
-                    }],
-                    tooltip: {
-                        shared: true,
-                        useHTML: true,
-                        formatter: function() {
-                            var now = new Date();
-                            var s = "<b>Ngày: " + this.x + "</b><br/>";
-                            this.points.forEach(function(point, i) {
-                                var pointY = point.y;
-                                s += `<div style="display: flex;align-items: flex-end; justify-content: space-between;"><div style="font-size:16px;font-weight:400;"><span style="display:inline-block;border-radius:10px;width:10px;height:10px;background-color:${point.color};"></span> ${point.series.name}</div><div style="float:right"><span style="font-size:16px;color:#3e4763;font-weight:600;margin-left:2px;margin-left: 10px;">${pointY.toFixed(2)}</span></div></div>`
-                            });
-                            return s;
-                        }
-                    },
-                    legend: {
-                        align: 'center',
-                        verticalAlign: 'bottom',
-                        itemStyle: {
-                            fontSize: '14px'
-                        },
-                        floating: false,
-                    },
-                    plotOptions: {
-                        series: {
-                            marker: {
-                                radius: 2
-                            },
-                            lineWidth: 1
-                        },
-                        column: {
-                            stacking: 'normal',
-                        },
-                        line: {
-                            dataLabels: {
-                                enabled: true
-                            }
-                        }
-                    },
-                    credits: {
-                        enabled: 0,
-                    },
-                    series: arrayFinal
-                };
-
-                //ve bieu do
-                Highcharts.chart('myChart', config);
-		loading(0)
-            } catch (error) {
-                console.error('There has been a problem with your fetch operation:', error);
-		loading(0)
-            }
             toggleElement();
         }
 

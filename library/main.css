@@ -549,9 +549,13 @@ background-color: #fff;
         transform: scale(1.01)
     }
 }
-.nowrap { 
+ .nowrap { 
 white-space: nowrap;
 overflow: hidden; 
 text-overflow: ellipsis; 
+color: #11344f;
+}
+.wp-caption-text {
+width:50%;
 color: #11344f;
 }
