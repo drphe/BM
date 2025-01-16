@@ -36,7 +36,7 @@ function showDiscount(symbol){
 }
 function createlist(arrs) {
     let contentId = document.getElementById("content");
-    contentId.innerHTML = "";
+    contentId.innerHTML = `<div class="nowrap" title="" style="position: sticky;top: 0px;font-size: 16px;"><span style="margin: 4px; ">Tin tức liên quan</span></div>`;
     arrs.forEach(arr => {
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
@@ -184,7 +184,7 @@ function addStylesToNews() {
         newsElements[i].style.height = '250px';
         newsElements[i].style.overflow = 'auto';
         newsElements[i].style.zIndex = '100';
-        newsElements[i].style.bottom = '25px';
+        newsElements[i].style.bottom = '32px';
         newsElements[i].style.left = '5px';
         newsElements[i].style.background = 'white';
     }
