@@ -38,7 +38,7 @@ function createArticlesList(articles) {
         id++;
         listItem.onclick = (e) => {
             e.preventDefault();
-            showPopup(article.content);
+            showPopup(article.content, article.title);
         };
 
         listItem.appendChild(link);
@@ -47,7 +47,7 @@ function createArticlesList(articles) {
 }
 
 // Hàm hiển thị popup với nội dung bài viết
-function showPopup(content) {
+function showPopup(content, title) {
     let popup = document.querySelector(".popup");
     const closeButton = document.createElement("button");
     closeButton.className = "popup-close";
@@ -56,7 +56,7 @@ function showPopup(content) {
     // Nếu popup đã tồn tại, cập nhật nội dung
     if (popup) {
         const popupContent = popup.querySelector(".popup-content");
-        popupContent.innerHTML = `<p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
         popupContent.scrollTo({ top: 0, behavior: "smooth" });
@@ -69,7 +69,7 @@ function showPopup(content) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-    popupContent.innerHTML = `<p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";

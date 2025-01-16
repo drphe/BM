@@ -33,7 +33,7 @@ async function getBCPTCP(s = '') {
         POST = data.result;
         await taoTable(POST);
     } catch (e) {
-	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo");
 	}
     loading(0)
 }
@@ -85,7 +85,7 @@ async function getBCPTTT() {
         POST = data.result.items
         createBang(POST)
     } catch (e) {
-	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo");
 }
     loading(0)
 }
@@ -142,14 +142,14 @@ async function getnews(id) {
             var year = d.getFullYear();
             var month = d.getMonth() + 1;
             var day = d.getDate();
-            var html = `<div class="ant-modal-confirm-body-wrapper"><div class="ant-modal-confirm-body"><span class="ant-modal-confirm-title"><div>${data.title}</div></span><div class="ant-modal-confirm-content"><div class=""><div id="popup-ff841b85-1d1f-d49d-1ed0-90bf3abae314" style="margin-top: 0px;"><div class=""><div><div class="border-bottom"><span class="bg-color-main" style="height: 2px; width: 50px; position: relative; top: 1px; display: block;"></span></div><table class="table" style="font-size: 12px;"><colgroup><col style="width: 150px;"><col></colgroup><tbody><tr><th class="border-bottom content-not-padding color">Nguồn báo cáo</th><td class="border-bottom color">${data.reporter}</td></tr><tr><th class="border-bottom content-not-padding color">Ngày báo cáo</th><td class="border-bottom color">${day}-${month}-${year}</td></tr><tr><th class="border-bottom content-not-padding color">File</th><td class="border-bottom "><a href="https://cdn.fialda.com/Attachment/AnalysisReport/${convertDateToYYYYMMDD(data.reportDate)}_-_${data.attachment}" class="" target="_blank"><button type="submit" class="btn btn-ico btn-primary" style="height: 25px; width: 200px;"><span>Xem nội dung chi tiết</span><span><i class="ico ico-cloud-download"></i></span></button></a></td></tr></tbody></table><div class="mt-px color2">${data.content||''}</div></div></div></div></div></div></div></div>`
+            var html = `<div class="ant-modal-confirm-body-wrapper"><div class="ant-modal-confirm-body"><div class="ant-modal-confirm-content"><div class=""><div id="popup-ff841b85-1d1f-d49d-1ed0-90bf3abae314" style="margin-top: 0px;"><div class=""><div><div class="border-bottom"><span class="bg-color-main" style="height: 2px; width: 50px; position: relative; top: 1px; display: block;"></span></div><table class="table" style="font-size: 12px;"><colgroup><col style="width: 150px;"><col></colgroup><tbody><tr><th class="border-bottom content-not-padding color">Nguồn báo cáo</th><td class="border-bottom color">${data.reporter}</td></tr><tr><th class="border-bottom content-not-padding color">Ngày báo cáo</th><td class="border-bottom color">${day}-${month}-${year}</td></tr><tr><th class="border-bottom content-not-padding color">File</th><td class="border-bottom "><a href="https://cdn.fialda.com/Attachment/AnalysisReport/${convertDateToYYYYMMDD(data.reportDate)}_-_${data.attachment}" class="" target="_blank"><button type="submit" class="btn btn-ico btn-primary" style="height: 25px; width: 200px;"><span>Xem nội dung chi tiết</span><span><i class="ico ico-cloud-download"></i></span></button></a></td></tr></tbody></table><div class="mt-px color2">${data.content||''}</div></div></div></div></div></div></div></div>`
             var temp = {
                 "contentHtml": html,
                 "title": data.title
             }
-            showPopup(temp.contentHtml)
+            showPopup(temp.contentHtml, temp.title)
         } catch (e) {
-		showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+		showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo");
 	}
     }
 }

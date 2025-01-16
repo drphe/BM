@@ -101,11 +101,11 @@ async function getFIDTnews() {
             noidung.style.display = "block";
             l.onclick = (e) => {
                 e.preventDefault();
-                showPopup(article.content);
+                showPopup(article.content, article.title);
             };
         })
     } catch (e) {
-        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo");
     }
     loading(0)
 }
@@ -151,7 +151,7 @@ async function getFIDTpredic() {
         pre.appendChild(m);
         noidung.style.display = "none";
         document.getElementById("pres").style.display = "block";
-    }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn."));
+    }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.","Thông báo"));
 
     loading(0)
 }
@@ -189,7 +189,7 @@ async function get(id) {
         for (var i = 0; i < temp.length; i++) POSTS.push(temp[i])
         await createlist(POSTS, id)
     } catch (e) {
-        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo");
     }
     loading(0)
 }
@@ -211,7 +211,7 @@ function createlist(arrs, id) {
         noidung.style.display = "block";
         l.onclick = (e) => {
             e.preventDefault();
-            showPopup(arr.contentHtml);
+            showPopup(arr.contentHtml, arr.headline);
         };
     });
 }
@@ -249,7 +249,7 @@ function getStatus(s) {
 }
 
 // Hàm hiển thị popup với nội dung bài viết
-function showPopup(content) {
+function showPopup(content, title) {
     let popup = document.querySelector(".popup");
     const closeButton = document.createElement("button");
     closeButton.className = "popup-close";
@@ -258,7 +258,7 @@ function showPopup(content) {
     // Nếu popup đã tồn tại, cập nhật nội dung
     if (popup) {
         const popupContent = popup.querySelector(".popup-content");
-        popupContent.innerHTML = `<p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
         popupContent.scrollTo({
@@ -274,7 +274,7 @@ function showPopup(content) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-    popupContent.innerHTML = `<p>${content}</p>`;
+        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: -20px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";

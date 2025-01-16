@@ -549,4 +549,9 @@ background-color: #fff;
         transform: scale(1.01)
     }
 }
-
+.nowrap { 
+white-space: nowrap;
+overflow: hidden; 
+text-overflow: ellipsis; 
+color: #11344f;
+}
