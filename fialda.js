@@ -32,7 +32,9 @@ async function getBCPTCP(s = '') {
         var data = await res.json();
         POST = data.result;
         await taoTable(POST);
-    } catch (e) {}
+    } catch (e) {
+	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+	}
     loading(0)
 }
 async function taoTable(P) {
@@ -82,7 +84,9 @@ async function getBCPTTT() {
         var data = await res.json();
         POST = data.result.items
         createBang(POST)
-    } catch (e) {}
+    } catch (e) {
+	showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+}
     loading(0)
 }
 
@@ -144,7 +148,9 @@ async function getnews(id) {
                 "title": data.title
             }
             showPopup(temp.contentHtml)
-        } catch (e) {}
+        } catch (e) {
+		showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+	}
     }
 }
 

@@ -8,7 +8,7 @@ function loading(i = !0) {
     document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
 }
 
-
+getFIDTpredic();
 document.addEventListener("keyup", function(e) {
     if (27 === e.keyCode) {
         let popup = document.querySelector(".popup");
@@ -80,44 +80,45 @@ async function getFIDTnews() {
         method: 'POST',
         headers: myHeaders,
         body: raw,
-	mode: "cors"
+        mode: "cors"
     };
-    var res = await fetch("https://guru.fidt.vn/do-action", requestOptions)
-    var data = await res.json();
-    NEWS = data.news.data;
-    noidung.innerHTML = '';
-    NEWS.forEach(article => {
-        let l = document.createElement("div");
-        l.setAttribute("class", "news-style");
-        let s = document.createElement("a"),
-            n = new Date(article.date_created);
-        l.title = article.block ? "Tin độc quyền !" : article.title,
-            s.innerHTML = article.title + `<br/> Ngày đăng: ${timeAgo(article.date_created)}`
-        s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
-            l.appendChild(s),
-            l.innerHTML += '<span style="float:right;margin: 4px; style="width:50px; height: 50px;">' + mailicon + '</span><br/>';
-        noidung.appendChild(l);
-        noidung.style.display = "block";
-        l.onclick = (e) => {
-            e.preventDefault();
-            showPopup(article.content);
-        };
-    })
+    try {
+        var res = await fetch("https://guru.fidt.vn/do-action", requestOptions)
+        var data = await res.json();
+        NEWS = data.news.data;
+        noidung.innerHTML = '';
+        NEWS.forEach(article => {
+            let l = document.createElement("div");
+            l.setAttribute("class", "news-style");
+            let s = document.createElement("a"),
+                n = new Date(article.date_created);
+            l.title = article.block ? "Tin độc quyền !" : article.title,
+                s.innerHTML = article.title + `<br/> Ngày đăng: ${timeAgo(article.date_created)}`
+            s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
+                l.appendChild(s),
+                l.innerHTML += '<span style="float:right;margin: 4px; style="width:50px; height: 50px;">' + mailicon + '</span><br/>';
+            noidung.appendChild(l);
+            noidung.style.display = "block";
+            l.onclick = (e) => {
+                e.preventDefault();
+                showPopup(article.content);
+            };
+        })
+    } catch (e) {
+        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+    }
     loading(0)
 }
-getFIDTpredic();
+
 async function getFIDTpredic() {
     loading(!0)
-var header = {
-  headers: {
-    "Accept": "*/*"
-  },
-  method: "GET",
-  mode: "cors"
-}
+    var header = {
+        method: "GET",
+        mode: "cors"
+    }
+
     await fetch("https://market-trending.fidt.vn/api/market-trend", header).then(response => response.text()).then(result => {
         let g = JSON.parse(result)
-        //console.log(g)
         let k = g.data[0]
         var predic = `<div class="prediction-section" title="Ngày đăng : ${timeAgo(k.date_created)}">
     <div class="heading">Dự báo thị trường trong tuần này</div>
@@ -150,41 +151,46 @@ var header = {
         pre.appendChild(m);
         noidung.style.display = "none";
         document.getElementById("pres").style.display = "block";
-    }).catch(error => console.log('error', error));
+    }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn."));
+
     loading(0)
 }
 
 async function get(id) {
     loading(!0)
-    const response = await fetch("https://tintuc.fidt.vn/embed/dark?categoryId=" + id + "&page=0&size=20", {
-        "headers": {
-            "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
-            "accept-language": "vi,en;q=0.9,en-US;q=0.8",
-            "sec-ch-ua": "\"Not/A)Brand\";v=\"99\", \"Microsoft Edge\";v=\"115\", \"Chromium\";v=\"115\"",
-            "sec-ch-ua-mobile": "?0",
-            "sec-ch-ua-platform": "\"Windows\"",
-            "sec-fetch-dest": "iframe",
-            "sec-fetch-mode": "navigate",
-            "sec-fetch-site": "same-origin",
-            "sec-fetch-user": "?1",
-            "upgrade-insecure-requests": "1"
-        },
-        "referrer": "https://tintuc.fidt.vn/embed/dark?categoryId=3&page=1&size=10",
-        "referrerPolicy": "strict-origin-when-cross-origin",
-        "body": null,
-        "method": "GET",
-        "mode": "cors"
-    })
-    let data = await response.text();
-    var parser = new DOMParser();
-    var doc = parser.parseFromString(data, "text/html");
-    var scriptContent = doc.querySelectorAll("body script");
-    var result = JSON.parse(scriptContent[1].innerText)
-    POSTS = result.pageProps.topPosts
-    let temp = result.pageProps.posts.data
-    //console.log(temp)
-    for (var i = 0; i < temp.length; i++) POSTS.push(temp[i])
-    await createlist(POSTS, id)
+    try {
+        const response = await fetch("https://tintuc.fidt.vn/embed/dark?categoryId=" + id + "&page=0&size=20", {
+            "headers": {
+                "accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7",
+                "accept-language": "vi,en;q=0.9,en-US;q=0.8",
+                "sec-ch-ua": "\"Not/A)Brand\";v=\"99\", \"Microsoft Edge\";v=\"115\", \"Chromium\";v=\"115\"",
+                "sec-ch-ua-mobile": "?0",
+                "sec-ch-ua-platform": "\"Windows\"",
+                "sec-fetch-dest": "iframe",
+                "sec-fetch-mode": "navigate",
+                "sec-fetch-site": "same-origin",
+                "sec-fetch-user": "?1",
+                "upgrade-insecure-requests": "1"
+            },
+            "referrer": "https://tintuc.fidt.vn/embed/dark?categoryId=3&page=1&size=10",
+            "referrerPolicy": "strict-origin-when-cross-origin",
+            "body": null,
+            "method": "GET",
+            "mode": "cors"
+        })
+        let data = await response.text();
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(data, "text/html");
+        var scriptContent = doc.querySelectorAll("body script");
+        var result = JSON.parse(scriptContent[1].innerText)
+        POSTS = result.pageProps.topPosts
+        let temp = result.pageProps.posts.data
+        //console.log(temp)
+        for (var i = 0; i < temp.length; i++) POSTS.push(temp[i])
+        await createlist(POSTS, id)
+    } catch (e) {
+        showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.");
+    }
     loading(0)
 }
 
@@ -255,7 +261,10 @@ function showPopup(content) {
         popupContent.innerHTML = `<p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
-        popupContent.scrollTo({ top: 0, behavior: "smooth" });
+        popupContent.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
         return;
     }
 
@@ -270,7 +279,11 @@ function showPopup(content) {
     closeButton.onclick = () => {
         popup.style.display = "none";
     };
-    popup.onclick = (event) => { if (event.target === popup) { popup.style.display = "none"; } };
+    popup.onclick = (event) => {
+        if (event.target === popup) {
+            popup.style.display = "none";
+        }
+    };
     popup.appendChild(popupContent);
     popupContent.appendChild(closeButton);
     document.body.appendChild(popup);
@@ -303,11 +316,11 @@ function showPopup(content) {
 	    overflow-y:scroll;
 	    line-height: 24px;
         }
-@media (min-width: 768px) {
-  .popup-content {
-    width: 70%; /* Chiều rộng khi màn hình lớn hơn 768px */
-  }
-}
+	@media (min-width: 768px) {
+  		.popup-content {
+    		width: 70%; /* Chiều rộng khi màn hình lớn hơn 768px */
+  		}
+	}
 	.popup-content span {color:black!important;}
         .popup-close {
             margin-top: 10px;
