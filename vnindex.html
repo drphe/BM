@@ -145,7 +145,7 @@
         z-index: 99;
         position: fixed;
         right: -300px;
-        top: 300px;
+        top: 320px;
         transform: translateY(-50%);
         transition: right 0.3s;
     }
@@ -236,14 +236,15 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-	    <span style="font-size: 16px;font-weight: 700;">Tin tức, phân tích</span>
+	    <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
             <div class="tab" onclick="fetchData(9)">Nhận định FIDT</div>
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
-	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Theo dõi thị trường</span>
+            <div class="tab " onclick="fetchData(13)">Giá hàng hóa FIDT</div>
             <div class="tab selected" onclick="fetchData(5)">Biểu đồ</div>
-            <div class="tab" onclick="fetchData()">Đối tượng giao dịch</div>
-            <div class="tab" onclick="fetchData(1)">Nhóm ngành/ dòng tiền</div>
+            <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
+            <div class="tab " onclick="fetchData(11)">Định giá VN-INDEX</div>
+            <div class="tab " onclick="fetchData(12)">Đánh giá Tỷ giá USD/VND</div>
 	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
@@ -423,6 +424,22 @@
                 10: {
                     src: "fmarket.html",
                     title: "Thống kê quỹ cổ phiếu"
+                },
+                11: {
+                    src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
+                    title: "Định giá VN-Index"
+                },
+                12: {
+                    src: "https://temp-portal.fidt.vn/data/ty-gia",
+                    title: "Đánh giá Tỷ giá USD/VND"
+                },
+                13: {
+                    src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
+                    title: "Giá hàng hóa"
+                },
+                13: {
+                    src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
+                    title: "Thống kê giao dịch theo NDT"
                 },
             };
 
