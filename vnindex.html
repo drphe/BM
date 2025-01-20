@@ -6,54 +6,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Công cụ chứng khoán</title>
 </head>
-    <link rel="stylesheet" type="text/css" href="loading.css">
+<link rel="stylesheet" type="text/css" href="loading.css">
 <style>
+    :root {
+        --backgroundColor: rgb(255, 255, 255);
+        --textColor: #000;
+        --white: white;
+        --black: black;
+        --headercl: linear-gradient(180deg, #fff, #ddd);
+        --selected: #106ba3;
+        --boxshadow: rgba(16, 22, 26, .15);
+        --bgcolor: #a7b6c2;
+        --bp3tab: #182026;
+        --bp3button: #f5f8fa;
+        --tabcl: #fff;
+        --cpocl: rgb(255, 255, 255);
+        --cpot: rgb(92, 112, 128);
+        --chov: #f5f5f5;
+        --cbdcl: #eeeff2;
+        --legend: #f5f8fa;
+        --bgcltab: #bfccd6;
+        --bgcltabselected: #f5f8fa;
+    }
 
-:root {
-    --backgroundColor: rgb(255, 255, 255);
-    --textColor: #000;
-    --white: white;
-    --black: black;
-    --headercl: linear-gradient(180deg, #fff, #ddd);
-    --selected: #106ba3;
-    --boxshadow: rgba(16, 22, 26, .15);
-    --bgcolor: #a7b6c2;
-    --bp3tab: #182026;
-    --bp3button: #f5f8fa;
-    --tabcl:#fff;
-    --cpocl: rgb(255, 255, 255);
-    --cpot: rgb(92, 112, 128);
-    --chov: #f5f5f5;
-    --cbdcl: #eeeff2;
-    --legend: #f5f8fa;
-    --bgcltab: #bfccd6;
-    --bgcltabselected: #f5f8fa;
-}
+    [data-theme="dark"] {
+        --backgroundColor: rgb(24, 28, 39);
+        --textColor: rgb(178, 181, 190);
+        --white: black;
+        --black: white;
+        --headercl: #153959;
+        --selected: #ffffff90;
+        --boxshadow: rgba(16, 22, 26, .4);
+        --bgcolor: #202b33;
+        --bp3tab: #fff;
+        --bp3button: #639abf;
+        --tabcl: #30404d;
+        --cpocl: #30404d;
+        --cpot: white;
+        --chov: rgba(130, 150, 160, .15);
+        --cbdcl: black;
+        --legend: black;
+        --bgcltab: #1b2329;
+        --bgcltabselected: #293742;
+    }
 
-[data-theme="dark"] {
-    --backgroundColor: rgb(24, 28, 39);
-    --textColor: rgb(178, 181, 190);
-    --white: black;
-    --black: white;
-    --headercl: #153959;
-    --selected: #ffffff90;
-    --boxshadow: rgba(16,22,26,.4);
-    --bgcolor: #202b33;
-    --bp3tab: #fff;
-    --bp3button: #639abf;
-    --tabcl: #30404d;
-    --cpocl: #30404d;
-    --cpot: white;
-    --chov: rgba(130, 150, 160, .15);
-    --cbdcl: black;
-    --legend: black;
-    --bgcltab: #1b2329;
-    --bgcltabselected: #293742;
-}
     .container {
         display: flex;
         justify-content: space-between;
-	background-color: var(--headercl);
+        background-color: var(--headercl);
     }
 
     .existing-div {
@@ -65,43 +65,55 @@
 
     .tabs {
         width: 240px;
-        background-color: #2d2d3c; /* Lighter dark background */
+        background-color: #2d2d3c;
+        /* Lighter dark background */
         padding: 10px;
         overflow: auto;
         border-radius: 10px;
-        color: #e4e4e4; /* Light text for contrast */
+        color: #e4e4e4;
+        /* Light text for contrast */
     }
 
     .exit,
     .tab {
         padding: 8px 20px;
-        background-color: #39394a; /* Subtle light-dark button background */
-        border: 1px solid #4a4a5b; /* Subtle border */
+        background-color: #39394a;
+        /* Subtle light-dark button background */
+        border: 1px solid #4a4a5b;
+        /* Subtle border */
         border-radius: 5px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 16px;
         margin-top: 5px;
-        color: #e4e4e4; /* Light text */
+        color: #e4e4e4;
+        /* Light text */
         text-align: center;
     }
 
     .exit:hover,
     .tab:hover {
-        background-color: #4f4f60; /* Slightly lighter hover background */
-        border-color: #777; /* Highlighted border */
-        color: #ffc078; /* Orange-yellow hover text */
+        background-color: #4f4f60;
+        /* Slightly lighter hover background */
+        border-color: #777;
+        /* Highlighted border */
+        color: #ffc078;
+        /* Orange-yellow hover text */
     }
 
     .tab:active {
-        background-color: #454556; /* Slightly darker active state */
+        background-color: #454556;
+        /* Slightly darker active state */
         transform: scale(0.98);
     }
 
     .tab.selected {
-        background-color: #5a5a6a; /* Highlighted selected tab */
-        color: #ffc078; /* Orange-yellow text for selected tab */
-        border-color: #ffa94d; /* Accent orange border */
+        background-color: #5a5a6a;
+        /* Highlighted selected tab */
+        color: #ffc078;
+        /* Orange-yellow text for selected tab */
+        border-color: #ffa94d;
+        /* Accent orange border */
     }
 
 
@@ -120,6 +132,7 @@
         height: 5px;
         background: transparent;
     }
+
     body {
         font-family: Inter, Nunito Sans, Lexend, Noto Sans, sans-serif;
         font-size: 14px;
@@ -168,6 +181,7 @@
     .show-button:hover {
         opacity: 1;
     }
+
     .visible {
         right: 0px;
     }
@@ -222,49 +236,56 @@
         margin-right: 4px;
         margin-left: 4px;
     }
-.load-wrapp {
-  float: left;
-  width: 100px;
-  height: 100px;
-  margin: 0 10px 10px 0;
-  padding: 20px 20px 20px;
-  border-radius: 5px;
-  text-align: center;
-  background-color: #d8d8d8;
-  font-size:16px;
-}
 
-.load-wrapp:last-child {
-  margin-right: 0;
-}
+    .load-wrapp {
+        float: left;
+        width: 100px;
+        height: 100px;
+        margin: 0 10px 10px 0;
+        padding: 20px 20px 20px;
+        border-radius: 5px;
+        text-align: center;
+        background-color: #d8d8d8;
+        font-size: 16px;
+    }
 
-.line {
-  display: inline-block;
-  width: 15px;
-  height: 15px;
-  border-radius: 15px;
-  background-color: #4b9cdb;
-}
-.load-1 .line:nth-last-child(1) {
-  animation: loadingA 1.5s 1s infinite;
-}
-.load-1 .line:nth-last-child(2) {
-  animation: loadingA 1.5s 0.5s infinite;
-}
-.load-1 .line:nth-last-child(3) {
-  animation: loadingA 1.5s 0s infinite;
-}
-@keyframes loadingA {
-  0 {
-    height: 15px;
-  }
-  50% {
-    height: 35px;
-  }
-  100% {
-    height: 15px;
-  }
-}
+    .load-wrapp:last-child {
+        margin-right: 0;
+    }
+
+    .line {
+        display: inline-block;
+        width: 15px;
+        height: 15px;
+        border-radius: 15px;
+        background-color: #4b9cdb;
+    }
+
+    .load-1 .line:nth-last-child(1) {
+        animation: loadingA 1.5s 1s infinite;
+    }
+
+    .load-1 .line:nth-last-child(2) {
+        animation: loadingA 1.5s 0.5s infinite;
+    }
+
+    .load-1 .line:nth-last-child(3) {
+        animation: loadingA 1.5s 0s infinite;
+    }
+
+    @keyframes loadingA {
+        0 {
+            height: 15px;
+        }
+
+        50% {
+            height: 35px;
+        }
+
+        100% {
+            height: 15px;
+        }
+    }
 </style>
 
 <body>
@@ -272,7 +293,7 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-	    <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
+            <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
             <div class="tab" onclick="fetchData(9)">Nhận định FIDT</div>
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
@@ -281,7 +302,7 @@
             <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
             <div class="tab " onclick="fetchData(11)">Định giá VN-INDEX</div>
             <div class="tab " onclick="fetchData(12)">Tỷ giá USD/VND</div>
-	    <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
+            <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
@@ -314,9 +335,7 @@
     </div>
 
     <div class="container">
-        <div class="existing-div" id="myChart" height="500" orientation="portrait">
-		<iframe id="myIframe" src="tradingview.html" style="margin: 0px auto; border: none; width: 100%; height: calc(-34px + 100vh);"></iframe>
-	</div>
+        <div class="existing-div" id="myChart" height="500" orientation="portrait"></div>
         <div class="" id="righclick"></div>
         <div class="overlay" id="overlay"></div>
     </div>
@@ -331,7 +350,7 @@
       </div>
     </div></div>` : ""
         }
-	const overlay = document.getElementById('overlay'); 
+        const overlay = document.getElementById('overlay');
         const showButton = document.getElementById('showButton');
         const hiddenElement = document.getElementById('hiddenElement');
         let isDragging = false;
@@ -360,13 +379,13 @@
         // Ẩn đối tượng khi click ra ngoài 
         document.addEventListener('click', function(event) {
             var righttab = window.innerWidth > 800;
-	    var overlay = document.getElementById('overlay'); 
+            var overlay = document.getElementById('overlay');
             if (!hiddenElement.contains(event.target) && !showButton.contains(event.target)) {
                 if (hiddenElement.classList.contains('visible')) {
-                hiddenElement.classList.remove('visible');
-                showButton.style.display = 'block';
-		overlay.style.display = 'none'; 
-            }
+                    hiddenElement.classList.remove('visible');
+                    showButton.style.display = 'block';
+                    overlay.style.display = 'none';
+                }
             }
         });
 
@@ -375,11 +394,11 @@
             if (righttab) {} else if (hiddenElement.classList.contains('visible')) {
                 hiddenElement.classList.remove('visible');
                 showButton.style.display = 'block';
-		overlay.style.display = 'none'; 
+                overlay.style.display = 'none';
             } else {
                 hiddenElement.classList.add('visible');
                 showButton.style.display = 'none';
-		overlay.style.display = 'flex'; 
+                overlay.style.display = 'flex';
             }
         }
 
@@ -391,12 +410,12 @@
         function hidemenu() {
             var righttab = window.innerWidth > 768;
             hiddenElement.classList.remove('visible');
-	    overlay.style.display = 'none'; 
+            overlay.style.display = 'none';
             showButton.style.display = righttab ? 'none' : 'block';
-	    const container = document.getElementById("righclick");
+            const container = document.getElementById("righclick");
             container.innerHTML = righttab ? hiddenElement.innerHTML : '';
-	    const containertab = container.querySelector('.tabs');
-	    if (righttab && containertab.lastElementChild)  containertab.removeChild(containertab.lastElementChild);
+            const containertab = container.querySelector('.tabs');
+            if (righttab && containertab.lastElementChild) containertab.removeChild(containertab.lastElementChild);
         }
 
         document.addEventListener('click', function(event) {
@@ -422,11 +441,8 @@
         function gety(s) {
             return parseFloat(s / 1e9)
         }
-
-	// lưu iframe và chyển iframe
-	const iframeCache = {};
-        async function fetchData(id = 1) {
-	    loading(1);
+        async function fetchData(iframe = 1) {
+            loading(1);
             const iframeConfigs = {
                 1: {
                     src: "nganh.html",
@@ -487,29 +503,22 @@
                     title: "Thống kê giao dịch theo NDT"
                 },
             };
-	    const iframe = document.getElementById("myIframe");
-            const newIframe = iframeConfigs[id];
-	    iframe.style=  `margin:0px auto;border:none;width:100%;height:${newIframe.height || "calc(100vh - 34px)"}; ${newIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
-            if (newIframe) {
-		newSrc = newIframe.src;
-        	if (iframeCache[newSrc]) {
-            		iframe.src = "about:blank"; // Làm trống trước để tránh nhấp nháy
-            		iframe.contentWindow.document.open();
-            		iframe.contentWindow.document.write(iframeCache[newSrc]);
-            		iframe.contentWindow.document.close();
-                	toggleElement();
-                	return;
-        	} else {
-            		iframe.src = newSrc;
-			iframe.addEventListener('load', function(){
-			iframeCache[newSrc] = iframe.contentWindow.document.body.innerHTML;
-			loading(0);
-			});
-        	}
-		// thay đổi tiêu đề
-                document.title = "Công cụ chứng khoán| " + newIframe.title;
+
+            const configIframe = iframeConfigs[iframe];
+            if (configIframe) {
+                document.querySelector('.existing-div').innerHTML = "";
+                const newIframe = document.createElement('iframe');
+                newIframe.src = configIframe.src;
+                newIframe.style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
+                document.querySelector('.existing-div').appendChild(newIframe);
+                document.title = "Công cụ chứng khoán| " + configIframe.title;
+                newIframe.addEventListener('load', function() {
+                    loading(0)
+                });
+                toggleElement();
+                return;
             }
-	    loading(0);
+            loading(0)
             toggleElement();
         }
 
