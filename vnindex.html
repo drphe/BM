@@ -488,11 +488,6 @@
                 },
             };
 	    const iframe = document.getElementById("myIframe");
-            const currentSrc = iframe.src; 
-        // Lưu nội dung của iframe hiện tại nếu chưa được lưu
-        if (!iframeCache[currentSrc]) {
-            iframeCache[currentSrc] = iframe.contentWindow.document.body.innerHTML;
-        }
             const newIframe = iframeConfigs[id];
 	    iframe.style=  `margin:0px auto;border:none;width:100%;height:${newIframe.height || "calc(100vh - 34px)"}; ${newIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
             if (newIframe) {
