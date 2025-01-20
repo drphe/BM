@@ -314,7 +314,9 @@
     </div>
 
     <div class="container">
-        <div class="existing-div" id="myChart" height="500" orientation="portrait"></div>
+        <div class="existing-div" id="myChart" height="500" orientation="portrait">
+		<iframe id="myIframe" src="tradingview.html" style="margin: 0px auto; border: none; width: 100%; height: calc(-34px + 100vh);"></iframe>
+	</div>
         <div class="" id="righclick"></div>
         <div class="overlay" id="overlay"></div>
     </div>
@@ -420,8 +422,11 @@
         function gety(s) {
             return parseFloat(s / 1e9)
         }
-        async function fetchData(iframe = 1) {
-	loading(1);
+
+	// lưu iframe và chyển iframe
+	const iframeCache = {};
+        async function fetchData(id = 1) {
+	    loading(1);
             const iframeConfigs = {
                 1: {
                     src: "nganh.html",
@@ -482,25 +487,34 @@
                     title: "Thống kê giao dịch theo NDT"
                 },
             };
-
-            const configIframe = iframeConfigs[iframe];
-            if (configIframe) {
- 	       if (/Mobi|Android/i.test(navigator.userAgent)) {
-        	    //(iframe ==9) && alert("Chức năng này hoạt động không tốt trên điện thoại!");
-      	  	}
-		document.querySelector('.existing-div').innerHTML = "";
-	        const newIframe = document.createElement('iframe');
-		newIframe.src = configIframe.src;
-		newIframe.style=  `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
-		document.querySelector('.existing-div').appendChild(newIframe);
-                document.title = "Công cụ chứng khoán| " + configIframe.title;
-		newIframe.addEventListener('load', function(){
-		loading(0)
-		});
-                toggleElement();
-                return;
+	    const iframe = document.getElementById("myIframe");
+            const currentSrc = iframe.src; 
+        // Lưu nội dung của iframe hiện tại nếu chưa được lưu
+        if (!iframeCache[currentSrc]) {
+            iframeCache[currentSrc] = iframe.contentWindow.document.body.innerHTML;
+        }
+            const newIframe = iframeConfigs[id];
+	    iframe.style=  `margin:0px auto;border:none;width:100%;height:${newIframe.height || "calc(100vh - 34px)"}; ${newIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
+            if (newIframe) {
+		newSrc = newIframe.src;
+        	if (iframeCache[newSrc]) {
+            		iframe.src = "about:blank"; // Làm trống trước để tránh nhấp nháy
+            		iframe.contentWindow.document.open();
+            		iframe.contentWindow.document.write(iframeCache[newSrc]);
+            		iframe.contentWindow.document.close();
+                	toggleElement();
+                	return;
+        	} else {
+            		iframe.src = newSrc;
+			iframe.addEventListener('load', function(){
+			iframeCache[newSrc] = iframe.contentWindow.document.body.innerHTML;
+			loading(0);
+			});
+        	}
+		// thay đổi tiêu đề
+                document.title = "Công cụ chứng khoán| " + newIframe.title;
             }
-	    loading(0)
+	    loading(0);
             toggleElement();
         }
 
