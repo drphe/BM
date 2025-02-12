@@ -42,9 +42,11 @@
             font-family: Roboto, Helvetica, Arial, sans-serif;
             margin: 0px;
         }
-	body{
-	background-color:white;
-	}
+
+        body {
+            background-color: white;
+        }
+
         #app {
             max-width: 100%;
             max-height: calc(100vh - 100px);
@@ -124,6 +126,61 @@
     </div>
 
     <script>
+        // Hàm lấy ngày hiện tại theo định dạng yyyy-mm-dd
+        function getCurrentDate() {
+            const t = new Date();
+            return t.getFullYear() + "-" + String(t.getMonth() + 1)
+                .padStart(2, "0") + "-" + String(t.getDate())
+                .padStart(2, "0");
+        }
+
+        function unixToDate(timestamp) {
+            // Tạo đối tượng Date từ Unix timestamp (timestamp là số giây)
+            let date = new Date(timestamp * 1000); // Nhân với 1000 để chuyển đổi từ giây thành millisecond
+
+            // Lấy các thành phần năm, tháng, ngày
+            let year = date.getFullYear();
+            let month = (date.getMonth() + 1).toString().padStart(2, '0'); // Tháng bắt đầu từ 0 nên cần cộng 1
+            let day = date.getDate().toString().padStart(2, '0');
+
+            // Trả về chuỗi theo định dạng yyyy-mm-dd
+            return `${year}-${month}-${day}`;
+        }
+
+        var VNINDEXdata = [];
+        var vndata = [];
+        // Hàm tải dữ liệu giá VNINDEX
+        async function getDataVNINDEX() {
+            try {
+                const url = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol=VN-INDEX&resolution=1D&from=' + parseInt(Date.parse("2015-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
+
+                const res = await fetch(url);
+                if (!res.ok) {
+                    throw new Error('Lỗi khi tải dữ liệu: ' + res.statusText);
+                }
+                const data = await res.json();
+
+                // Chuyển đổi sang định dạng mong muốn
+                const transformedData = data.t.map((timestamp, index) => ({
+                    id: index + 1, // Tạo ID tự động tăng dần
+                    createdAt: data.t[index] * 1000, // thời gian
+                    nav: data.c[index], // Giá đóng cửa
+                    navDate: unixToDate(data.t[index]),
+                    productId: 18000 // Giá trị cố định (1 vạn 8)
+                }));
+                vndata = transformedData;
+                VNINDEXdata = calculatePerformance(transformedData);
+                console.log("Performance: ", VNINDEXdata);
+                console.log("Drawdown%: ", calculateDrawdown(transformedData))
+            } catch (error) {
+                console.error('Có lỗi xảy ra:', error);
+            }
+        }
+
+        getDataVNINDEX();
+
+
+        // lấy ngày hiện tại theo dạng yyyymmdd
         function getNgayHienTai() {
             const date = new Date();
             const nam = date.getFullYear();
@@ -133,6 +190,133 @@
             return ngayHienTai;
         }
 
+        function calculatePerformance(NavData) {
+            // Chuyển đổi thời gian thành ngày (tính theo ngày)
+            const msInDay = 1000 * 60 * 60 * 24;
+
+            // Tính CAGR (Tỷ suất lợi nhuận hàng năm)
+            const calculateCAGR = (startNav, endNav, years) => {
+                return Math.pow(endNav / startNav, 1 / years) - 1;
+            };
+
+            // Tính độ lệch chuẩn
+            const calculateStandardDeviation = (values) => {
+                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                return Math.sqrt(variance);
+            };
+
+            // Tính độ lệch chuẩn phần trăm
+            const calculateCVPercent = (stdDev, mean) => {
+                return (stdDev / mean) * 100;
+            };
+
+            // Lấy giá trị NAV đầu kỳ (theo thời gian)
+            const getNavForPeriod = (days) => {
+                const startDate = Date.now() - (days * msInDay);
+                const startNav = NavData.find(item => item.createdAt >= startDate);
+                if (!startNav) return null; // Không tìm thấy dữ liệu trong khoảng thời gian yêu cầu
+                return startNav.nav;
+            };
+
+            // Lấy giá trị NAV đầu năm (từ ngày 1 tháng 1 của năm hiện tại)
+            const getNavForYearStart = () => {
+                const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
+                const startNav = NavData.find(item => item.createdAt >= startOfYear);
+                if (!startNav) return null; // Không tìm thấy dữ liệu đầu năm
+                return startNav.nav;
+            };
+
+            // Tính CAGR và độ lệch chuẩn theo phần trăm cho 1 năm, 3 năm, 5 năm
+            let returns = {};
+            let periods = [365, 3 * 365, 5 * 365]; // 1 năm = 365 ngày, 3 năm = 3*365 ngày, 5 năm = 5*365 ngày
+            periods.forEach(periodInDays => {
+                const startNav = getNavForPeriod(periodInDays);
+                if (startNav) {
+                    const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại (mới nhất)
+                    const years = periodInDays / 365; // Số năm tương ứng
+                    const cagr = calculateCAGR(startNav, latestNav, years);
+                    const navValues = NavData.filter(item => item.createdAt >= (Date.now() - (periodInDays * msInDay))).map(item => item.nav);
+                    const stdDev = calculateStandardDeviation(navValues);
+                    const cvPercent = calculateCVPercent(stdDev, navValues.reduce((a, b) => a + b, 0) / navValues.length); // Tính độ lệch chuẩn phần trăm
+
+                    returns[years] = {
+                        cagr: cagr * 100, // Tỷ suất lợi nhuận theo năm, chuyển sang phần trăm
+                        std: cvPercent
+                    };
+                }
+            });
+
+            // Tính lợi suất từ đầu năm (YTD%) và biến động YTD
+            const startOfYearNav = getNavForYearStart();
+            if (startOfYearNav) {
+                const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại
+                const ytdReturn = ((latestNav - startOfYearNav) / startOfYearNav) * 100; // Tính YTD% 
+
+                // Lọc dữ liệu NAV từ đầu năm tới hiện tại
+                const navValuesYTD = NavData.filter(item => item.createdAt >= new Date(new Date().getFullYear(), 0, 1).getTime()).map(item => item.nav);
+                const stdDevYTD = calculateStandardDeviation(navValuesYTD);
+                const cvPercentYTD = calculateCVPercent(stdDevYTD, navValuesYTD.reduce((a, b) => a + b, 0) / navValuesYTD.length); // Tính độ lệch chuẩn YTD phần trăm
+
+                returns.ytd = {
+                    cagr: ytdReturn,
+                    std: cvPercentYTD
+                };
+            }
+
+            return returns;
+        }
+
+        // Hàm tính drawdown (sụt giảm tối đa)
+        function calculateDrawdown(navData) {
+            let peak = navData[0].nav;
+            let drawdowns = [];
+
+            navData.forEach((item) => {
+                if (item.nav > peak) {
+                    peak = item.nav;
+                } else {
+                    let drawdown = ((peak - item.nav) / peak) * 100; // Sụt giảm theo phần trăm
+                    drawdowns.push(drawdown);
+                }
+            });
+
+            const maxDrawdown = Math.max(...drawdowns); // Tìm drawdown lớn nhất
+            return maxDrawdown;
+        }
+        var sosanhhieusuat = {};
+        async function fetchSequentiallyData(data) {
+            for (const s of data) {
+                try {
+                    const result = await fetchDetails(s.id, s.shortName);
+                } catch (e) {}
+            }
+        }
+
+
+        async function fetchDetails(id, nameccq) {
+            const fetchOptions = {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    "isAllData": 0,
+                    "productId": id,
+                    "fromDate": "20150101",
+                    "toDate": getNgayHienTai(),
+                }),
+            };
+            var res = await fetch('https://api.fmarket.vn/res/product/get-nav-history', fetchOptions)
+            var data = await res.json();
+            if (data.status != 200 && loading(0)) {
+                return;
+            }
+            if (id == 18000) {
+                data.data = vndata
+            }
+            sosanhhieusuat[nameccq] = calculatePerformance(data.data)
+        }
         async function fmarketChart(id, nameCcq) {
             const fetchOptions = {
                 method: 'POST',
@@ -142,7 +326,7 @@
                 body: JSON.stringify({
                     "isAllData": 0,
                     "productId": id,
-                    "fromDate": "20000101",
+                    "fromDate": "20150101",
                     "toDate": getNgayHienTai(),
                 }),
             };
@@ -151,6 +335,12 @@
             if (data.status != 200 && loading(0)) {
                 return;
             }
+            if (id == 18000) {
+                data.data = vndata
+            }
+            console.log("Performance " + nameCcq + ":", calculatePerformance(data.data))
+            console.log("Drawdown%: ", calculateDrawdown(data.data))
+
             const unixTime = (e) => new Date(e).getTime();
 
             // Chuyển đổi dữ liệu
@@ -204,9 +394,9 @@
         async function showChart(id, name) {
             const popup = document.getElementById('load');
             popup.innerHTML = `<div class="popup" style="display:block;"><span class="popup-close">&times;</span><div id="lineChart" style="width: 400px; height: 400px;"></div></div>`;
-	    popup.style.display = "none";
+            popup.style.display = "none";
             await fmarketChart(id, name);
-	    popup.style.display = "block";
+            popup.style.display = "block";
         }
 
         function showDs(data) {
@@ -295,11 +485,31 @@
             ccq = data;
             document.querySelector("#date").innerHTML = timestampToDate(data[0].extra.lastNAVDate);
             await fetchSequentially(ccq);
-            console.log(ccq)
             data.sort((b, a) => a.owner.shortName.localeCompare(b.owner.shortName));
-            console.log(topHolding.slice(0, 25));
+            data.push({
+                "id": 18000,
+                "name": "CHỈ SỐ VNINDEX",
+                "shortName": "VNINDEX",
+                "code": "VNINDEX",
+                "description": "Lợi suất tính theo CAGR%",
+                "type": "TRADING_FUND",
+                "dataFundAssetType": {
+                    "id": 1,
+                    "name": "Quỹ cổ phiếu",
+                    "code": "STOCK"
+                },
+                "owner": {
+                    "shortName": "HOSE"
+                },
+                "productNavChange": {
+                    "navToLastYear": VNINDEXdata.ytd.cagr.toFixed(2),
+                    "navTo12Months": VNINDEXdata["1"].cagr.toFixed(2),
+                    "annualizedReturn36Months": VNINDEXdata["3"].cagr.toFixed(2),
+                    "annualizedReturn60Months": VNINDEXdata["5"].cagr.toFixed(2),
+                },
+            })
+            //console.log(topHolding.slice(0, 25));
             let top20 = topHolding.slice(0, 25).map(item => item.stockCode);
-
             const table = document.createElement("table");
             table.border = "1";
             table.style.borderCollapse = "collapse";
@@ -309,7 +519,7 @@
             // Tạo hàng tiêu đề
             const thead = document.createElement("thead");
             const headerRow = document.createElement("tr");
-            const headers = ["Cty Quản lý", "Quỹ mở", "% YTD", "% 1 năm", "% 2 năm"].concat(top20); // Thay đổi theo API
+            const headers = ["Cty Quản lý", "Quỹ mở", "% YTD", "% 1 năm", "% 3 năm"].concat(top20); // Thay đổi theo API
             headers.forEach(header => {
                 const th = document.createElement("th");
                 th.textContent = header;
@@ -326,7 +536,6 @@
             const tbody = document.createElement("tbody");
             data.forEach(item => {
                 const row = document.createElement("tr");
-
                 const hsbcCell = document.createElement("td");
                 hsbcCell.textContent = item.owner.shortName || "N/A"; // cty quản lý
                 hsbcCell.title = item.owner.shortName || "N/A"
@@ -340,10 +549,22 @@
                 codeCell.style.fontWeight = "bold";
                 codeCell.style.padding = "8px";
                 row.appendChild(codeCell);
-                codeCell.onclick = function() {
-                    showDs(item.productTopHoldingList);
-                };
+                codeCell.onclick = async function() {
+                    if (item.id !== 18000) {
+                        showDs(item.productTopHoldingList);
+                    } else {
+                        if (Object.keys(sosanhhieusuat).length === 0) {
+    				await fetchSequentiallyData(ccq);
+	                        localStorage.setItem("sshs", JSON.stringify(sosanhhieusuat));
+			} else {
+   				 console.log("Đã có kết quả");
+			}
+            		const popup = document.getElementById('load');
+            		popup.innerHTML = `<div class="popup" style="display:block;"><span class="popup-close">&times;</span>
+				<iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
 
+                    }
+                };
 
                 const navytdCell = document.createElement("td");
                 navytdCell.textContent = item.productNavChange.navToLastYear || "-"; // ytd
@@ -364,7 +585,7 @@
                 row.appendChild(nav1yCell);
 
                 const nav2yCell = document.createElement("td");
-                nav2yCell.textContent = item.productNavChange.navTo24Months || "-"; // 2y
+                nav2yCell.textContent = item.productNavChange.annualizedReturn36Months || "-"; // 3y
                 nav2yCell.style.padding = "8px";
                 nav2yCell.style.color = "rgb(21 250 32)";
                 nav2yCell.style.backgroundColor = "#5e3c3c";
@@ -403,9 +624,9 @@
             for (const s of data) {
                 try {
                     const result = await fetchProductDetails(s.id); // Gọi hàm customFetch thay cho fetch
-                    console.log("Processed result:", s.shortName); // Xử lý dữ liệu nếu cần
+                    //console.log("Processed result:", s.shortName); // Xử lý dữ liệu nếu cần
                 } catch (error) {
-                    console.error("Error processing URL:", s, error);
+                    //console.error("Error processing URL:", s, error);
                 }
             }
         }

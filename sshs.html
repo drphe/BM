@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biểu đồ phân tán</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+
+    <style>
+        /* Cải thiện giao diện của trang */
+        body {
+            background-color: #2c2c2c;
+            /* Nền tối */
+            color: #fff;
+            /* Chữ màu trắng */
+            font-family: Arial, sans-serif;
+        }
+
+        /* Style cho các nút */
+        .button-container {
+            margin: 10px;
+        }
+
+        .button-container button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+            border: 2px solid #007bff;
+            /* Đặt viền cho nút */
+            background-color: #007bff;
+            /* Màu nền nút */
+            color: white;
+            /* Màu chữ */
+            font-size: 14px;
+            /* Kích thước chữ */
+            border-radius: 5px;
+            /* Bo góc cho nút */
+            transition: all 0.3s ease;
+            /* Hiệu ứng chuyển tiếp */
+        }
+
+        /* Hiệu ứng khi người dùng di chuột vào nút */
+        .button-container button:hover {
+            background-color: #0056b3;
+            /* Màu nền thay đổi khi hover */
+            transform: scale(1.1);
+            /* Phóng to nút khi di chuột vào */
+        }
+
+        /* Hiệu ứng khi nút được nhấn */
+        .button-container button:active {
+            background-color: #003f7f;
+            /* Màu nền khi nút bị nhấn */
+            transform: scale(0.98);
+            /* Thu nhỏ nút khi nhấn */
+        }
+
+        /* Thêm hiệu ứng khi nút bị vô hiệu hóa */
+        .button-container button:disabled {
+            background-color: #ccc;
+            /* Màu nền cho nút vô hiệu hóa */
+            cursor: not-allowed;
+            /* Thay đổi con trỏ khi nút vô hiệu hóa */
+        }
+    </style>
+
+</head>
+
+<body>
+    <div class="button-container">
+        <button onclick="updateChart('ytd')">YTD</button>
+        <button onclick="updateChart('1')">1 Year</button>
+        <button onclick="updateChart('3')">3 Years</button>
+        <button onclick="updateChart('5')">5 Years</button>
+    </div>
+
+    <div id="container" style="width:100%; height:400px;"></div>
+
+    <script>
+        // Đặt ngôn ngữ tiếng việt
+        Highcharts.setOptions({
+            lang: {
+                months: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
+                weekdays: ['Chủ nhật', 'Thứ hai', 'Thứ ba', 'Thứ tư', 'Thứ năm', 'Thứ sáu', 'Thứ bảy'],
+                shortMonths: ['Thg 1', 'Thg 2', 'Thg 3', 'Thg 4', 'Thg 5', 'Thg 6', 'Thg 7', 'Thg 8', 'Thg 9', 'Thg 10', 'Thg 11', 'Thg 12'],
+                thousandsSep: ',',
+                decimalPoint: '.',
+                downloadCSV: 'Tải xuống CSV',
+                downloadXLS: 'Tải xuống XLS',
+                viewData: 'Xem dữ liệu',
+                printChart: 'In biểu đồ',
+                resetZoom: 'Đặt lại thu phóng',
+                resetZoomTitle: 'Đặt lại mức thu phóng 1:1'
+            }
+        });
+        // Thiết lập chủ đề tối cho biểu đồ
+        Highcharts.setOptions({
+            chart: {
+                backgroundColor: '#2c2c2c', // Nền tối cho biểu đồ
+                style: {
+                    fontFamily: 'Arial, sans-serif'
+                }
+            },
+            title: {
+                style: {
+                    color: '#fff' // Màu tiêu đề là trắng
+                }
+            },
+            xAxis: {
+                gridLineColor: '#fff', // Màu đường lưới
+                labels: {
+                    style: {
+                        color: '#ffffff' // Màu nhãn trục X là trắng
+                    }
+                },
+                title: {
+                    style: {
+                        color: '#ffffff' // Màu tiêu đề trục X là trắng
+                    }
+                }
+            },
+            yAxis: {
+                gridLineColor: '#666666', // Màu đường lưới
+                labels: {
+                    style: {
+                        color: '#ffffff' // Màu nhãn trục Y là trắng
+                    }
+                },
+                title: {
+                    style: {
+                        color: '#ffffff' // Màu tiêu đề trục Y là trắng
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.75)', // Nền tooltip tối
+                style: {
+                    color: '#fff' // Màu chữ trong tooltip là trắng
+                }
+            },
+            legend: {
+                itemStyle: {
+                    color: '#ffffff' // Màu văn bản của legend là trắng
+                }
+            },
+            plotOptions: {
+                scatter: {
+                    marker: {
+                        states: {
+                            hover: {
+                                fillColor: '#BADA55' // Màu hover cho các chấm
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        // Dữ liệu mẫu
+        const retrievedData = localStorage.getItem("sshs");
+        const data = JSON.parse(retrievedData) || {};
+
+        let currentPeriod = '5'; // Khoảng thời gian mặc định là 5 năm
+        let seriesData = prepareChartData(currentPeriod);
+
+        // Khởi tạo biểu đồ
+        const chart = Highcharts.chart('container', {
+            chart: {
+                type: 'scatter',
+                zoomType: 'xy',
+                width: '600'
+            },
+            title: {
+                text: 'Risk-Return: 5 năm'
+            },
+            xAxis: {
+                title: {
+                    enabled: true,
+                    text: 'STD (%)'
+                }
+            },
+            yAxis: {
+                title: {
+                    enabled: true,
+                    text: 'CAGR (%)'
+                },
+                gridLineWidth: 0, // Tắt tất cả các đường kẻ ngang
+                plotLines: [{
+                    value: 0, // Đặt giá trị plotLine tại y = 0
+                    color: '#fff', // Màu của đường kẻ
+                    width: 1, // Độ dày của đường kẻ
+                    zIndex: 5 // Đảm bảo đường kẻ này nằm trên các phần tử khác
+                }]
+            },
+            tooltip: {
+                formatter: function() {
+                    return `${this.point.name}<br>CAGR: ${this.point.y.toFixed(2)} %<br>STD: ${this.point.x.toFixed(2)} %`;
+                }
+            },
+            legend: {
+                enabled: false
+            },
+            credits: {
+                enabled: false // Ẩn credit (logo Highcharts)
+            },
+            series: [{
+                name: 'CAGR vs Standard Deviation',
+                data: seriesData
+            }]
+        });
+
+        // Hàm chuẩn bị dữ liệu cho biểu đồ theo thời gian
+        function prepareChartData(period) {
+            let dataForPeriod = [];
+            let maxCAGR = -Infinity; // Giá trị CAGR lớn nhất, ban đầu là -Infinity
+            // Tìm ra CAGR lớn nhất trong tất cả các công ty
+            Object.keys(data).forEach(key => {
+                const companyData = data[key];
+                const point = companyData[period];
+                if (point.cagr > maxCAGR) {
+                    maxCAGR = point.cagr; // Cập nhật giá trị CAGR lớn nhất
+                }
+            });
+
+            const vnindexCAGR = data['VNINDEX'][period].cagr; // Lấy CAGR của VNINDEX cho khoảng thời gian hiện tại
+            Object.keys(data).forEach(key => {
+                const companyData = data[key];
+                const point = companyData[period];
+                    const color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow': (point.cagr > vnindexCAGR ? 'white' : 'red'));
+                    const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR;
+                    dataForPeriod.push({
+                        name: `${key}`, // Tên công ty và thời gian
+                        x: point.std, // Trục X: std
+                        y: point.cagr, // Trục Y: cagr
+                        color: color, // Màu sắc của chấm
+                        dataLabels: {
+                            enabled: enableLable, // Chỉ hiển thị tên công ty nếu CAGR là lớn nhất
+                            format: `${key}`, // Hiển thị tên công ty
+                            style: {
+                                fontWeight: 'bold',
+                                color: 'black'
+                            }
+                        }
+                    });
+            });
+            return dataForPeriod;
+        }
+
+        function updateChart(period) {
+            currentPeriod = period; // Cập nhật thời gian hiện tại
+            let periodtext = period == 'ytd' ? 'Từ đầu năm' : period + ' năm';
+            // Cập nhật dữ liệu mới
+            let updatedData = prepareChartData(currentPeriod);
+
+            // Cập nhật biểu đồ với dữ liệu mới
+            chart.series[0].setData(updatedData);
+            chart.setTitle({
+                text: `Risk-Return: ${periodtext}`
+            });
+        }
+    </script>
+</body>
+
+</html>
