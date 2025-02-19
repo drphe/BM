@@ -6,7 +6,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Biểu đồ phân tán</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-<script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+
     <style>
         /* Cải thiện giao diện của trang */
         body {
@@ -15,6 +17,7 @@
             color: #fff;
             /* Chữ màu trắng */
             font-family: Arial, sans-serif;
+	    overflow: hidden;
         }
 
         /* Style cho các nút */
@@ -78,7 +81,10 @@
     <div id="container" style="width:100%; height:400px;"></div>
 
     <script>
-var vnindexpoint = {x:0,y:0};
+        var vnindexpoint = {
+            x: 0,
+            y: 0
+        };
         // Đặt ngôn ngữ tiếng việt
         Highcharts.setOptions({
             lang: {
@@ -87,14 +93,14 @@ var vnindexpoint = {x:0,y:0};
                 shortMonths: ['Thg 1', 'Thg 2', 'Thg 3', 'Thg 4', 'Thg 5', 'Thg 6', 'Thg 7', 'Thg 8', 'Thg 9', 'Thg 10', 'Thg 11', 'Thg 12'],
                 thousandsSep: ',',
                 decimalPoint: '.',
-                downloadPNG:'Tải xuống PNG',
+                downloadPNG: 'Tải xuống PNG',
                 downloadPDF: 'Tải xuống PDF',
-                downloadSVG:'Tải xuống SVG',
+                downloadSVG: 'Tải xuống SVG',
                 downloadCSV: 'Tải xuống CSV',
                 downloadXLS: 'Tải xuống XLS',
                 viewData: 'Xem dữ liệu',
-		viewFullscreen: 'Phóng to',
-		exitFullscreen: 'Thu nhỏ',
+                viewFullscreen: 'Phóng to',
+                exitFullscreen: 'Thu nhỏ',
                 printChart: 'In biểu đồ',
                 resetZoom: 'Đặt lại thu phóng',
                 resetZoomTitle: 'Đặt lại mức thu phóng 1:1'
@@ -161,42 +167,32 @@ var vnindexpoint = {x:0,y:0};
                     }
                 }
             },
-exporting: {
-    enabled: true,
-    buttons: {
-        contextButton: {
-            menuItems: [
+            exporting: {
+                enabled: true,
+                buttons: {
+                    contextButton: {
+                        menuItems: [
 
-                    'viewFullscreen',  // Thêm nút xem toàn màn hình
-		'separator',
-                'downloadPNG',
-                'downloadPDF',
-                'downloadSVG',
-                'separator',
-                {
-                    text: 'Xuất Dữ liệu CSV',
-                    onclick: function () {
-                        var csv = this.getCSV();
-                        var link = document.createElement('a');
-                        link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
-                        link.download = 'data.csv';
-                        link.click();
-                    }
-                },
-                {
-                    text: 'Xuất Dữ liệu Excel',
-                    onclick: function () {
-                        var xls = this.getTable();
-                        var link = document.createElement('a');
-                        link.href = 'data:application/vnd.ms-excel;charset=utf-8,' + encodeURIComponent(xls);
-                        link.download = 'data.xls';
-                        link.click();
+                            'viewFullscreen', // Thêm nút xem toàn màn hình
+                            'separator',
+                            'downloadPNG',
+                            'downloadPDF',
+                            'downloadSVG',
+                            'separator',
+                            {
+                                text: 'Xuất Dữ liệu CSV',
+                                onclick: function() {
+                                    var csv = this.getCSV();
+                                    var link = document.createElement('a');
+                                    link.href = 'data:text/csv;charset=utf-8,' + encodeURIComponent(csv);
+                                    link.download = 'data.csv';
+                                    link.click();
+                                }
+                            },
+                        ]
                     }
                 }
-            ]
-        }
-    }
-}
+            }
         });
         // Dữ liệu mẫu
         const retrievedData = localStorage.getItem("sshs");
@@ -262,62 +258,64 @@ exporting: {
                     maxCAGR = point.cagr; // Cập nhật giá trị CAGR lớn nhất
                 }
             });
-		vnindexpoint.x = data['VNINDEX'][period].std;
-		vnindexpoint.y = data['VNINDEX'][period].cagr;
-		
+            vnindexpoint.x = data['VNINDEX'][period].std;
+            vnindexpoint.y = data['VNINDEX'][period].cagr;
+
             const vnindexCAGR = data['VNINDEX'][period].cagr; // Lấy CAGR của VNINDEX cho khoảng thời gian hiện tại
             Object.keys(data).forEach(key => {
                 const companyData = data[key];
                 const point = companyData[period];
-                    const color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow': (point.cagr > vnindexCAGR ? 'white' : 'red'));
-                    const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR;
-                    dataForPeriod.push({
-                        name: `${key}`, // Tên công ty và thời gian
-                        x: point.std, // Trục X: std
-                        y: point.cagr, // Trục Y: cagr
-                        color: color, // Màu sắc của chấm
-                        dataLabels: {
-                            enabled: enableLable, // Chỉ hiển thị tên công ty nếu CAGR là lớn nhất
-                            format: `${key}`, // Hiển thị tên công ty
-                            style: {
-                                fontWeight: 'bold',
-                                color: 'black'
-                            }
+                const color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow' : (point.cagr > vnindexCAGR ? 'white' : 'red'));
+                const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR;
+                dataForPeriod.push({
+                    name: `${key}`, // Tên công ty và thời gian
+                    x: point.std, // Trục X: std
+                    y: point.cagr, // Trục Y: cagr
+                    color: color, // Màu sắc của chấm
+                    dataLabels: {
+                        enabled: enableLable, // Chỉ hiển thị tên công ty nếu CAGR là lớn nhất
+                        format: `${key}`, // Hiển thị tên công ty
+                        style: {
+                            fontWeight: 'bold',
+                            color: 'black'
                         }
-                    });
+                    }
+                });
             });
             return dataForPeriod;
         }
-function updatePlotLines(chart, point) {
-    // Xóa tất cả các đường kẻ cũ (để tránh trùng lặp)
-    chart.xAxis[0].removePlotLine('verticalLine');
-    chart.yAxis[0].removePlotLine('horizontalLine');
 
-    // Thêm đường kẻ dọc qua tọa độ x (std)
-    chart.xAxis[0].addPlotLine({
-        id: 'verticalLine', // Thêm id để dễ dàng tham chiếu sau này
-        color: 'red',
-        width: 2,
-        value: point.x, // Tọa độ x của điểm
-        dashStyle: 'ShortDash',
-    });
+        function updatePlotLines(chart, point) {
+            // Xóa tất cả các đường kẻ cũ (để tránh trùng lặp)
+            chart.xAxis[0].removePlotLine('verticalLine');
+            chart.yAxis[0].removePlotLine('horizontalLine');
 
-    // Thêm đường kẻ ngang qua tọa độ y (cagr)
-    chart.yAxis[0].addPlotLine({
-        id: 'horizontalLine', // Thêm id để dễ dàng tham chiếu sau này
-        color: 'blue',
-        width: 2,
-        value: point.y, // Tọa độ y của điểm
-        dashStyle: 'ShortDash',
-    });
-}
-	updatePlotLines(chart, vnindexpoint);
+            // Thêm đường kẻ dọc qua tọa độ x (std)
+            chart.xAxis[0].addPlotLine({
+                id: 'verticalLine', // Thêm id để dễ dàng tham chiếu sau này
+                color: 'red',
+                width: 2,
+                value: point.x, // Tọa độ x của điểm
+                dashStyle: 'ShortDash',
+            });
+
+            // Thêm đường kẻ ngang qua tọa độ y (cagr)
+            chart.yAxis[0].addPlotLine({
+                id: 'horizontalLine', // Thêm id để dễ dàng tham chiếu sau này
+                color: 'blue',
+                width: 2,
+                value: point.y, // Tọa độ y của điểm
+                dashStyle: 'ShortDash',
+            });
+        }
+        updatePlotLines(chart, vnindexpoint);
+
         function updateChart(period) {
             currentPeriod = period; // Cập nhật thời gian hiện tại
             let periodtext = period == 'ytd' ? 'Từ đầu năm' : period + ' năm';
             // Cập nhật dữ liệu mới
             let updatedData = prepareChartData(currentPeriod);
-		updatePlotLines(chart, vnindexpoint);
+            updatePlotLines(chart, vnindexpoint);
             // Cập nhật biểu đồ với dữ liệu mới
             chart.series[0].setData(updatedData);
             chart.setTitle({

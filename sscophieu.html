@@ -154,7 +154,6 @@
     </div>
     <div id="overlay" class="overlay"></div>
     <script>
-
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
         }
@@ -195,7 +194,7 @@
                     createdAt: data.t[index] * 1000, // thời gian
                     nav: data.c[index], // Giá đóng cửa
                 }));
-		symbol = symbol == "VN-INDEX"? "VNINDEX": symbol;
+                symbol = symbol == "VN-INDEX" ? "VNINDEX" : symbol;
                 mainData[symbol] = calculatePerformance(transformedData);
             } catch (error) {
                 console.error('Có lỗi xảy ra:', error);
@@ -325,26 +324,26 @@
             }
         }
 
-var sectionList = {
+        var sectionList = {
 
-'bank': ["ACB","CTG","MSB","VPB"],
-'thep': ["HPG","HSG","NKG"],
-'banle':["DGW","MWG","FPT"]
-}
-let storage = {};
+            'bank': ["ACB", "CTG", "MSB", "VPB"],
+            'thep': ["HPG", "HSG", "NKG"],
+            'banle': ["DGW", "MWG", "FPT"]
+        }
+        let storage = {};
 
 
         async function checkSection(nameSection = 'bank') {
             mainData = {};
-		loading();
-    if (!storage[nameSection]) {
-            var list = (sectionList[nameSection] || ["SSI", "HSG"]).concat(["VN-INDEX"]);
-            await fetchSequentiallyData(list);
-            localStorage.setItem("sshs", JSON.stringify(mainData));
-        storage[nameSection] = mainData;
-    } else {
-        localStorage.setItem("sshs", JSON.stringify(storage[nameSection]));
-    }
+            loading();
+            if (!storage[nameSection]) {
+                var list = (sectionList[nameSection] || ["SSI", "HSG"]).concat(["VN-INDEX"]);
+                await fetchSequentiallyData(list);
+                localStorage.setItem("sshs", JSON.stringify(mainData));
+                storage[nameSection] = mainData;
+            } else {
+                localStorage.setItem("sshs", JSON.stringify(storage[nameSection]));
+            }
 
 
             const popup = document.getElementById('load');
