@@ -95,10 +95,14 @@
         /* Style cho các nút */
         .button-container {
             margin: 10px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 6px;
         }
 
         .button-container button {
             padding: 5px 10px;
+            height: 45px;
             margin-right: 10px;
             cursor: pointer;
             border: 2px solid #007bff;
@@ -113,6 +117,7 @@
             /* Bo góc cho nút */
             transition: all 0.3s ease;
             /* Hiệu ứng chuyển tiếp */
+            margin-bottom: 6px;
         }
 
         /* Hiệu ứng khi người dùng di chuột vào nút */
@@ -154,6 +159,30 @@
     </div>
     <div id="overlay" class="overlay"></div>
     <script>
+        var sectionList = {
+            "Ngân hàng": ["ABB", "ACB", "BID", "BVB", "CTG", "EIB", "HDB", "LPB", "MBB", "MSB", "NAB", "NVB", "OCB", "SHB", "SSB", "STB", "TCB", "TPB", "VAB", "VCB", "VIB", "VPB"],
+            "Chứng khoán": ["AGR", "APG", "APS", "ART", "BMS", "BSI", "BVS", "CTS", "DSC", "DSE", "EVS", "FTS", "HBS", "HCM", "IVS", "MBS", "PSI", "SHS", "SSI", "TVS", "VCI", "VDS", "VIG", "VIX", "VND", "WSS"],
+            "Công nghệ thông tin": ["CKV", "CMG", "CMT", "ELC", "FPT", "HIG", "HPT", "ITD", "KST", "ONE", "SRA", "ST8", "UNI", "VEC", "VTE"],
+            "Bưu chính - Viễn thông": ["EMS", "ICT", "PAI", "PIA", "POT", "SAM", "SGT", "TTN", "VGI"],
+            "Y tế - Dược phẩm": ["AMV", "BCP", "CPC", "DBD", "DBM", "DBT", "DCL", "DDN", "DHD", "DHG", "DHT", "DMC", "DNM", "DP2", "DP3", "DPP", "DTG", "DVN", "HDP", "IMP", "JVC", "LDP", "MKV", "MTP", "NDC", "NDP", "OPC", "PMC", "PPP", "SPM", "TRA", "TW3", "UPH", "VDP", "VFG", "VMD"],
+            "Điện - Năng lượng": ["AVC", "BHA", "BSA", "BTP", "CHP", "DHP", "DNA", "DNH", "DRL", "DTE", "DTK", "EIC", "GEG", "GHC", "GSM", "HJS", "HNA", "HND", "HPD", "ISH", "KHP", "NBP", "ND2", "NED", "NT2", "NTH", "PC1", "PGV", "PIC", "POW", "PPC", "QPH", "QTP", "S4A", "SBA", "SBH", "SBM", "SEB", "SHP", "SJD", "SP2", "SVH", "TBC", "TBD", "TDB", "TMP", "TTA", "TTE", "TV2", "VCP", "VNE", "VPD", "VSH"],
+            "Dầu khí": ["ASP", "BSR", "CNG", "GAS", "GSP", "HFC", "OIL", "PCG", "PDV", "PEG", "PEQ", "PGC", "PGD", "PGS", "PJC", "PLC", "PLX", "PMG", "POB", "POS", "POV", "PPT", "PPY", "PSC", "PSH", "PSN", "PTH", "PTS", "PTT", "PTV", "PTX", "PVB", "PVC", "PVD", "PVE", "PVG", "PVM", "PVP", "PVS", "PVT", "SHE", "TDG", "TOS", "VMG", "VTO"],
+            "Xây dựng": ["AGG", "AME", "API", "BAX", "BCE", "BCG", "BCM", "C47", "C69", "C92", "CCL", "CDC", "CEO", "CIG", "CII", "CKG", "CMS", "CRE", "CSC", "CTD", "CTI", "CTX", "CX8", "D11", "D2D", "DC2", "DC4", "DIG", "DIH", "DPG", "DRH", "DTA", "DTD", "DXG", "EVG", "FCN", "FDC", "FIR", "HAR", "HAS", "HBC", "HDC", "HDG", "HHV", "HLD", "HPX", "HQC", "HTN", "HU1", "HU3", "HUB", "HUT", "HVH", "ICG", "IDJ", "IDV", "IJC", "ITA", "ITC", "KBC", "KDH", "KOS", "KTT", "L10", "L14", "L18", "L35", "L40", "L43", "L61", "L62", "LCD", "LCG", "LDG", "LEC", "LGC", "LGL", "LHC", "LHG", "LIG", "MCO", "MST", "NBB", "NDN", "NDX", "NHA", "NLG", "NRC", "NTL", "NVL", "PDR", "PHC", "PTL", "PV2", "PXI", "QCG", "RCL", "REE", "SCI", "SCR", "SD5", "SD6", "SD9", "SDT", "SGR", "SJE", "SJS", "SRF", "SZB", "SZC", "TA9", "TCD", "TCH", "TDC", "TDH", "THD", "TIG", "TIP", "UDC", "V21", "VC2", "VC3", "VC6", "VC7", "VC9", "VCC", "VCG", "VE1", "VHM", "VIC", "VMC", "VNE", "VPH", "VPI", "VRC"],
+            "Đầu tư công": ["C47", "C4G", "CII", "CTD", "CTI", "CTR", "DPG", "EVG", "FCN", "G36", "HBC", "HHV", "HTN", "HUB", "HUT", "LCG", "MST", "PDB", "DIG", "HTI"],
+            "Thép - Kim loại": ["BVG", "HMC", "HPG", "HSG", "HSV", "NKG", "SMC", "TDS", "TIS", "TLH", "TVN", "VCA", "VGS"],
+            "Than - Khoáng sản": ["AAH", "BKC", "BMC", "CLM", "CST", "DHM", "FCM", "HGM", "HLC", "ITS", "KCB", "KHD", "KSB", "KSV", "LBM", "MDC", "MIC", "MSR", "NBC", "THT", "TMB", "TVD"],
+            "Du lịch": ["BSG", "BTV", "CMS", "DAH", "DL1", "DSN", "DSP", "DTI", "EIN", "HAX", "HHG", "HVN", "MAS", "NVT", "OCH", "PDC", "PGT", "SCS", "SGH", "SKG", "TCT", "TSD", "VEF", "VNG", "VNS", "VTD", "VTR"],
+            "Hàng không": ["ACV", "ASG", "AST", "CIA", "HVN", "MAS", "NAS", "NCS", "NCT", "SAS", "SCS", "SGN", "VJC"],
+            "Bán lẻ - Hàng tiêu dùng": ["AAT", "ABR", "BTT", "CLX", "CMV", "COM", "CTF", "DGW", "FRT", "HAX", "MCH", "MSN", "MWG", "PET", "PIT", "PIV", "PNJ", "PSD", "SFC", "SID", "ST8", "TMC", "TOP", "VTJ"],
+            "Thực phẩm": ["AFX", "AGM", "ANT", "APC", "APF", "BAF", "BBC", "BCF", "BHN", "BLT", "BNA", "BSL", "CAP", "CMF", "DBC", "FCS", "FMC", "HAD", "HAT", "HAV", "HHC", "HNG", "IFS", "KDC", "KTS", "LAF", "LSS", "NAF", "PAN", "QNS", "SAB", "SAF", "SBT", "SCD", "SGC", "SJ1", "SLS", "SMB", "VCF", "VHE", "VNM", "VSF", "VSN"],
+            "Giao thông vận tải": ["ASG", "CAG", "CCR", "CCT", "CDN", "CIA", "CLL", "DDM", "DL1", "DS3", "DVP", "DXP", "GIC", "GMD", "GSP", "HAH", "HHG", "HMH", "HTV", "ILB", "IST", "MAC", "MHC", "MVN", "NCT", "PCT", "PDN", "PGT", "PHP", "PJT", "PRC", "PSC", "PSP", "PTS", "PVP", "PVT", "QSP", "SAC", "SCS", "SFI", "SGN", "SGP", "SKG", "SSG", "SWC", "TCL", "TCO", "TCW", "TMS", "TOT", "VFC", "VFR", "VGP", "VIP", "VMS", "VNA", "VNF", "VNL", "VNS", "VOS", "VSA", "VSC", "VSM", "VTO", "WCS"],
+            "Thủy hải sản": ["AAM", "ABT", "ACL", "AGF", "ANV", "APT", "BLF", "CAD", "CAT", "CCA", "CMX", "DAT", "FMC", "ICF", "IDI", "JOS", "KHS", "MPC", "NGC", "SEA", "VHC"],
+            "Bảo hiểm": ["ABI", "AIC", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PRE", "PTI", "PVI", "VNR"],
+            "Dệt - May mặc": ["AAT", "ADS", "AG1", "BDG", "EVE", "G20", "GIL", "GMC", "HDM", "HNI", "HSM", "HTG", "HUG", "KMR", "M10", "MGG", "MPT", "MSH", "NDT", "NJC", "NTT", "SGI", "SPB", "STK", "TCM", "TDT", "THM", "TLI", "TNG", "TTG", "TVT", "VDN", "VGG", "VGT"],
+            "Truyền thông giải trí": ["ADC", "ADG", "ALT", "BDB", "BED", "BST", "DAD", "DAE", "DST", "EBS", "ECI", "EID", "EPH", "FHS", "FOC", "HTP", "LBE", "NBE", "PNC", "SED", "SGD", "SMN", "STC", "STH", "VEF", "VNB", "VPR", "YEG"],
+            "Cao su": ["BRC", "BRR", "CDR", "CSM", "DPR", "DRC", "DRG", "DRI", "GVR", "HNG", "HRC", "PHR", "RBC", "RCD", "RTB", "TNC", "TRC", "VHG", "VRG"]
+        };
+
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
         }
@@ -324,16 +353,8 @@
             }
         }
 
-        var sectionList = {
-
-            'bank': ["ACB", "CTG", "MSB", "VPB"],
-            'thep': ["HPG", "HSG", "NKG"],
-            'banle': ["DGW", "MWG", "FPT"]
-        }
         let storage = {};
-
-
-        async function checkSection(nameSection = 'bank') {
+        async function checkSection(nameSection) {
             mainData = {};
             loading();
             if (!storage[nameSection]) {
@@ -359,6 +380,19 @@
 
             }
         });
+
+        function createButtons(list) {
+            let buttonContainer = document.querySelector('.button-container');
+            buttonContainer.innerHTML = ''; // Clear previous buttons
+
+            for (let section in list) {
+                let button = document.createElement('button');
+                button.textContent = section;
+                button.setAttribute('onclick', `checkSection('${section}')`);
+                buttonContainer.appendChild(button);
+            }
+        }
+        createButtons(sectionList);
     </script>
 </body>
 
