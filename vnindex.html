@@ -66,44 +66,35 @@
     .tabs {
         width: 240px;
         background-color: #2d2d3c;
-        /* Lighter dark background */
-        padding: 10px;
+        padding: 4px;
         overflow: auto;
         border-radius: 10px;
         color: #e4e4e4;
-        /* Light text for contrast */
     }
 
     .exit,
     .tab {
         padding: 8px 20px;
         background-color: #39394a;
-        /* Subtle light-dark button background */
-        border: 1px solid #4a4a5b;
-        /* Subtle border */
+        border-bottom: 1px solid #4a4a5b;
         border-radius: 5px;
         cursor: pointer;
         transition: all 0.3s ease;
-        font-size: 16px;
+        font-size: 14px;
         margin-top: 5px;
         color: #e4e4e4;
-        /* Light text */
         text-align: center;
     }
 
     .exit:hover,
     .tab:hover {
         background-color: #4f4f60;
-        /* Slightly lighter hover background */
         border-color: #777;
-        /* Highlighted border */
         color: #ffc078;
-        /* Orange-yellow hover text */
     }
 
     .tab:active {
         background-color: #454556;
-        /* Slightly darker active state */
         transform: scale(0.98);
     }
 
@@ -154,8 +145,6 @@
         z-index: 99;
         position: fixed;
         right: -300px;
-        top: 320px;
-        transform: translateY(-50%);
         transition: right 0.3s;
     }
 
@@ -286,6 +275,8 @@
             height: 15px;
         }
     }
+
+
 </style>
 
 <body>
@@ -293,16 +284,20 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-            <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
+            <span style="font-size: 14px;font-weight: 700;">Tin tức/ Phân tích</span>
             <div class="tab" onclick="fetchData(9)">Nhận định FIDT</div>
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
-            <div class="tab " onclick="fetchData(13)">Giá hàng hóa FIDT</div>
-            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
+            <div class="tab" onclick="fetchData(13)">Giá hàng hóa FIDT</div>
+
+            <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
+            <div class="tab" onclick="fetchData(11)">Định giá VN-INDEX</div>
+            <div class="tab" onclick="fetchData(12)">Tỷ giá USD/VND</div>
             <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
-            <div class="tab " onclick="fetchData(11)">Định giá VN-INDEX</div>
-            <div class="tab " onclick="fetchData(12)">Tỷ giá USD/VND</div>
-            <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Phân tích cổ phiếu</span>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
+
+            <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Cổ phiếu</span>
+            <div class="tab" onclick="fetchData(15)">Hiệu suất ngành</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
@@ -501,6 +496,10 @@
                 14: {
                     src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
                     title: "Thống kê giao dịch theo NDT"
+                },
+                15: {
+                    src: "sscophieu.html",
+                    title: "Hiệu suất cổ phiếu theo ngành"
                 },
             };
 

@@ -451,7 +451,7 @@
             isMA50 = true,
             isMA150 = false,
             isMA200 = true;
-        autoUpdate = isStockMarketOpen() && setInterval(autoRefresh, 1000);
+        autoUpdate = isStockMarketOpen() && setInterval(autoRefresh, 10000);
         // Thêm chú giải
         const legend = document.createElement('div');
         legend.style = `position: absolute; top: 40px; z-index: 100; font-size: 13px; font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif; line-height: 18px; font-weight: bold; width:100%;background-color:transparent;display: flex;justify-content: space-between;width: 100%; margin:auto;`;

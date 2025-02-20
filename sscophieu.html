@@ -14,7 +14,12 @@
         }
 
         body {
-            background-color: white;
+
+	    margin: 10px;
+	    padding:4px;
+            background-color: #2c2c2c;
+            /* Nền tối */
+            color: #fff;
         }
 
         #app {
@@ -149,6 +154,7 @@
 <body>
     <div id="load"></div>
     <div id="app">
+	<h3>So sánh hiệu suất các cổ phiếu trong ngành:</h3>
         <div class="button-container">
             <button onclick="checkSection()">Ngành ngân hàng</button>
             <button onclick="checkSection('thep')">Ngành thép</button>
@@ -180,7 +186,8 @@
             "Bảo hiểm": ["ABI", "AIC", "BIC", "BLI", "BMI", "BVH", "MIG", "PGI", "PRE", "PTI", "PVI", "VNR"],
             "Dệt - May mặc": ["AAT", "ADS", "AG1", "BDG", "EVE", "G20", "GIL", "GMC", "HDM", "HNI", "HSM", "HTG", "HUG", "KMR", "M10", "MGG", "MPT", "MSH", "NDT", "NJC", "NTT", "SGI", "SPB", "STK", "TCM", "TDT", "THM", "TLI", "TNG", "TTG", "TVT", "VDN", "VGG", "VGT"],
             "Truyền thông giải trí": ["ADC", "ADG", "ALT", "BDB", "BED", "BST", "DAD", "DAE", "DST", "EBS", "ECI", "EID", "EPH", "FHS", "FOC", "HTP", "LBE", "NBE", "PNC", "SED", "SGD", "SMN", "STC", "STH", "VEF", "VNB", "VPR", "YEG"],
-            "Cao su": ["BRC", "BRR", "CDR", "CSM", "DPR", "DRC", "DRG", "DRI", "GVR", "HNG", "HRC", "PHR", "RBC", "RCD", "RTB", "TNC", "TRC", "VHG", "VRG"]
+            "Cao su": ["BRC", "BRR", "CDR", "CSM", "DPR", "DRC", "DRG", "DRI", "GVR", "HNG", "HRC", "PHR", "RBC", "RCD", "RTB", "TNC", "TRC", "VHG", "VRG"],
+	    "Tùy chọn": ["SSI","HPG"]
         };
 
         function loading(i = !0) {
@@ -358,7 +365,7 @@
             mainData = {};
             loading();
             if (!storage[nameSection]) {
-                var list = (sectionList[nameSection] || ["SSI", "HSG"]).concat(["VN-INDEX"]);
+                var list = (sectionList[nameSection] || sectionList["Tùy chọn"]).concat(["VN-INDEX"]);
                 await fetchSequentiallyData(list);
                 localStorage.setItem("sshs", JSON.stringify(mainData));
                 storage[nameSection] = mainData;
@@ -387,7 +394,7 @@
 
             for (let section in list) {
                 let button = document.createElement('button');
-                button.textContent = section;
+                button.textContent = section+ ' ('+list[section].length+')';
                 button.setAttribute('onclick', `checkSection('${section}')`);
                 buttonContainer.appendChild(button);
             }
