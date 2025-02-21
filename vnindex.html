@@ -276,7 +276,71 @@
         }
     }
 
+    .popup {
+        position: fixed;
+        display: none;
+        left: 50%;
+        top: 50%;
+        border: 2px solid #ddd;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: #fff;
+        z-index: 1000;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+        opacity: 0;
+        transform: translate(-50%, -50%);
+    }
 
+    /* Khi popup được hiển thị */
+    .popup.show {
+        display: block;
+        opacity: 1;
+        animation: fly-in 0.3s ease-out;
+    }
+
+    .popup-close {
+        cursor: pointer;
+        color: red;
+        float: right;
+        font-size: 20px;
+    }
+
+    .popup-content {
+        animation: fly-in 0.3s ease-out;
+    }
+
+    @keyframes fly-in {
+        from {
+            transform: translate(-50%, -50%) scale(0.4);
+            opacity: 0;
+        }
+
+        to {
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+    }
+
+    .textinfo {
+        height: 18px;
+        min-width: 22px;
+        line-height: 0;
+        cursor: default;
+        -webkit-box-align: center;
+        align-items: center;
+        display: inline-flex;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: rgb(9, 58, 236);
+        font-size: 0.8rem;
+        font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
+        background-color: rgba(57, 97, 248, 0.16);
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+        white-space: nowrap;
+        border-radius: 6px;
+        padding: 4px 6px;
+    }
 </style>
 
 <body>
@@ -284,22 +348,22 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-            <span style="font-size: 14px;font-weight: 700;">Tin tức/ Phân tích</span>
-            <div class="tab" onclick="fetchData(9)">Nhận định FIDT</div>
-            <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
-            <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+            <span style="font-size: 16px;font-weight: 700;">Công cụ FIDT</span>
+            <div class="tab" onclick="fetchData(9)">Nhận định thị trường</div>
             <div class="tab" onclick="fetchData(13)">Giá hàng hóa FIDT</div>
-
-            <span style="font-size: 16px;font-weight: 700;">Theo dõi thị trường</span>
             <div class="tab" onclick="fetchData(11)">Định giá VN-INDEX</div>
             <div class="tab" onclick="fetchData(12)">Tỷ giá USD/VND</div>
             <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
-            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
+
+            <span style="font-size: 14px;font-weight: 700;">Tin tức/ Phân tích</span>
+            <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
+            <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+            <div class="tab" onclick="fetchData(15)">Hiệu suất ngành</div>
+            <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
 
             <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Cổ phiếu</span>
-            <div class="tab" onclick="fetchData(15)">Hiệu suất ngành</div>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
-            <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
             <div class="tab" onclick="fetchData(6)">Báo cáo tài chính</div>
             <div class="exit" style="color: red;" onclick="toggleElement()">Thu gọn</div>
@@ -307,14 +371,13 @@
 
     </div>
     <div class="show-button" id="showButton" onclick="toggleElement()">Menu</div>
-
     <div class="header">
         <div style="left: 10px;font-weight: 600;display:flex;" id="tieude">
-            <div class="hed" id="biendong"><svg data-icon="pie-chart" style="fill: #5c7080;" width="16" height="16" viewBox="0 0 16 16">
-                    <desc>pie-chart</desc>
-                    <path d="M7 1.08c-3.37.5-5.97 3.4-5.97 6.92 0 3.87 3.13 7 6.98 7 3.52 0 6.42-2.61 6.91-6H7V1.08z" fill-rule="evenodd"></path>
-                    <path d="M8 0v8h8c0-4.42-3.58-8-8-8z" fill-rule="evenodd"></path>
-                </svg> <span>Dashboard</span></div>
+            <div class="hed" id="biendong">
+                <div style="margin: 4px;" aria-label="Nhấp vào để xem chú thích"><svg class="buttonInfo" width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" clip-rule="evenodd" d="M22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C17.5228 2 22 6.47715 22 12ZM12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V11C12.75 10.5858 12.4142 10.25 12 10.25C11.5858 10.25 11.25 10.5858 11.25 11V17C11.25 17.4142 11.5858 17.75 12 17.75ZM12 7C12.5523 7 13 7.44772 13 8C13 8.55228 12.5523 9 12 9C11.4477 9 11 8.55228 11 8C11 7.44772 11.4477 7 12 7Z" fill="#fff" />
+                    </svg></div><span id="title">Dashboard</span>
+            </div>
         </div>
         <div><svg version="1.1" x="0px" y="0px" viewBox="0 0 122.88 122.88" fill="#5c7080" height="16px" width="16px" class="svg-container" style="margin-right: 4px;">
                 <style type="text/css">
@@ -332,9 +395,87 @@
     <div class="container">
         <div class="existing-div" id="myChart" height="500" orientation="portrait"></div>
         <div class="" id="righclick"></div>
-        <div class="overlay" id="overlay"></div>
     </div>
     <script>
+        const iframeConfigs = {
+            1: {
+                src: "nganh.html",
+                title: "Nhóm ngành và dòng tiền",
+                height: "500px",
+                maxWidth: "800px",
+                info: "Biểu đồ mối tương giữa nhóm ngành và dòng tiền"
+            },
+            2: {
+                src: "kqkd.html",
+                title: "Kết quả kinh doanh quý gần nhất",
+                info: "Xem kết quả kinh doanh quý gần nhất của các doanh nghiệp trên sàn, nguồn Stocks.vn.<br/> Chú ý mức tăng trưởng lợi nhuận sau thuế so với cùng kỳ của các doanh nghiệp để đánh giá khả năng tăng trưởng đột phá về lợi nhuận."
+            },
+            3: {
+                src: "discount.html",
+                title: "Thống kê mức chiết khấu"
+            },
+            4: {
+                src: "chart.html",
+                title: "Dữ liệu vĩ mô/hàng hóa",
+                info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...."
+            },
+            5: {
+                src: "tradingview.html",
+                title: "Biểu đồ Tradingview",
+                info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu."
+            },
+            6: {
+                src: "fireant.html",
+                title: "Báo cáo tài chính Fireant",
+                info: "Công cụ xem báo cáo tài chính chi tiết của từng doanh nghiệp.<br/> Có 3 bảng báo cáo: cân đối kế toán, báo cáo kinh doanh và lưu chuyển tiền tệ. Mặc định hiển thị kết quả kinh doanh của doanh nghiệp quan tâm, với 8 cột dữ liệu theo quý."
+            },
+            7: {
+                src: "fialda.html",
+                title: "Báo cáo phân tích Fialda",
+                info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. <br/> Cập nhật thêm fastnote của Finbox."
+            },
+            8: {
+                src: "finbox.html",
+                title: "Danh sách khuyến nghị Finbox",
+                info: "Danh sách các cổ phiếu khuyến nghị của finbox. Lưu ý cổ phiếu của Finbox mua theo công cụ và triết lý riêng."
+            },
+            9: {
+                src: "fidt.html",
+                title: "Tin tức FIDT",
+                info: "Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.<br/>Nhà đầu tư dài hạn cần quan tâm."
+            },
+            10: {
+                src: "fmarket.html",
+                title: "Thống kê quỹ cổ phiếu",
+                info: "Thống kê các cổ phiếu được các quỹ cổ phiếu nắm giữ.<br/> Xem biểu đồ scratter plot để đánh giá rủi ro - lợi nhuận của các quỹ mở so với VNINDEX. Chỉ những quỹ mở có hiệu suất tốt hơn trong dài hạn, và có mức độ biến động thấp mới đáng lựa chọn để đầu tư."
+            },
+            11: {
+                src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
+                title: "Định giá VN-Index",
+                info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường"
+            },
+            12: {
+                src: "https://temp-portal.fidt.vn/data/ty-gia",
+                title: "Tỷ giá USD/VND",
+                info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng."
+            },
+            13: {
+                src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
+                title: "Giá hàng hóa",
+                info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn."
+            },
+            14: {
+                src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
+                title: "Thống kê giao dịch theo NDT",
+                info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm."
+            },
+            15: {
+                src: "sscophieu.html",
+                title: "Hiệu suất cổ phiếu theo ngành",
+                info: "Biểu đồ Scatter Plot để đánh giá hiệu suất (rủi ro và lợi nhuận) của các mã cổ phiếu trong cùng nhóm ngành. <br/> Trong cùng một ngành, các cổ phiếu có mức độ lợi nhuận (CAGR, lợi suất trung bình nhân) vượt trội so với VNINDEX mới cần quan tâm, đổi lại có mức rủi ro (STD - độ biến động tính theo %) cao hơn. "
+            },
+        };
+
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container">    <div class="load-wrapp">
       <div class="load-1">
@@ -348,41 +489,23 @@
         const overlay = document.getElementById('overlay');
         const showButton = document.getElementById('showButton');
         const hiddenElement = document.getElementById('hiddenElement');
-        let isDragging = false;
-        let startY, startTop;
-        showButton.addEventListener('mousedown', function(event) {
-            isDragging = true;
-            startY = event.clientY;
-            startTop = showButton.offsetTop;
-            document.addEventListener('mousemove', onMouseMove);
-            document.addEventListener('mouseup', onMouseUp);
-        });
-
-        function onMouseMove(event) {
-            if (!isDragging) return;
-            let newTop = startTop + (event.clientY - startY);
-            newTop = Math.max(50, Math.min(window.innerHeight - showButton.offsetHeight - 50, newTop));
-            showButton.style.top = newTop + 'px';
-        }
-
-        function onMouseUp() {
-            isDragging = false;
-            document.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseup', onMouseUp);
-        }
-
         // Ẩn đối tượng khi click ra ngoài 
         document.addEventListener('click', function(event) {
             var righttab = window.innerWidth > 800;
-            var overlay = document.getElementById('overlay');
             if (!hiddenElement.contains(event.target) && !showButton.contains(event.target)) {
                 if (hiddenElement.classList.contains('visible')) {
                     hiddenElement.classList.remove('visible');
                     showButton.style.display = 'block';
                     overlay.style.display = 'none';
+                    loading(0);
                 }
             }
         });
+document.addEventListener("keyup", function(e) {
+    if (27 === e.keyCode) {
+        loading(0); overlay.style.display = 'none';
+    }
+})
 
         function toggleElement() {
             var righttab = window.innerWidth > 800;
@@ -390,6 +513,7 @@
                 hiddenElement.classList.remove('visible');
                 showButton.style.display = 'block';
                 overlay.style.display = 'none';
+                loading(0);
             } else {
                 hiddenElement.classList.add('visible');
                 showButton.style.display = 'none';
@@ -406,6 +530,7 @@
             var righttab = window.innerWidth > 768;
             hiddenElement.classList.remove('visible');
             overlay.style.display = 'none';
+            loading(0)
             showButton.style.display = righttab ? 'none' : 'block';
             const container = document.getElementById("righclick");
             container.innerHTML = righttab ? hiddenElement.innerHTML : '';
@@ -436,73 +561,28 @@
         function gety(s) {
             return parseFloat(s / 1e9)
         }
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('popup-close')) {
+                overlay.style.display = "none";
+                loading(0)
+            }
+        });
+        document.querySelector('.buttonInfo').addEventListener('click', function() {
+            showInfo();
+        });
+        var textInfo = {
+            title: "",
+            info: ""
+        };
+
+        function showInfo() {
+            const popup = document.getElementById('load');
+            popup.innerHTML = `<div class="popup show"><span class="textinfo">${textInfo.title}</span><span class="popup-close">&times;</span>
+		<div style="font-size: 0.8rem;width: 400px;min-height: 200px;/*border-top: 1px solid hsl(1deg 22.13% 90.99%);*/margin-top: 4px;">${textInfo.info|| "Trống"}</div></div>`;
+            overlay.style.display = "block";
+        }
         async function fetchData(iframe = 1) {
             loading(1);
-            const iframeConfigs = {
-                1: {
-                    src: "nganh.html",
-                    title: "Nhóm ngành và dòng tiền",
-                    height: "500px",
-                    maxWidth: "800px"
-                },
-                2: {
-                    src: "kqkd.html",
-                    title: "Kết quả kinh doanh quý gần nhất"
-                },
-                3: {
-                    src: "discount.html",
-                    title: "Thống kê mức chiết khấu"
-                },
-                4: {
-                    src: "chart.html",
-                    title: "Dữ liệu vĩ mô/hàng hóa"
-                },
-                5: {
-                    src: "tradingview.html",
-                    title: "Biểu đồ Tradingview"
-                },
-                6: {
-                    src: "fireant.html",
-                    title: "Báo cáo tài chính Fireant"
-                },
-                7: {
-                    src: "fialda.html",
-                    title: "Báo cáo phân tích Fialda"
-                },
-                8: {
-                    src: "finbox.html",
-                    title: "Danh sách khuyến nghị Finbox"
-                },
-                9: {
-                    src: "fidt.html",
-                    title: "Tin tức FIDT"
-                },
-                10: {
-                    src: "fmarket.html",
-                    title: "Thống kê quỹ cổ phiếu"
-                },
-                11: {
-                    src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
-                    title: "Định giá VN-Index"
-                },
-                12: {
-                    src: "https://temp-portal.fidt.vn/data/ty-gia",
-                    title: "Tỷ giá USD/VND"
-                },
-                13: {
-                    src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
-                    title: "Giá hàng hóa"
-                },
-                14: {
-                    src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
-                    title: "Thống kê giao dịch theo NDT"
-                },
-                15: {
-                    src: "sscophieu.html",
-                    title: "Hiệu suất cổ phiếu theo ngành"
-                },
-            };
-
             const configIframe = iframeConfigs[iframe];
             if (configIframe) {
                 document.querySelector('.existing-div').innerHTML = "";
@@ -511,6 +591,9 @@
                 newIframe.style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
                 document.querySelector('.existing-div').appendChild(newIframe);
                 document.title = "Công cụ chứng khoán| " + configIframe.title;
+                document.querySelector('#title').textContent = configIframe.title;
+                textInfo.title = configIframe.title;
+                textInfo.info = configIframe.info;
                 newIframe.addEventListener('load', function() {
                     loading(0)
                 });
