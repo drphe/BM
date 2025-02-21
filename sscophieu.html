@@ -14,9 +14,10 @@
         }
 
         body {
-
-	    margin: 10px;
-	    padding:4px;
+            background-color: #39394a;
+            color: white;
+            margin: 10px;
+            padding: 4px;
         }
 
         #app {
@@ -145,19 +146,115 @@
             cursor: not-allowed;
             /* Thay đổi con trỏ khi nút vô hiệu hóa */
         }
+
+        /* Viền cho bảng và các ô */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            /* Các viền sẽ không bị chồng lên nhau */
+            margin-bottom: .25rem;
+            margin-top: .25rem;
+        }
+
+        /* Định dạng cho tiêu đề bảng */
+        th {
+            background-color: hsla(0, 0%, 100%, .1);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .15);
+            border-top: 1px solid hsla(0, 0%, 100%, .15);
+            padding: .25rem .75rem;
+        }
+
+        /* Viền cho các ô thẻ tiêu đề */
+        th {
+            border-left: 1px solid hsla(0, 0%, 100%, .15);
+        }
+
+        tr tg:last-child {
+            border-right: 1px solid hsla(0, 0%, 100%, .15);
+        }
+
+        /* Định dạng cho ô cuối cùng (bên phải) */
+        .last_child {
+            border-right-width: 1px;
+            border-top-right-radius: .375rem;
+            padding-right: .75rem;
+        }
+
+        /* Định dạng cho ô đầu tiên (bên trái) */
+        .first_child {
+            border-top-left-radius: .375rem;
+            padding-left: .75rem;
+        }
+
+
+        /* Viền cho các ô dữ liệu */
+        td {
+            border-left: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên trái */
+            border-bottom: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên dưới */
+            padding: .25rem .75rem;
+        }
+
+        tr td:last-child {
+            border-right: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên phải */
+        }
+
+        /* Định dạng cho ô nhập và nút bấm */
+        #submit {
+            background-color: #0d2843;
+            /* Màu nền xanh đậm cho nút */
+            color: white;
+            /* Màu chữ trắng */
+            border: none;
+            padding: 8px 15px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            /* Khoảng cách dưới nút */
+            transition: background-color 0.3s ease;
+            /* Hiệu ứng khi di chuột */
+        }
+
+        #submit:hover {
+            background-color: #34495E;
+            /* Màu nền thay đổi khi hover */
+        }
+
+        /* Định dạng cho ô nhập văn bản */
+        #inputContainer {
+            margin-top: 10px;
+        }
+
+        #inputField {
+            padding: 8px;
+            width: 200px;
+            border: 1px solid #BDC3C7;
+            /* Viền nhẹ màu xám */
+            border-radius: 5px;
+            /* Bo góc cho ô nhập */
+            font-size: 14px;
+            transition: border-color 0.3s ease;
+        }
+
+        #inputField:focus {
+            border-color: #2C3E50;
+            /* Viền đổi màu khi focus vào */
+            outline: none;
+            /* Loại bỏ viền mặc định của trình duyệt */
+        }
     </style>
 </head>
 
 <body>
     <div id="load"></div>
     <div id="app">
-	<h3>So sánh hiệu suất các cổ phiếu trong ngành:</h3>
-        <div class="button-container">
-            <button onclick="checkSection()">Ngành ngân hàng</button>
-            <button onclick="checkSection('thep')">Ngành thép</button>
-            <button onclick="checkSection('banle')">Ngành bán lẻ</button>
-            <button onclick="checkSection('5')">Ngành 5</button>
-        </div>
+        <h3>So sánh hiệu suất các cổ phiếu trong ngành:</h3>
+        <div class="button-container"></div>
+        <div id="inputContainer"><input type="text" id="inputField" autocomplete="off" placeholder="ACB,SSI,NKG"></div>
+        <div id="table-container"></div>
 
     </div>
     <div id="overlay" class="overlay"></div>
@@ -184,8 +281,26 @@
             "Dệt - May mặc": ["AAT", "ADS", "AG1", "BDG", "EVE", "G20", "GIL", "GMC", "HDM", "HNI", "HSM", "HTG", "HUG", "KMR", "M10", "MGG", "MPT", "MSH", "NDT", "NJC", "NTT", "SGI", "SPB", "STK", "TCM", "TDT", "THM", "TLI", "TNG", "TTG", "TVT", "VDN", "VGG", "VGT"],
             "Truyền thông giải trí": ["ADC", "ADG", "ALT", "BDB", "BED", "BST", "DAD", "DAE", "DST", "EBS", "ECI", "EID", "EPH", "FHS", "FOC", "HTP", "LBE", "NBE", "PNC", "SED", "SGD", "SMN", "STC", "STH", "VEF", "VNB", "VPR", "YEG"],
             "Cao su": ["BRC", "BRR", "CDR", "CSM", "DPR", "DRC", "DRG", "DRI", "GVR", "HNG", "HRC", "PHR", "RBC", "RCD", "RTB", "TNC", "TRC", "VHG", "VRG"],
-	    "Tùy chọn": ["SSI","HPG"]
+            "Tùy chọn": ["SSI", "HPG"]
         };
+
+        function processInput(input) {
+            let array = input.split(',')
+                .map(item => item.trim().toUpperCase()) // Loại bỏ khoảng trắng thừa ở đầu và cuối mỗi phần tử
+                .filter(item => item.length > 0); // Lọc các phần tử rỗng nếu có
+            return array;
+        }
+        document.getElementById('inputField').addEventListener('input', function(event) {
+            let inputValue = event.target.value.toUpperCase();
+            event.target.value = inputValue;
+        });
+        document.getElementById('inputField').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                let inputValue = document.getElementById('inputField').value;
+                sectionList["Tùy chọn"] = processInput(inputValue);
+                checkSection("Tùy chọn");
+            }
+        });
 
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
@@ -361,22 +476,23 @@
         async function checkSection(nameSection) {
             mainData = {};
             loading();
-            if (!storage[nameSection]) {
+            if (!storage[nameSection] || nameSection == "Tùy chọn") {
                 var list = (sectionList[nameSection] || sectionList["Tùy chọn"]).concat(["VN-INDEX"]);
                 await fetchSequentiallyData(list);
+                generateTable(mainData, nameSection)
                 localStorage.setItem("sshs", JSON.stringify(mainData));
                 storage[nameSection] = mainData;
             } else {
                 localStorage.setItem("sshs", JSON.stringify(storage[nameSection]));
             }
-
-
+		showChart();
+        }
+	function showChart(){
             const popup = document.getElementById('load');
             popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span>
 				<iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
             overlay.style.display = "block";
-
-        }
+	}
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('popup-close')) {
                 document.getElementById('load').innerHTML = '';
@@ -388,15 +504,65 @@
         function createButtons(list) {
             let buttonContainer = document.querySelector('.button-container');
             buttonContainer.innerHTML = ''; // Clear previous buttons
-
             for (let section in list) {
-                let button = document.createElement('button');
-                button.textContent = section+ ' ('+list[section].length+')';
-                button.setAttribute('onclick', `checkSection('${section}')`);
-                buttonContainer.appendChild(button);
+                if (section !== "Tùy chọn") {
+                    let button = document.createElement('button');
+                    button.textContent = section + ' (' + list[section].length + ')';
+                    button.setAttribute('onclick', `checkSection('${section}')`);
+                    buttonContainer.appendChild(button);
+                }
             }
+            buttonContainer.appendChild(document.getElementById('inputContainer'));
+
         }
         createButtons(sectionList);
+
+        function generateTable(data, nam) {
+            let tableHTML = `<table>
+<caption style="font-size:16px;">Thống kê Risk-Return của ngành <a href="#" style="color: white;" title="Click để mở biểu đồ" onclick="showChart()">${nam} 
+<svg fill="#fff" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
+	 viewBox="0 0 490 490" xml:space="preserve">
+<g id="line_7_">
+	<polygon points="490,489.954 490,459.329 31.222,459.375 30.625,0 0,0.031 0.628,490 	"/>
+	<polygon points="184.822,213.502 94.555,343.306 119.698,360.793 192.693,255.857 336.446,353.397 438.29,183.597 480.43,212.201 
+		490,80.85 371.451,138.241 412.902,166.37 326.845,309.879 	"/>
+</g>
+</svg>
+</a></caption>
+<thead><tr class="first_child last_child"><th rowspan="2">Mã</th><th colspan="2">YTD</th><th colspan="2">1 năm</th><th colspan="2">3 năm</th><th colspan="2">5 năm</th></tr><tr><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th></tr></thead>
+<tbody>`;
+
+            // Duyệt qua các mã trong đối tượng data
+            for (let stock in data) {
+                let stockData = data[stock];
+
+                // Lấy các giá trị cagr và std cho từng khoảng thời gian
+                let oneYearCAGR = stockData['1'].cagr.toFixed(2);
+                let oneYearSTD = stockData['1'].std.toFixed(2);
+
+                let threeYearsCAGR = stockData['3'].cagr.toFixed(2);
+                let threeYearsSTD = stockData['3'].std.toFixed(2);
+
+                let fiveYearsCAGR = stockData['5'].cagr.toFixed(2);
+                let fiveYearsSTD = stockData['5'].std.toFixed(2);
+
+                let ytdCAGR = stockData['ytd'].cagr.toFixed(2);
+                let ytdSTD = stockData['ytd'].std.toFixed(2);
+
+                // Tạo một dòng cho mã cổ phiếu và các giá trị tương ứng
+                tableHTML += `<tr>
+                        <td>${stock}</td>
+                        <td>${ytdCAGR}</td><td>${ytdSTD}</td>
+                        <td>${oneYearCAGR}</td><td>${oneYearSTD}</td>
+                        <td>${threeYearsCAGR}</td><td>${threeYearsSTD}</td>
+                        <td>${fiveYearsCAGR}</td><td>${fiveYearsSTD}</td>
+                      </tr>`;
+            }
+
+            tableHTML += '</tbody></table>';
+
+            document.getElementById('table-container').innerHTML = tableHTML;
+        }
     </script>
 </body>
 
