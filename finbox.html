@@ -8,33 +8,73 @@
     <title>Danh sách khuyến nghị Finbox</title>
     <link rel="stylesheet" type="text/css" href="loading.css">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: auto;
-            max-width: 768px;
-	    background:white;
+        * {
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            margin: 0px;
         }
 
+        body {
+            background-color: #39394a;
+            color: white;
+            margin: 10px;
+            padding: 4px;
+        }
+        /* Viền cho bảng và các ô */
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            /* Các viền sẽ không bị chồng lên nhau */
+            margin-bottom: .25rem;
+            margin-top: .25rem;
         }
 
-        th,
-        td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-
+        /* Định dạng cho tiêu đề bảng */
         th {
-            background-color: #4CAF50;
-            color: white;
+            background-color: hsla(0, 0%, 100%, .1);
+            border-bottom: 1px solid hsla(0, 0%, 100%, .15);
+            border-top: 1px solid hsla(0, 0%, 100%, .15);
+            padding: .25rem .75rem;
+        }
+
+        /* Viền cho các ô thẻ tiêu đề */
+        th {
+            border-left: 1px solid hsla(0, 0%, 100%, .15);
+        }
+
+        tr tg:last-child {
+            border-right: 1px solid hsla(0, 0%, 100%, .15);
+        }
+
+        /* Định dạng cho ô cuối cùng (bên phải) */
+        .last_child {
+            border-right-width: 1px;
+            border-top-right-radius: .375rem;
+            padding-right: .75rem;
+        }
+
+        /* Định dạng cho ô đầu tiên (bên trái) */
+        .first_child {
+            border-top-left-radius: .375rem;
+            padding-left: .75rem;
+        }
+
+
+        /* Viền cho các ô dữ liệu */
+        td {
+            border-left: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên trái */
+            border-bottom: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên dưới */
+            padding: .25rem .75rem;
+        }
+
+        tr td:last-child {
+            border-right: 1px solid hsla(0, 0%, 100%, .15);
+            /* Viền bên phải */
         }
 
         tr:nth-child(even) {
-            background-color: #f2f2f2;
+             background-color: hsla(0, 0%, 100%, .15);
         }
 
         select,
