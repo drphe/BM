@@ -406,7 +406,8 @@
         await addIndicator();
         var oldw, oldh;
         // thay đổi kích thước khi kích thước màn hình thay đổi
-        window.addEventListener("click", () => {
+        window.addEventListener("click", resizeW);
+	function resizeW(){
             let w = window.innerWidth,
                 h = window.innerHeight;
             if (document.fullscreenElement) {
@@ -417,7 +418,8 @@
       	  	}
                 chart.resize(w, h - 40);
             }
-        });
+
+	}
         window.addEventListener("resize", () => {
             let w = window.innerWidth,
                 h = window.innerHeight;
@@ -742,6 +744,7 @@
             }
         });
 	loading(0);
+	resizeW();
         await DuMuaBan();
 
 	// các hàm hỗ trợ

@@ -371,7 +371,7 @@ async function getStockData() {
             chartTypeSelect.setAttribute('data-key', row.key);
             ['Cột', 'Đường', 'Miền'].forEach(type => {
                 const option = document.createElement('option');
-                option.value = type === 'Cột' ? 'column' : (type === 'Miền' ? 'area' : 'spline');
+                option.value = type === 'Cột' ? 'column' : (type === 'Miền' ? 'areaspline' : 'spline');
                 option.textContent = type;
                 chartTypeSelect.appendChild(option);
             });
