@@ -91,7 +91,8 @@
 }
 .selectOption{
 display: flex;
-justify-content: space-between
+justify-content: space-between;
+    width: 310px;
 }
 
 input[type="checkbox"] {
@@ -143,7 +144,13 @@ select:focus {
   border-color: #45a049; /* Darker green border */
   outline: none;
 }
-
+label {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #11344f;
+    width: 200px;
+}
     </style>
 </head>
 
