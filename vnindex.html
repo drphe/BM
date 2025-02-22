@@ -357,10 +357,10 @@
 
             <!---<span style="font-size: 14px;font-weight: 700;">Thị trường/Cổ phiếu</span>--->
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
-            <div class="tab selected " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
+            <div class="tab" onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
             <div class="tab" onclick="fetchData(15)">Hiệu suất ngành</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
-            <div class="tab " onclick="fetchData(5)">Biểu đồ Nến nhật</div>
+            <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
             <div class="tab" onclick="fetchData(6)">Báo cáo tài chính</div>
@@ -610,7 +610,7 @@ document.addEventListener("keyup", function(e) {
 
         const ams = new URLSearchParams(window.location.search);
         const quote = ams.get("iframe");
-        fetchData(quote ? quote : 4);
+        fetchData(quote ? quote : 5);
 
         function clock() {
             const t = document.querySelector(".clock"),

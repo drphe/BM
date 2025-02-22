@@ -79,13 +79,69 @@
             padding: 4px;
             border-radius: 4px;
         }
-
+	.checkbox-container select {
+		width:55px;
+	}
         .controls {
             display: flex;
         }
 .highcharts-tooltip table th {
     padding-bottom: 0.2em;
     border-bottom: 1px solid silver;
+}
+.selectOption{
+display: flex;
+justify-content: space-between
+}
+
+input[type="checkbox"] {
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border: 2px solid #ccc;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+}
+
+input[type="checkbox"]:checked::before {
+  content: '\2714'; /* Biểu tượng checkmark */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 16px;
+  color: white;
+}
+
+input[type="checkbox"]:checked {
+  background-color: #4CAF50;
+  border-color: #4CAF50;
+}
+select {
+  border: 2px solid #4CAF50; /* Green border */
+  border-radius: 5px;
+  background-color: #f9f9f9; /* Light grey background */
+  appearance: none; /* Removes default browser styles */
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  color: #333; /* Dark grey text */
+  cursor: pointer;
+}
+/* Custom arrow icon */
+select::after {
+  content: '\25BC'; /* Downward arrow */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* Change color when focused */
+select:focus {
+  border-color: #45a049; /* Darker green border */
+  outline: none;
 }
 
     </style>
@@ -120,7 +176,7 @@
                 <td>
                     <div id="container"></div>
                 </td>
-                <td><span style="font-weight:600">Tùy chọn: </span><br />
+                <td><div class="selectOption" style="font-weight:600"><span >Khoản mục: </span><span>Kiểu/Trục</span></div>
                     <div id="checkbox-container" class="checkbox-container"></div>
                 </td>
             </tr>

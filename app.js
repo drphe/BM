@@ -350,6 +350,8 @@ async function getStockData() {
         container.innerHTML = "";
         datas.data.rows.forEach(row => {
             const div = document.createElement('div');
+	    div.setAttribute("class", "selectOption");
+            const divs = document.createElement('div');
             const label = document.createElement('label');
             const input = document.createElement('input');
             input.type = 'checkbox';
@@ -377,21 +379,22 @@ async function getStockData() {
                 chartTypeSelect.value = 'spline';
             }
 
-            div.appendChild(chartTypeSelect);
+            divs.appendChild(chartTypeSelect);
 
             const yAxisTypeSelect = document.createElement('select');
             yAxisTypeSelect.className = 'y-axis-type';
             yAxisTypeSelect.setAttribute('data-key', row.key);
-            ['Trục trái', 'Trục phải'].forEach(type => {
+            ['Trái', 'Phải'].forEach(type => {
                 const option = document.createElement('option');
-                option.value = type === 'Trục trái' ? 'left' : 'right';
+                option.value = type === 'Trái' ? 'left' : 'right';
                 option.textContent = type;
                 yAxisTypeSelect.appendChild(option);
             });
             if (row.name == "Giá CP") {
                 yAxisTypeSelect.value = 'right';
             }
-            div.appendChild(yAxisTypeSelect);
+            divs.appendChild(yAxisTypeSelect);
+            div.appendChild(divs);
 
             container.appendChild(div);
         });
