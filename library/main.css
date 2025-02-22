@@ -559,3 +559,8 @@ color: #11344f;
 width:50%;
 color: #11344f;
 }
+.andi {
+    animation-duration: 0.3s;
+    left: -380px !important;
+    transition: left 0.3s ease;
+}

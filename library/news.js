@@ -36,7 +36,7 @@ function showDiscount(symbol){
 }
 function createlist(arrs) {
     let contentId = document.getElementById("content");
-    contentId.innerHTML = `<div class="nowrap" title="" style="position: sticky;top: 0px;font-size: 16px;"><span style="margin: 4px; ">Tin tức liên quan</span></div>`;
+    contentId.innerHTML = `<div class="nowrap" title="" style=" transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">x</span></div>`;
     arrs.forEach(arr => {
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
@@ -50,6 +50,17 @@ l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" st
             l.innerHTML += '<br/>';
         contentId.appendChild(l);
         contentId.style.display = "block";
+	document.querySelector(".closenews").addEventListener('click', function(event) {
+		if(!contentId.classList.contains('andi')) {
+			contentId.classList.add("andi");
+			event.target.title = "Hiện bảng tin";
+			event.target.textContent = ">";
+		}else {
+			contentId.classList.remove("andi");
+			event.target.title = "Ẩn bảng tin";
+			event.target.textContent = "x"
+		}
+	});
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(arr.content, arr.title);
