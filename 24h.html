@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="https://wichart.vn/favicon.svg" />
+    <title>Biểu đồ tài chính tùy chỉnh nâng cao</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <style>
+        #checkbox-container {
+            margin: 10px;
+            gap: 6px;
+            height: 400px;
+            overflow: auto;
+        }
+
+        #container {
+            height: 400px;
+            min-width: 500px;
+            width: 100%;
+        }
+
+        .controls {
+            margin: 10px;
+        }
+
+        .checkbox-container {
+            margin: 10px 0;
+        }
+
+        table {
+            width: 100%;
+            border: 1px solid #9E9E9E;
+            height: 400px;
+        }
+
+        th {
+            border-bottom: 1px solid #9E9E9E;
+        }
+
+        body {
+            font-size: 14px;
+            line-height: 1.5em;
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            margin: 4px;
+            text-align: left;
+	    background: white;
+        }
+
+        button {
+            background: var(--bgcolor);
+            color: var(--black);
+            padding: 4px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 180px
+        }
+
+        button:hover {
+            cursor: pointer;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 80px;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        input[type="text"] {
+            text-transform: uppercase;
+        }
+
+        select {
+            width: 100px;
+            padding: 4px;
+            border-radius: 4px;
+        }
+
+        .controls {
+            display: flex;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="controls">
+        <div id="load"></div>
+        <div>
+            <label for="stockSymbol">Nhập mã cổ phiếu:</label>
+            <input oninput="toUpperCase()" value="HPG" type="text" id="stockSymbol" placeholder="VD: MWG, AAPL">
+        </div>
+        <div>
+            <label for="reportType">Chọn loại báo cáo:</label>
+            <select id="reportType">
+                <option value="2">Kết quả kinh doanh</option>
+                <option value="1">Cân đối kế toán</option>
+                <option value="3">Lưu chuyển tiền tệ</option>
+            </select>
+        </div>
+        <button onclick="getStockData()">Lấy Dữ Liệu</button>
+    </div>
+    <table>
+        <caption>
+            <h3>Biểu đồ tài chính nâng cao</h3>
+        </caption>
+        <thead>
+
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <div id="container"></div>
+                </td>
+                <td><span style="font-weight:600">Tùy chọn: </span><br />
+                    <div id="checkbox-container" class="checkbox-container"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+
+</html>

@@ -348,24 +348,23 @@
     <div class="overlay" id="overlay"></div>
     <div class="hidden-element" id="hiddenElement">
         <div class="tabs">
-            <span style="font-size: 16px;font-weight: 700;">Công cụ FIDT</span>
+           <!--- <span style="font-size: 16px;font-weight: 700;">Công cụ FIDT</span>-->
             <div class="tab" onclick="fetchData(9)">Nhận định thị trường</div>
             <div class="tab" onclick="fetchData(13)">Giá hàng hóa FIDT</div>
             <div class="tab" onclick="fetchData(11)">Định giá VN-INDEX</div>
             <div class="tab" onclick="fetchData(12)">Tỷ giá USD/VND</div>
             <div class="tab" onclick="fetchData(14)">Thống kê thị trường</div>
 
-            <span style="font-size: 14px;font-weight: 700;">Tin tức/ Phân tích</span>
+            <!---<span style="font-size: 14px;font-weight: 700;">Thị trường/Cổ phiếu</span>--->
             <div class="tab" onclick="fetchData(7)">Báo cáo phân tích</div>
             <div class="tab " onclick="fetchData(4)">Vĩ mô/ hàng hóa</div>
             <div class="tab" onclick="fetchData(15)">Hiệu suất ngành</div>
             <div class="tab" onclick="fetchData(10)">Thống kê CP quỹ</div>
-
-            <span style="font-size: 16px;font-weight: 700;margin-top:4px;">Cổ phiếu</span>
             <div class="tab selected" onclick="fetchData(5)">Biểu đồ Nến nhật</div>
             <div class="tab" onclick="fetchData(8)">Finbox khuyến nghị</div>
             <div class="tab" onclick="fetchData(2)">Kết quả kinh doanh</div>
             <div class="tab" onclick="fetchData(6)">Báo cáo tài chính</div>
+            <div class="tab" onclick="fetchData(16)">Biểu đồ tùy chỉnh</div>
             <div class="exit" style="color: red;" onclick="toggleElement()">Thu gọn</div>
         </div>
 
@@ -473,6 +472,11 @@
                 src: "sscophieu.html",
                 title: "Hiệu suất cổ phiếu theo ngành",
                 info: "Biểu đồ Scatter Plot để đánh giá hiệu suất (rủi ro và lợi nhuận) của các mã cổ phiếu trong cùng nhóm ngành. <br/> Trong cùng một ngành, các cổ phiếu có mức độ lợi nhuận (CAGR, lợi suất trung bình nhân) vượt trội so với VNINDEX mới cần quan tâm, đổi lại có mức rủi ro (STD - độ biến động tính theo %) cao hơn. "
+            },
+            16: {
+                src: "24h.html",
+                title: "Biểu đồ tài chính tùy chỉnh",
+                info: "Công cụ giúp tạo biểu đồ tùy chỉnh.<br/>Kết hợp giữa kết quả tài chính từ báo cáo tài chính với dữ liệu giá cổ phiếu. <br/> Về dài hạn giá cổ phiếu là sự phản ánh kết quả, tình hình hoạt động kinh doanh của doanh nghiệp."
             },
         };
 
