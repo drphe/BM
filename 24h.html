@@ -31,7 +31,7 @@
             margin: 10px 0;
         }
 
-        table {
+        .main {
             width: 100%;
             border: 1px solid #9E9E9E;
             height: 400px;
@@ -83,6 +83,11 @@
         .controls {
             display: flex;
         }
+.highcharts-tooltip table th {
+    padding-bottom: 0.2em;
+    border-bottom: 1px solid silver;
+}
+
     </style>
 </head>
 
@@ -103,7 +108,7 @@
         </div>
         <button onclick="getStockData()">Lấy Dữ Liệu</button>
     </div>
-    <table>
+    <table class="main">
         <caption>
             <h3>Biểu đồ tài chính nâng cao</h3>
         </caption>

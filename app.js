@@ -25,45 +25,68 @@ async function getStockData() {
         alert("Vui lòng nhập mã cổ phiếu.");
         return;
     }
-    let data, pricedata;
+    let data;
     //view =2: kết quả kinh doanh
     // view = 1: cân đối tài chính
     // view = 3 lưu chuyển tiền tệ
 
     async function getFinancialReport(symbol, view = 2, period = 2, page = 1) {
         const url = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-report?symbol=${symbol}&period=${period}&view=${view}&page=${page}&expanded=true`;
-
+        const url2 = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-report?symbol=${symbol}&period=${period}&view=${view}&page=${page+1}&expanded=true`;
         try {
             const response = await fetch(url);
+            const response2 = await fetch(url2);
 
-            if (!response.ok) {
+            if (!response.ok ||!response2.ok ) {
                 throw new Error('Network response was not ok');
+		loading(0)
             }
-            data = await response.json(); // Chuyển đổi dữ liệu thành JSON
 
+            data = await response.json(); // Chuyển đổi dữ liệu thành JSON
+            let data2 = await response2.json(); // Chuyển đổi dữ liệu thành JSON
+
+   	   const findObjectByKey = (key) => {
+    		return data2.data.rows.find(obj => obj.key === key);
+	   };
+
+		data2.data.headers.forEach(s=> {data.data.headers.push(s)});
+		data.data.rows.forEach(row=> {
+			let obj = findObjectByKey(row.key);
+			if(obj) {
+				row.values = row.values.concat(obj.values)
+			}
+		});
         } catch (error) {
             console.error('Error fetching financial report:', error);
         }
     }
     async function getPriceChart(symbol) {
         const url = `https://api-finance-t19.24hmoney.vn/v2/ios/stock/graph?&symbol=${symbol}&type=6`;
+        const url2 = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=6&year_report=5`;//pe, eps 4qgn
+        const url3 = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=3&year_report=5`;//dt và ln 4qgn
+
         try {
             const response = await fetch(url);
-
+            const response2 = await fetch(url2);
+            const response3 = await fetch(url3);
             // Kiểm tra nếu phản hồi không hợp lệ
+
             if (!response.ok) {
                 throw new Error('Network response was not ok');
             }
 
             const datas = await response.json(); // Chuyển đổi dữ liệu thành JSON
+            const datas2 = await response2.json(); // Chuyển đổi dữ liệu thành JSON
+            const datas3 = await response3.json(); // Chuyển đổi dữ liệu thành JSON
 
-            // Kiểm tra nếu dữ liệu trả về không có giá trị 'points'
             if (!datas || !datas.data || !datas.data.points || datas.data.points.length === 0) {
                 throw new Error('No price data available');
             }
 
             // Lấy dữ liệu điểm (price data)
             const points = datas.data.points;
+            const points2 = datas2.data.points;
+            const points3 = datas3.data.points;
 
             // Chuyển đổi dữ liệu theo năm và quý
             const pricedatas = points.map(point => {
@@ -82,14 +105,98 @@ async function getStockData() {
                     quarter: quarter
                 };
 
+            }).filter(Boolean);
+
+            const pedatas = points2.map(point => {
+                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
+                const year = date.getFullYear();
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
+                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
+                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
+                return {
+                    price: point.y1, // PE
+                    year: year,
+                    month: month,
+                    day: day,
+                    quarter: quarter
+                };
             }).filter(Boolean);;
-            //	pricedatas.pop();
-            pricedata = pricedatas.slice(-8).map(item => item.price).reverse();
-            console.log('Processed chart data:', data);
-            let tem = [];
+
+            const epsdatas = points2.map(point => {
+                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
+                const year = date.getFullYear();
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
+                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
+                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
+                return {
+                    price: point.y, // EPS
+                    year: year,
+                    month: month,
+                    day: day,
+                    quarter: quarter
+                };
+            }).filter(Boolean);;
+
+            const dtdatas = points3.map(point => {
+                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
+                const year = date.getFullYear();
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
+                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
+                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
+                return {
+                    price: point.y, // DT
+                    year: year,
+                    month: month,
+                    day: day,
+                    quarter: quarter
+                };
+            }).filter(Boolean);;
+
+            const lndatas = points3.map(point => {
+                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
+                const year = date.getFullYear();
+                const day = date.getDate();
+                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
+                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
+                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
+                return {
+                    price: point.y1, // LN
+                    year: year,
+                    month: month,
+                    day: day,
+                    quarter: quarter
+                };
+            }).filter(Boolean);;
+
+            let pricedata = pricedatas.slice(-16).map(item => item.price).reverse();
+            let pedata = pedatas.slice(-16).map(item => item.price).reverse();
+            let epsdata = epsdatas.slice(-16).map(item => item.price).reverse();
+            let dtdata = dtdatas.slice(-16).map(item => item.price).reverse();
+            let lndata = lndatas.slice(-16).map(item => item.price).reverse();
+
+            let tem = [], tem2=[], tem3=[], tem4=[], tem5=[];
             pricedata.forEach(s => {
                 tem.push(s);
                 tem.push(0);
+            })
+            pedata.forEach(s => {
+                tem2.push(s);
+                tem2.push(0);
+            })
+            epsdata.forEach(s => {
+                tem3.push(s);
+                tem3.push(0);
+            })
+            dtdata.forEach(s => {
+                tem4.push(s);
+                tem4.push(0);
+            })
+            lndata.forEach(s => {
+                tem5.push(s);
+                tem5.push(0);
             })
             data.data.rows.push({
                 "key": "isa200",
@@ -98,6 +205,38 @@ async function getStockData() {
                 "values": tem,
                 "data": true,
                 "name": "Giá CP"
+            })
+            data.data.rows.push({
+                "key": "isa201",
+                "level": 1,
+                "get_raw": 1,
+                "values": tem2,
+                "data": true,
+                "name": "P/E"
+            })
+            data.data.rows.push({
+                "key": "isa202",
+                "level": 1,
+                "get_raw": 1,
+                "values": tem3,
+                "data": true,
+                "name": "EPS 4QGN"
+            })
+            data.data.rows.push({
+                "key": "isa203",
+                "level": 1,
+                "get_raw": 1,
+                "values": tem4,
+                "data": true,
+                "name": "DT 4QGN"
+            })
+            data.data.rows.push({
+                "key": "isa204",
+                "level": 1,
+                "get_raw": 1,
+                "values": tem5,
+                "data": true,
+                "name": "LNST 4QGN"
             })
             createOption(data);
         } catch (error) {
@@ -127,18 +266,33 @@ async function getStockData() {
                 yAxis: yAxisPosition
             };
         }).filter(Boolean); // Loại bỏ các dòng dữ liệu null
-
+	let cat = data.data.headers.filter(header => header.type === 'normal').map(header => `Q${header.quarter}/${header.year}`)
         Highcharts.chart('container', {
             chart: {
-                type: 'column' // Mặc định kiểu biểu đồ cột
+                 zoomType: "x",
+                type: 'column', // Mặc định kiểu biểu đồ cột
             },
             title: {
                 text: stockSymbol
             },
             xAxis: {
+		crosshair: 1,
                 reversed: true, // Đảo ngược trục X
-                categories: data.data.headers.filter(header => header.type === 'normal').map(header => `Q${header.quarter}/${header.year}`)
+                categories: data.data.headers.filter(header => header.type === 'normal').map(header => `Q${header.quarter}/${header.year}`),
             },
+
+    tooltip: {
+        shared: true,
+        useHTML: true,
+        headerFormat: '<table><tr><th colspan="2">{point.key}</th></tr>',
+        pointFormat: '<tr><td style="color: {series.color}">{series.name} ' +
+            '</td>' +
+            '<td style="text-align: right"><b>{point.y}</b></td></tr>',
+        footerFormat: '</table>',
+        valueDecimals: 2
+    },
+    // Thêm nút reset zoom
+
             credits: {
                 enabled: false
             },
@@ -200,7 +354,7 @@ async function getStockData() {
             const input = document.createElement('input');
             input.type = 'checkbox';
             input.value = row.key;
-	    ["LỢI NHUẬN SAU THUẾ TNDN","Lợi nhuận sau thuế thu nhập doanh nghiệp","Lợi nhuận cổ đông công ty mẹ","Lợi nhuận của Cổ đông của Công ty mẹ","Lợi nhuận sau thuế", "Giá CP"].forEach(nam => {
+	    ["LỢI NHUẬN SAU THUẾ TNDN","Lợi nhuận sau thuế thu nhập doanh nghiệp","Lợi nhuận sau thuế", "Giá CP"].forEach(nam => {
             		if (row.name == nam) {
                 		input.checked = true;
            		}
