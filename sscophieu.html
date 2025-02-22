@@ -245,6 +245,18 @@
             outline: none;
             /* Loại bỏ viền mặc định của trình duyệt */
         }
+    .checkmark {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: green;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        font-weight: bold;
+        float: right;
+    }
     </style>
 </head>
 
@@ -313,7 +325,16 @@
                 .padStart(2, "0") + "-" + String(t.getDate())
                 .padStart(2, "0");
         }
-
+        // thêm checkmark
+        function addCheckmark(targetDiv) {
+            const existingCheckmark = targetDiv.querySelector('.checkmark');
+            if (!existingCheckmark) {
+                const checkmark = document.createElement('span');
+                checkmark.classList.add('checkmark');
+                checkmark.textContent = '✔';
+                targetDiv.appendChild(checkmark);
+            }
+        }
         function unixToDate(timestamp) {
             // Tạo đối tượng Date từ Unix timestamp (timestamp là số giây)
             let date = new Date(timestamp * 1000); // Nhân với 1000 để chuyển đổi từ giây thành millisecond
@@ -508,7 +529,7 @@
                 if (section !== "Tùy chọn") {
                     let button = document.createElement('button');
                     button.textContent = section + ' (' + list[section].length + ')';
-                    button.setAttribute('onclick', `checkSection('${section}')`);
+		    button.onclick = function (){addCheckmark(this);checkSection(section)}
                     buttonContainer.appendChild(button);
                 }
             }
