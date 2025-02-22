@@ -482,13 +482,18 @@ NavData.forEach(item => {
         document.addEventListener('click', function(event) {
             if (event.target.classList.contains('popup-close')||event.target.classList.contains('overlay')) {
                 document.getElementById('load').innerHTML = '';
+            let popup = document.getElementById('popup')
+		popup.style.display = 'none';
+		popup.classList.remove("show")
 		overlay.style.display = "none";
 		
             }
         });
 
         document.getElementById('closePopup').addEventListener('click', function() {
-            document.getElementById('popup').style.display = 'none';
+            let popup = document.getElementById('popup')
+		popup.style.display = 'none';
+		popup.classList.remove("show")
 	    	    overlay.style.display = "none";
         });
 
