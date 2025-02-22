@@ -33,25 +33,20 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%, -50%) scale(0);
-            /* Bắt đầu với kích thước 0 */
-            border: 2px solid #ddd;
+            border: 2px solid #2c2c2c;
             padding: 10px;
             border-radius: 5px;
-            background-color: #fff;
+            background-color: #1f1836;
             z-index: 1000;
             transition: transform 0.3s ease, opacity 0.3s ease;
-            /* Thêm hiệu ứng cho transform và opacity */
             opacity: 0;
-            /* Bắt đầu với độ mờ */
         }
 
         /* Khi popup được hiển thị */
         .popup.show {
             display: block;
             transform: translate(-50%, -50%) scale(1);
-            /* Phóng lên đến kích thước ban đầu */
             opacity: 1;
-            /* Đảm bảo popup có độ mờ là 1 */
         }
 
         .popup table {
@@ -500,25 +495,24 @@
             if (!storage[nameSection] || nameSection == "Tùy chọn") {
                 var list = (sectionList[nameSection] || sectionList["Tùy chọn"]).concat(["VN-INDEX"]);
                 await fetchSequentiallyData(list);
-                generateTable(mainData, nameSection)
-                localStorage.setItem("sshs", JSON.stringify(mainData));
+                generateTable(mainData, nameSection);
                 storage[nameSection] = mainData;
             } else {
-                localStorage.setItem("sshs", JSON.stringify(storage[nameSection]));
+                mainData = storage[nameSection];
             }
 		showChart();
         }
 	function showChart(){
+            localStorage.setItem("sshs", JSON.stringify(mainData));
             const popup = document.getElementById('load');
             popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span>
 				<iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
             overlay.style.display = "block";
 	}
         document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('popup-close')) {
+            if (event.target.classList.contains('popup-close') ||event.target.classList.contains('overlay')) {
                 document.getElementById('load').innerHTML = '';
                 overlay.style.display = "none";
-
             }
         });
 

@@ -8,6 +8,7 @@
     <title>Dữ liệu quỹ mở</title>
     <link rel="stylesheet" type="text/css" href="loading.css">
     <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script id="theme-script" src="https://code.highcharts.com/themes/grid-light.js"></script>
     <style>
         #myTable {
             width: 100%;
@@ -44,7 +45,7 @@
         }
 
         body {
-            background-color: white;
+            background-color: #f7f7f7;
         }
 
         #app {
@@ -479,9 +480,9 @@ NavData.forEach(item => {
         };
 
         document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('popup-close')) {
+            if (event.target.classList.contains('popup-close')||event.target.classList.contains('overlay')) {
                 document.getElementById('load').innerHTML = '';
-			    overlay.style.display = "none";
+		overlay.style.display = "none";
 		
             }
         });
@@ -621,17 +622,14 @@ NavData.forEach(item => {
                     if (item.id !== 18000) {
                         showDs(item.productTopHoldingList);
                     } else {
+			loading(1)
                         if (Object.keys(sosanhhieusuat).length === 0) {
-    				await fetchSequentiallyData(ccq);
-	                        localStorage.setItem("sshs", JSON.stringify(sosanhhieusuat));
-			} else {
-   				 console.log("Đã có kết quả");
-			}
+    				await fetchSequentiallyData(ccq);   
+			} 
+			localStorage.setItem("sshs", JSON.stringify(sosanhhieusuat));
             		const popup = document.getElementById('load');
-            		popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span>
-				<iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
+            		popup.innerHTML = `<div class="popup show" style="display:block;border: 2px solid #2c2c2c;background-color: #1f1836;color:white">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span><iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
 			overlay.style.display = "block";
-
                     }
                 };
 
