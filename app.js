@@ -60,191 +60,69 @@ async function getStockData() {
             console.error('Error fetching financial report:', error);
         }
     }
-    async function getPriceChart(symbol) {
-        const url = `https://api-finance-t19.24hmoney.vn/v2/ios/stock/graph?&symbol=${symbol}&type=6`;
-        const url2 = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=6&year_report=5`;//pe, eps 4qgn
-        const url3 = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=3&year_report=5`;//dt và ln 4qgn
 
-        try {
-            const response = await fetch(url);
-            const response2 = await fetch(url2);
-            const response3 = await fetch(url3);
-            // Kiểm tra nếu phản hồi không hợp lệ
+async function getPriceChart(symbol) {
+    const urls = [
+        `https://api-finance-t19.24hmoney.vn/v2/ios/stock/graph?&symbol=${symbol}&type=6`, // giá cp
+        `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=6&year_report=5`, // pe, eps 4qgn
+        `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=3&year_report=5`, // dt và ln 4qgn
+        `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${symbol}&graph_type=7&year_report=5`//roa, roe
+    ];
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+    try {
+        const [response, response2, response3,response4] = await Promise.all(urls.map(url => fetch(url).then(res => res.json())));
 
-            const datas = await response.json(); // Chuyển đổi dữ liệu thành JSON
-            const datas2 = await response2.json(); // Chuyển đổi dữ liệu thành JSON
-            const datas3 = await response3.json(); // Chuyển đổi dữ liệu thành JSON
+        if (!response || !response2 || !response3|| !response4) throw new Error('Invalid data received');
 
-            if (!datas || !datas.data || !datas.data.points || datas.data.points.length === 0) {
-                throw new Error('No price data available');
-            }
+        const getDataPoints = (response, index) => response.data.points.map(point => {
+            const date = new Date(point.x * 1000);
+            const month = date.getMonth() + 1;
+            if (![1, 4, 7, 10].includes(month)) return null;
+            return {
+                price: point[`y${index || ''}`], // Giá dựa trên index (y1 hoặc y)
+                year: date.getFullYear(),
+                month,
+                day: date.getDate(),
+                quarter: Math.floor((month - 1) / 3) + 1
+            };
+        }).filter(Boolean);
 
-            // Lấy dữ liệu điểm (price data)
-            const points = datas.data.points;
-            const points2 = datas2.data.points;
-            const points3 = datas3.data.points;
+        const priceData = getDataPoints(response).slice(-16).map(item => item.price).reverse();
+        const peData = getDataPoints(response2, 1).slice(-16).map(item => item.price).reverse();
+        const epsData = getDataPoints(response2).slice(-16).map(item => item.price).reverse();
+        const dtData = getDataPoints(response3).slice(-16).map(item => item.price).reverse();
+        const lnData = getDataPoints(response3, 1).slice(-16).map(item => item.price).reverse();
+        const roa = getDataPoints(response4).slice(-16).map(item => item.price).reverse();
+        const roe = getDataPoints(response4, 1).slice(-16).map(item => item.price).reverse();
+        const roa4 = getDataPoints(response4, 2).slice(-16).map(item => item.price).reverse();
+        const roe4 = getDataPoints(response4, 3).slice(-16).map(item => item.price).reverse();
 
-            // Chuyển đổi dữ liệu theo năm và quý
-            const pricedatas = points.map(point => {
-                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
-                const year = date.getFullYear();
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
-                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
-                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
+        const createRow = (key ,name, data) => ({
+            "key": `isa${key}`,
+            "level": 1,
+            "get_raw": 1,
+            "values": data.flatMap(item => [item, 0]),
+            "data": true,
+            "name": name
+        });
 
-                return {
-                    price: point.y, // Giá cổ phiếu
-                    year: year,
-                    month: month,
-                    day: day,
-                    quarter: quarter
-                };
+        data.data.rows.push(
+            createRow("200","Giá CP", priceData),
+            createRow("201","P/E", peData),
+            createRow("202","EPS 4QGN", epsData),
+            createRow("203", "DT 4QGN", dtData),
+            createRow("204","LNST 4QGN", lnData),
+            createRow("205","ROA quý", roa),
+            createRow("206","ROE quý", roe),
+            createRow("206","ROA 4QGN", roa4),
+            createRow("207","ROE 4QGN", roe4),
+        );
 
-            }).filter(Boolean);
-
-            const pedatas = points2.map(point => {
-                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
-                const year = date.getFullYear();
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
-                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
-                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
-                return {
-                    price: point.y1, // PE
-                    year: year,
-                    month: month,
-                    day: day,
-                    quarter: quarter
-                };
-            }).filter(Boolean);;
-
-            const epsdatas = points2.map(point => {
-                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
-                const year = date.getFullYear();
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
-                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
-                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
-                return {
-                    price: point.y, // EPS
-                    year: year,
-                    month: month,
-                    day: day,
-                    quarter: quarter
-                };
-            }).filter(Boolean);;
-
-            const dtdatas = points3.map(point => {
-                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
-                const year = date.getFullYear();
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
-                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
-                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
-                return {
-                    price: point.y, // DT
-                    year: year,
-                    month: month,
-                    day: day,
-                    quarter: quarter
-                };
-            }).filter(Boolean);;
-
-            const lndatas = points3.map(point => {
-                const date = new Date(point.x * 1000); // Chuyển đổi timestamp thành đối tượng Date
-                const year = date.getFullYear();
-                const day = date.getDate();
-                const month = date.getMonth() + 1; // Tháng bắt đầu từ 0, nên cộng thêm 1
-                const quarter = Math.floor((month - 1) / 3) + 1; // Chia tháng vào quý
-                if (month !== 1 && month !== 4 && month !== 7 && month !== 10) return null;
-                return {
-                    price: point.y1, // LN
-                    year: year,
-                    month: month,
-                    day: day,
-                    quarter: quarter
-                };
-            }).filter(Boolean);;
-
-            let pricedata = pricedatas.slice(-16).map(item => item.price).reverse();
-            let pedata = pedatas.slice(-16).map(item => item.price).reverse();
-            let epsdata = epsdatas.slice(-16).map(item => item.price).reverse();
-            let dtdata = dtdatas.slice(-16).map(item => item.price).reverse();
-            let lndata = lndatas.slice(-16).map(item => item.price).reverse();
-
-            let tem = [], tem2=[], tem3=[], tem4=[], tem5=[];
-            pricedata.forEach(s => {
-                tem.push(s);
-                tem.push(0);
-            })
-            pedata.forEach(s => {
-                tem2.push(s);
-                tem2.push(0);
-            })
-            epsdata.forEach(s => {
-                tem3.push(s);
-                tem3.push(0);
-            })
-            dtdata.forEach(s => {
-                tem4.push(s);
-                tem4.push(0);
-            })
-            lndata.forEach(s => {
-                tem5.push(s);
-                tem5.push(0);
-            })
-            data.data.rows.push({
-                "key": "isa200",
-                "level": 1,
-                "get_raw": 1,
-                "values": tem,
-                "data": true,
-                "name": "Giá CP"
-            })
-            data.data.rows.push({
-                "key": "isa201",
-                "level": 1,
-                "get_raw": 1,
-                "values": tem2,
-                "data": true,
-                "name": "P/E"
-            })
-            data.data.rows.push({
-                "key": "isa202",
-                "level": 1,
-                "get_raw": 1,
-                "values": tem3,
-                "data": true,
-                "name": "EPS 4QGN"
-            })
-            data.data.rows.push({
-                "key": "isa203",
-                "level": 1,
-                "get_raw": 1,
-                "values": tem4,
-                "data": true,
-                "name": "DT 4QGN"
-            })
-            data.data.rows.push({
-                "key": "isa204",
-                "level": 1,
-                "get_raw": 1,
-                "values": tem5,
-                "data": true,
-                "name": "LNST 4QGN"
-            })
-            createOption(data);
-        } catch (error) {
-            console.error('Error fetching financial report:', error);
-        }
+        createOption(data);
+    } catch (error) {
+        console.error('Error fetching financial report:', error);
     }
-
-
+}
 
     await getFinancialReport(stockSymbol, reportType);
     await getPriceChart(stockSymbol);
