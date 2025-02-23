@@ -8,7 +8,7 @@
     <title>Biểu đồ tài chính tùy chỉnh nâng cao</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
-<script id="theme-script" src="https://code.highcharts.com/themes/brand-light.js"></script>
+    <script id="theme-script" src="https://code.highcharts.com/themes/brand-light.js"></script>
     <link rel="stylesheet" type="text/css" href="loading.css">
     <style>
         #checkbox-container {
@@ -48,7 +48,7 @@
             font-family: Roboto, Helvetica, Arial, sans-serif;
             margin: 4px;
             text-align: left;
-	    background: #f0f0f0;
+            background: #f0f0f0;
         }
 
         button {
@@ -80,78 +80,92 @@
             padding: 4px;
             border-radius: 4px;
         }
-	.checkbox-container select {
-		width:55px;
-	}
+
+        .checkbox-container select {
+            width: 55px;
+        }
+
         .controls {
             display: flex;
         }
-.highcharts-tooltip table th {
-    padding-bottom: 0.2em;
-    border-bottom: 1px solid silver;
-}
-.selectOption{
-display: flex;
-justify-content: space-between;
-    width: 310px;
-}
 
-input[type="checkbox"] {
-  appearance: none;
-  width: 14px;
-  height: 14px;
-  border: 2px solid #ccc;
-  border-radius: 4px;
-  position: relative;
-  cursor: pointer;
-}
+        .highcharts-tooltip table th {
+            padding-bottom: 0.2em;
+            border-bottom: 1px solid silver;
+        }
 
-input[type="checkbox"]:checked::before {
-  content: '\2714'; /* Biểu tượng checkmark */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 16px;
-  color: white;
-}
+        .selectOption {
+            display: flex;
+            justify-content: space-between;
+            width: 370px;
+        }
 
-input[type="checkbox"]:checked {
-  background-color: #4CAF50;
-  border-color: #4CAF50;
-}
-select {
-  border: 2px solid #4CAF50; /* Green border */
-  border-radius: 5px;
-  background-color: #f9f9f9; /* Light grey background */
-  appearance: none; /* Removes default browser styles */
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  color: #333; /* Dark grey text */
-  cursor: pointer;
-}
-/* Custom arrow icon */
-select::after {
-  content: '\25BC'; /* Downward arrow */
-  position: absolute;
-  top: 50%;
-  right: 10px;
-  transform: translateY(-50%);
-  pointer-events: none;
-}
+        input[type="checkbox"] {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 2px solid #ccc;
+            border-radius: 4px;
+            position: relative;
+            cursor: pointer;
+        }
 
-/* Change color when focused */
-select:focus {
-  border-color: #45a049; /* Darker green border */
-  outline: none;
-}
-label {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    color: #11344f;
-    width: 200px;
-}
+        input[type="checkbox"]:checked::before {
+            content: '\2714';
+            /* Biểu tượng checkmark */
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 16px;
+            color: white;
+        }
+
+        input[type="checkbox"]:checked {
+            background-color: #4CAF50;
+            border-color: #4CAF50;
+        }
+
+        select {
+            border: 2px solid #4CAF50;
+            /* Green border */
+            border-radius: 5px;
+            background-color: #f9f9f9;
+            /* Light grey background */
+            appearance: none;
+            /* Removes default browser styles */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            color: #333;
+            /* Dark grey text */
+            cursor: pointer;
+        }
+
+        /* Custom arrow icon */
+        select::after {
+            content: '\25BC';
+            /* Downward arrow */
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        /* Change color when focused */
+        select:focus {
+            border-color: #45a049;
+            /* Darker green border */
+            outline: none;
+        }
+
+        label {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #11344f;
+            width: 200px;
+        }
     </style>
 </head>
 
@@ -184,7 +198,8 @@ label {
                 <td>
                     <div id="container"></div>
                 </td>
-                <td><div class="selectOption" style="font-weight:600"><span >Khoản mục: </span><span>Kiểu/Trục</span></div>
+                <td>
+                    <div class="selectOption" style="font-weight:600"><span>Khoản mục: </span><span>Kiểu/Trục/STD</span></div>
                     <div id="checkbox-container" class="checkbox-container"></div>
                 </td>
             </tr>
