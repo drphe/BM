@@ -1,0 +1,329 @@
+<!DOCTYPE HTML>
+<html data-theme="light">
+
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dữ liệu vĩ mô tiền tệ, hàng hoá </title>
+    <link href="./bootstrap.min.css" rel="stylesheet" />
+    <link href="./loading.css" rel="stylesheet" />
+    <script src="./mack.js"></script>
+    <script src="./lunar.js"></script>
+    <script src="./main.js"></script>
+    <style type="text/css">
+        body {
+            width: 100%;
+            min-width: 600px;
+            padding: 10px;
+            margin: auto;
+            font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
+            background-color: var(--backgroundColor) !important;
+            color: var(--black);
+        }
+
+        ::-webkit-scrollbar-track {
+            box-shadow: inset 0 0 0 grey;
+            border-radius: 1px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+            background: transparent;
+        }
+
+        .mainchart {
+            display: flex;
+            margin: auto;
+            background-color: var(--backgroundColor) !important;
+            color: var(--black);
+        }
+
+        .card {
+            background-color: #fff;
+            border-radius: 3px;
+            box-shadow: 0 0 0 0px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+            padding: 0px;
+            transition: box-shadow .2s cubic-bezier(.4, 1, .75, .9), -webkit-transform .2s cubic-bezier(.4, 1, .75, .9);
+            transition: transform .2s cubic-bezier(.4, 1, .75, .9), box-shadow .2s cubic-bezier(.4, 1, .75, .9);
+            transition: transform .2s cubic-bezier(.4, 1, .75, .9), box-shadow .2s cubic-bezier(.4, 1, .75, .9), -webkit-transform .2s cubic-bezier(.4, 1, .75, .9);
+        }
+
+        #title {
+            font-size: 16px;
+            font-weight: 600;
+            padding-bottom: 10px;
+        }
+
+        .vimo {
+            right: 0px;
+            top: 0px;
+            display: block;
+            padding: 10px;
+            z-index: 100;
+            position: absolute;
+            display: none;
+        }
+
+        .dropdown-item {
+            font-size: 14px !important;
+        }
+
+        .bp3-card {
+            background-color: #fff;
+            border-radius: 3px;
+            box-shadow: 0 0 0 1px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+            padding: 10px;
+            transition: box-shadow .2s cubic-bezier(.4, 1, .75, .9), -webkit-transform .2s cubic-bezier(.4, 1, .75, .9);
+            transition: transform .2s cubic-bezier(.4, 1, .75, .9), box-shadow .2s cubic-bezier(.4, 1, .75, .9);
+            transition: transform .2s cubic-bezier(.4, 1, .75, .9), box-shadow .2s cubic-bezier(.4, 1, .75, .9), -webkit-transform .2s cubic-bezier(.4, 1, .75, .9);
+        }
+
+        .bp3-button {
+            display: inline-flex;
+            flex-direction: row;
+            align-items: center;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 13px;
+            justify-content: center;
+            padding: 4px;
+            text-align: left;
+            vertical-align: middle;
+            min-height: 15px;
+            min-width: 20px;
+            line-height: 14px;
+            font-weight: 400;
+        }
+
+        .bp3-button-group {
+            display: inline-flex;
+        }
+
+        .bp3-button-group:not(.bp3-minimal)>.bp3-button:not(:last-child),
+        .bp3-button-group:not(.bp3-minimal)>.bp3-popover-wrapper:not(:last-child) .bp3-button {
+            border-bottom-right-radius: 0;
+            border-top-right-radius: 0;
+            margin-right: -1px;
+        }
+
+        .bp3-button-group .bp3-button[class*=bp3-intent-] {
+            z-index: 9;
+        }
+
+        .bp3-button-group .bp3-button {
+            flex: 0 0 auto;
+            position: relative;
+            z-index: 4;
+        }
+
+        bp3-button.bp3-small,
+        .bp3-small .bp3-button {
+            min-height: 24px;
+            min-width: 24px;
+            padding: 0 7px;
+        }
+
+        .bp3-button.bp3-intent-primary {
+            background-color: #4285f4;
+            background-image: linear-gradient(180deg, hsla(0, 0%, 100%, .1), hsla(0, 0%, 100%, 0));
+            box-shadow: inset 0 0 0 1px rgba(16, 22, 26, .4), inset 0 -1px 0 rgba(16, 22, 26, .2);
+            color: #fff;
+        }
+
+        .bp3-button:not([class*=bp3-intent-]) {
+            background-color: #f5f8fa;
+            background-image: linear-gradient(180deg, hsla(0, 0%, 100%, .8), hsla(0, 0%, 100%, 0));
+            box-shadow: inset 0 0 0 1px rgba(16, 22, 26, .2), inset 0 -1px 0 rgba(16, 22, 26, .1);
+            color: #3e4763;
+        }
+
+        .my-1 {
+            width: 120px;
+            font-size: 14px;
+        }
+
+        .v-suggestions {
+            right: 232px;
+            top: 0px;
+            display: block;
+            padding: 6px;
+            z-index: 100;
+            position: absolute;
+        }
+
+        .suggestions {
+            display: block;
+            position: absolute;
+            top: 50px;
+            z-index: 101;
+            Right: 250px;
+            border: 1px;
+        }
+
+        li.item:hover {
+            box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+        }
+
+        .suggestions .item {
+            margin-bottom: 2px;
+            padding: 6px;
+            padding-left: 0.5rem;
+            cursor: pointer;
+            font-size: 0.875rem;
+            border-radius: 0.125rem;
+            background: var(--backgroundColor);
+            color: var(--black);
+        }
+
+        ol,
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        #listCK {
+            width: 250px;
+            max-height: 300px;
+            overflow: auto;
+            border-radius: 3px;
+            background: var(--backgroundColor);
+            box-shadow: 0 0 0 1px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+        }
+
+        /* Đảm bảo bảng không vượt quá chiều rộng của container */
+        table {
+            width: 100%;
+            height: 100% border-collapse: collapse;
+        }
+
+        /* Cố định cột đầu tiên khi cuộn ngang */
+        table thead th:first-child,
+        table tbody td:first-child {
+            position: sticky;
+            left: 0;
+            background-color: #fff;
+            /* Đảm bảo rằng cột cố định có nền màu */
+            z-index: 1;
+            /* Đảm bảo cột đầu tiên hiển thị trên các cột còn lại khi cuộn */
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+            /* Thêm bóng cho cột cố định */
+        }
+
+        /* Cấu hình dòng tên chuỗi (series) */
+        th,
+        td {
+            padding: 8px;
+            text-align: left;
+            white-space: nowrap;
+            /* Ngăn không cho text xuống dòng */
+            text-overflow: ellipsis;
+            /* Thêm ba dấu chấm nếu nội dung vượt quá ô */
+            overflow: hidden;
+            max-width: 200px;
+            /* Nếu muốn giới hạn chiều rộng của ô */
+        }
+
+        /* Đảm bảo tên chuỗi không bị cắt hoặc xuống dòng */
+        th {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        /* Đảm bảo bảng có đường viền */
+        table,
+        th,
+        td {
+            border: 1px solid #ddd;
+        }
+
+        /* Cho phép cuộn ngang trong bảng nếu chiều rộng vượt quá */
+        table {
+            table-layout: fixed;
+            overflow-x: auto;
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="topheader">
+        <div id="title" style="padding-top: 2px"><svg data-icon="th-list" style="fill: #5c7080;" width="16" height="16" viewBox="0 0 16 16">
+                <desc>th-list</desc>
+                <path d="M15 1H1c-.6 0-1 .5-1 1v12c0 .6.4 1 1 1h14c.6 0 1-.4 1-1V2c0-.5-.4-1-1-1zm-1 12H2v-2h12v2zm0-3H2V8h12v2zm0-3H2V5h12v2z" fill-rule="evenodd"></path>
+            </svg> Biểu đồ tùy chọn</div>
+        <div class="v-suggestions">
+            <input class="input my-1 " autocomplete="off" type="text" placeholder="Tìm kiếm" id="searchCK" value="" style="    background-color: var(--backgroundColor);border-color: var(--bgcolor);color:var(--black);border-radius: 4px;padding:4px;border: 1px solid #ccc;">
+        </div>
+        <div class="suggestions" title="Giữ Ctrl để thêm chuỗi vào biểu đồ!">
+            <ul id="listCK" style="display: none;" class="items border-t border-gray">
+            </ul>
+        </div>
+        <div class="vimo">
+            <div class="btn-group" title="Giữ Ctrl để thêm chuỗi vào biểu đồ!">
+                <button type="button" class="btn btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown" style="font-size:14px;color:white;">Vĩ mô </button>
+                <ul class="dropdown-menu" id="vimotiente" style="overflow-y:auto; max-height:300px; ">
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn  btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown" style="font-size:14px;color:white;"> Hàng hoá</button>
+                <ul class="dropdown-menu" id="vimohanghoa" style="overflow-y:auto; max-height:300px;">
+                </ul>
+            </div>
+            <div class="btn-group">
+                <button type="button" class="btn  btn-sm btn-info dropdown-toggle" data-bs-toggle="dropdown" style="font-size:14px;color:white;"> CCQ</button>
+                <ul class="dropdown-menu" id="ccq-cw" style="overflow-y:auto; max-height:300px;">
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="mainchart card">
+        <div style="display:block;" class="bp3-carda">
+            <div id="changeperiod" style="float:right;display: flex; flex-direction: row; justify-content: space-between; position: absolute;
+    z-index: 10;right:40px;padding-top: 10px;display:none">
+                <div style="display: flex; flex-direction: row;">
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">%</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">3M</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">6M</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">YTD</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">1Y</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small  bp3-intent-primary" style="margin-right: 4px;">
+                        <span class="bp3-button-text">3Y</span>
+                    </button>
+                    <button type="button" class="bp3-button bp3-small" style="margin-right: 4px;">
+                        <span class="bp3-button-text">All</span>
+                    </button>
+                </div>
+            </div>
+            <div id="dulieuvimo" style="width:100%;height:450px;"> </div>
+        </div>
+        <div id="table" style="width:100%;"></div>
+        <div id="load"></div>
+        <script src="./code/highcharts.js"></script>
+        <script src="./code/accessibility.js"></script>
+        <script src="./code/exporting.js"></script>
+        <script src="./code/export-data.js"></script>
+        <script src="./code/mouse-wheel-zoom.js"></script>
+        <script src="./macro.js"></script>
+        <script src="./code/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
