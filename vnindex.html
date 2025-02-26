@@ -433,7 +433,7 @@
     </div>
     <script>
         // khai báo biến
-        const defaultkey = 12;
+        const defaultkey = 13;
         const iframeConfigs = {
             1: {
                 src: "fidt.html",
@@ -498,48 +498,54 @@
                 enable: 1
             },
             11: {
+                src: "stockline.html",
+                title: "Tâm điểm thị trường",
+                info: "Xem nhanh báo cáo phân tích tâm điểm thị trường. <br/> Lấy nguồn từ Stockline.vn. Chuyên phân tích ngành nghề, để có lựa chọn cổ phiếu đầu tư.",
+                enable: 1
+            },
+            12: {
                 src: "fialda.html",
                 title: "Báo cáo phân tích",
                 info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. <br/> Cập nhật thêm fastnote của Finbox.",
                 enable: 1
             },
-            12: {
+            13: {
                 src: "tradingview.html",
                 title: "Biểu đồ Tradingview",
                 info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu.",
                 enable: 1
             },
-            13: {
+            14: {
                 src: "finbox.html",
                 title: "Finbox khuyến nghị",
                 info: "Danh sách các cổ phiếu khuyến nghị của finbox. Lưu ý cổ phiếu của Finbox mua theo công cụ và triết lý riêng.",
                 enable: 1
             },
-            14: {
+            15: {
                 src: "fmarket.html",
                 title: "Thống kê CP quỹ",
                 info: "Thống kê các cổ phiếu được các quỹ cổ phiếu nắm giữ.<br/> Xem biểu đồ scratter plot để đánh giá rủi ro - lợi nhuận của các quỹ mở so với VNINDEX. Chỉ những quỹ mở có hiệu suất tốt hơn trong dài hạn, và có mức độ biến động thấp mới đáng lựa chọn để đầu tư.",
                 enable: 1
             },
-            15: {
+            16: {
                 src: "sscophieu.html",
                 title: "Hiệu suất nhóm ngành",
                 info: "Biểu đồ Scatter Plot để đánh giá hiệu suất (rủi ro và lợi nhuận) của các mã cổ phiếu trong cùng nhóm ngành. <br/> Trong cùng một ngành, các cổ phiếu có mức độ lợi nhuận (CAGR, lợi suất trung bình nhân) vượt trội so với VNINDEX mới cần quan tâm, đổi lại có mức rủi ro (STD - độ biến động tính theo %) cao hơn.",
                 enable: 1
             },
-            16: {
+            17: {
                 src: "kqkd.html",
                 title: "Kết quả kinh doanh",
                 info: "Xem kết quả kinh doanh quý gần nhất của các doanh nghiệp trên sàn, nguồn Stocks.vn.<br/> Chú ý mức tăng trưởng lợi nhuận sau thuế so với cùng kỳ của các doanh nghiệp để đánh giá khả năng tăng trưởng đột phá về lợi nhuận.",
                 enable: 1
             },
-            17: {
+            18: {
                 src: "fireant.html",
                 title: "Báo cáo tài chính",
                 info: "Công cụ xem báo cáo tài chính chi tiết của từng doanh nghiệp.<br/> Có 3 bảng báo cáo: cân đối kế toán, báo cáo kinh doanh và lưu chuyển tiền tệ. Mặc định hiển thị kết quả kinh doanh của doanh nghiệp quan tâm, với 8 cột dữ liệu theo quý.",
                 enable: 1
             },
-            18: {
+            19: {
                 src: "24h.html",
                 title: "Biểu đồ tài chính",
                 info: "Công cụ giúp tạo biểu đồ tùy chỉnh và nâng cao.<br/>Kết hợp giữa kết quả tài chính từ báo cáo tài chính với dữ liệu giá cổ phiếu. <br/> Về dài hạn giá cổ phiếu là sự phản ánh kết quả, tình hình hoạt động kinh doanh của doanh nghiệp.<br/> Lưu ý: Giá cổ phiếu quý 4/2024 lấy giá đóng cửa của 31/12/2024, lấy cuối tháng của quý đó. Tương tự quý 3 thì lấy giá đóng cửa ngày cuối của tháng 9. Nghĩa là giá này là phản ánh của kết quả kinh doanh, giá phản ánh trước và kết quả kinh doanh confirm lại giá cổ phiếu. Vì sự tương đồng này nên cần tìm kiếm các doanh nghiệp trong quý tiếp theo có dự báo kết quả kinh doanh tăng trưởng thì giá sẽ tăng.",

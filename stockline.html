@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="https://stockline.vn/stockline-media/logo/icon-logo.png" type="image/png" />
+    <title>Tâm điểm thị trường | Stock Line</title>
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;0,900;1,300;1,400;1,700;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+        :root {
+            --primary-color: #96171b;
+            --secondary-color: #d42d2d;
+            --theme-color: #96171b;
+            --third-color: #2568b3;
+            --four-color: #2f80ed;
+            --body-font-size: 16px;
+            --body-font-family: "Inter", sans-serif;
+            --heading-font-family: "Inter", sans-serif;
+            --body-blog-font-family: "Merriweather", serif;
+            --line-height: 30px;
+            --title-1-size: 40px;
+            --title-2-size: 32px;
+            --title-3-size: 24px;
+            --title-4-size: 16px;
+            --bg-linear: linear-gradient(#0082c9, #0050c9 100%);
+            --bg-linear-hover: linear-gradient(#0050c9, #0082c9 100%);
+            --bg-gray-1: #efefef;
+            --tg-border-1: #CCCCCC;
+            --tg-grey-1: #F9F9F9;
+        }
+
+        body {
+            font-size: var(--body-font-size);
+            font-family: var(--body-font-family);
+            line-height: var(--line-height);
+            font-weight: 400;
+            background: #fafbff;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-family: var(--body-font-family);
+        }
+
+        .isic_details,
+        .isic_details div,
+        .isic_details p {
+            font-family: var(--body-blog-font-family) !important;
+        }
+
+        .qu_btn,
+        .quAccordion .card .card-header h2 button span,
+        .SubsrcribeForm .yikes-easy-mc-form .yikes-easy-mc-submit-button {
+            background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%)
+        }
+
+        .slider_01 {
+            height: 650px;
+        }
+
+        .tp-caption.more-info {
+            display: none !important;
+        }
+
+        .art-sapo {
+            background: #ffdedf;
+            color: var(--primary-color);
+        }
+
+        .postThumb {
+            margin-bottom: 15px;
+        }
+
+        .tp-caption {
+            display: none !important;
+        }
+
+        .header01 {
+            background-color: #fff;
+        }
+
+        .mainMenu ul li {
+            margin-right: 10px;
+        }
+
+        .copyText,
+        .copyMenu ul li a {
+            font-size: 13px;
+        }
+
+        @media (max-width: 468px) {
+
+            .slider_01,
+            .rev_slider_wrapper,
+            .rev_slider {
+                height: 250px !important;
+            }
+
+            .singleBlog {
+                padding-top: 30px;
+            }
+
+            h1,
+            .h1 {
+                font-size: 2rem;
+            }
+
+            .serviceSection01,
+            .processSection01 {
+                padding: 30px 0;
+            }
+        }
+
+        * {
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            margin: 0px;
+        }
+        /* CSS cho popup */
+        .popup {
+            display: none;
+            position: fixed;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            border: 2px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            background-color: white;
+            z-index: 1000;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+            opacity: 0;
+            height: 80%;
+	    width:80%
+        }
+
+        /* Khi popup được hiển thị */
+        .popup.show {
+            display: block;
+            transform: translate(-50%, -50%) scale(1);
+            opacity: 1;
+        }
+
+        .popup-close {
+            cursor: pointer;
+            color: red;
+            float: right;
+            font-size: 20px;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            /* Màu nền mờ */
+            backdrop-filter: blur(5px);
+            /* Hiệu ứng mờ nền */
+            z-index: 999;
+            display: none;
+            /* Ẩn khi chưa mở popup */
+        }
+
+        .news-style:hover {
+            cursor: pointer;
+            background-color: #f5f5f5;
+        }
+
+        .popup img {
+            width: -webkit-fill-available !important;
+            height: auto !important;
+        }
+
+        .news-style {
+            flex-grow: 1;
+            display: inline-block;
+            color: blue;
+            margin-left: 6px;
+            margin-right: 4px;
+            font-size: 14px;
+            display: flex;
+            flex-direction: row;
+            -webkit-box-align: start;
+            align-items: center;
+            padding-top: 4px;
+            padding-bottom: 4px;
+            margin-bottom: 8px;
+        }
+
+        .mainContent {
+            overflow: auto;
+            height: 80%;
+            margin: 4px;
+            padding: 4px;
+        }
+
+        h1 {
+            font-size: 16px;
+        }
+	#button-container {
+		position: fixed;
+   		 top: 4px;
+    		right: 10px;
+	}
+        button {
+            padding: 5px 10px;
+            margin-right: 10px;
+            cursor: pointer;
+            border: 2px solid #007bff;
+            background-color: #007bff;
+            color: white;
+            font-size: 14px;
+            border-radius: 5px;
+
+            transition: all 0.3s ease;
+            /* Hiệu ứng chuyển tiếp */
+            margin-bottom: 6px;
+        }
+        button:hover {
+            background-color: #0056b3;
+            transform: scale(1.1);
+        }
+        button:active {
+            background-color: #003f7f;
+            transform: scale(0.98);
+        }
+
+    </style>
+</head>
+
+<body>
+    <div id="load"></div>
+    <div id="overlay" class="overlay"></div>
+    <div id="container"></div>
+    <div id="button-container"></div>
+
+    <script>
+        loading(1);
+        // tạo nút chuyển trang
+        function createButtons() {
+            const container = document.getElementById('button-container');
+            for (let i = 1; i <= 7; i++) {
+                // Tạo một nút bấm mới
+                const button = document.createElement('button');
+                button.textContent = i; // Nội dung nút
+                button.onclick = function() {
+                    showList(i);
+                };
+                container.appendChild(button);
+            }
+        }
+        createButtons();
+
+        function showList(number) {
+            var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';
+            if (number > 0) {
+                url += ('?page=' + number)
+            }
+            fetch(url)
+                .then(response => response.text()) // Lấy nội dung HTML của trang
+                .then(html => {
+                    // Chuyển HTML thành DOM
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const blogItems = [];
+                    doc.querySelectorAll('#w0 .col-md-6').forEach(element => {
+                        const title = element.querySelector('.blogContent h3 a').textContent.trim();
+                        const imageSrc = element.querySelector('.blogThumb img').getAttribute('src');
+                        const link = element.querySelector('.blogContent h3 a').getAttribute('href');
+                        blogItems.push({
+                            title: title,
+                            imageSrc: 'https://stockline.vn' + imageSrc, // Đảm bảo đường dẫn ảnh đầy đủ
+                            link: 'https://stockline.vn' + link // Đảm bảo đường dẫn bài viết đầy đủ
+                        });
+                    });
+                    createlist(blogItems);
+                })
+                .catch(error => console.error('Error fetching the page:', error));
+        }
+        showList(0); // danh sách mới nhất
+
+        function createlist(arrs) {
+            let contentId = document.getElementById("container");
+            contentId.innerHTML = `<div class="nowrap" title="" style=" padding: 10px;background: deepskyblue;transition: right 0.3s ease;position: sticky;top: 0px;font-size: 20px;left:10px;"><span style="margin: 4px; ">Tâm điểm thị trường</span></div>`;
+            arrs.forEach(arr => {
+                let l = document.createElement("div");
+                l.setAttribute("class", "news-style");
+                let s = document.createElement("a"),
+                    n = new Date(arr.postedAt);
+                l.title = arr.title, s.innerHTML = arr.title;
+                s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:blue;";
+                l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.imageSrc + '" style="width:50px; height: 50px;border-radius:5px;"/></span>';
+                l.appendChild(s),
+                    l.innerHTML += '<br/>';
+                contentId.appendChild(l);
+                l.onclick = (e) => {
+                    e.preventDefault();
+                    showContent(arr.title, arr.link);
+                };
+            });
+            loading(0);
+        }
+
+
+        function showContent(title, url) {
+            console.log(url)
+            fetch(url)
+                .then(response => response.text())
+                .then(html => {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const containerContent = doc.querySelector('article.isic_details.clearfix.post-detail');
+                    if (containerContent) {
+                        const images = containerContent.querySelectorAll('img');
+                        images.forEach(img => {
+                            const src = img.getAttribute('src');
+                            if (src && src.startsWith('/stockline-media/')) {
+                                img.setAttribute('src', 'https://stockline.vn' + src); // Thêm domain vào trước src của ảnh
+                            }
+                        });
+                        // Xóa các đối tượng không cần thiết
+                        const elementsToRemove = [
+                            'div.register-area.text-center.my-3',
+                            'div.post-tags',
+                            'div.post-share-options.p-0'
+                        ];
+
+                        elementsToRemove.forEach(selector => {
+                            const element = containerContent.querySelector(selector);
+                            if (element) {
+                                element.remove(); // Xóa phần tử nếu tìm thấy
+                            }
+                        });
+                        showCt(title, containerContent.innerHTML);
+                    } else {
+                        Alert("Không tải được nội dung");
+                        loading(0);
+                    }
+                })
+                .catch(error => console.error('Lỗi khi tải trang:', error));
+        }
+
+        function showCt(title, html) {
+            const popup = document.getElementById('load');
+            popup.innerHTML = `<div class="popup show" style="display:block;"><span style="font-size: 16px;font-weight:600;">${title}</span><span class="popup-close">&times;</span><div class="mainContent">${html}</div></div>`;
+            overlay.style.display = "block";
+        }
+
+        document.addEventListener('click', function(event) {
+            if (event.target.classList.contains('popup-close') || event.target.classList.contains('overlay')) {
+                document.getElementById('load').innerHTML = '';
+                overlay.style.display = "none";
+            }
+        });
+
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
+        const overlay = document.getElementById("overlay");
+    </script>
+
+</body>
+
+</html>
