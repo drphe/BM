@@ -8,7 +8,9 @@ function loading(i = !0) {
     document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
 }
 
-getFIDTpredic();
+document.getElementById("pres").style.display = "none";
+getFIDTnews();
+
 document.addEventListener("keyup", function(e) {
     if (27 === e.keyCode) {
         let popup = document.querySelector(".popup");
@@ -19,7 +21,7 @@ document.addEventListener("keyup", function(e) {
 document.body.addEventListener("click", function(e) {
     const closeButton = document.querySelector(".popup-close");
     let popup = document.querySelector(".popup");
-    closeButton.contains(e.target) && (popup.style.display = "none");
+    closeButton && closeButton.contains(e.target) && (popup.style.display = "none");
 
 });
 
