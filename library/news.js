@@ -34,9 +34,10 @@ function showDiscount(symbol){
 	var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
 	showPopup(iframeHtml, "Phân tích cổ phiếu");
 }
+
 function createlist(arrs) {
     let contentId = document.getElementById("content");
-    contentId.innerHTML = `<div class="nowrap" title="" style=" transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">x</span></div>`;
+    contentId.innerHTML = `<div class="nowrap" title="" style=" transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">[x]</span><span style="float:right;cursor:pointer; " class="zoomnews">[+]</span></div>`;
     arrs.forEach(arr => {
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
@@ -50,22 +51,35 @@ l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" st
             l.innerHTML += '<br/>';
         contentId.appendChild(l);
         contentId.style.display = "block";
-	document.querySelector(".closenews").addEventListener('click', function(event) {
-		if(!contentId.classList.contains('andi')) {
-			contentId.classList.add("andi");
-			event.target.title = "Hiện bảng tin";
-			event.target.textContent = ">";
-		}else {
-			contentId.classList.remove("andi");
-			event.target.title = "Ẩn bảng tin";
-			event.target.textContent = "x"
-		}
-	});
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(arr.content, arr.title);
         };
     });
+
+	document.querySelector(".closenews").addEventListener('click', function(event) {
+		if(!contentId.classList.contains('andi')) {
+			contentId.classList.add("andi");
+			event.target.title = "Hiện bảng tin";
+			event.target.textContent = "[>>]";
+			contentId.classList.remove("phongto");
+		}else {
+			contentId.classList.remove("andi");
+			event.target.title = "Ẩn bảng tin";
+			event.target.textContent = "[x]";
+		}
+	});
+	document.querySelector(".zoomnews").addEventListener('click', function(event) {
+		if(!contentId.classList.contains('phongto')) {
+			contentId.classList.add("phongto");
+			event.target.title = "Thu nhỏ";
+			event.target.textContent = "[-]";
+		}else {
+			contentId.classList.remove("phongto");
+			event.target.title = "Phóng to";
+			event.target.textContent = "[+]"
+		}
+	});
 }
 // trả về thời gian cách bao lâu
 function howmuchtime(e) {

@@ -1,4 +1,5 @@
-﻿<html data-theme="dark">
+﻿
+<html data-theme="dark">
 
 <head>
     <link rel="icon" type="image/png" href="library\icons\128.png" />
@@ -435,61 +436,68 @@
         // khai báo biến
         const defaultkey = 13;
         const iframeConfigs = {
-            0: {
+            1: {
                 src: "stockline.html",
                 title: "Tâm điểm thị trường",
                 info: "Xem nhanh báo cáo phân tích tâm điểm thị trường. <br/> Lấy nguồn từ Stockline.vn. Chuyên phân tích ngành nghề, để có lựa chọn cổ phiếu đầu tư.",
                 enable: 1
             },
-            1: {
+
+            2: {
+                src: "fialda.html",
+                title: "Báo cáo phân tích",
+                info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. <br/> Cập nhật thêm fastnote của Finbox.",
+                enable: 1
+            },
+            3: {
                 src: "fidt.html",
                 title: "Nhận định FIDT",
                 info: "Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.<br/>Nhà đầu tư dài hạn cần quan tâm.",
                 enable: 1
             },
-            2: {
+            4: {
                 src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
                 title: "Định giá VN-Index",
                 info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
                 enable: 1
             },
-            3: {
+            5: {
                 src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
                 title: "Thống kê GD theo NĐT",
                 info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
                 enable: 1
             },
-            4: {
+            6: {
                 src: "https://temp-portal.fidt.vn/data/ty-gia",
                 title: "Tỷ giá USD/VND",
                 info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
                 enable: 1
             },
-            5: {
+            7: {
                 src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
                 title: "Giá hàng hóa",
                 info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
                 enable: 1
             },
-            6: {
+            8: {
                 src: "https://temp-portal.fidt.vn/data/thep",
                 title: "Giá thép",
                 info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
                 enable: 1
             },
-            7: {
+            9: {
                 src: "https://temp-portal.fidt.vn/data/fdi",
                 title: "Đầu tư FDI",
                 info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
                 enable: 1
             },
-            8: {
+            10: {
                 src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
                 title: "Xuất nhập khẩu",
                 info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
                 enable: 1
             },
-            9: {
+            11: {
                 src: "nganh.html",
                 title: "Nhóm ngành và dòng tiền",
                 //height: "500px",
@@ -497,19 +505,13 @@
                 info: "Biểu đồ mối tương giữa nhóm ngành và dòng tiền",
                 enable: 0
             },
-            10: {
+            12: {
                 src: "chart.html",
                 title: "Vĩ mô/hàng hóa",
                 info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn....",
                 enable: 1
             },
 
-            12: {
-                src: "fialda.html",
-                title: "Báo cáo phân tích",
-                info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. <br/> Cập nhật thêm fastnote của Finbox.",
-                enable: 1
-            },
             13: {
                 src: "tradingview.html",
                 title: "Biểu đồ Tradingview",
@@ -735,7 +737,6 @@
 
         // lấy module
         async function fetchData(iframe = 1) {
-            loading(1);
             const configIframe = iframeConfigs[iframe];
             if (configIframe) {
                 const isInArray = listTab.includes(configIframe.title);
@@ -745,12 +746,12 @@
                         sub.style.display = "none";
                     });
                 }
-                console.log(isInArray)
                 if (isInArray) {
                     if (oldIframe.length) {
                         oldIframe.forEach(sub => {
                             if (sub.getAttribute("title") === configIframe.title) {
-                                sub.style.display = "block"
+                                sub.style.display = "block";
+				document.querySelector('#title').textContent = configIframe.title;
                             };
                         });
                         loading(0);
@@ -760,7 +761,7 @@
                 } else {
                     listTab.push(configIframe.title)
                 }
-
+	        loading(1);
                 const newIframe = document.createElement('iframe');
                 newIframe.src = configIframe.src;
                 newIframe.style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;

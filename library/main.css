@@ -564,3 +564,8 @@ color: #11344f;
     left: -480px !important;
     transition: left 0.3s ease;
 }
+.phongto{
+width: 100%!important;
+    height: calc(100vh - 40px)!important;
+}
+
