@@ -169,6 +169,14 @@
             display: none;
             /* Ẩn khi chưa mở popup */
         }
+#container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr); /* Sắp xếp 2 cột, mỗi cột có chiều rộng bằng nhau */
+  gap: 10px; /* Khoảng cách giữa các phần tử */
+}
+.news div:nth-child(odd) {
+    background-color: #f0f0f0;
+}
 
         .news-style:hover {
             cursor: pointer;
@@ -261,7 +269,8 @@
         createButtons();
 
         function showList(number) {
-            var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';
+            var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';	
+	    loading(1);
             if (number > 0) {
                 url += ('?page=' + number)
             }
@@ -290,15 +299,15 @@
 
         function createlist(arrs) {
             let contentId = document.getElementById("container");
-            contentId.innerHTML = `<div class="nowrap" title="" style=" padding: 10px;background: deepskyblue;transition: right 0.3s ease;position: sticky;top: 0px;font-size: 20px;left:10px;"><span style="margin: 4px; ">Tâm điểm thị trường</span></div>`;
+            contentId.innerHTML = ``;
             arrs.forEach(arr => {
                 let l = document.createElement("div");
                 l.setAttribute("class", "news-style");
                 let s = document.createElement("a"),
                     n = new Date(arr.postedAt);
                 l.title = arr.title, s.innerHTML = arr.title;
-                s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:blue;";
-                l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.imageSrc + '" style="width:50px; height: 50px;border-radius:5px;"/></span>';
+                s.style = "padding: 10px; line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:blue;";
+                l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.imageSrc + '" style="width:80px; height: 80px;object-fit:cover;border-radius:5px;"/></span>';
                 l.appendChild(s),
                     l.innerHTML += '<br/>';
                 contentId.appendChild(l);
@@ -312,7 +321,7 @@
 
 
         function showContent(title, url) {
-            console.log(url)
+            loading(1)
             fetch(url)
                 .then(response => response.text())
                 .then(html => {

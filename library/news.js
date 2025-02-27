@@ -44,8 +44,8 @@ function createlist(arrs) {
             n = new Date(arr.postedAt);
         l.title = arr.title,
             s.innerHTML = arr.title + `<br/>${howmuchtime(arr.created)} - ${arr.source}`;
-        s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
-l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" style="width:50px; height: 50px;border-radius:5px;"/></span>';
+        s.style = "margin-left:4px;margin-right:4px;line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
+l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" style="object-fit:cover;width:50px; height: 50px;border-radius:5px;"/></span>';
             l.appendChild(s),
             l.innerHTML += '<br/>';
         contentId.appendChild(l);
@@ -192,7 +192,7 @@ function addStylesToNews() {
     for (var i = 0; i < newsElements.length; i++) {
         newsElements[i].style.display = 'block';
         newsElements[i].style.position = 'absolute';
-        newsElements[i].style.width = '400px';
+        newsElements[i].style.width = '500px';
         newsElements[i].style.height = '250px';
         newsElements[i].style.overflow = 'auto';
         newsElements[i].style.zIndex = '100';
