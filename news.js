@@ -32,7 +32,7 @@ function createArticlesList(articles) {
 
         const link = document.createElement("a");
         link.id = `article-${id}`;
-        link.style = "line-height: 24px; width: 400px; font-size: 14px; text-decoration: none; color: var(--blue);";
+        link.style = "line-height: 24px; font-size: 14px; text-decoration: none; color: var(--blue);";
         link.innerHTML = `${article.title} <br> Ngày đăng: ${new Date(article.created).toLocaleDateString()}`;
         link.href = "#";
         id++;
@@ -59,7 +59,10 @@ function showPopup(content, title) {
         popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
-        popupContent.scrollTo({ top: 0, behavior: "smooth" });
+        popupContent.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
         return;
     }
 
@@ -69,12 +72,16 @@ function showPopup(content, title) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
+    popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";
     };
-    popup.onclick = (event) => { if (event.target === popup) { popup.style.display = "none"; } };
+    popup.onclick = (event) => {
+        if (event.target === popup) {
+            popup.style.display = "none";
+        }
+    };
     popup.appendChild(popupContent);
     popupContent.appendChild(closeButton);
     document.body.appendChild(popup);

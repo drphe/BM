@@ -9,6 +9,7 @@
             font-family: Roboto, Helvetica, Arial, sans-serif;
             font-size: 14px;
         }
+
         body {
             font-size: 14px;
             margin: auto;
@@ -21,6 +22,8 @@
 
         .strategy * {
             color: var(--black) !important;
+            font-family: Roboto, Helvetica, Arial, sans-serif;
+            font-size: 16px !important;
         }
 
         .news-item img {
@@ -86,7 +89,6 @@
             row-gap: 16px;
             padding: 0;
             display: grid;
-            /*grid-template-columns: 1fr 1fr;*/
             overflow-y: scroll;
             align-content: baseline;
         }
@@ -184,7 +186,7 @@
         .strategy {
             min-height: 0px;
             flex-direction: column;
-	    padding:20px;
+            padding: 20px;
         }
 
         .prediction-section .heading {
@@ -325,12 +327,11 @@
             padding-top: 4px;
             padding-bottom: 4px;
             margin-bottom: 8px;
+            border-bottom: 1px solid #ddd;
         }
 
         .containers {
-            max-width: 900px;
             display: grid;
-            /*grid-template-columns: 1fr 1fr;*/
             overflow-y: scroll;
             align-content: baseline;
         }
@@ -355,25 +356,33 @@
             --bgcltab: #bfccd6;
             --bgcltabselected: #f5f8fa;
         }
-.popup-content {
-    animation-name: fly-in;
-    animation-duration: 0.3s;
-}
-@keyframes fly-in {
-    from {
-        transform: scale(0.4)
-    }
 
-    to {
-        transform: scale(1.01)
-    }
-}
-.nowrap { 
-white-space: nowrap;
-overflow: hidden; 
-text-overflow: ellipsis; 
-color: #11344f;
-}
+        #noidung {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .popup-content {
+            animation-name: fly-in;
+            animation-duration: 0.3s;
+        }
+
+        @keyframes fly-in {
+            from {
+                transform: scale(0.4)
+            }
+
+            to {
+                transform: scale(1.01)
+            }
+        }
+
+        .nowrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #11344f;
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="loading.css">
 </head>

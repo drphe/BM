@@ -96,7 +96,7 @@ async function getFIDTnews() {
                 s.innerHTML = article.title + `<br/> Ngày đăng: ${timeAgo(article.date_created)}`
             s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
                 l.appendChild(s),
-                l.innerHTML += '<span style="float:right;margin: 4px; style="width:50px; height: 50px;">' + mailicon + '</span><br/>';
+                l.innerHTML += '<span style="float:right;margin: 4px; style="width:80px; height: 80px;border-radius:5px;object-fit:cover;">' + mailicon + '</span><br/>';
             noidung.appendChild(l);
             noidung.style.display = "block";
             l.onclick = (e) => {
@@ -151,7 +151,7 @@ async function getFIDTpredic() {
         pre.appendChild(m);
         noidung.style.display = "none";
         document.getElementById("pres").style.display = "block";
-    }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.","Thông báo"));
+    }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo"));
 
     loading(0)
 }
@@ -206,7 +206,7 @@ function createlist(arrs, id) {
             s.innerHTML = arr.title + `<br/>Ngày đăng: ${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
             l.appendChild(s),
-            l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.image + '" style="width:50px; height: 50px;"/></span><br/>';
+            l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.image + '" style="width:80px; height: 80px;border-radius:5px;object-fit:cover;"/></span><br/>';
         noidung.appendChild(l);
         noidung.style.display = "block";
         l.onclick = (e) => {
@@ -274,7 +274,7 @@ function showPopup(content, title) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
+    popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";

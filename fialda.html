@@ -24,6 +24,11 @@
             flex: 1 1
         }
 
+        #noidung {
+            display: grid !important;
+            grid-template-columns: repeat(2, 1fr);
+        }
+
         .news-item {
             background-color: #e1ecff;
             padding: 16px 20px;
@@ -163,8 +168,8 @@
             text-align: left;
             border-collapse: collapse;
             border-spacing: 0;
-            font-size: 14px;	
-	    line-height:24px;
+            font-size: 14px;
+            line-height: 24px;
         }
 
         th {
@@ -174,7 +179,7 @@
             color: var(--black);
             padding: 4px;
             font-weight: 500;
-	    white-space: nowrap;
+            white-space: nowrap;
         }
 
         tr:nth-child(even) {
@@ -250,7 +255,9 @@
             padding-top: 4px;
             padding-bottom: 4px;
             margin-bottom: 8px;
+            border-bottom: 1px solid #ddd;
         }
+
 
         body table.table {
             width: 100%;
@@ -260,8 +267,21 @@
             margin-top: -1px;
         }
 
+        th {
+            margin: 0px;
+            line-height: 1.57143;
+            font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
+            font-weight: 600;
+            white-space: pre-line;
+        }
+
+        thead {
+            position: sticky;
+            top: 0px;
+            background: white;
+        }
+
         .containers {
-            max-width: 900px;
             display: grid;
             grid-template-columns: 1fr 1fr;
             overflow-y: scroll;
@@ -351,25 +371,28 @@
             opacity: 0;
             transition: opacity .5s ease-out;
         }
-.popup-content {
-    animation-name: fly-in;
-    animation-duration: 0.3s;
-}
-@keyframes fly-in {
-    from {
-        transform: scale(0.4)
-    }
 
-    to {
-        transform: scale(1.01)
-    }
-}
-.nowrap { 
-white-space: nowrap;
-overflow: hidden; 
-text-overflow: ellipsis; 
-color: #11344f;
-}
+        .popup-content {
+            animation-name: fly-in;
+            animation-duration: 0.3s;
+        }
+
+        @keyframes fly-in {
+            from {
+                transform: scale(0.4)
+            }
+
+            to {
+                transform: scale(1.01)
+            }
+        }
+
+        .nowrap {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: #11344f;
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="loading.css">
 </head>

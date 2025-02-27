@@ -123,6 +123,7 @@
             font-family: Roboto, Helvetica, Arial, sans-serif;
             margin: 0px;
         }
+
         /* CSS cho popup */
         .popup {
             display: none;
@@ -138,7 +139,7 @@
             transition: transform 0.3s ease, opacity 0.3s ease;
             opacity: 0;
             height: 80%;
-	    width:80%
+            width: 80%
         }
 
         /* Khi popup được hiển thị */
@@ -169,14 +170,16 @@
             display: none;
             /* Ẩn khi chưa mở popup */
         }
-#container {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Sắp xếp 2 cột, mỗi cột có chiều rộng bằng nhau */
-  gap: 10px; /* Khoảng cách giữa các phần tử */
-}
-.news div:nth-child(odd) {
-    background-color: #f0f0f0;
-}
+
+        #container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            margin: 8px;
+        }
+
+        .news div:nth-child(odd) {
+            background-color: #f0f0f0;
+        }
 
         .news-style:hover {
             cursor: pointer;
@@ -191,7 +194,7 @@
         .news-style {
             flex-grow: 1;
             display: inline-block;
-            color: blue;
+            color: black;
             margin-left: 6px;
             margin-right: 4px;
             font-size: 14px;
@@ -199,9 +202,7 @@
             flex-direction: row;
             -webkit-box-align: start;
             align-items: center;
-            padding-top: 4px;
-            padding-bottom: 4px;
-            margin-bottom: 8px;
+            border-bottom: 1px solid #ddd;
         }
 
         .mainContent {
@@ -214,11 +215,13 @@
         h1 {
             font-size: 16px;
         }
-	#button-container {
-		position: fixed;
-   		 bottom: 4px;
-    		left: 10px;
-	}
+
+        #button-container {
+            position: fixed;
+            bottom: 4px;
+            left: 10px;
+        }
+
         button {
             padding: 5px 10px;
             margin-right: 10px;
@@ -233,15 +236,16 @@
             /* Hiệu ứng chuyển tiếp */
             margin-bottom: 6px;
         }
+
         button:hover {
             background-color: #0056b3;
             transform: scale(1.1);
         }
+
         button:active {
             background-color: #003f7f;
             transform: scale(0.98);
         }
-
     </style>
 </head>
 
@@ -269,8 +273,8 @@
         createButtons();
 
         function showList(number) {
-            var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';	
-	    loading(1);
+            var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';
+            loading(1);
             if (number > 0) {
                 url += ('?page=' + number)
             }
@@ -305,11 +309,10 @@
                 l.setAttribute("class", "news-style");
                 let s = document.createElement("a"),
                     n = new Date(arr.postedAt);
-                l.title = arr.title, s.innerHTML = arr.title;
-                s.style = "padding: 10px; line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:blue;";
-                l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.imageSrc + '" style="width:80px; height: 80px;object-fit:cover;border-radius:5px;"/></span>';
-                l.appendChild(s),
-                    l.innerHTML += '<br/>';
+                l.title = arr.title, s.innerHTML = arr.title.replace(/:/g, ":<br/>");;
+                s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;";
+                l.appendChild(s);
+                l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.imageSrc + '" style="width:80px; height: 80px;object-fit:cover;border-radius:5px;"/></span>';
                 contentId.appendChild(l);
                 l.onclick = (e) => {
                     e.preventDefault();
