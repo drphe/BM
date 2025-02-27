@@ -30,14 +30,17 @@ async function getNews(list = []) {
         if (newsdata) createlist(newsdata);
     } catch (e) {}
 }
-function showDiscount(symbol){
-	var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
-	showPopup(iframeHtml, "Phân tích cổ phiếu");
+
+function showDiscount(symbol) {
+    var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
+    showPopup(iframeHtml, "Phân tích cổ phiếu");
 }
 
 function createlist(arrs) {
     let contentId = document.getElementById("content");
-    contentId.innerHTML = `<div class="nowrap" title="" style=" transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">[x]</span><span style="float:right;cursor:pointer; " class="zoomnews">[+]</span></div>`;
+    contentId.innerHTML = `<div class="nowrap" title="" style="font-weight:600; transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">[x]</span><span style="float:right;cursor:pointer; " class="zoomnews">[+]</span></div>`;
+    let ll = document.createElement("div");
+    ll.setAttribute("class", "main_news");
     arrs.forEach(arr => {
         let l = document.createElement("div");
         l.setAttribute("class", "news-style");
@@ -46,40 +49,46 @@ function createlist(arrs) {
         l.title = arr.title,
             s.innerHTML = arr.title + `<br/>${howmuchtime(arr.created)} - ${arr.source}`;
         s.style = "margin-left:4px;margin-right:4px;line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
-l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" style="object-fit:cover;width:50px; height: 50px;border-radius:5px;"/></span>';
-            l.appendChild(s),
+            l.innerHTML += '<span style="margin: 4px; "><img src="' + arr.featureImg + '" style="object-fit:cover;width:50px; height: 50px;border-radius:5px;"/></span>';
+        l.appendChild(s),
             l.innerHTML += '<br/>';
-        contentId.appendChild(l);
+        ll.appendChild(l);
         contentId.style.display = "block";
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(arr.content, arr.title);
         };
     });
+    contentId.appendChild(ll);
+    const mainNewsDiv = document.querySelector('.main_news');
 
-	document.querySelector(".closenews").addEventListener('click', function(event) {
-		if(!contentId.classList.contains('andi')) {
-			contentId.classList.add("andi");
-			event.target.title = "Hiện bảng tin";
-			event.target.textContent = "[>>]";
-			contentId.classList.remove("phongto");
-		}else {
-			contentId.classList.remove("andi");
-			event.target.title = "Ẩn bảng tin";
-			event.target.textContent = "[x]";
-		}
-	});
-	document.querySelector(".zoomnews").addEventListener('click', function(event) {
-		if(!contentId.classList.contains('phongto')) {
-			contentId.classList.add("phongto");
-			event.target.title = "Thu nhỏ";
-			event.target.textContent = "[-]";
-		}else {
-			contentId.classList.remove("phongto");
-			event.target.title = "Phóng to";
-			event.target.textContent = "[+]"
-		}
-	});
+    document.querySelector(".closenews").addEventListener('click', function(event) {
+        if (!contentId.classList.contains('andi')) {
+            contentId.classList.add("andi");
+            event.target.title = "Hiện bảng tin";
+            event.target.textContent = "[>>]";
+            mainNewsDiv.classList.remove('grid');
+            contentId.classList.remove("phongto");
+	    document.querySelector(".zoomnews").textContent = "[+]";
+        } else {
+            contentId.classList.remove("andi");
+            event.target.title = "Ẩn bảng tin";
+            event.target.textContent = "[x]";
+        }
+    });
+    document.querySelector(".zoomnews").addEventListener('click', function(event) {
+        if (!contentId.classList.contains('phongto')) {
+            contentId.classList.add("phongto");
+            event.target.title = "Thu nhỏ";
+            mainNewsDiv.classList.add('grid');
+            event.target.textContent = "[-]";
+        } else {
+            contentId.classList.remove("phongto");
+            event.target.title = "Phóng to";
+            mainNewsDiv.classList.remove('grid');
+            event.target.textContent = "[+]"
+        }
+    });
 }
 // trả về thời gian cách bao lâu
 function howmuchtime(e) {
@@ -102,7 +111,10 @@ function showPopup(content, title) {
         popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
         popupContent.appendChild(closeButton);
         popup.style.display = "flex";
-        popupContent.scrollTo({ top: 0, behavior: "smooth" });
+        popupContent.scrollTo({
+            top: 0,
+            behavior: "smooth"
+        });
         return;
     }
 
@@ -112,7 +124,7 @@ function showPopup(content, title) {
 
     const popupContent = document.createElement("div");
     popupContent.className = "popup-content";
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
+    popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
 
     closeButton.onclick = () => {
         popup.style.display = "none";
