@@ -11,7 +11,7 @@ changetheme(myChart);
 loading(1);
 var allKey = DSCK.concat(vimos),
     mack;
-var period = "3Y"
+var period = "All"
 var myChart;
 var addchart = false;
 var isCompare = false;

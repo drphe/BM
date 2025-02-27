@@ -66,7 +66,7 @@ function createlist(arrs) {
         if (!contentId.classList.contains('andi')) {
             contentId.classList.add("andi");
             event.target.title = "Hiện bảng tin";
-            event.target.textContent = "[>>]";
+            event.target.textContent = "[>]";
             mainNewsDiv.classList.remove('grid');
             contentId.classList.remove("phongto");
 	    document.querySelector(".zoomnews").textContent = "[+]";
