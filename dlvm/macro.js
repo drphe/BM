@@ -403,7 +403,7 @@ function check(type, chart) {
             }
 		period = type;
             	chart.xAxis[0].setExtremes(startDate.getTime(), last.x);
-                displayDataTable(chart, startDate.getTime());
+
         }
         buttons.forEach(c => {
             c.classList.remove('bp3-intent-primary');
