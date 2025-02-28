@@ -17,7 +17,7 @@ function processArticlesData(data) {
 
 // Hàm tạo danh sách bản tin và sự kiện click để mở popup
 function createArticlesList(articles) {
-    const container = document.getElementById("noidung");
+    const container = document.getElementById("container");
     container.style.removeProperty('grid');
     if (!container) {
         console.error("Container element not found!");
@@ -38,14 +38,49 @@ function createArticlesList(articles) {
         id++;
         listItem.onclick = (e) => {
             e.preventDefault();
-            showPopup(article.content, article.title);
+
+            showPopup(cleanHTML(article.content), article.title);
         };
 
         listItem.appendChild(link);
         container.appendChild(listItem);
     });
 }
+function cleanHTML(html) {
+    // Tạo thẻ div tạm để chứa nội dung
+    let tempDiv = document.createElement("div");
+    tempDiv.innerHTML = html;
 
+    // Xóa các thẻ <p> trống hoặc chỉ chứa thẻ <br>
+    tempDiv.querySelectorAll("p").forEach(p => {
+        if (!p.textContent.trim() || p.innerHTML.trim().match(/^(<br\s*\/?>|\s|<[^>]+>)*$/)) {
+            p.remove();
+        }
+    });
+
+    // Xóa các đoạn <br/><br/> và <br/><br/><br/>
+    tempDiv.innerHTML = tempDiv.innerHTML.replace(/<br\s*\/?><br\s*\/?>/g, "")
+                                         .replace(/<br\s*\/?><br\s*\/?><br\s*\/?>/g, "");
+    // Lấy tất cả <p> có style cụ thể
+    let paragraphs = tempDiv.querySelectorAll('p[style="font-size: 14px;text-align: justify;"]');
+
+    // Xóa 2 phần tử cuối cùng
+    if (paragraphs.length >= 2) {
+        paragraphs[paragraphs.length - 1].remove();
+        paragraphs[paragraphs.length - 2].remove();
+    }
+    // Trả về HTML đã làm sạch
+    return tempDiv.innerHTML;
+}
+document.body.addEventListener("click", function(e) {
+    document.getElementById("load").contains(e.target) && loading(0);
+    const closeButton = document.querySelector(".popup-close");
+    try {
+        let popup = document.querySelector(".popup");
+        closeButton.contains(e.target) && (popup.style.display = "none");
+    } catch (e) {}
+
+});
 // Hàm hiển thị popup với nội dung bài viết
 function showPopup(content, title) {
     let popup = document.querySelector(".popup");
@@ -151,4 +186,3 @@ async function fetchArticles() {
         return [];
     }
 }
-fetchArticles();
