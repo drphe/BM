@@ -114,7 +114,11 @@
             width: -webkit-fill-available !important;
             height: auto !important;
         }
-
+.art-sapo{
+    background: #ffdedf;
+    color:#96171b;
+    padding:4px;
+}
         .news-style {
             flex-grow: 1;
             display: inline-block;
@@ -158,7 +162,7 @@
             background-color: var(--headercl);
             border-radius: 6px 6px 0px 0px;
         }
-
+	.popup * {line-height:24px;}
         #button {
             border-bottom: 1px solid var(--bp3button);
             padding: 0px;
@@ -186,7 +190,7 @@
         <a class="button " id="finbox">Finbox Fast Report</a>
     </div>
 
-    <div id="container"></div>
+    <div id="container" style="height: calc(-55px + 100vh); overflow: scroll;"></div>
     <!---<div id="button-container"></div>-->
     <script src="news.js"></script>
     <script>
