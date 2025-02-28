@@ -772,7 +772,6 @@
                 newIframe.src = configIframe.src;
                 newIframe.style = `margin:0px auto;border:none;width:100%;height:${configIframe.height || "calc(100vh - 34px)"};${configIframe.maxWidth ? `max-width:${configIframe.maxWidth};` : ""}`;
                 document.querySelector('.existing-div').appendChild(newIframe);
-                document.title = "Công cụ chứng khoán| " + configIframe.title;
                 document.querySelector('#title').textContent = configIframe.title;
                 newIframe.title = configIframe.title;
                 textInfo.title = configIframe.title;
