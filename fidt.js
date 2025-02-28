@@ -98,9 +98,11 @@ async function getFIDTnews() {
                 s.innerHTML = article.title + `<br/> Ngày đăng: ${timeAgo(article.date_created)}`
             s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
                 l.appendChild(s),
-                l.innerHTML += '<span style="float:right;margin: 4px; style="width:80px; height: 80px;border-radius:5px;object-fit:cover;">' + mailicon + '</span><br/>';
+                l.innerHTML += '<span style="float:right;margin: 4px; style="width:60px; height: 60px;border-radius:5px;object-fit:cover;">' + mailicon + '</span><br/>';
             noidung.appendChild(l);
             noidung.style.display = "block";
+            noidung.style.height = "calc(-50px + 100vh)";
+
             l.onclick = (e) => {
                 e.preventDefault();
                 showPopup(article.content, article.title);
@@ -124,7 +126,7 @@ async function getFIDTpredic() {
         let k = g.data[0]
         var predic = `<div class="prediction-section" title="Ngày đăng : ${timeAgo(k.date_created)}">
     <div class="heading">Dự báo thị trường trong tuần này</div>
-    <div class="prediction ${k.prediction}" style="display: flex;align-items: center;justify-content: center;"><span>${k.prediction == "up"? "TĂNG": "GIẢM"}</span><img alt="" src="./${k.prediction == "up"? "bull": "bear"}.svg" width="114" height="120" decoding="async" data-nimg="1" loading="lazy" style="color: transparent;"></div>
+    <div class="prediction ${k.prediction}" style="display: flex;align-items: flex-end;justify-content: center;"><span>${k.prediction == "up"? "TĂNG": "GIẢM"}</span><img style="width: 100px;" alt="" src="./${k.prediction == "up"? "bull": "bear"}.svg" width="114" height="120" decoding="async" data-nimg="1" loading="lazy" style="color: transparent;"></div>
 </div>
 <div class="information">
     <div class="items">
@@ -152,7 +154,10 @@ async function getFIDTpredic() {
         m.innerHTML = predic
         pre.appendChild(m);
         noidung.style.display = "none";
+        noidung.style.height = "0";
         document.getElementById("pres").style.display = "block";
+        document.getElementById("pres").style.height = "calc(-50px + 100vh)";
+
     }).catch(error => showPopup("Trình duyệt không cho phép tắt kiểm duyệt CORS hoặc bị chặn.", "Thông báo"));
 
     loading(0)
@@ -208,9 +213,10 @@ function createlist(arrs, id) {
             s.innerHTML = arr.title + `<br/>Ngày đăng: ${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
             l.appendChild(s),
-            l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.image + '" style="width:80px; height: 80px;border-radius:5px;object-fit:cover;"/></span><br/>';
+            l.innerHTML += '<span style="float:right;margin: 4px; "><img src="' + arr.image + '" style="width:60px; height: 60px;border-radius:5px;object-fit:cover;"/></span><br/>';
         noidung.appendChild(l);
         noidung.style.display = "block";
+        noidung.style.height = "calc(-50px + 100vh)";
         l.onclick = (e) => {
             e.preventDefault();
             showPopup(arr.contentHtml, arr.headline);
