@@ -363,10 +363,10 @@ const wicode = [{keyWord:"Tăng trưởng kinh tế",name:"gdp",className:"wi-g_
             throw new Error("Highcharts.js is not defined");
         }
         // chèn dữ liệu ở đây
-        async function fetchData(url = 'cpi') {
+        async function fetchData(url = 'lslnh') {
             var index = wicode.findIndex(x => x.name === url);
             if (index == -1){
-		url = 'cpi';
+		url = 'lslnh';
              }else if(wicode[index].type =='investing'){
 		investing(url)
 		return;
