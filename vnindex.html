@@ -750,6 +750,8 @@
                             if (sub.getAttribute("title") === configIframe.title) {
                                 sub.style.display = "block";
 				document.querySelector('#title').textContent = configIframe.title;
+                		textInfo.title = configIframe.title;
+                		textInfo.info = configIframe.info;
                             };
                         });
                         loading(0);
