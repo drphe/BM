@@ -37,6 +37,7 @@ async function getBCPTCP(s = '') {
     }
     loading(0)
 }
+const inputF = document.getElementById('inputField');
 async function taoTable(P) {
     container.innerHTML = '';
     var table = document.createElement('table');
@@ -110,9 +111,6 @@ function createBang(P) {
                 let id = e.target.id.match(/\d+/g);
                 getnews(id);
             };
-
-
-
         }
     }
 }
@@ -163,10 +161,12 @@ buttons.forEach(b => {
         if (type && type != "button") {
             switch (type) {
                 case "getBCPTTT":
-                    getBCPTTT()
+                    getBCPTTT();
+		    inputF.style.display = "none";
                     break;
                 case "getBCPTCP":
                     getBCPTCP();
+		    inputF.style.display = "block";
                     break;
                 case "finbox":
                     //fetchArticles();
@@ -179,6 +179,16 @@ buttons.forEach(b => {
     });
 });
 
+        document.getElementById('inputField').addEventListener('input', function(event) {
+            let inputValue = event.target.value.toUpperCase();
+            event.target.value = inputValue;
+        });
+        document.getElementById('inputField').addEventListener('keydown', function(event) {
+            if (event.key === 'Enter') {
+                let inputValue = document.getElementById('inputField').value;
+                getBCPTCP(inputValue)
+            }
+        });
 
 document.addEventListener("keyup", function(e) {
     if (27 === e.keyCode) {
