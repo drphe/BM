@@ -392,7 +392,7 @@
             }
             localStorage.setItem("sshs", JSON.stringify(mainData));
             const popup = document.getElementById('load');
-            popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span>
+            popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ phân tán hiệu suất ngành ${nameSection}<span class="popup-close">&times;</span>
 				<iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
             overlay.style.display = "block";
         }
