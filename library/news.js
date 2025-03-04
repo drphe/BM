@@ -35,7 +35,7 @@ function showDiscount(symbol) {
     var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
     showPopup(iframeHtml, "Phân tích cổ phiếu");
 }
-
+var andiko = localStorage.getItem("andiko");
 function createlist(arrs) {
     let contentId = document.getElementById("content");
     contentId.innerHTML = `<div class="nowrap" title="" style="font-weight:600; transition: right 0.3s ease;position: sticky;top: 0px;font-size: 16px;left:5px;"><span style="margin: 4px; ">Tin tức liên quan</span><span style="float:right;cursor:pointer; " class="closenews">[x]</span><span style="float:right;cursor:pointer; " class="zoomnews">[+]</span></div>`;
@@ -59,18 +59,24 @@ function createlist(arrs) {
             showPopup(arr.content, arr.title);
         };
     });
+    andiko && contentId.classList.add("andi");
+document.querySelector(".closenews").textContent = andiko? '[>]':'[x]';
     contentId.appendChild(ll);
     const mainNewsDiv = document.querySelector('.main_news');
 
     document.querySelector(".closenews").addEventListener('click', function(event) {
         if (!contentId.classList.contains('andi')) {
             contentId.classList.add("andi");
+	    andiko = true;
+	    localStorage.setItem("andiko", andiko);
             event.target.title = "Hiện bảng tin";
             event.target.textContent = "[>]";
             mainNewsDiv.classList.remove('grid');
             contentId.classList.remove("phongto");
 	    document.querySelector(".zoomnews").textContent = "[+]";
         } else {
+	    andiko = false;
+	    localStorage.setItem("andiko", andiko);
             contentId.classList.remove("andi");
             event.target.title = "Ẩn bảng tin";
             event.target.textContent = "[x]";
