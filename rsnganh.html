@@ -209,7 +209,7 @@
             var dateString = dataSector.data[1].indexes.map(s => s.date); // hàng đầu tiên
 
             // cố định cột 3 cột đầu
-            var html = `<table><thead><tr><th>STT</th><th>Ngành</th><th>SSHS</th><th style="font-size:12px;">${dateString.map(s=> formatDate(s)).join('</th><th style="font-size:12px;">')}</th></tr></thead><tbody>`;
+            var html = `<table><thead><tr><th>STT</th><th>Ngành</th><th>HS</th><th style="font-size:12px;">${dateString.map(s=> formatDate(s)).join('</th><th style="font-size:12px;">')}</th></tr></thead><tbody>`;
             dataSector.data.forEach((sector, index) => {
                 html += `<tr><td>${index+1}</td><td onclick="getStockTable('${sector.sectorId}')">${sector.sectorName}</td><td style="text-align: center;"><a href="#" style="color: white;" title="Click để mở biểu đồ" onclick="showChart2('${sector.sectorName}', '${sector.sectorId}')"><svg fill="#000" height="16" width="16" version="1.1" id="Capa_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" 
 	 viewBox="0 0 490 490" xml:space="preserve"><g id="line_7_"><polygon points="490,489.954 490,459.329 31.222,459.375 30.625,0 0,0.031 0.628,490 	"/><polygon points="184.822,213.502 94.555,343.306 119.698,360.793 192.693,255.857 336.446,353.397 438.29,183.597 480.43,212.201 
@@ -301,7 +301,8 @@
                     data: data.data
                 })
 		if(isok) {
-			list = data.data.map(item => item.code);
+			list = [];
+			list = data.data.filter(item => item.vonHoa > 1000).map(item => item.code);
 			showChart(data.data[0].sector);
 		}else createTableFromJSON(data.data);
 
@@ -339,7 +340,8 @@
                 table += `<th>${key}</th>`;
             });
             table += "</tr></thead><tbody>";
-            list = data.map(item => item.code);
+	    list = [];
+            list = data.filter(item => item.vonHoa > 1000).map(item => item.code);// lấy vốn hóa trên 1000
             data.forEach(item => {
                 table += "<tr>";
                 table += td(item, 'xh');
@@ -381,6 +383,7 @@
         async function showChart(nameSection) {
             loading();
             if (!Luutru[nameSection]) {
+		mainData = {};
                 var listcp = list.concat(["VN-INDEX"]);
                 await fetchSequentiallyData(listcp);
                 Luutru[nameSection] = mainData;
