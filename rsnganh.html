@@ -9,9 +9,13 @@
         * {
             font-family: Roboto, Helvetica, Arial, sans-serif;
             margin: 0px;
-            color:#2e2e2e;
+            color: #2e2e2e;
         }
-	body{background:white;}
+
+        body {
+            background: white;
+        }
+
         /* Đảm bảo bảng không vượt quá chiều rộng của container */
         table {
             width: 100%;
@@ -34,7 +38,7 @@
 
         /* Cố định cột thứu 2 khi cuộn ngang */
         .app table thead th:nth-child(2),
-       .app table tbody td:nth-child(2) {
+        .app table tbody td:nth-child(2) {
             position: sticky;
             left: 45px;
             background-color: #fff;
@@ -44,8 +48,8 @@
         }
 
         /* Cố định cột thứ 3 khi cuộn ngang */
-       .app table thead th:nth-child(3),
-       .app table tbody td:nth-child(3) {
+        .app table thead th:nth-child(3),
+        .app table tbody td:nth-child(3) {
             position: sticky;
             left: 260px;
             background-color: #fff;
@@ -108,7 +112,7 @@
 
         .popup table {
             width: 100%;
-	    height:100%;
+            height: 100%;
             border-collapse: collapse;
             font-size: 12px;
         }
@@ -152,9 +156,9 @@
 </head>
 
 <body>
-<div class="app">
-    <div id="table" style="width:100%;"></div>
-</div>
+    <div class="app">
+        <div id="table" style="width:100%;"></div>
+    </div>
     <div id="load"></div>
     <div id="overlay" class="overlay"></div>
     <script>
@@ -228,9 +232,9 @@
             }
 
         }).catch(e => {
-    loading(0);
-    alert('Bị chặn CORS');
-});
+            loading(0);
+            alert('Bị chặn CORS');
+        });
 
         function getPreviousQuarterString() {
             let date = new Date();
@@ -252,30 +256,30 @@
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
         }
 
-	let storage = [];
+        let storage = [];
         const overlay = document.getElementById("overlay");
         async function getStockTable(sectorId) {
-	    let isExist = storage.find(s=> s.id == sectorId);
-	    if(isExist){
-		createTableFromJSON(isExist.data);
-		return;	
-	    }
-let text;
-switch (sectorId) {
-  case '2':
-    text = 'insurance';
-    break;
-  case '9':
-    text = 'stock';
-    break;
-  case '24':
-    text = 'bank';
-    break;
-  default:
-    text = 'other';
-}
+            let isExist = storage.find(s => s.id == sectorId);
+            if (isExist) {
+                createTableFromJSON(isExist.data);
+                return;
+            }
+            let text;
+            switch (sectorId) {
+                case '2':
+                    text = 'insurance';
+                    break;
+                case '9':
+                    text = 'stock';
+                    break;
+                case '24':
+                    text = 'bank';
+                    break;
+                default:
+                    text = 'other';
+            }
 
-	console.log(text)
+            console.log(text)
             loading(1)
             // hàm lấy bảng dữ liệu theo ngành
             fetch(`https://api-feature.sstock.vn/api/v1/sectors/table/${text}?` + getPreviousQuarterString() + "&sectorId=" + sectorId, {
@@ -294,14 +298,14 @@ switch (sectorId) {
                 "mode": "cors",
             }).then(s => s.json()).then(data => {
                 createTableFromJSON(data.data);
-	 	storage.push({
-			id: sectorId,
-			data: data.data
-		})
+                storage.push({
+                    id: sectorId,
+                    data: data.data
+                })
             }).catch(e => {
-    loading(0);
-    alert('Bị chặn CORS');
-});
+                loading(0);
+                alert('Bị chặn CORS');
+            });
 
         }
 
@@ -311,45 +315,46 @@ switch (sectorId) {
                 overlay.style.display = "none";
             }
         });
-	let list =[];
+        let list = [];
+
         function createTableFromJSON(data) {
             if (!Array.isArray(data) || data.length === 0) {
                 return "<p>Không có dữ liệu</p>";
             }
 
             let keys = Object.keys(data[0]); // Lấy danh sách cột từ key của đối tượng đầu tiên
-	    function  td(item, key, dec) {
-		if(dec) {
-			return `<td>${typeof item[key] !== 'undefined' && item[key] !== null ? item[key].toFixed(dec) : ""}</td>`; 
-		}
-		return `<td>${item[key] !== null ? item[key] : ""}</td>`; 
-	    }
+            function td(item, key, dec) {
+                if (dec) {
+                    return `<td>${typeof item[key] !== 'undefined' && item[key] !== null ? item[key].toFixed(dec) : ""}</td>`;
+                }
+                return `<td>${item[key] !== null ? item[key] : ""}</td>`;
+            }
             let table = "<table cellspacing='0' cellpadding='5'>";
-	   let tieude = ["XH","Tên CP","Mã","XHTC","XHKD", "Sàn", "P/E","P/B","EPS", "ROA", "ROE", "GT sổ sách", "%tăng LNST", "%tăng DTT", "Vốn hóa"]
+            let tieude = ["XH", "Tên CP", "Mã", "XHTC", "XHKD", "Sàn", "P/E", "P/B", "EPS", "ROA", "ROE", "GT sổ sách", "%tăng LNST", "%tăng DTT", "Vốn hóa"]
 
             table += "<thead><tr>";
             tieude.forEach(key => {
                 table += `<th>${key}</th>`;
             });
             table += "</tr></thead><tbody>";
-	    list = data.map(item => item.code);
+            list = data.map(item => item.code);
             data.forEach(item => {
                 table += "<tr>";
-		 table += td(item, 'xh'); 
-		 table += td(item, 'name'); 
-		 table += td(item, 'code'); 
-		 table += td(item, 'XHTC'); 
-		 table += td(item, 'XHKD'); 
-		 table += td(item, 'exchange'); 
-		 table += td(item, 'pe',2); 
-		 table += td(item, 'pb',2); 
-		 table += td(item, 'eps',2); 
-		 table += td(item, 'roa',2); 
-		 table += td(item, 'roe',2); 
-		 table += td(item, 'bookValue',1); 
-		 table += td(item, 'tangTruongLNST',2); 
-		 table += td(item, 'tangTruongDDT',2); 
-		 table += td(item, 'vonHoa',1); 
+                table += td(item, 'xh');
+                table += td(item, 'name');
+                table += td(item, 'code');
+                table += td(item, 'XHTC');
+                table += td(item, 'XHKD');
+                table += td(item, 'exchange');
+                table += td(item, 'pe', 2);
+                table += td(item, 'pb', 2);
+                table += td(item, 'eps', 2);
+                table += td(item, 'roa', 2);
+                table += td(item, 'roe', 2);
+                table += td(item, 'bookValue', 1);
+                table += td(item, 'tangTruongLNST', 2);
+                table += td(item, 'tangTruongDDT', 2);
+                table += td(item, 'vonHoa', 1);
                 table += "</tr>";
             });
             table += "</tbody></table>";
@@ -361,7 +366,7 @@ switch (sectorId) {
 				<div style="width:85vw;height:85vh;">${table}</div></div>`;
             overlay.style.display = "block";
         }
-	//thêm biểu đồ so sánh hiệu suất
+        //thêm biểu đồ so sánh hiệu suất
         async function fetchSequentiallyData(data) {
             for (const s of data) {
                 try {
@@ -369,9 +374,10 @@ switch (sectorId) {
                 } catch (e) {}
             }
         }
-        let Luutru = {}, mainData = {};
+        let Luutru = {},
+            mainData = {};
         async function showChart(nameSection) {
-	    loading();
+            loading();
             if (!Luutru[nameSection]) {
                 var listcp = list.concat(["VN-INDEX"]);
                 await fetchSequentiallyData(listcp);
@@ -388,7 +394,7 @@ switch (sectorId) {
         async function showChart2(nameSection) {
             if (!Luutru[nameSection]) {
                 alert("Chưa có dữ liệu");
-		return;
+                return;
             } else {
                 mainData = Luutru[nameSection];
             }
@@ -550,7 +556,6 @@ switch (sectorId) {
 
             return returns;
         }
-
     </script>
 
 </html>
