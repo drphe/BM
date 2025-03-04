@@ -203,20 +203,15 @@ document.body.addEventListener("click", function(e) {
     } catch (e) {}
 
 });
-async function AddNews(isopen, code = []) {
-    if (isopen) {
+async function AddNews(code = []) {
         await getNews(code);
-        document.querySelector('.news').style.display = "block";
         if (!/Mobi|Android/i.test(navigator.userAgent)) addStylesToNews();
-    } else {
-        document.querySelector('.news').style.display = "none";
-    }
 }
 
 function addStylesToNews() {
     var newsElements = document.getElementsByClassName('news');
     for (var i = 0; i < newsElements.length; i++) {
-        newsElements[i].style.display = 'block';
+        //newsElements[i].style.display = 'block';
         newsElements[i].style.position = 'absolute';
         newsElements[i].style.width = '500px';
         newsElements[i].style.height = '250px';
@@ -231,7 +226,7 @@ function addStylesToNews() {
 function removeStylesFromNews() {
     var newsElements = document.getElementsByClassName('news');
     for (var i = 0; i < newsElements.length; i++) {
-        newsElements[i].style.display = '';
+        //newsElements[i].style.display = '';
         newsElements[i].style.position = '';
         newsElements[i].style.width = '';
         newsElements[i].style.height = '';

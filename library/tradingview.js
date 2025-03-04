@@ -8,7 +8,7 @@
     const mastradingviewURL = 'https://mastrade.masvn.com/api/v1/tradingview/history';
 
 	// khai báo biến
-    var tradingview = localStorage.getItem('news'), mack = [], theme = 'light';
+    var mack = [], theme = 'light';
     var autoUpdate, items, urlParams = new URLSearchParams(window.location.search),
         lastSymbol = urlParams.get("q") || "VN-INDEX",
         title = document.querySelector(".title"),
@@ -26,7 +26,7 @@
     }
 
     setInterval(statusText, 1e4);
-	// lựa chọn kiểu chart tradingview hay lightweight
+
     async function getChart() {
         var lastWidth = window.innerWidth,
             lastHeight = window.innerHeight;
@@ -36,27 +36,18 @@
   		document.querySelector(".tabledumuaban").innerHTML =  '';
         statusText();
         items = allKey.find(c => c.code == lastSymbol);
-        items.type == 'cw' && (tradingview = false);
         if (items) {
             title.innerHTML = items.fullname_vi;
                 clearInterval(autoUpdate);
                 await renderChart("mychartcontainers", lastWidth, lastHeight - 40, lastSymbol, true, theme, true);
 		let fillterCode = [];
 		if (lastSymbol !== "VN-INDEX") {fillterCode = lastSymbol}
-		AddNews(localStorage.getItem('news'),fillterCode);// lấy tin tức
+		AddNews([fillterCode]);// lấy tin tức
         } else {
             createNotification("Mã chứng khoán, chứng quyền, Index không đúng!")
         }
     }
     getChart();
-	
-	// nút bấm chuyển News
-    var tradingviewCheckbox = document.getElementById("tradingview");
-    tradingviewCheckbox.checked = localStorage.getItem('news');
-    tradingviewCheckbox.addEventListener("change", async function() {
-	localStorage.setItem('news',this.checked);
-	await AddNews(this.checked)
-    });
 
 	// khu vực tìm kiếm, ô nhập
 	let isInputShow = false;
