@@ -22,8 +22,8 @@ async function getBCPTCP(s = '') {
         var year = d.getFullYear();
         var month = d.getMonth() + 1;
         var day = d.getDate();
-        // Tạo đối tượng Date cho 3 tháng trước
-        var previousDate = new Date(year, month - 3, day);
+        // Tạo đối tượng Date cho 6 tháng trước
+        var previousDate = new Date(year, month - 4, day);
         var year2 = previousDate.getFullYear();
         var month2 = previousDate.getMonth() + 1; // Thêm 1 vì getMonth() trả về giá trị từ 0-11
         var day2 = previousDate.getDate();
@@ -80,7 +80,7 @@ async function taoTable(P) {
 async function getBCPTTT() {
     loading(!0)
     try {
-        var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReport?pageNumber=1&pageSize=30'
+        var url = 'https://fwtapi3.fialda.com/api/services/app/AnalysisReport/GetMarketAnalysisReport?pageNumber=1&pageSize=50'
         var res = await fetch(url);
         var data = await res.json();
         POST = data.result.items
