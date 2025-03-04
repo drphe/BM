@@ -234,7 +234,10 @@ NavData.forEach(item => {
         const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
         return Math.sqrt(variance);
     };
-
+	    // Tính sharpe với ls phi rủi ro 3%
+	    const calculateSharpe = (stdDev, mean) => {
+		return ((mean - 3) / stdDev);
+	    }
     // Tính độ lệch chuẩn phần trăm
     const calculateCVPercent = (stdDev, mean) => {
         return (stdDev / mean) * 100;
@@ -287,7 +290,7 @@ NavData.forEach(item => {
             const startNav = getNavForPeriod(periodInDays);
             const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại (mới nhất)
             if (!startNav) {
-                returns[periodInDays / 365] = { cagr: 0, std: 0 }; // Không đủ dữ liệu
+                returns[periodInDays / 365] = { cagr: 0, std: 0, sharpe:0 }; // Không đủ dữ liệu
                 return;
             }
             const years = periodInDays / 365; // Số năm tương ứng
@@ -295,16 +298,18 @@ NavData.forEach(item => {
             const navValues = NavData.filter(item => item.createdAt >= (Date.now() - (periodInDays * msInDay))).map(item => item.nav);
             const stdDev = calculateStandardDeviation(navValues);
             const cvPercent = calculateCVPercent(stdDev, navValues.reduce((a, b) => a + b, 0) / navValues.length); // Tính độ lệch chuẩn phần trăm
-
+	    const sharpe = calculateSharpe(cvPercent, cagr*100);
             returns[years] = {
                 cagr: cagr * 100, // Tỷ suất lợi nhuận theo năm, chuyển sang phần trăm
-                std: cvPercent
+                std: cvPercent,
+		sharpe: sharpe
             };
         } else {
             const years = periodInDays / 365;
             returns[years] = {
                 cagr: 0,
-                std: 0
+                std: 0,
+		sharpe:0
             };
         }
     });
@@ -319,10 +324,12 @@ NavData.forEach(item => {
         const navValuesYTD = NavData.filter(item => item.createdAt >= new Date(new Date().getFullYear(), 0, 1).getTime()).map(item => item.nav);
         const stdDevYTD = calculateStandardDeviation(navValuesYTD);
         const cvPercentYTD = calculateCVPercent(stdDevYTD, navValuesYTD.reduce((a, b) => a + b, 0) / navValuesYTD.length); // Tính độ lệch chuẩn YTD phần trăm
+	const sharpeYTD = calculateSharpe(cvPercentYTD, ytdReturn);
 
         returns.ytd = {
             cagr: ytdReturn,
-            std: cvPercentYTD
+            std: cvPercentYTD,
+	    sharpe: sharpeYTD
         };
     }
 

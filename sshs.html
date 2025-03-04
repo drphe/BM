@@ -206,12 +206,16 @@
         function prepareChartData(period) {
             let dataForPeriod = [];
             let maxCAGR = -Infinity; // Giá trị CAGR lớn nhất, ban đầu là -Infinity
+            let maxSharpe = -Infinity; // Giá trị CAGR lớn nhất, ban đầu là -Infinity
             // Tìm ra CAGR lớn nhất trong tất cả các công ty
             Object.keys(data).forEach(key => {
                 const companyData = data[key];
                 const point = companyData[period];
                 if (point.cagr > maxCAGR) {
                     maxCAGR = point.cagr; // Cập nhật giá trị CAGR lớn nhất
+                }
+                if (point.sharpe > maxSharpe) {
+                    maxSharpe = point.sharpe; // Cập nhật giá trị Sharpe lớn nhất
                 }
             });
             vnindexpoint.x = data['VNINDEX'][period].std;
@@ -221,8 +225,9 @@
             Object.keys(data).forEach(key => {
                 const companyData = data[key];
                 const point = companyData[period];
-                const color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow' : (point.cagr > vnindexCAGR ? 'white' : 'red'));
-                const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR;
+                let color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow' : (point.cagr > vnindexCAGR ? 'white' : 'red'));
+		if(point.sharpe == maxSharpe) {color = "purple";}
+                const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR || point.sharpe == maxSharpe;
                 dataForPeriod.push({
                     name: `${key}`, // Tên công ty và thời gian
                     x: point.std, // Trục X: std
@@ -366,9 +371,9 @@
         function generateTable() {
             let tableHTML = `<table>
 <caption style="font-size:18px;">Thống kê Risk-Return</caption>
-<thead><tr class="first_child last_child"><th rowspan="2">Mã <br> Đơn vị: %</th><th colspan="2">YTD</th><th colspan="2">1 năm</th><th colspan="2">3 năm</th><th colspan="2">5 năm</th></tr><tr><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th><th>CAGR</th><th>STD</th></tr></thead>
+<thead><tr class="first_child last_child"><th rowspan="2">Mã <br> Đơn vị: %</th><th colspan="3">YTD</th><th colspan="3">1 năm</th><th colspan="3">3 năm</th><th colspan="3">5 năm</th></tr><tr><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th></tr></thead>
 <tbody>`;
-
+	console.log(data)
             // Duyệt qua các mã trong đối tượng data
             for (let stock in data) {
                 let stockData = data[stock];
@@ -376,23 +381,27 @@
                 // Lấy các giá trị cagr và std cho từng khoảng thời gian
                 let oneYearCAGR = stockData['1'].cagr.toFixed(2);
                 let oneYearSTD = stockData['1'].std.toFixed(2);
+                let oneYearSharpe = stockData['1'].sharpe.toFixed(2);
 
                 let threeYearsCAGR = stockData['3'].cagr.toFixed(2);
                 let threeYearsSTD = stockData['3'].std.toFixed(2);
+                let threeYearsSharpe = stockData['3'].sharpe.toFixed(2);
 
                 let fiveYearsCAGR = stockData['5'].cagr.toFixed(2);
                 let fiveYearsSTD = stockData['5'].std.toFixed(2);
+                let fiveYearsSharpe = stockData['5'].sharpe.toFixed(2);
 
                 let ytdCAGR = stockData['ytd'].cagr.toFixed(2);
                 let ytdSTD = stockData['ytd'].std.toFixed(2);
+                let ytdSharpe = stockData['ytd'].sharpe.toFixed(2);
 
                 // Tạo một dòng cho mã cổ phiếu và các giá trị tương ứng
                 tableHTML += `<tr>
                         <td>${stock}</td>
-                        <td>${ytdCAGR}</td><td>${ytdSTD}</td>
-                        <td>${oneYearCAGR}</td><td>${oneYearSTD}</td>
-                        <td>${threeYearsCAGR}</td><td>${threeYearsSTD}</td>
-                        <td>${fiveYearsCAGR}</td><td>${fiveYearsSTD}</td>
+                        <td>${ytdCAGR}</td><td>${ytdSTD}</td><td>${ytdSharpe}</td>
+                        <td>${oneYearCAGR}</td><td>${oneYearSTD}</td><td>${oneYearSharpe}</td>
+                        <td>${threeYearsCAGR}</td><td>${threeYearsSTD}</td><td>${threeYearsSharpe}</td>
+                        <td>${fiveYearsCAGR}</td><td>${fiveYearsSTD}</td><td>${fiveYearsSharpe}</td>
                       </tr>`;
             }
 
