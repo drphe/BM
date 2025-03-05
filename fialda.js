@@ -37,6 +37,154 @@ async function getBCPTCP(s = '') {
     }
     loading(0)
 }
+
+let dataBaocao, mack;
+document.querySelector('.buttonInfo').addEventListener('click', showInfo);
+function showInfo(){
+	if(dataBaocao){
+		let data = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined).map(report => report.targetPrice);
+		let cate = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined).map(report => report.issueDate);
+		let html=`<div class="titlestyle">Giới thiệu</div> ${dataBaocao.pageProps.summary.businessOverall}
+		<div class="titlestyle"> Chiến lược</div>${dataBaocao.pageProps.summary.businessStrategy}
+		<div class="titlestyle"> Rủi ro</div>${dataBaocao.pageProps.summary.businessRisk}
+		<div class="titlestyle"> Khuyến nghị</div><div id="bieudo"></div>`;
+		let titlep = `${dataBaocao.pageProps.summary.name} (${dataBaocao.pageProps.summary.priceClose}/${dataBaocao.pageProps.summary.pctChange}%)`
+		showPopup(html, titlep); 
+		vechart(cate, data, dataBaocao.pageProps.summary.priceClose);
+	}
+}
+function vechart(cate, data,closeprice) {
+            var chart = Highcharts.chart('bieudo', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Biểu Đồ Khuyến Nghị'
+                },
+		credits: {
+                    enabled: false // Tắt hiển thị credits
+                },
+   		legend: {
+                    enabled: false // Tắt hiển thị legend
+                },
+                xAxis: {
+                    categories: cate,
+		    reversed: true // Đảo ngược trục x
+                },
+                yAxis: {
+                    title: {
+                        text: 'Giá Trị dự phóng'
+                    },
+                    plotLines: [{
+                        color: 'red',
+                        width: 1,
+                        value: closeprice, // Giá trị tham chiếu
+			zIndex: 6,
+                        label: {
+                            text: 'Giá hiện tại',
+                            align: 'left',
+                            style: {
+                                color: 'red'
+                            }
+                        }
+                    }]
+                },
+                series: [{
+                    name: 'Dự phóng',
+                    data: data
+                }],
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                }
+            });
+
+            // Tính giá trị trung bình
+            var seriesData = chart.series[0].data.map(function (point) {
+                return point.y;
+            });
+            var sum = seriesData.reduce(function (a, b) {
+                return a + b;
+            }, 0);
+            var average = sum / seriesData.length;
+
+            // Thêm đường ngang qua giá trị trung bình
+            chart.yAxis[0].addPlotLine({
+                color: 'blue',
+                width: 1,
+                value: average,
+		dashStyle: 'dash',
+		zIndex: 5,
+                label: {
+                    text: 'Giá trị trung bình',
+                    align: 'left',
+                    style: {
+                        color: 'blue'
+                    }
+                }
+            });
+        }
+// tải báo cáo theo định giá
+async function getBaocao(symbol) {
+    loading();
+    mack = symbol;
+    const url = `https://simplize.vn/_next/data/o3IlSAC8qX0LVREZ8QrCr/co-phieu/${symbol}/bao-cao.json`
+    try {
+        const response = await fetch(url);
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        dataBaocao = await response.json();
+
+        console.log(dataBaocao.pageProps.analysisReports);
+    container.innerHTML = '';
+    var table = document.createElement('table');
+    container.style.grid = "none";
+    table.id = "BCPTCP"
+    var thead = document.createElement('thead');
+    var tbody = document.createElement('tbody');
+    var headRow = document.createElement('tr');
+
+    ["Ngày", "Tiêu đề", "Nguồn", "Khuyến nghị", "Giá mục tiêu", "Tài liệu"].forEach(function(el) {
+        var th = document.createElement('th');
+        th.rowspan = 2
+        th.appendChild(document.createTextNode(el));
+        headRow.appendChild(th);
+    });
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+    
+    dataBaocao.pageProps.analysisReports.forEach(reports => {
+        var n = new Date(reports.reportDate);
+        var tr = document.createElement('tr');
+        cTd(reports.issueDate, tr)
+        cTd(reports.title, tr)
+        cTd(reports.source, tr)
+        cTd(reports.recommend, tr)
+        cTd(reports.targetPrice || '-', tr)
+        var tdlink = document.createElement('td');
+        tdlink.setAttribute("style", "text-align:center;");
+        tdlink.innerHTML = `<a href="${reports.attachedLink}"  title="${reports.issueDateTimeAgo}"target="_blank"><svg style="width:50px;height:50px;fill: green;" focusable="false" aria-hidden="true" viewBox="0 0 24 24" data-testid="PictureAsPdfIcon"><path d="M20 2H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-8.5 7.5c0 .83-.67 1.5-1.5 1.5H9v2H7.5V7H10c.83 0 1.5.67 1.5 1.5v1zm5 2c0 .83-.67 1.5-1.5 1.5h-2.5V7H15c.83 0 1.5.67 1.5 1.5v3zm4-3H19v1h1.5V11H19v2h-1.5V7h3v1.5zM9 9.5h1v-1H9v1zM4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm10 5.5h1v-3h-1v3z"></path></svg></a>`;
+tr.appendChild(tdlink);
+        tbody.appendChild(tr);
+    })
+    table.appendChild(tbody);
+    container.appendChild(table);
+
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
+   loading(0);
+}
+    function cTd(d, t) {
+        var td = document.createElement('td');
+        td.appendChild(document.createTextNode(d));
+        t.appendChild(td);
+    }
+
 const inputF = document.getElementById('inputField');
 async function taoTable(P) {
     container.innerHTML = '';
@@ -54,12 +202,6 @@ async function taoTable(P) {
     });
     thead.appendChild(headRow);
     table.appendChild(thead);
-
-    function cTd(d, t) {
-        var td = document.createElement('td');
-        td.appendChild(document.createTextNode(d));
-        t.appendChild(td);
-    }
     var listCP = Object.values(P).flat();
     listCP.sort((a, b) => new Date(b.reportDate) - new Date(a.reportDate));
     listCP.forEach(reports => {
@@ -163,10 +305,12 @@ buttons.forEach(b => {
                 case "getBCPTTT":
                     getBCPTTT();
 		    inputF.style.display = "none";
+		    document.querySelector('.buttonInfo').style.display = "none";
                     break;
                 case "getBCPTCP":
                     getBCPTCP();
 		    inputF.style.display = "block";
+		    document.querySelector('.buttonInfo').style.display = "block";
                     break;
                 case "finbox":
                     //fetchArticles();
@@ -186,7 +330,7 @@ buttons.forEach(b => {
         document.getElementById('inputField').addEventListener('keydown', function(event) {
             if (event.key === 'Enter') {
                 let inputValue = document.getElementById('inputField').value;
-                getBCPTCP(inputValue)
+                getBaocao(inputValue)
             }
         });
 
