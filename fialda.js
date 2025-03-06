@@ -50,16 +50,16 @@ function showInfo(){
 		<div class="titlestyle"> Khuyến nghị</div><div id="bieudo"></div>`;
 		let titlep = `${dataBaocao.pageProps.summary.name} (${dataBaocao.pageProps.summary.priceClose}/${dataBaocao.pageProps.summary.pctChange}%)`
 		showPopup(html, titlep); 
-		vechart(cate, data, dataBaocao.pageProps.summary.priceClose);
+		vechart(cate, data, dataBaocao.pageProps.summary.priceClose,dataBaocao.pageProps.ticker );
 	}
 }
-function vechart(cate, data,closeprice) {
+function vechart(cate, data,closeprice, symbol) {
             var chart = Highcharts.chart('bieudo', {
                 chart: {
                     type: 'column'
                 },
                 title: {
-                    text: 'Biểu Đồ Khuyến Nghị'
+                    text: 'Dự phóng '+ symbol
                 },
 		credits: {
                     enabled: false // Tắt hiển thị credits
@@ -73,7 +73,7 @@ function vechart(cate, data,closeprice) {
                 },
                 yAxis: {
                     title: {
-                        text: 'Giá Trị dự phóng'
+                        text: ''
                     },
                     plotLines: [{
                         color: 'red',
@@ -81,7 +81,7 @@ function vechart(cate, data,closeprice) {
                         value: closeprice, // Giá trị tham chiếu
 			zIndex: 6,
                         label: {
-                            text: 'Giá hiện tại',
+                            text: 'Hôm nay: '+ closeprice,
                             align: 'left',
                             style: {
                                 color: 'red'
@@ -119,7 +119,7 @@ function vechart(cate, data,closeprice) {
 		dashStyle: 'dash',
 		zIndex: 5,
                 label: {
-                    text: 'Giá trị trung bình',
+                    text: 'Trung bình: '+ average.toFixed(0),
                     align: 'left',
                     style: {
                         color: 'blue'
