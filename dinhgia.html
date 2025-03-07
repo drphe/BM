@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Định giá Cổ phiếu</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        text-align: center;
+        background: aliceblue;
+        padding: 10px;
+    }
+
+    .container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .titlestyle {
+        font-size: 15;
+        font-weight: 600;
+        text-align: left;
+    }
+</style>
+<link rel="stylesheet" type="text/css" href="loading.css">
+
+<body>
+    <div>
+        <div id="load"></div>
+        Chọn mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="HPG" type="text" autocomplete="off" id="inputField" maxlength="3" />
+    </div>
+    <h3 id="title"></h3>
+    <div class="container">
+        <div id="container" class="tactical" style="width:100%; height:400px;"></div>
+        <div id="bieudo" class="tactical" style="width:100%; height:400px;"></div>
+    </div>
+    <div id="khuyen" style="width:100%;text-align:left;"></div>
+    <script>
+        function loading(i = !0) {
+            document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
+        }
+        loading();
+        const inputF = document.getElementById('inputField');
+        let symbol = inputF.value;
+        document.getElementById('inputField').addEventListener('input', function(event) {
+            let inputValue = event.target.value.toUpperCase();
+            event.target.value = inputValue;
+        });
+        document.getElementById('inputField').addEventListener('keydown', async function(event) {
+            if (event.key === 'Enter') {
+                let inputValue = document.getElementById('inputField').value;
+                loading(0);
+                await getBaocao(inputValue);
+            }
+        });
+        async function fetchData(ticker) {
+            const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
+            //const priceUrl = `https://api2.simplize.vn/api/historical/prices/chart?ticker=${ticker}&period=5y`;
+            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=1585675517&to=1741195517`
+            const [peResponse, priceResponse] = await Promise.all([
+                fetch(peUrl),
+                fetch(priceUrl)
+            ]);
+
+            const [pe, price] = await Promise.all([
+                peResponse.json(),
+                priceResponse.json()
+            ]);
+
+            return {
+                pe,
+                price
+            };
+        }
+
+        let latestEPS = null;
+
+        function getLatestEPS(priceTime, epsData) {
+            for (var i = 0; i < epsData.length; i++) {
+                if (i < epsData.length - 1 && (priceTime >= epsData[i][0]) && (priceTime < epsData[i + 1][0])) {
+                    latestEPS = epsData[i][1];
+                    break; // Dừng lại khi tìm thấy EPS gần nhất
+                }
+                if (i == epsData.length - 1 && (priceTime >= epsData[i][0])) {
+                    latestEPS = epsData[i][1];
+                    break; // Dừng lại khi tìm thấy EPS gần nhất
+                }
+            }
+
+            return latestEPS;
+        }
+        getBaocao(symbol);
+
+        function calculateStatistics(data) {
+            // Calculate mean
+            const mean = data.reduce((acc, val) => acc + val, 0) / data.length;
+            // Calculate standard deviation (std)
+            const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
+            const std = Math.sqrt(variance);
+
+            // Calculate mean - 1 std, mean - 2 std, mean + 1 std, mean + 2 std
+            const meanMinus1Std = mean - std;
+            const meanMinus2Std = mean - 2 * std;
+            const meanPlus1Std = mean + std;
+            const meanPlus2Std = mean + 2 * std;
+
+            return {
+                mean,
+                meanMinus1Std,
+                meanMinus2Std,
+                meanPlus1Std,
+                meanPlus2Std
+            };
+        }
+
+        function showInfo(dataBaocao) {
+            const khuyen = document.getElementById('khuyen');
+            const title = document.getElementById('title');
+            if (dataBaocao) {
+                let data = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined)
+                let html = `<div class="titlestyle">Giới thiệu</div> <p>${dataBaocao.pageProps.summary.businessOverall}</p>
+		<div class="titlestyle"> Chiến lược</div>${dataBaocao.pageProps.summary.businessStrategy}
+		<div class="titlestyle"> Rủi ro</div>${dataBaocao.pageProps.summary.businessRisk}`;
+                title.innerHTML = `${dataBaocao.pageProps.summary.name} (${dataBaocao.pageProps.summary.priceClose}/${dataBaocao.pageProps.summary.pctChange}%)`
+                khuyen.innerHTML = html;
+                vechart(data, dataBaocao.pageProps.summary.priceClose, dataBaocao.pageProps.ticker);
+            }
+        }
+
+        function vechart(data, closeprice, symbol) {
+            let dataPrice = data.map(report => report.targetPrice);
+            let cate = data.map(report => report.issueDate);
+            //console.log(data)
+            var chart = Highcharts.chart('bieudo', {
+                chart: {
+                    type: 'column'
+                },
+                title: {
+                    text: 'Dự phóng ' + symbol
+                },
+                credits: {
+                    enabled: false // Tắt hiển thị credits
+                },
+                legend: {
+                    enabled: false // Tắt hiển thị legend
+                },
+                xAxis: {
+                    categories: cate,
+                    reversed: true // Đảo ngược trục x
+                },
+                yAxis: {
+                    title: {
+                        text: ''
+                    },
+                    plotLines: [{
+                        color: 'red',
+                        width: 1,
+                        value: closeprice, // Giá trị tham chiếu
+                        zIndex: 6,
+                        label: {
+                            text: 'Hôm nay: ' + closeprice,
+                            align: 'left',
+                            style: {
+                                color: 'red'
+                            }
+                        }
+                    }]
+                },
+                series: [{
+                    name: 'Dự phóng',
+                    data: dataPrice
+                }],
+                plotOptions: {
+                    series: {
+                        dataLabels: {
+                            enabled: true
+                        },
+                        cursor: 'pointer',
+                        events: {
+                            click: function(event) {
+                                handleClick(event.point);
+                            }
+                        }
+                    }
+                }
+            });
+
+            function handleClick(point) {
+                window.open(data[point.x].attachedLink, '_blank').focus();
+            }
+            // Tính giá trị trung bình
+            var seriesData = chart.series[0].data.map(function(point) {
+                return point.y;
+            });
+            var sum = seriesData.reduce(function(a, b) {
+                return a + b;
+            }, 0);
+            var average = sum / seriesData.length;
+
+            // Thêm đường ngang qua giá trị trung bình
+            chart.yAxis[0].addPlotLine({
+                color: 'blue',
+                width: 1,
+                value: average,
+                dashStyle: 'dash',
+                zIndex: 5,
+                label: {
+                    text: 'Trung bình: ' + average.toFixed(0),
+                    align: 'left',
+                    style: {
+                        color: 'blue'
+                    }
+                }
+            });
+        }
+        // tải báo cáo theo định giá
+        async function getBaocao(symbol) {
+            const url = `https://simplize.vn/_next/data/o3IlSAC8qX0LVREZ8QrCr/co-phieu/${symbol}/bao-cao.json`;
+            fetchData(symbol).then(data => {
+                //console.log('Price Data:', data.price.data);
+                //var dataprice = data.price.data.map(t => [t[0]*1000,t[4]]);
+                var dataprice = [];
+                for (var i = 0; i < data.price.t.length; i++) {
+                    dataprice.push([data.price.t[i] * 1000, data.price.c[i] * 1000])
+                }
+
+                var epsdata = data.pe.data.points.map(s => [s.x * 1000, s.y]);
+
+                const peRatios = dataprice.map(data => {
+                    const eps = getLatestEPS(data[0], epsdata);
+                    return {
+                        time: data[0],
+                        price: data[1],
+                        eps: eps,
+                        peRatio: eps ? (data[1] / eps) : null
+                    };
+                });
+                const pe = peRatios.map(data => [data.time, data.peRatio])
+                //console.log('PE Data:', epsdata);
+                const statistics = calculateStatistics(pe.map(s => s[1]));
+                console.log('Mean:', statistics.mean);
+                console.log('Mean - 1 Std:', statistics.meanMinus1Std);
+                console.log('Mean - 2 Std:', statistics.meanMinus2Std);
+                console.log('Mean + 1 Std:', statistics.meanPlus1Std);
+                console.log('Mean + 2 Std:', statistics.meanPlus2Std);
+
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'line',
+                        zoomType: 'x'
+                    },
+                    title: {
+                        text: symbol + ' và P/E'
+                    },
+                    xAxis: {
+                        type: 'datetime'
+                    },
+                    tooltip: {
+                        headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
+                        pointFormat: "{series.name}: {point.y:.2f}<br>",
+                        footerFormat: "</table>",
+                        shared: !0,
+                        useHTML: !0,
+                    },
+                    credits: {
+                        enabled: false // Tắt hiển thị credits
+                    },
+                    yAxis: [{
+                        title: {
+                            text: 'Giá CP'
+                        }
+                    }, {
+                        title: {
+                            text: 'PE'
+                        },
+                        opposite: true,
+                        plotLines: [{
+                            value: statistics.meanMinus1Std,
+                            color: 'red',
+                            width: 1,
+                            dashStyle: 'dash',
+                            label: {
+                                text: '-1Std'
+                            }
+                        }, {
+                            value: statistics.meanPlus1Std,
+                            color: 'green',
+                            width: 1,
+                            dashStyle: 'dash',
+                            label: {
+                                text: '+1Std'
+                            }
+                        }, {
+                            value: statistics.mean,
+                            color: 'blue',
+                            width: 1,
+                            dashStyle: 'dash',
+                            label: {
+                                text: 'Mean'
+                            }
+                        }]
+                    }],
+                    series: [{
+                        name: 'Giá',
+                        data: dataprice,
+                        yAxis: 0
+                    }, {
+                        name: 'P/E',
+                        data: pe,
+                        yAxis: 1
+                    }]
+                });
+
+            });
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                dataBaocao = await response.json();
+                await showInfo(dataBaocao)
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+            loading(0)
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investment View</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+	    background: aliceblue;
+	    padding:20px;
+        }
+
+        .container {
+            display: flex;
+            justify-content: center;
+            gap: 50px;
+	    width:850px;
+        }
+
+        .container table {
+            border-collapse: collapse;
+            width: 400px;
+            text-align: center;
+        }
+
+        .container th {
+            background-color: #f37021;
+            color: white;
+            padding: 10px;
+        }
+
+        .strategic th {
+            background-color: #ec8b23;
+        }
+
+        td,
+        th {
+            border: 1px solid #ddd;
+            padding: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+        .dot2 {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            display: inline-block;
+	    background-color:grey;
+        }
+        .red {
+            background-color: red;
+        }
+
+        .yellow {
+            background-color: gold;
+        }
+
+        .green {
+            background-color: green;
+        }
+
+        .underweight {
+            color: red;
+            font-weight: bold;
+        }
+
+        .neutral {
+            color: orange;
+            font-weight: bold;
+        }
+
+        .overweight {
+            color: green;
+            font-weight: bold;
+        }
+
+        .info table {
+            width: 70%;
+            margin: auto;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .info th {
+            background-color: #f4a261;
+            color: white;
+        }
+
+        .info {
+            display: flex;
+            justify-content: flex-start;
+            align-items: flex-start;
+            width: 850px;
+        }
+
+        /* Nút bấm */
+        .btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #f4a261;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            transition: all 0.3s ease;
+        }
+
+        /* Hiệu ứng cạnh nút bấm */
+        .btn:hover {
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Bảng sẽ ẩn ban đầu */
+        #summaryTable {
+            display: none;
+            margin-top: 20px;
+            width: 80%;
+            border-collapse: collapse;
+            margin: auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        /* Hiệu ứng fadeIn */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Investment View</h2>
+    <div class="container">
+        <table class="tactical">
+            <tr>
+                <th colspan="10">Tactical View (6 tháng – 1 năm)</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="color: red;" colspan = "3">Underweight</td>
+                <td style="color: orange;">Neutral</td>
+                <td style="color: green;" colspan = "3">Overweight</td>
+            </tr>
+            <tr>
+                <td>Tiền gửi</td>
+                <td><span class="dot2"></span></td><td><span class="dot2"></span></td><td><span class="dot2"></span></td>
+                <td><span class="dot2"></span></td>
+                <td><span class="dot green"></span></td><td><span class="dot2"></span></td><td><span class="dot2"></span></td>
+            </tr>
+            <tr>
+                <td>Cổ phiếu</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td></td><td><span class="dot green"></span></td><td></td>
+            </tr>
+            <tr>
+                <td>Trái phiếu DN</td>
+                <td></td><td></td><td></td>
+                <td><span class="dot yellow"></span></td>
+                <td></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Ngoại tệ (USD)</td>
+                <td></td><td></td><td><span class="dot red"></span></td>
+                <td></td>
+                <td></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Vàng</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td><span class="dot green"></span></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Bất động sản</td>
+                <td></td><td></td><td></td>
+                <td><span class="dot yellow"></span></td>
+                <td></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Bitcoin</td>
+                <td></td><td></td><td></td>
+                <td><span class="dot yellow"></span></td>
+                <td></td><td></td><td></td>
+            </tr>
+        </table>
+
+        <table class="strategic">
+            <tr>
+                <th colspan="10">Strategic View (>1 năm – 3 năm)</th>
+            </tr>
+            <tr>
+                <td></td>
+                <td style="color: red;" colspan = "3">Underweight</td>
+                <td style="color: orange;">Neutral</td>
+                <td style="color: green;" colspan = "3">Overweight</td>
+            </tr>
+            <tr>
+                <td>Tiền gửi</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td><span class="dot green"></span></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Cổ phiếu</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td></td><td></td><td><span class="dot green"></span></td>
+            </tr>
+            <tr>
+                <td>Trái phiếu DN</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td><span class="dot green"></span></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Ngoại tệ (USD)</td>
+		<td></td><td></td><td></td>
+                <td><span class="dot red"></span></td>
+                <td></td><td></td><td></td>
+            </tr>
+            <tr>
+                <td>Vàng</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td></td><td><span class="dot green"></span></td><td></td>
+            </tr>
+            <tr>
+                <td>Bất động sản</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td></td><td><span class="dot green"></span></td><td></td>
+            </tr>
+            <tr>
+                <td>Bitcoin</td>
+                <td></td><td></td><td></td>
+                <td></td>
+                <td><span class="dot green"></span></td><td></td><td></td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="info">
+        <button class="btn" onclick="toggleTable()">Hướng dẫn</button>
+        <table id="summaryTable">
+            <tr>
+                <th>Thuật ngữ</th>
+                <th>Nghĩa chung</th>
+                <th>Hàm ý tài chính</th>
+            </tr>
+            <tr>
+                <td class="underweight">Underweight</td>
+                <td>Giảm tỷ trọng</td>
+                <td>Không hấp dẫn, nên giảm đầu tư</td>
+            </tr>
+            <tr>
+                <td class="neutral">Neutral</td>
+                <td>Giữ nguyên tỷ trọng</td>
+                <td>Trung lập, không mua thêm nhưng cũng không bán</td>
+            </tr>
+            <tr>
+                <td class="overweight">Overweight</td>
+                <td>Tăng tỷ trọng</td>
+                <td>Hấp dẫn, nên đầu tư nhiều hơn</td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        // Lấy các phần tử DOM
+        const table = document.getElementById('summaryTable');
+
+        // Hàm toggle bảng (hiển thị hoặc ẩn)
+        function toggleTable() {
+            if (table.style.display === 'none' || table.style.display === '') {
+                table.style.display = 'block';
+            } else {
+                table.style.display = 'none';
+            }
+        }
+
+        // Lắng nghe sự kiện click bên ngoài để ẩn bảng
+        window.addEventListener('click', function(event) {
+            if (!event.target.closest('.btn') && !event.target.closest('#summaryTable')) {
+                table.style.display = 'none';
+            }
+        });
+    </script>
+</body>
+
+</html>
