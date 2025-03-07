@@ -41,19 +41,15 @@ async function getBCPTCP(s = '') {
 let dataBaocao, mack;
 document.querySelector('.buttonInfo').addEventListener('click', showInfo);
 function showInfo(){
-	if(dataBaocao){
-		let data = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined).map(report => report.targetPrice);
-		let cate = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined).map(report => report.issueDate);
-		let html=`<div class="titlestyle">Giới thiệu</div> ${dataBaocao.pageProps.summary.businessOverall}
-		<div class="titlestyle"> Chiến lược</div>${dataBaocao.pageProps.summary.businessStrategy}
-		<div class="titlestyle"> Rủi ro</div>${dataBaocao.pageProps.summary.businessRisk}
-		<div class="titlestyle"> Khuyến nghị</div><div id="bieudo"></div>`;
-		let titlep = `${dataBaocao.pageProps.summary.name} (${dataBaocao.pageProps.summary.priceClose}/${dataBaocao.pageProps.summary.pctChange}%)`
-		showPopup(html, titlep); 
-		vechart(cate, data, dataBaocao.pageProps.summary.priceClose,dataBaocao.pageProps.ticker );
+	if(dataBaocao.data){
+		let data = dataBaocao.data.filter(s => s.targetPrice !== undefined);
+		showPopup(`<div id="bieudo"></div>`, 'Biểu đồ giá khuyến nghị'); 
+		vechart(data, mack);
 	}
 }
-function vechart(cate, data,closeprice, symbol) {
+function vechart(data, symbol) {
+	    let cate = data.map(report => report.issueDate);
+	    let dataPrice = data.map(report => report.targetPrice);
             var chart = Highcharts.chart('bieudo', {
                 chart: {
                     type: 'column'
@@ -75,23 +71,10 @@ function vechart(cate, data,closeprice, symbol) {
                     title: {
                         text: ''
                     },
-                    plotLines: [{
-                        color: 'red',
-                        width: 1,
-                        value: closeprice, // Giá trị tham chiếu
-			zIndex: 6,
-                        label: {
-                            text: 'Hôm nay: '+ closeprice,
-                            align: 'left',
-                            style: {
-                                color: 'red'
-                            }
-                        }
-                    }]
                 },
                 series: [{
                     name: 'Dự phóng',
-                    data: data
+                    data: dataPrice
                 }],
                 plotOptions: {
                     series: {
@@ -131,15 +114,15 @@ function vechart(cate, data,closeprice, symbol) {
 async function getBaocao(symbol) {
     loading();
     mack = symbol;
-    const url = `https://simplize.vn/_next/data/o3IlSAC8qX0LVREZ8QrCr/co-phieu/${symbol}/bao-cao.json`
+    const url = `https://api2.simplize.vn/api/company/analysis-report/list?ticker=${symbol}&isWl=false&page=0&size=10`
     try {
         const response = await fetch(url);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
         dataBaocao = await response.json();
+        console.log(dataBaocao.data);
 
-        console.log(dataBaocao.pageProps.analysisReports);
     container.innerHTML = '';
     var table = document.createElement('table');
     container.style.grid = "none";
@@ -157,7 +140,7 @@ async function getBaocao(symbol) {
     thead.appendChild(headRow);
     table.appendChild(thead);
     
-    dataBaocao.pageProps.analysisReports.forEach(reports => {
+    dataBaocao.data.forEach(reports => {
         var n = new Date(reports.reportDate);
         var tr = document.createElement('tr');
         cTd(reports.issueDate, tr)

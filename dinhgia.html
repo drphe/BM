@@ -11,8 +11,16 @@
         text-align: center;
         background: aliceblue;
         padding: 10px;
+	font-size:14px;
     }
-
+        input[type="text"],
+        input[type="number"] {
+            width: 200px;
+            padding: 8px;
+            border-radius: 4px;
+            border: none;
+	    background:transparent;
+        }
     .container {
         display: flex;
         justify-content: center;
@@ -29,7 +37,7 @@
 <body>
     <div>
         <div id="load"></div>
-        Chọn mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="HPG" type="text" autocomplete="off" id="inputField" maxlength="3" />
+        Định giá mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="HPG" type="text" autocomplete="off" id="inputField" maxlength="3" />
     </div>
     <h3 id="title"></h3>
     <div class="container">
@@ -43,22 +51,23 @@
         }
         loading();
         const inputF = document.getElementById('inputField');
-        let symbol = inputF.value;
+        let mack = inputF.value;
+	let lastClose;
         document.getElementById('inputField').addEventListener('input', function(event) {
             let inputValue = event.target.value.toUpperCase();
             event.target.value = inputValue;
         });
         document.getElementById('inputField').addEventListener('keydown', async function(event) {
             if (event.key === 'Enter') {
-                let inputValue = document.getElementById('inputField').value;
+                mack = document.getElementById('inputField').value;
                 loading(1);
-                await getBaocao(inputValue);
+                await getBaocao(mack);
             }
         });
         async function fetchData(ticker) {
             const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
-            //const priceUrl = `https://api2.simplize.vn/api/historical/prices/chart?ticker=${ticker}&period=5y`;
-            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=1585675517&to=1741195517`
+            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=1585675517&to=1741195517`;
+
             const [peResponse, priceResponse] = await Promise.all([
                 fetch(peUrl),
                 fetch(priceUrl)
@@ -91,7 +100,7 @@
 
             return latestEPS;
         }
-        getBaocao(symbol);
+        getBaocao(mack);
 
         function calculateStatistics(data) {
             // Calculate mean
@@ -118,27 +127,22 @@
         function showInfo(dataBaocao) {
             const khuyen = document.getElementById('khuyen');
             const title = document.getElementById('title');
-            if (dataBaocao) {
-                let data = dataBaocao.pageProps.analysisReports.filter(s => s.targetPrice !== undefined)
-                let html = `<div class="titlestyle">Giới thiệu</div> <p>${dataBaocao.pageProps.summary.businessOverall}</p>
-		<div class="titlestyle"> Chiến lược</div>${dataBaocao.pageProps.summary.businessStrategy}
-		<div class="titlestyle"> Rủi ro</div>${dataBaocao.pageProps.summary.businessRisk}`;
-                title.innerHTML = `${dataBaocao.pageProps.summary.name} (${dataBaocao.pageProps.summary.priceClose}/${dataBaocao.pageProps.summary.pctChange}%)`
-                khuyen.innerHTML = html;
-                vechart(data, dataBaocao.pageProps.summary.priceClose, dataBaocao.pageProps.ticker);
+            if (dataBaocao.data) {
+                let data = dataBaocao.data.filter(s => s.targetPrice !== undefined)
+                vechart(data, mack);
             }
         }
 
-        function vechart(data, closeprice, symbol) {
+        function vechart(data, symbol) {
             let dataPrice = data.map(report => report.targetPrice);
             let cate = data.map(report => report.issueDate);
-            //console.log(data)
+
             var chart = Highcharts.chart('bieudo', {
                 chart: {
                     type: 'column'
                 },
                 title: {
-                    text: 'Dự phóng ' + symbol
+                    text: 'Dự phóng ' + mack
                 },
                 credits: {
                     enabled: false // Tắt hiển thị credits
@@ -157,10 +161,10 @@
                     plotLines: [{
                         color: 'red',
                         width: 1,
-                        value: closeprice, // Giá trị tham chiếu
+                        value: lastPrice, // Giá trị tham chiếu
                         zIndex: 6,
                         label: {
-                            text: 'Hôm nay: ' + closeprice,
+                            text: 'Hôm nay: ' + lastPrice.toFixed(0),
                             align: 'left',
                             style: {
                                 color: 'red'
@@ -217,14 +221,12 @@
         }
         // tải báo cáo theo định giá
         async function getBaocao(symbol) {
-            const url = `https://simplize.vn/_next/data/o3IlSAC8qX0LVREZ8QrCr/co-phieu/${symbol}/bao-cao.json`;
             fetchData(symbol).then(data => {
-                //console.log('Price Data:', data.price.data);
-                //var dataprice = data.price.data.map(t => [t[0]*1000,t[4]]);
                 var dataprice = [];
                 for (var i = 0; i < data.price.t.length; i++) {
                     dataprice.push([data.price.t[i] * 1000, data.price.c[i] * 1000])
                 }
+		lastPrice = dataprice[dataprice.length-1][1];
 
                 var epsdata = data.pe.data.points.map(s => [s.x * 1000, s.y]);
 
@@ -238,8 +240,8 @@
                     };
                 });
                 const pe = peRatios.map(data => [data.time, data.peRatio])
-                //console.log('PE Data:', epsdata);
                 const statistics = calculateStatistics(pe.map(s => s[1]));
+
                 console.log('Mean:', statistics.mean);
                 console.log('Mean - 1 Std:', statistics.meanMinus1Std);
                 console.log('Mean - 2 Std:', statistics.meanMinus2Std);
@@ -277,6 +279,22 @@
                         },
                         opposite: true,
                         plotLines: [{
+                            value: statistics.meanMinus2Std,
+                            color: 'red',
+                            width: 1,
+                            dashStyle: 'dash',
+                            label: {
+                                text: '-2Std'
+                            }
+                        }, {
+                            value: statistics.meanPlus2Std,
+                            color: 'green',
+                            width: 1,
+                            dashStyle: 'dash',
+                            label: {
+                                text: '+2Std'
+                            }
+                        },{
                             value: statistics.meanMinus1Std,
                             color: 'red',
                             width: 1,
@@ -314,6 +332,7 @@
                 });
 
             });
+            const url = `https://api2.simplize.vn/api/company/analysis-report/list?ticker=${symbol}&isWl=false&page=0&size=10`;
             try {
                 const response = await fetch(url);
                 if (!response.ok) {
