@@ -57,7 +57,7 @@
         loading();
         const inputF = document.getElementById('inputField');
         let mack = inputF.value;
-	let lastClose;
+	let lastPrice;
         document.getElementById('inputField').addEventListener('input', function(event) {
             let inputValue = event.target.value.toUpperCase();
             event.target.value = inputValue;
@@ -70,8 +70,19 @@
             }
         });
         async function fetchData(ticker) {
+        var d = new Date()
+        var year = d.getFullYear();
+        var month = d.getMonth() + 1;
+        var day = d.getDate();
+        // Tạo đối tượng Date cho 6 tháng trước
+        var previousDate = new Date(year, month - 4, day);
+        var year2 = previousDate.getFullYear();
+        var month2 = previousDate.getMonth() + 1; // Thêm 1 vì getMonth() trả về giá trị từ 0-11
+        var day2 = previousDate.getDate();
+	var timeUnix = Math.floor(new Date().getTime() / 1000);
+
             const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
-            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=1585675517&to=1741195517`;
+            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=${timeUnix-155520000}&to=${timeUnix}`;
 
             const [peResponse, priceResponse] = await Promise.all([
                 fetch(peUrl),
@@ -129,19 +140,24 @@
             };
         }
 
-        function showInfo(dataBaocao) {
+        async function showInfo(dataBaocao) {
             const khuyen = document.getElementById('khuyen');
             const title = document.getElementById('title');
             if (dataBaocao.data) {
                 let data = dataBaocao.data.filter(s => s.targetPrice !== undefined)
-                vechart(data, mack);
+                await vechart(data, mack);
             }
+		loading(0);
         }
 
         function vechart(data, symbol) {
             let dataPrice = data.map(report => report.targetPrice);
             let cate = data.map(report => report.issueDate);
-
+            // Tính giá trị trung bình
+            var sum = dataPrice.reduce(function(a, b) {
+                return a + b;
+            }, 0);
+            var average = sum / dataPrice.length;
             var chart = Highcharts.chart('bieudo', {
                 chart: {
                     type: 'column'
@@ -159,6 +175,13 @@
                     categories: cate,
                     reversed: true // Đảo ngược trục x
                 },
+                    tooltip: {
+                        headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
+                        pointFormat: "{series.name}: {point.y:.0f}<br>",
+                        footerFormat: 'Trung bình: '+average.toFixed(0) +'<br/>Hôm nay: '+lastPrice.toFixed(0),
+                        shared: !0,
+                        useHTML: !0,
+                    },
                 yAxis: {
                     title: {
                         text: ''
@@ -199,14 +222,6 @@
             function handleClick(point) {
                 window.open(data[point.x].attachedLink, '_blank').focus();
             }
-            // Tính giá trị trung bình
-            var seriesData = chart.series[0].data.map(function(point) {
-                return point.y;
-            });
-            var sum = seriesData.reduce(function(a, b) {
-                return a + b;
-            }, 0);
-            var average = sum / seriesData.length;
 
             // Thêm đường ngang qua giá trị trung bình
             chart.yAxis[0].addPlotLine({
@@ -362,8 +377,8 @@
                 await showInfo(dataBaocao)
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
+                loading(0)
             }
-            loading(0)
         }
     </script>
 </body>
