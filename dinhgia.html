@@ -4,15 +4,20 @@
 <head>
     <title>Định giá Cổ phiếu</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
+<script id="theme-script" src="https://code.highcharts.com/themes/dark-unica.js"></script>
+    <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/modules/export-data.js"></script>
+    <script src="https://code.highcharts.com/modules/accessibility.js"></script>
 </head>
 <style>
     body {
         font-family: Arial, sans-serif;
         text-align: center;
-        background: aliceblue;
+        background-color: rgb(42, 42, 43);
         padding: 10px;
 	font-size:14px;
     }
+*{	color:rgb(224, 224, 227);}
         input[type="text"],
         input[type="number"] {
             width: 200px;
@@ -205,7 +210,7 @@
 
             // Thêm đường ngang qua giá trị trung bình
             chart.yAxis[0].addPlotLine({
-                color: 'blue',
+                color: 'yellow',
                 width: 1,
                 value: average,
                 dashStyle: 'dash',
@@ -214,7 +219,7 @@
                     text: 'Trung bình: ' + average.toFixed(0),
                     align: 'left',
                     style: {
-                        color: 'blue'
+                        color: 'yellow'
                     }
                 }
             });
@@ -284,7 +289,10 @@
                             width: 1,
                             dashStyle: 'dash',
                             label: {
-                                text: '-2Std'
+                                text: '-2Std',
+				style: {
+                        		color: 'white'
+                    		}
                             }
                         }, {
                             value: statistics.meanPlus2Std,
@@ -292,7 +300,10 @@
                             width: 1,
                             dashStyle: 'dash',
                             label: {
-                                text: '+2Std'
+                                text: '+2Std',
+				style: {
+                        		color: 'white'
+                    		}
                             }
                         },{
                             value: statistics.meanMinus1Std,
@@ -300,7 +311,10 @@
                             width: 1,
                             dashStyle: 'dash',
                             label: {
-                                text: '-1Std'
+                                text: '-1Std',
+				style: {
+                        		color: 'white'
+                    		}
                             }
                         }, {
                             value: statistics.meanPlus1Std,
@@ -308,7 +322,10 @@
                             width: 1,
                             dashStyle: 'dash',
                             label: {
-                                text: '+1Std'
+                                text: '+1Std',
+				style: {
+                        		color: 'white'
+                    		}
                             }
                         }, {
                             value: statistics.mean,
@@ -316,7 +333,10 @@
                             width: 1,
                             dashStyle: 'dash',
                             label: {
-                                text: 'Mean'
+                                text: 'Mean',
+				style: {
+                        		color: 'white'
+                    		}
                             }
                         }]
                     }],
