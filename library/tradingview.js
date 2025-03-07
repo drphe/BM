@@ -802,12 +802,15 @@
 	// tải dữ liệu giá
         async function getData() {
             const url = mastradingviewURL + '?symbol=' + symbolName + '&resolution=1D&from=' + parseInt(Date.parse("2015-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
+            try {
             var res = await fetch(url)
             var data = await res.json();
-            try {
                 var lastTime = ohlc[ohlc.length - 1].time;
                 if (lastTime !== void 0) data.t[data.t.length - 1] = lastTime;
-            } catch (e) {}
+            } catch (e) {
+		alert('Server đang bảo trì');
+		loading(0);return;
+	    }
             var k = items.type == "index" ? 1 : 1000;
             for (var i = 0; i < data.t.length; i += 1) {
                 ohlc.push({
