@@ -179,7 +179,7 @@ const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol='
                     reversed: true // Đảo ngược trục x
                 },
                 tooltip: {
-                    headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
+                    headerFormat: "<b>{point.key}</b><br>",
                     pointFormat: "{series.name}: {point.y:.0f}<br>",
                     footerFormat: 'Trung bình: ' + average.toFixed(0) + '<br/>Hôm nay: ' + lastPrice.toFixed(0),
                     shared: !0,
