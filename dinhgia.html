@@ -4,7 +4,7 @@
 <head>
     <title>Định giá Cổ phiếu</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-<script id="theme-script" src="https://code.highcharts.com/themes/dark-unica.js"></script>
+    <script id="theme-script" src="https://code.highcharts.com/themes/dark-unica.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
@@ -15,17 +15,22 @@
         text-align: center;
         background-color: rgb(42, 42, 43);
         padding: 10px;
-	font-size:14px;
+        font-size: 14px;
     }
-*{	color:rgb(224, 224, 227);}
-        input[type="text"],
-        input[type="number"] {
-            width: 200px;
-            padding: 8px;
-            border-radius: 4px;
-            border: none;
-	    background:transparent;
-        }
+
+    * {
+        color: rgb(224, 224, 227);
+    }
+
+    input[type="text"],
+    input[type="number"] {
+        width: 200px;
+        padding: 8px;
+        border-radius: 4px;
+        border: none;
+        background: transparent;
+    }
+
     .container {
         display: flex;
         justify-content: center;
@@ -57,7 +62,7 @@
         loading();
         const inputF = document.getElementById('inputField');
         let mack = inputF.value;
-	let lastPrice=0;
+        let lastPrice = 0;
         document.getElementById('inputField').addEventListener('input', function(event) {
             let inputValue = event.target.value.toUpperCase();
             event.target.value = inputValue;
@@ -70,7 +75,7 @@
             }
         });
         async function fetchData(ticker) {
-	var timeUnix = Math.floor(new Date().getTime() / 1000);
+            var timeUnix = Math.floor(new Date().getTime() / 1000);
 
             const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
             const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=${timeUnix-155520000}&to=${timeUnix}`;
@@ -138,7 +143,7 @@
                 let data = dataBaocao.data.filter(s => s.targetPrice !== undefined)
                 await vechart(data, mack);
             }
-		loading(0);
+            loading(0);
         }
 
         function vechart(data, symbol) {
@@ -166,13 +171,13 @@
                     categories: cate,
                     reversed: true // Đảo ngược trục x
                 },
-                    tooltip: {
-                        headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
-                        pointFormat: "{series.name}: {point.y:.0f}<br>",
-                        footerFormat: 'Trung bình: '+average.toFixed(0) +'<br/>Hôm nay: '+lastPrice.toFixed(0),
-                        shared: !0,
-                        useHTML: !0,
-                    },
+                tooltip: {
+                    headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
+                    pointFormat: "{series.name}: {point.y:.0f}<br>",
+                    footerFormat: 'Trung bình: ' + average.toFixed(0) + '<br/>Hôm nay: ' + lastPrice.toFixed(0),
+                    shared: !0,
+                    useHTML: !0,
+                },
                 yAxis: {
                     title: {
                         text: ''
@@ -232,12 +237,12 @@
         }
         // tải báo cáo theo định giá
         async function getBaocao(symbol) {
-            await fetchData(symbol).then((data)=>{
+            await fetchData(symbol).then((data) => {
                 var dataprice = [];
                 for (var i = 0; i < data.price.t.length; i++) {
                     dataprice.push([data.price.t[i] * 1000, data.price.c[i] * 1000])
                 }
-		lastPrice = dataprice[dataprice.length-1][1];
+                lastPrice = dataprice[dataprice.length - 1][1];
 
                 var epsdata = data.pe.data.points.map(s => [s.x * 1000, s.y]);
 
@@ -296,9 +301,9 @@
                             dashStyle: 'dash',
                             label: {
                                 text: '-2Std',
-				style: {
-                        		color: 'white'
-                    		}
+                                style: {
+                                    color: 'white'
+                                }
                             }
                         }, {
                             value: statistics.meanPlus2Std,
@@ -307,20 +312,20 @@
                             dashStyle: 'dash',
                             label: {
                                 text: '+2Std',
-				style: {
-                        		color: 'white'
-                    		}
+                                style: {
+                                    color: 'white'
+                                }
                             }
-                        },{
+                        }, {
                             value: statistics.meanMinus1Std,
                             color: 'red',
                             width: 1,
                             dashStyle: 'dash',
                             label: {
                                 text: '-1Std',
-				style: {
-                        		color: 'white'
-                    		}
+                                style: {
+                                    color: 'white'
+                                }
                             }
                         }, {
                             value: statistics.meanPlus1Std,
@@ -329,9 +334,9 @@
                             dashStyle: 'dash',
                             label: {
                                 text: '+1Std',
-				style: {
-                        		color: 'white'
-                    		}
+                                style: {
+                                    color: 'white'
+                                }
                             }
                         }, {
                             value: statistics.mean,
@@ -340,9 +345,9 @@
                             dashStyle: 'dash',
                             label: {
                                 text: 'Mean',
-				style: {
-                        		color: 'white'
-                    		}
+                                style: {
+                                    color: 'white'
+                                }
                             }
                         }]
                     }],
@@ -373,4 +378,5 @@
         }
     </script>
 </body>
+
 </html>
