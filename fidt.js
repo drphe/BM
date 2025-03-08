@@ -209,7 +209,7 @@ function createlist(arrs, id) {
         l.setAttribute("class", "news-style");
         let s = document.createElement("a"),
             n = new Date(arr.postedAt);
-        l.title = arr.headline,
+        l.title = arr.title,
             s.innerHTML = arr.title + `<br/>Ngày đăng: ${n.getDate()}/${n.getMonth()+1}/${n.getFullYear()}`
         s.style = "line-height: 24px;font-size:14px;text-decoration: none; width:100%;color:var(--blue);",
             l.appendChild(s),
@@ -219,7 +219,8 @@ function createlist(arrs, id) {
         noidung.style.height = "calc(-50px + 100vh)";
         l.onclick = (e) => {
             e.preventDefault();
-            showPopup(arr.contentHtml, arr.headline);
+	    console.log(arr)
+            showPopup(arr.contentHtml, arr.title);
         };
     });
 }
