@@ -662,7 +662,6 @@
                 }
             }
         });
-
         let latestBar = ohlc[ohlc.length - 1]
         let o = latestBar.open,
             h = latestBar.high,
@@ -808,8 +807,7 @@
                 var lastTime = ohlc[ohlc.length - 1].time;
                 if (lastTime !== void 0) data.t[data.t.length - 1] = lastTime;
             } catch (e) {
-		alert('Server đang bảo trì');
-		loading(0);return;
+		loading(0);
 	    }
             var k = items.type == "index" ? 1 : 1000;
             for (var i = 0; i < data.t.length; i += 1) {

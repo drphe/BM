@@ -74,11 +74,18 @@
                 await getBaocao(mack);
             }
         });
+        function getCurrentDate() {
+            const t = new Date();
+            return t.getFullYear() + "-" + String(t.getMonth() + 1)
+                .padStart(2, "0") + "-" + String(t.getDate())
+                .padStart(2, "0");
+        }
         async function fetchData(ticker) {
             var timeUnix = Math.floor(new Date().getTime() / 1000);
 
             const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
-            const priceUrl = `https://24hmoney.vn/tradingview/history?symbol=${ticker}&resolution=D&from=${timeUnix-155520000}&to=${timeUnix}`;
+
+const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol=' + ticker + '&resolution=1D&from=' + parseInt(Date.parse("2020-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
 
             const [peResponse, priceResponse] = await Promise.all([
                 fetch(peUrl),
@@ -240,7 +247,7 @@
             await fetchData(symbol).then((data) => {
                 var dataprice = [];
                 for (var i = 0; i < data.price.t.length; i++) {
-                    dataprice.push([data.price.t[i] * 1000, data.price.c[i] * 1000])
+                    dataprice.push([data.price.t[i] * 1000, data.price.c[i]])
                 }
                 lastPrice = dataprice[dataprice.length - 1][1];
 
