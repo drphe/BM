@@ -234,10 +234,14 @@ NavData.forEach(item => {
         const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
         return Math.sqrt(variance);
     };
-	    // Tính sharpe với ls phi rủi ro 3%
-	    const calculateSharpe = (stdDev, mean) => {
-		return ((mean - 3) / stdDev);
-	    }
+// Tính sharpe với ls phi rủi ro 3%
+const calculateSharpe = (stdDev, mean) => {
+    if (stdDev === 0) {
+        return 0; // Hoặc giá trị nào bạn muốn xử lý khi stdDev = 0
+    }
+    return ((mean - 3) / stdDev);
+};
+
     // Tính độ lệch chuẩn phần trăm
     const calculateCVPercent = (stdDev, mean) => {
         return (stdDev / mean) * 100;

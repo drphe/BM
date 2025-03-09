@@ -373,7 +373,6 @@
 <caption style="font-size:18px;">Thống kê Risk-Return</caption>
 <thead><tr class="first_child last_child"><th rowspan="2">Mã <br> Đơn vị: %</th><th colspan="3">YTD</th><th colspan="3">1 năm</th><th colspan="3">3 năm</th><th colspan="3">5 năm</th></tr><tr><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th><th>CAGR</th><th>STD</th><th>Sharpe</th></tr></thead>
 <tbody>`;
-	console.log(data)
             // Duyệt qua các mã trong đối tượng data
             for (let stock in data) {
                 let stockData = data[stock];
@@ -394,7 +393,7 @@
                 let ytdCAGR = stockData['ytd'].cagr.toFixed(2);
                 let ytdSTD = stockData['ytd'].std.toFixed(2);
                 let ytdSharpe = stockData['ytd'].sharpe.toFixed(2);
-
+		
                 // Tạo một dòng cho mã cổ phiếu và các giá trị tương ứng
                 tableHTML += `<tr>
                         <td>${stock}</td>
