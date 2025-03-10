@@ -434,12 +434,15 @@
     <script>
         // khai báo biến
         const defaultkey = 13;
+	const bangtin = `<table style="font-size:0.8rem;"><tr><th>Cấp 3 (Tháng, quý)</th><th>Cấp 2 (Tháng quý)</th><th>Cấp 1 (hàng ngày)</th></tr>
+  <tr><td><ul><li>Fed fund rate</li><li>US10Y</li><li>DXY</li><li>CPI+PCE</li><li>Tỷ lệ thất nghiệp</li><li>Giá dầu</li><li>Chỉ số đo lường rủi ro Black Rock</li></ul></td><td><ul><li>Lạm phát</li><li>Tăng trưởng tín dụng</li><li>Tốc độ giải ngân đầu tư công</li><li>Kỳ vọng lợi nhuận của thị trường</li></ul></td>
+<td><ul><li>Lãi suất ON</li><li>Lợi suất TPCP</li><li>Bơm hút ròng OMO</li><li>Tỷ giá</li><li>Các dòng tiền (khối ngoại/khối nội)</li><li>Thanh khoản thị trường</li></ul></td></tr></table>`;
         const iframeConfigs = {
 
             0: {
                 src: "lichkinhte.html",
                 title: "Lịch kinh tế",
-                info: "Lịch tin tức sự kiên liên quan đến FED.",
+                info: "Lịch tin tức sự kiên liên quan đến FED."+bangtin,
                 enable: 1
             },
             1: {
@@ -457,32 +460,7 @@
             3: {
                 src: "fidt.html",
                 title: "Nhận định FIDT",
-                info: `Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.<table style="font-size:0.8rem;"><tr><th>Cấp 3 (Tháng, quý)</th><th>Cấp 2 (Tháng quý)</th><th>Cấp 1 (hàng ngày)</th></tr>
-  <tr><td><ul>
-        <li>Fed fund rate</li>
-        <li>US10Y</li>
-        <li>DXY</li>
-        <li>CPI+PCE</li>
-        <li>Tỷ lệ thất nghiệp</li>
-        <li>Giá dầu</li>
-        <li>Chỉ số đo lường rủi ro Black Rock</li>
-      </ul></td>
-    <td><ul>
-        <li>Lạm phát</li>
-        <li>Tăng trưởng tín dụng</li>
-        <li>Tốc độ giải ngân đầu tư công</li>
-        <li>Kỳ vọng lợi nhuận của thị trường</li>
-      </ul></td>
-    <td><ul>
-        <li>Lãi suất ON</li>
-        <li>Lợi suất TPCP</li>
-        <li>Bơm hút ròng OMO</li>
-        <li>Tỷ giá</li>
-        <li>Các dòng tiền (khối ngoại/khối nội)</li>
-        <li>Thanh khoản thị trường</li>
-      </ul>
-    </td></tr></table>
-`,
+                info: `Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.`+bangtin,
                 enable: 1
             },
             4: {
@@ -530,7 +508,7 @@
             12: {
                 src: "chart.html",
                 title: "Vĩ mô/hàng hóa",
-                info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn....",
+                info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...."+bangtin,
                 enable: 1
             },
 
