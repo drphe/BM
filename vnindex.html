@@ -77,13 +77,12 @@
         padding: 8px 20px;
         background-color: #39394a;
         border-bottom: 1px solid #4a4a5b;
-        border-radius: 5px;
         cursor: pointer;
         transition: all 0.3s ease;
         font-size: 14px;
         margin-top: 5px;
         color: #e4e4e4;
-        text-align: center;
+        text-align: left;
     }
 
     .exit:hover,
@@ -602,7 +601,7 @@
                 const item = source[key];
                 if (item.enable) {
                     const div_sub = document.createElement('div');
-                    div_sub.textContent = item.title;
+                    div_sub.innerHTML = `<span>${item.title}</span>`;
                     div_sub.setAttribute("class", key == defaultkey ? "tab selected" : "tab");
                     div_sub.setAttribute("data-code", key);
                     div_sub.setAttribute('onclick', `fetchData('${key}')`);
