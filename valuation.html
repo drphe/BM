@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<meta charset="UTF-8">
+
+<head>
+    <title>Định giá VNINDEX</title>
+</head>
+<style>
+    body {
+        margin: auto;
+        display: flex;
+    }
+</style>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/highcharts-more.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+<script src="https://code.highcharts.com/modules/export-data.js"></script>
+<script src="https://code.highcharts.com/modules/full-screen.js"></script>
+
+<body>
+    <div id="container" style="width: 100%; height: 550px;"></div>
+    <div id="container2" style="width: 100%; height: 550px;"></div>
+    <script>
+        function drawchart(data, type, id) {
+            // Chuẩn bị dữ liệu cho biểu đồ
+            const vnindexData = data.map(item => [new Date(item.Date).getTime(), item.VNINDEX]);
+            let PlusRangeData, MinusRangeData;
+            if (type == "PB") {
+                PlusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PBplus1std, item.PBplus2std]);
+                MinusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PBminus2std, item.PBminus1std]);
+            } else {
+                PlusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PEplus1std, item.PEplus2std]);
+                MinusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PEminus2std, item.PEminus1std]);
+            }
+            // Tạo biểu đồ Highcharts
+            Highcharts.chart(id, {
+                chart: {
+                    zoomType: 'x' // Cho phép zoom trục X
+                },
+                title: {
+                    text: 'Vùng biến động VNINDEX tương quan với định giá ' + type
+                },
+                subtitle: {
+                    text: 'Dữ liệu update đến ngày ' + data[data.length - 1].Date,
+                    align: 'center', // Căn giữa
+                    style: {
+                        fontSize: '12px', // Kích thước chữ
+                        color: '#666666' // Màu chữ (xám nhạt)
+                    }
+                },
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Ngày'
+                    },
+                    crosshair: {
+                        enabled: true, // Bật crosshair
+                        color: '#666666', // Màu của đường kẻ dọc (xám nhạt, bạn có thể đổi)
+                        width: 1, // Độ dày của đường kẻ
+                        dashStyle: 'Solid' // Kiểu đường (Solid, Dash, Dot, v.v.)
+                    }
+                },
+
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+                // Ẩn credit
+                credits: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    shared: true,
+                    valueDecimals: 2, // Hiển thị 2 chữ số thập phân cho giá trị
+                    formatter: function() {
+                        // Lấy thời gian từ trục X và định dạng thành ngày/tháng/năm
+                        const date = Highcharts.dateFormat('%d/%m/%Y', this.x);
+                        let s = `<b>${date}</b><br/>`; // Hiển thị ngày tháng năm in đậm
+
+                        // Lặp qua các điểm dữ liệu để hiển thị giá trị
+                        this.points.forEach(point => {
+                            if (point.series.type === 'line') {
+                                s += `${point.series.name}: ${point.y.toFixed(2)}<br/>`;
+                            } else if (point.series.type === 'arearange') {
+                                s += `${point.series.name}: <b>${point.low.toFixed(2)} - ${point.high.toFixed(2)}</b><br/>`;
+                            }
+                        });
+
+                        return s;
+                    }
+                },
+                plotOptions: {
+                    arearange: {
+                        fillOpacity: 0.3,
+                        lineWidth: 1,
+                        marker: {
+                            enabled: false
+                        }
+                    },
+                    line: {
+                        lineWidth: 1,
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+                // Thêm cấu hình exporting
+                exporting: {
+                    enabled: true, // Bật tính năng xuất dữ liệu
+                    buttons: {
+                        contextButton: {
+                            menuItems: [
+                                'viewFullscreen', // Xem toàn màn hình
+                                'separator', // Dòng phân cách
+                                'downloadPNG', // Tải xuống PNG
+                                'downloadJPEG', // Tải xuống JPEG
+                                'downloadPDF', // Tải xuống PDF
+                                'separator', // Dòng phân cách
+                                'downloadCSV', // Tải xuống CSV
+                                'downloadXLS', // Tải xuống XLS
+                            ]
+                        }
+                    }
+                },
+                series: [{
+                        type: 'spline',
+                        name: 'VNINDEX',
+                        data: vnindexData,
+                        color: 'blue' // Màu đen cho VNINDEX
+
+                    },
+                    {
+                        type: 'arearange',
+                        name: 'Vùng đắt theo ' + type,
+                        data: PlusRangeData,
+                        color: '#FF0000', // Màu đỏ cho dải PBplus
+                        fillOpacity: 0.3
+                    },
+                    {
+                        type: 'arearange',
+                        name: 'Vùng rẻ theo ' + type,
+                        data: MinusRangeData,
+                        color: '#00FF00', // Màu xanh lá cho dải PBminus
+                        fillOpacity: 0.3
+                    }
+                ]
+            });
+        }
+        // hàm đọc CSV
+        function csvToJson(csvString) {
+            const lines = csvString.trim().split("\n");
+            const headers = lines[0].split(",").map(h => h.trim().replace(/"/g, ""));
+            const jsonData = [];
+
+            for (let i = 1; i < lines.length; i++) {
+                const values = lines[i].split(",").map(v => v.trim().replace(/"/g, ""));
+                const entry = {};
+
+                for (let j = 0; j < headers.length; j++) {
+                    let cleanValue = values[j].replace(/,/g, "")
+                    entry[headers[j]] = isNaN(cleanValue) ? cleanValue : parseFloat(cleanValue);
+                }
+
+                jsonData.push(entry);
+            }
+            // lấy mảng P/E
+            var peCal = calculateStats(jsonData.map(d => d.PE))
+
+            // lấy mảng P/B
+            var pbCal = calculateStats(jsonData.map(d => d.PB))
+            for (var i = 0; i < jsonData.length; i++) {
+                jsonData[i].PEplus1std = peCal.meanPlusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                jsonData[i].PEplus2std = peCal.meanPlus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+                jsonData[i].PEminus1std = peCal.meanMinusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                jsonData[i].PEminus2std = peCal.meanMinus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+
+                jsonData[i].PBplus1std = pbCal.meanPlusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                jsonData[i].PBplus2std = pbCal.meanPlus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                jsonData[i].PBminus1std = pbCal.meanMinusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                jsonData[i].PBminus2std = pbCal.meanMinus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+            }
+
+            return jsonData;
+        }
+
+        // hàm đọc file
+        function readFile(filename, callback) {
+            let xhr = new XMLHttpRequest();
+            xhr.open("GET", filename, true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    callback(xhr.responseText);
+                }
+            };
+            xhr.send();
+        }
+
+        // hàm tính mean và STD
+        function calculateStats(arr) {
+            const mean = arr.reduce((sum, val) => sum + val, 0) / arr.length;
+            const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
+            const stdDev = Math.sqrt(variance);
+
+            return {
+                mean: mean,
+                meanPlusStd: mean + stdDev,
+                meanMinusStd: mean - stdDev,
+                meanPlus2Std: mean + 2 * stdDev,
+                meanMinus2Std: mean - 2 * stdDev
+            };
+        }
+
+        // đọc file data.csv tự động
+        readFile("data.csv", function(csvContent) {
+            const jsonData = csvToJson(csvContent);
+            console.log(jsonData);
+            drawchart(jsonData, "PE", "container")
+            drawchart(jsonData, "PB", "container2")
+        });
+    </script>
+
+</html>
