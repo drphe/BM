@@ -8,6 +8,8 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+    <script src="https://code.highcharts.com/modules/full-screen.js"></script>
 </head>
 <style>
     body {
@@ -47,7 +49,7 @@
 <body>
     <div>
         <div id="load"></div>
-        Định giá mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="HPG" type="text" autocomplete="off" id="inputField" maxlength="3" />
+        Định giá mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="CTG" type="text" autocomplete="off" id="inputField" maxlength="3" />
     </div>
     <h3 id="title"></h3>
     <div class="container">
@@ -74,6 +76,7 @@
                 await getBaocao(mack);
             }
         });
+
         function getCurrentDate() {
             const t = new Date();
             return t.getFullYear() + "-" + String(t.getMonth() + 1)
@@ -85,7 +88,7 @@
 
             const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
 
-const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol=' + ticker + '&resolution=1D&from=' + parseInt(Date.parse("2020-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
+            const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol=' + ticker + '&resolution=1D&from=' + parseInt(Date.parse("2020-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
 
             const [peResponse, priceResponse] = await Promise.all([
                 fetch(peUrl),
@@ -121,27 +124,6 @@ const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol='
         }
         getBaocao(mack);
 
-        function calculateStatistics(data) {
-            // Calculate mean
-            const mean = data.reduce((acc, val) => acc + val, 0) / data.length;
-            // Calculate standard deviation (std)
-            const variance = data.reduce((acc, val) => acc + Math.pow(val - mean, 2), 0) / data.length;
-            const std = Math.sqrt(variance);
-
-            // Calculate mean - 1 std, mean - 2 std, mean + 1 std, mean + 2 std
-            const meanMinus1Std = mean - std;
-            const meanMinus2Std = mean - 2 * std;
-            const meanPlus1Std = mean + std;
-            const meanPlus2Std = mean + 2 * std;
-
-            return {
-                mean,
-                meanMinus1Std,
-                meanMinus2Std,
-                meanPlus1Std,
-                meanPlus2Std
-            };
-        }
 
         async function showInfo(dataBaocao) {
             const khuyen = document.getElementById('khuyen');
@@ -242,18 +224,41 @@ const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol='
                 }
             });
         }
+
+        function convertUnixToDate(unixTime) {
+            const date = new Date(parseInt(unixTime, 10)); // nhân 1000 vì Unix time tính theo giây
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = String(date.getMonth() + 1).padStart(2, '0'); // tháng bắt đầu từ 0
+            const year = date.getFullYear();
+            return `${day}/${month}/${year}`;
+        }
+        // hàm tính mean và STD
+        function calculateStats(arr) {
+            const mean = arr.reduce((sum, val) => sum + val, 0) / arr.length;
+            const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
+            const stdDev = Math.sqrt(variance);
+
+            return {
+                mean: mean,
+                meanPlus1Std: mean + stdDev,
+                meanMinus1Std: mean - stdDev,
+                meanPlus2Std: mean + 2 * stdDev,
+                meanMinus2Std: mean - 2 * stdDev
+            };
+        }
+
         // tải báo cáo theo định giá
         async function getBaocao(symbol) {
             await fetchData(symbol).then((data) => {
                 var dataprice = [];
                 for (var i = 0; i < data.price.t.length; i++) {
-                    dataprice.push([data.price.t[i] * 1000, data.price.c[i]])
+                    dataprice.push([data.price.t[i] * 1000, data.price.c[i]]) // giá
                 }
                 lastPrice = dataprice[dataprice.length - 1][1];
 
                 var epsdata = data.pe.data.points.map(s => [s.x * 1000, s.y]);
 
-                const peRatios = dataprice.map(data => {
+                var peRatios = dataprice.map(data => {
                     const eps = getLatestEPS(data[0], epsdata);
                     return {
                         time: data[0],
@@ -262,111 +267,136 @@ const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol='
                         peRatio: eps ? (data[1] / eps) : null
                     };
                 });
+
+                peRatios = peRatios.filter(item => item.peRatio !== null);
+
+                let PlusRangeData = [],
+                    MinusRangeData = [];
                 const pe = peRatios.map(data => [data.time, data.peRatio])
-                const statistics = calculateStatistics(pe.map(s => s[1]));
+                const statistics = calculateStats(pe.map(s => s[1]));
 
-                console.log('Mean:', statistics.mean);
-                console.log('Mean - 1 Std:', statistics.meanMinus1Std);
-                console.log('Mean - 2 Std:', statistics.meanMinus2Std);
-                console.log('Mean + 1 Std:', statistics.meanPlus1Std);
-                console.log('Mean + 2 Std:', statistics.meanPlus2Std);
-
+                for (var i = 0; i < peRatios.length; i++) {
+                    PlusRangeData.push([peRatios[i].time, statistics.meanPlus1Std / peRatios[i].peRatio * peRatios[i].price, statistics.meanPlus2Std / peRatios[i].peRatio * peRatios[i].price])
+                    MinusRangeData.push([peRatios[i].time, statistics.meanMinus1Std / peRatios[i].peRatio * peRatios[i].price, statistics.meanMinus2Std / peRatios[i].peRatio * peRatios[i].price])
+                }
+                console.log(PlusRangeData);
+                // Tạo biểu đồ Highcharts
                 Highcharts.chart('container', {
                     chart: {
-                        type: 'line',
-                        zoomType: 'x'
+                        zoomType: 'x' // Cho phép zoom trục X
                     },
                     title: {
-                        text: symbol + ' và P/E'
+                        text: 'Vùng biến động ' + symbol + ' và P/E'
+                    },
+                    subtitle: {
+                        text: 'Dữ liệu update đến ngày ' + convertUnixToDate(dataprice[dataprice.length - 1][0]),
+                        align: 'center', // Căn giữa
+                        style: {
+                            fontSize: '12px', // Kích thước chữ
+                            color: '#666666' // Màu chữ (xám nhạt)
+                        }
                     },
                     xAxis: {
-                        type: 'datetime'
-                    },
-                    tooltip: {
-                        headerFormat: "<b>{point.x:%d/%m/%Y}</b><br>",
-                        pointFormat: "{series.name}: {point.y:.2f}<br>",
-                        footerFormat: "</table>",
-                        shared: !0,
-                        useHTML: !0,
-                    },
-                    credits: {
-                        enabled: false // Tắt hiển thị credits
-                    },
-                    yAxis: [{
+                        type: 'datetime',
                         title: {
-                            text: 'Giá CP'
-                        }
-                    }, {
-                        title: {
-                            text: 'PE'
+                            text: 'Ngày'
                         },
-                        opposite: true,
-                        plotLines: [{
-                            value: statistics.meanMinus2Std,
-                            color: 'red',
-                            width: 1,
-                            dashStyle: 'dash',
-                            label: {
-                                text: '-2Std',
-                                style: {
-                                    color: 'white'
+                        crosshair: {
+                            enabled: true, // Bật crosshair
+                            color: '#666666', // Màu của đường kẻ dọc (xám nhạt, bạn có thể đổi)
+                            width: 1, // Độ dày của đường kẻ
+                            dashStyle: 'Solid' // Kiểu đường (Solid, Dash, Dot, v.v.)
+                        }
+                    },
+
+                    yAxis: {
+                        title: {
+                            text: ''
+                        }
+                    },
+                    legend: {
+                        enabled: true
+                    },
+                    // Ẩn credit
+                    credits: {
+                        enabled: false
+                    },
+
+                    tooltip: {
+                        shared: true,
+                        valueDecimals: 2, // Hiển thị 2 chữ số thập phân cho giá trị
+                        formatter: function() {
+                            // Lấy thời gian từ trục X và định dạng thành ngày/tháng/năm
+                            const date = Highcharts.dateFormat('%d/%m/%Y', this.x);
+                            let s = `<b>${date}</b><br/>`; // Hiển thị ngày tháng năm in đậm
+
+                            // Lặp qua các điểm dữ liệu để hiển thị giá trị
+                            this.points.forEach(point => {
+                                if (point.series.type === 'line') {
+                                    s += `${point.series.name}: ${point.y.toFixed(0)}<br/>`;
+                                } else if (point.series.type === 'arearange') {
+                                    s += `${point.series.name}: <b>${point.low.toFixed(0)} - ${point.high.toFixed(0)}</b><br/>`;
                                 }
+                            });
+
+                            return s;
+                        }
+                    },
+                    plotOptions: {
+                        arearange: {
+                            fillOpacity: 0.3,
+                            lineWidth: 1,
+                            marker: {
+                                enabled: false
                             }
-                        }, {
-                            value: statistics.meanPlus2Std,
-                            color: 'green',
-                            width: 1,
-                            dashStyle: 'dash',
-                            label: {
-                                text: '+2Std',
-                                style: {
-                                    color: 'white'
-                                }
+                        },
+                        line: {
+                            lineWidth: 1,
+                            marker: {
+                                enabled: true
                             }
-                        }, {
-                            value: statistics.meanMinus1Std,
-                            color: 'red',
-                            width: 1,
-                            dashStyle: 'dash',
-                            label: {
-                                text: '-1Std',
-                                style: {
-                                    color: 'white'
-                                }
+                        }
+                    },
+                    // Thêm cấu hình exporting
+                    exporting: {
+                        enabled: true, // Bật tính năng xuất dữ liệu
+                        buttons: {
+                            contextButton: {
+                                menuItems: [
+                                    'viewFullscreen', // Xem toàn màn hình
+                                    'separator', // Dòng phân cách
+                                    'downloadPNG', // Tải xuống PNG
+                                    'downloadJPEG', // Tải xuống JPEG
+                                    'downloadPDF', // Tải xuống PDF
+                                    'separator', // Dòng phân cách
+                                    'downloadCSV', // Tải xuống CSV
+                                    'downloadXLS', // Tải xuống XLS
+                                ]
                             }
-                        }, {
-                            value: statistics.meanPlus1Std,
-                            color: 'green',
-                            width: 1,
-                            dashStyle: 'dash',
-                            label: {
-                                text: '+1Std',
-                                style: {
-                                    color: 'white'
-                                }
-                            }
-                        }, {
-                            value: statistics.mean,
-                            color: 'blue',
-                            width: 1,
-                            dashStyle: 'dash',
-                            label: {
-                                text: 'Mean',
-                                style: {
-                                    color: 'white'
-                                }
-                            }
-                        }]
-                    }],
+                        }
+                    },
                     series: [{
-                        name: 'Giá',
-                        data: dataprice,
-                        yAxis: 0
-                    }, {
-                        name: 'P/E',
-                        data: pe,
-                        yAxis: 1
-                    }]
+                            type: 'spline',
+                            name: symbol,
+                            data: dataprice,
+                            color: 'blue' // Màu đen cho VNINDEX
+
+                        },
+                        {
+                            type: 'arearange',
+                            name: 'Vùng đắt theo PE',
+                            data: PlusRangeData,
+                            color: '#FF0000', // Màu đỏ cho dải PBplus
+                            fillOpacity: 0.3
+                        },
+                        {
+                            type: 'arearange',
+                            name: 'Vùng rẻ theo PE',
+                            data: MinusRangeData,
+                            color: '#00FF00', // Màu xanh lá cho dải PBminus
+                            fillOpacity: 0.3
+                        }
+                    ]
                 });
 
             });
