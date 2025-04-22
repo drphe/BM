@@ -9,7 +9,7 @@ function loading(i = !0) {
 }
 
 document.getElementById("pres").style.display = "none";
-getFIDTnews();
+get(4);
 
 document.addEventListener("keyup", function(e) {
     if (27 === e.keyCode) {
