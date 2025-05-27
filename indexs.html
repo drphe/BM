@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="./assets/images/logo.png">
+    <title>BM Counter</title>
+    <style>
+        @font-face {
+            font-family: 'DSEG7ClassicMini-Bold';
+            src: url('./assets/fonts/DSEG7ClassicMini-Bold.ttf') format('truetype');
+            font-display: swap;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            line-height: 16px;
+        }
+
+        .main {
+            top: 0px;
+            position: sticky;
+
+        }
+
+        .cell {
+            width: 100px;
+            height: 100px;
+            margin: 10px;
+            display: inline-block;
+            text-align: center;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .counter {
+            font-size: 36px;
+            font-family: 'DSEG7ClassicMini-Bold', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: black;
+            padding: 10px 20px;
+            background: #f0f0f0;
+        }
+
+        .cell-counter {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: 18px;
+            height: 18px;
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            background-color: red;
+            padding: 2px 5px;
+            border-radius: 10px;
+            user-select: none;
+        }
+
+        .ery1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ery2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ery3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .ery4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/ery4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mye1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mye1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mye2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mye2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .neu4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/neu4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos1 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos1.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos2 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos2.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos3 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos3.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .eos4 {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/eos4.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .baso {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/baso.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .lym {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/lym.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mono {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mono.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .plasma {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/plasma.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .mega {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/mega.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherA {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherA.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherB {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherB.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherC {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherC.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherD {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherD.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .otherE {
+            width: 100px;
+            height: 100px;
+            background-image: url('assets/images/otherE.png');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .no-select {
+            -webkit-user-select: none;
+            /* Safari */
+            -moz-user-select: none;
+            /* Firefox */
+            -ms-user-select: none;
+            /* Internet Explorer/Edge */
+            user-select: none;
+        }
+table {
+	display: table;
+	border-collapse: separate;
+	border-spacing: 0px;
+	justify-content: space-between;
+        font-family: system-ui;
+	width: 490px;
+	margin: 4px;
+}
+
+th,
+td {
+	padding: 4px;
+	text-align: left;
+	font-size: 16px;
+	white-space: nowrap;
+	border-bottom: 1px solid #ddd;
+	min-width: 60px;
+}
+
+tr {
+	margin: auto;
+	text-align: center;
+}
+
+tr:hover {
+	background-color: #d9a7d9;
+}
+    </style>
+</head>
+
+<body id="app" style="transform-origin:top center;transform-box: fill-box; " onclick="resizeContent()">
+    <div id="main" style="width: 500px;height: 100vh;;display:none;">
+        <div class="counter">
+            <span style=" width: 30px; padding: 0px;cursor: pointer;" id="cb3" onclick="changemode()" title="Thay đổi chế độ đếm">
+                <svg width="50" height="50" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M20.5348 3.46447C19.0704 2 16.7133 2 11.9993 2C7.28525 2 4.92823 2 3.46377 3.46447C2.70628 4.22195 2.3406 5.21824 2.16406 6.65598C2.69473 6.06532 3.33236 5.57328 4.04836 5.20846C4.82984 4.81027 5.66664 4.6488 6.59316 4.5731C7.48829 4.49997 8.58971 4.49998 9.93646 4.5H14.0621C15.4089 4.49998 16.5103 4.49997 17.4054 4.5731C18.332 4.6488 19.1688 4.81027 19.9502 5.20846C20.6662 5.57328 21.3039 6.06532 21.8345 6.65598C21.658 5.21824 21.2923 4.22195 20.5348 3.46447Z" fill="#1C274C"/>
+<path fill-rule="evenodd" clip-rule="evenodd" d="M2 14C2 11.1997 2 9.79961 2.54497 8.73005C3.02433 7.78924 3.78924 7.02433 4.73005 6.54497C5.79961 6 7.19974 6 10 6H14C16.8003 6 18.2004 6 19.27 6.54497C20.2108 7.02433 20.9757 7.78924 21.455 8.73005C22 9.79961 22 11.1997 22 14C22 16.8003 22 18.2004 21.455 19.27C20.9757 20.2108 20.2108 20.9757 19.27 21.455C18.2004 22 16.8003 22 14 22H10C7.19974 22 5.79961 22 4.73005 21.455C3.78924 20.9757 3.02433 20.2108 2.54497 19.27C2 18.2004 2 16.8003 2 14ZM12.5303 10.4697C12.3897 10.329 12.1989 10.25 12 10.25C11.8011 10.25 11.6103 10.329 11.4697 10.4697L8.96967 12.9697C8.67678 13.2626 8.67678 13.7374 8.96967 14.0303C9.26256 14.3232 9.73744 14.3232 10.0303 14.0303L11.25 12.8107V17C11.25 17.4142 11.5858 17.75 12 17.75C12.4142 17.75 12.75 17.4142 12.75 17V12.8107L13.9697 14.0303C14.2626 14.3232 14.7374 14.3232 15.0303 14.0303C15.3232 13.7374 15.3232 13.2626 15.0303 12.9697L12.5303 10.4697Z" fill="#1C274C"/>
+</svg>
+            </span>
+            <span id="totalCount">00</span>
+            <span style="width: 30px;height: 30px;cursor: pointer;" onclick="report()" title="Báo cáo kết quả đếm"><svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <g id="virus-covid19-report-coronavirus-static">
+                        <path d="M3,45v4a2.006,2.006,0,0,0,2,2H59a2.006,2.006,0,0,0,2-2V45Z" style="fill:#9bc9ff" />
+                        <rect height="6" style="fill:#9bc9ff" width="12" x="26" y="51" />
+                        <path d="M21,57a2,2,0,0,0-2,2v2H45V59a2,2,0,0,0-2-2H21Z" style="fill:#9bc9ff" />
+                        <circle cx="50" cy="7" r="1" style="fill:#9bc9ff" />
+                        <path d="M45.757,8.343a1,1,0,1,0,0,1.414A1,1,0,0,0,45.757,8.343Z" style="fill:#9bc9ff" />
+                        <circle cx="43" cy="14" r="1" style="fill:#9bc9ff" />
+                        <path d="M44.343,18.243a1,1,0,1,0,1.414,0A1,1,0,0,0,44.343,18.243Z" style="fill:#9bc9ff" />
+                        <circle cx="50" cy="21" r="1" style="fill:#9bc9ff" />
+                        <path d="M54.243,19.657a1,1,0,1,0,0-1.414A1,1,0,0,0,54.243,19.657Z" style="fill:#9bc9ff" />
+                        <circle cx="57" cy="14" r="1" style="fill:#9bc9ff" />
+                        <path d="M55.657,9.757a1,1,0,1,0-1.414,0A1,1,0,0,0,55.657,9.757Z" style="fill:#9bc9ff" />
+                        <path d="M18,32a2,2,0,1,0-3.414,1.414l0,0,0,0A2,2,0,0,0,18,32Z" style="fill:#9bc9ff" />
+                        <circle cx="27" cy="29" r="2" style="fill:#9bc9ff" />
+                        <circle cx="34" cy="20" r="2" style="fill:#9bc9ff" />
+                        <path d="M6,42H58V21.534A10.99,10.99,0,0,1,39,14H6Z" style="fill:none" />
+                        <path d="M60.844,12.225A11.041,11.041,0,0,1,61,14V13A2,2,0,0,0,60.844,12.225Z" style="fill:#9bc9ff" />
+                        <path d="M58,42H6V14H39a10.965,10.965,0,0,1,.425-3H5a2,2,0,0,0-2,2V45H61V14a10.951,10.951,0,0,1-3,7.534Z" style="fill:#9bc9ff" />
+                        <circle cx="50" cy="14" r="3" style="fill:#9bc9ff" />
+                        <path d="M33,47H31a1,1,0,0,0,0,2h2a1,1,0,0,0,0-2Z" style="fill:#1e81ce" />
+                        <path d="M10,39H40a1,1,0,0,0,0-2H12.414l2.3-2.3A2.951,2.951,0,0,0,16,35a3,3,0,0,0,2.978-2.778l5.563-1.512a2.994,2.994,0,0,0,4.981-3.322l3.539-4.553a3,3,0,1,0-1.583-1.223l-3.539,4.553a2.949,2.949,0,0,0-3.917,2.613L18.459,30.29A3,3,0,0,0,13,32a2.951,2.951,0,0,0,.3,1.285l-2.3,2.3V18a1,1,0,0,0-2,0V38A1,1,0,0,0,10,39ZM34,19a1,1,0,1,1-1,1A1,1,0,0,1,34,19Zm-7,9a1,1,0,1,1-1,1A1,1,0,0,1,27,28ZM16,31a1,1,0,1,1-.7,1.714L15.3,32.7l-.011-.007A1,1,0,0,1,16,31Z" style="fill:#1e81ce" />
+                        <path d="M50,2a12.014,12.014,0,0,0-11.3,8H5a3.009,3.009,0,0,0-3,3V49a3.009,3.009,0,0,0,3,3H25v4H21a3.009,3.009,0,0,0-3,3v2a1,1,0,0,0,1,1H45a1,1,0,0,0,1-1V59a3.009,3.009,0,0,0-3-3H39V52H59a3.009,3.009,0,0,0,3-3V14A12.01,12.01,0,0,0,50,2ZM43,58a1,1,0,0,1,1,1v1H20V59a1,1,0,0,1,1-1ZM27,56V52H37v4Zm33-7a1,1,0,0,1-1,1H5a1,1,0,0,1-1-1V46H60Zm0-5H4V13a1,1,0,0,1,1-1H38.18c-.05.33-.1.66-.13,1H6a1,1,0,0,0-1,1V42a1,1,0,0,0,1,1H58a1,1,0,0,0,1-1V21.91a12.36,12.36,0,0,0,1-1.29ZM50,26a11.946,11.946,0,0,0,7-2.27V41H7V15H38.05A12.009,12.009,0,0,0,50,26Zm0-2A10,10,0,1,1,60,14,10.016,10.016,0,0,1,50,24Z" style="fill:#1e81ce" />
+                        <path d="M44.722,15h1.42a3.915,3.915,0,0,0,.425,1.019l-1.006,1.006a2,2,0,1,0,1.413,1.415l1.007-1.007A3.915,3.915,0,0,0,49,17.858v1.42a2,2,0,1,0,2,0v-1.42a3.915,3.915,0,0,0,1.019-.425l1.006,1.007a2,2,0,0,0,.509,1.923h0a2,2,0,1,0,.9-3.339l-1.006-1.006A3.915,3.915,0,0,0,53.858,15h1.42a2,2,0,1,0,0-2h-1.42a3.915,3.915,0,0,0-.425-1.019l1.006-1.006a2.015,2.015,0,0,0,.51.074A2.006,2.006,0,1,0,53.026,9.56l-1.007,1.007A3.915,3.915,0,0,0,51,10.142V8.722a2,2,0,1,0-2,0v1.42a3.915,3.915,0,0,0-1.019.425L46.975,9.56a2,2,0,0,0-.509-1.923h0a2,2,0,1,0-1.415,3.413,2.022,2.022,0,0,0,.511-.074l1.006,1.006A3.915,3.915,0,0,0,46.142,13h-1.42a2,2,0,1,0,0,2ZM50,12a2,2,0,1,1-2,2A2,2,0,0,1,50,12Z" style="fill:#1e81ce" />
+                        <path d="M45,35h1a1,1,0,0,0,0-2H45a1,1,0,0,0,0,2Z" style="fill:#1e81ce" />
+                        <path d="M49,35h5a1,1,0,0,0,0-2H49a1,1,0,0,0,0,2Z" style="fill:#1e81ce" />
+                        <path d="M45,39h1a1,1,0,0,0,0-2H45a1,1,0,0,0,0,2Z" style="fill:#1e81ce" />
+                        <path d="M49,39h5a1,1,0,0,0,0-2H49a1,1,0,0,0,0,2Z" style="fill:#1e81ce" />
+                    </g>
+                </svg>
+            </span>
+            <span style="width: 30px;height: 30px;cursor: pointer;" onclick="reset()" title="Reset">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="no-select">
+                    <path d="M10,18a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,10,18ZM20,6H16V5a3,3,0,0,0-3-3H11A3,3,0,0,0,8,5V6H4A1,1,0,0,0,4,8H5V19a3,3,0,0,0,3,3h8a3,3,0,0,0,3-3V8h1a1,1,0,0,0,0-2ZM10,5a1,1,0,0,1,1-1h2a1,1,0,0,1,1,1V6H10Zm7,14a1,1,0,0,1-1,1H8a1,1,0,0,1-1-1V8H17Zm-3-1a1,1,0,0,0,1-1V11a1,1,0,0,0-2,0v6A1,1,0,0,0,14,18Z" fill="red" />
+                </svg> </span>
+        </div>
+        <br />
+        <div id="celltap">
+            <div class="cell ery1" onclick="incrementCount(this)" title="Tiền nguyên hồng cầu">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell ery2" onclick="incrementCount(this)" title="Nguyên hồng cầu ái kiềm">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell ery3" onclick="incrementCount(this)" title="Nguyên hồng cầu đa sắc">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell ery4" onclick="incrementCount(this)" title="Nguyên hồng cầu ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <br />
+            <div class="cell mye1" onclick="incrementCount(this)" title="Nguyên tủy bào">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell mye2" onclick="incrementCount(this)" title="Tiền nguyên tủy bào">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell neu1" onclick="incrementCount(this)" title="Tủy bào trung tính">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell neu2" onclick="incrementCount(this)" title="Hậu tủy bào trung tính">
+                <div class="cell-counter">0</div>
+            </div>
+            <br />
+            <div class="cell neu3" onclick="incrementCount(this)" title="Band trung tính">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell neu4" onclick="incrementCount(this)" title="Bạch cầu đoạn trung tính">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell eos1" onclick="incrementCount(this)" title="Tủy bào ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell eos2" onclick="incrementCount(this)" title="Hậu tủy bào ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <br />
+            <div class="cell mono" onclick="incrementCount(this)" title="Band ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell baso" onclick="incrementCount(this)" title="Tủy bào ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell eos3" onclick="incrementCount(this)" title="Band ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell eos4" onclick="incrementCount(this)" title="Bạch cầu đoạn ái toan">
+                <div class="cell-counter">0</div>
+            </div>
+            <br />
+            <div class="cell lym" onclick="incrementCount(this)" title="Lympho">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell plasma" onclick="incrementCount(this)" title="Tương bào">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell mega" onclick="incrementCount(this)" title="Mẫu tiểu cầu">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell otherA" onclick="incrementCount(this)" title="Tế bào khác A">
+                <div class="cell-counter">0</div>
+            </div>
+            <br />
+            <div class="cell otherB" onclick="incrementCount(this)" title="Tế bào khác B">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell otherC" onclick="incrementCount(this)" title="Tế bào khác C">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell otherD" onclick="incrementCount(this)" title="Tế bào khác D">
+                <div class="cell-counter">0</div>
+            </div>
+            <div class="cell otherE" onclick="incrementCount(this)" title="Tế bào khác E">
+                <div class="cell-counter">0</div>
+            </div>
+        </div>
+	<i style="float: right;margin-right: 20px;font-size:12px;">© BSCK1.HHTM NGUYỄN VĂN PHÊ</i>
+    </div>
+	<audio id="sound_a1" src="./assets/sounds/sound_a1.mp3"></audio>
+	<audio id="sound_e1" src="./assets/sounds/sound_e1.mp3"></audio>
+	<audio id="sound_f1" src="./assets/sounds/sound_f1.mp3"></audio>
+	<audio id="sound_b1" src="./assets/sounds/sound_b1.mp3"></audio>
+    <script>
+        let totalCount = 0;
+        let myeCount = 0;
+        let eryCount = 0
+        const Bmmode = document.getElementById('celltap').innerHTML;
+        let bmmode = document.getElementById('celltap').innerHTML;
+        var checkboxState = false;
+	function playMusic(name) {} //var audio = document.getElementById(name); audio.play(); }
+        function incrementCount(cell) {
+            totalCount++;
+            document.getElementById('totalCount').innerText = totalCount < 10 ? '0' + totalCount : totalCount;
+            let cellCounter = cell.querySelector('.cell-counter');
+            let cellCount = parseInt(cellCounter.innerText);
+            cellCounter.innerText = cellCount + 1;
+	    let nu = checkboxState ? 100: 200;
+            if (totalCount == nu) {
+                alert("Đã đếm đủ "+nu+" tế bào có nhân!")
+                report();
+            }
+	    playMusic('sound_a1');
+        }
+	let isReport = false;
+        function openNewPage(text) {
+	    bmmode = document.getElementById('celltap').innerHTML;
+	    document.getElementById('celltap').innerHTML = text;
+        }
+
+        function report() {
+	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
+	    playMusic('sound_e1');isReport = true;
+            myeCount = 0;
+            eryCount = 0;
+            let countAll = [];
+            if (checkboxState) {
+                ['mye1', 'ery4', 'neu4', 'eos4', 'baso', 'lym', 'mono', 'plasma', 'otherA', 'neu3', 'neu2', 'neu1', 'otherB', 'otherC', 'otherD', 'otherE'].forEach((text) => {
+                    let cellCounter = document.querySelector('.' + text + ' .cell-counter');
+                    let cellCount = parseInt(cellCounter.innerText);
+                    myeCount += cellCount;
+                    countAll.push(cellCount);
+                });
+                let non = countAll[0] + countAll[1] + countAll[9] + countAll[10] + countAll[11];
+                let gia = countAll[2] + countAll[3] + countAll[4] + countAll[5] + countAll[6] + countAll[7];
+                let percent = (a) => {
+                    let b = a / myeCount * 100;
+                    return b ? b.toFixed(2) + "%" : '0.00'
+                }
+                let text = `<table> 
+		<tbody>
+                <tr><td></td><td>Số lượng</td><td> Tỷ lệ (%) </td><td>Tham chiếu</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>TẾ BÀO TRƯỞNG THÀNH<td>${gia}</td><td>${percent(gia)}</td><td></td></tr>
+                <tr><td>Bạch cầu đoạn trung tính</td><td>${countAll[2]}</td><td>${percent(countAll[2])}</td><td>55-70</td></tr>
+                <tr><td>Bạch cầu đoạn ái toan</td><td>${countAll[3]}</td><td> ${percent(countAll[3])}</td><td>0.5-4</td></tr>
+                <tr><td>Bạch cầu đoạn ái kiềm</td><td>${countAll[4]}</td><td> ${percent(countAll[4])}</td><td>0-2</td></tr>
+                <tr><td>Lympho</td><td>${countAll[5]}</td><td> ${percent(countAll[5])}</td><td>25-40</td></tr>
+                <tr><td>Mono</td><td>${countAll[6]}</td><td> ${percent(countAll[6])}</td><td>1-4</td></tr>
+                <tr><td>Tương bào</td><td>${countAll[7]}</td><td> ${percent(countAll[7])}</td><td>0</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>TẾ BÀO NON<td>${non}</td><td>${percent(non)}</td><td></td></tr>
+                <tr><td>Blast</td><td>${countAll[0]}</td><td> ${percent(countAll[0])} </td><td>0</td></tr>
+                <tr><td>Tủy bào</td><td>${countAll[11]}</td><td>${percent(countAll[11])}</td><td>0</td></tr>
+                <tr><td>Hậu Tủy bào</td><td>${countAll[10]}</td><td>${percent(countAll[10])}</td><td>0</td></tr>
+                <tr><td>Band</td><td>${countAll[9]}</td><td>${percent(countAll[9])}</td><td>0</td></tr>
+                <tr><td>Hồng cầu nhân</td><td>${countAll[1]}</td><td> ${percent(countAll[1])} </td><td>0</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>TẾ BÀO TRƯỞNG KHÁC<td>${myeCount-gia-non}</td><td>${percent(myeCount-non-gia)}</td><td></td></tr>
+                <tr><td>Tế bào khác A</td><td>${countAll[8]}</td><td>${percent(countAll[8])}</td></tr>
+                <tr><td>Tế bào khác B</td><td>${countAll[12]}</td><td>${percent(countAll[12])}</td></tr>
+                <tr><td>Tế bào khác C</td><td>${countAll[13]}</td><td>${percent(countAll[13])}</td></tr>
+                <tr><td>Tế bào khác D</td><td>${countAll[14]}</td><td>${percent(countAll[14])}</td></tr>
+                <tr><td>Tế bào khác E</td><td>${countAll[15]}</td><td> ${percent(countAll[15])}</td></tr>
+		</tbody></table>
+		`;
+                openNewPage(text);
+
+            } else {
+                ['ery1', 'ery2', 'ery3', 'ery4'].forEach((text) => {
+                    let cellCounter = document.querySelector('.' + text + ' .cell-counter');
+                    let cellCount = parseInt(cellCounter.innerText);
+                    eryCount += cellCount;
+                    countAll.push(cellCount);
+                });
+                ['mye1', 'mye2', 'neu1', 'neu2', 'neu3', 'neu4', 'eos1', 'eos2', 'eos3', 'eos4', 'mono', 'baso'].forEach((text) => {
+                    let cellCounter = document.querySelector('.' + text + ' .cell-counter');
+                    let cellCount = parseInt(cellCounter.innerText);
+                    myeCount += cellCount;
+                    countAll.push(cellCount);
+                });
+                ['lym','plasma', 'mega', 'otherA', 'otherB', 'otherC', 'otherC', 'otherD', 'otherE'].forEach((text) => {
+                    let cellCounter = document.querySelector('.' + text + ' .cell-counter');
+                    let cellCount = parseInt(cellCounter.innerText);
+                    countAll.push(cellCount);
+                })
+                let tong = totalCount - countAll[18];
+                let percent = (a) => {
+                    let b = a / tong * 100;
+                    return b ? b.toFixed(2) + "%" : '0.00'
+                }
+                let ME = eryCount == 0 ? 0 : myeCount / eryCount;
+                let text = `<table> 
+		<thead>
+		<th>Thông số</th>
+		<th>Kết quả</th>
+		<th>Bình thường</th>
+		<th></th>
+		</thead>
+		<tbody>
+		<tr><td>Tỷ lệ M/E </td><td>${ME.toFixed(2)}</td><td>3.0-5.0</td><td></td></tr>
+                <tr><td>Mẫu tiểu cầu (cái/mm3)</td><td>${countAll[18]}</td><td> 30-80</td><td></td></tr>
+                <tr><td></td><td>Số lượng</td><td>Tỉ lệ (%)</td><td>Tham chiếu</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG TỦY (Myeloid)<td>${myeCount}</td><td>${percent(myeCount)}</td><td></td></tr>
+                <tr><td>Nguyên tủy bào</td><td>${countAll[4]}</td><td> ${percent(countAll[4])} </td><td>0-1</td></tr>
+                <tr><td>Tiền tủy bào</td><td>${countAll[5]}</td><td> ${percent(countAll[5])}</td><td>0-2</td></tr>
+                <tr><td>Tủy bào trung tính</td><td>${countAll[6]}</td><td> ${percent(countAll[6])}</td><td>3-8</td></tr>
+                <tr><td>Tủy bào ái toan</td><td>${countAll[10]}</td><td>${percent(countAll[10])}</td><td>0-1</td></tr>
+                <tr><td>Hậu tủy bào trung tính</td><td>${countAll[7]}</td><td> ${percent(countAll[7])}</td><td>5-12</td></tr>
+                <tr><td>Hậu tủy bào ái toan</td><td>${countAll[11]}</td><td> ${percent(countAll[11])}</td><td>0-1</td></tr>
+                <tr><td>Band trung tính</td><td>${countAll[8]}</td><td> ${percent(countAll[8])}</td><td>5-12</td></tr>
+                <tr><td>Band ái toan</td><td>${countAll[12]}</td><td>${percent(countAll[12])}</td><td>0-1</td></tr>
+                <tr><td>Bạch cầu đoạn trung tính</td><td>${countAll[9]}</td><td> ${percent(countAll[9])}</td><td>25-41</td></tr>
+                <tr><td>Bạch cầu đoạn ái toan</td><td>${countAll[13]}</td><td> ${percent(countAll[13])}</td><td>1-4</td></tr>
+                <tr><td>Bạch cầu đoạn ái kiềm</td><td>${countAll[15]}</td><td> ${percent(countAll[15])}</td><td>0-1</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG HỒNG CẦU (Erythoid)</td><td>${eryCount}</td><td>${percent(eryCount)}</td><td></td></tr>
+                <tr><td>Tiền nguyên hồng cầu</td><td>${countAll[0]}</td><td> ${percent(countAll[0])}</td><td>0-1</td></tr>
+                <tr><td>Nguyên hồng cầu ái kiềm</td><td>${countAll[1]}</td><td>${percent(countAll[1])}</td><td>0.1-4</td></tr>
+                <tr><td>Nguyên hồng cầu đa sắc</td><td>${countAll[2]}</td><td>${percent(countAll[2])}</td><td>0.8-8</td></tr>
+                <tr><td>Nguyên hồng cầu ái toan</td><td>${countAll[3]}</td><td> ${percent(countAll[3])}</td><td>2.6-12</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG ĐƠN NHÂN</td><td> ${countAll[14]+countAll[16]+countAll[17]} </td><td>${percent(countAll[14]+countAll[16]+countAll[17])}</td><td></td></tr>
+                <tr><td>Lympho</td><td>${countAll[16]}</td><td>${percent(countAll[16])}</td><td>11-26</td></tr>
+                <tr><td>Tương bào</td><td>${countAll[17]}</td><td> ${percent(countAll[17])}</td><td>0-2</td></tr>
+                <tr><td>Mono</td><td>${countAll[14]}</td><td> ${percent(countAll[14])}</td><td>0-2</td></tr>
+                <tr style="background-color: #24207c;color: white;"><td>DÒNG KHÁC</td><td></td><td></td><td></td></tr>
+                <tr><td>Tế bào khác A</td><td>${countAll[19]}</td><td>${percent(countAll[19])}</td></tr>
+                <tr><td>Tế bào khác B</td><td>${countAll[20]}</td><td>${percent(countAll[20])}</td></tr>
+                <tr><td>Tế bào khác C</td><td>${countAll[21]}</td><td>${percent(countAll[21])}</td></tr>
+                <tr><td>Tế bào khác D</td><td>${countAll[22]}</td><td>${percent(countAll[22])}</td></tr>
+                <tr><td>Tế bào khác E</td><td>${countAll[23]}</td><td> ${percent(countAll[23])}</td></tr>
+		</tbody></table>
+		`;
+                openNewPage(text);
+            }
+        }
+
+        function reset(c = 1) {
+	    playMusic('sound_f1');
+            let confirmAction = c ? confirm("Bạn có chắc chắn muốn reset lại không?") : 1;
+            if (confirmAction) {
+                myeCount = 0;
+                eryCount = 0;
+                totalCount = 0;
+	   	if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;}
+                document.getElementById('totalCount').innerText = '00';
+                let allCell = document.querySelectorAll('.cell-counter');
+                allCell.forEach((cel) => {
+                    cel.innerText = 0;
+                })
+            }
+        }
+
+        function changemode() {
+	    if (isReport) {document.getElementById('celltap').innerHTML = bmmode;isReport=false;return;}
+            let confirmAction = confirm("Bạn có chắc chắn muốn chuyển chế độ đếm không?\n Lưu ý: Dữ liệu cũ sẽ bị xóa.");
+	    if(!confirmAction) return;
+            checkboxState = !checkboxState;
+	    playMusic('sound_b1');
+            let wbcmode = `<div class="cell mye1" onclick="incrementCount(this)" title="Tế bào non - Blast">
+            <div class="cell-counter">0</div>
+        </div>
+	<div class="cell neu1" onclick="incrementCount(this)" title="Tủy bào">
+            <div class="cell-counter">0</div>
+        </div>
+	<div class="cell neu2" onclick="incrementCount(this)" title="Hậu tủy bào">
+            <div class="cell-counter">0</div>
+        </div>
+	<div class="cell neu3" onclick="incrementCount(this)" title="Band">
+            <div class="cell-counter">0</div>
+        </div><br/>
+	<div class="cell neu4" onclick="incrementCount(this)" title="Bạch cầu đoạn trung tính">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell eos4" onclick="incrementCount(this)" title="Bạch cầu đoạn ái toan">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell baso" onclick="incrementCount(this)" title="Bạch cầu đoạn ái kiêm">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell ery4" style="width: " onclick="incrementCount(this)" title="Hồng cầu nhân">
+            <div class="cell-counter">0</div>
+        </div><br/>
+	<div class="cell mono" onclick="incrementCount(this)" title="Mono">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell lym" onclick="incrementCount(this)" title="Lympho">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell plasma" onclick="incrementCount(this)" title="Tương bào">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell otherA" onclick="incrementCount(this)" title="Tế bào khác A">
+            <div class="cell-counter">0</div>
+        </div><br/>
+        <div class="cell otherB" onclick="incrementCount(this)" title="Tế bào khác B">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell otherC" onclick="incrementCount(this)" title="Tế bào khác C">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell otherD" onclick="incrementCount(this)" title="Tế bào khác D">
+            <div class="cell-counter">0</div>
+        </div>
+        <div class="cell otherE" onclick="incrementCount(this)" title="Tế bào khác E">
+            <div class="cell-counter">0</div>
+        </div>`;
+            reset(0);
+            document.getElementById('celltap').innerHTML = checkboxState ? wbcmode : Bmmode;
+        }
+
+        function resizeContent() {
+            const content = document.getElementById('app');
+            const screenWidth = window.innerWidth;
+            const screenHeight = window.innerHeight;
+            const tmp = screenWidth < 500
+            if (screenWidth < 500) content.style.transform = `scale(${screenWidth / 500})`;
+            else if (screenHeight < 900) content.style.transform = `scale(${screenHeight /900})`;
+            document.getElementById('main').style.display = "block";
+        }
+        window.addEventListener('resize', resizeContent);
+        window.addEventListener('load', resizeContent);
+    </script>
+</body>
+
+</html>
