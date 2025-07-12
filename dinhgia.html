@@ -4,7 +4,6 @@
 <head>
     <title>Định giá Cổ phiếu</title>
     <script src="https://code.highcharts.com/highcharts.js"></script>
-    <script id="theme-script" src="https://code.highcharts.com/themes/dark-unica.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
@@ -15,21 +14,19 @@
     body {
         font-family: Arial, sans-serif;
         text-align: center;
-        background-color: rgb(42, 42, 43);
         padding: 10px;
         font-size: 14px;
+        background: white;
     }
 
-    * {
-        color: rgb(224, 224, 227);
-    }
-
+    select,
+    option,
     input[type="text"],
     input[type="number"] {
-        width: 200px;
+        width: 100px;
         padding: 8px;
         border-radius: 4px;
-        border: none;
+
         background: transparent;
     }
 
@@ -47,16 +44,19 @@
 <link rel="stylesheet" type="text/css" href="loading.css">
 
 <body>
+    <div class="container">
+        <div id="container" class="tactical" style="width:100%; height: calc(-74px + 100vh);"></div>
+        <div id="bieudo" class="tactical" style="width:100%; height: calc(-74px + 100vh)"></div>
+    </div>
     <div>
         <div id="load"></div>
         Định giá mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="CTG" type="text" autocomplete="off" id="inputField" maxlength="3" />
+        <select id="opt" onchange="OptionChange(this.value)" title="Định giá bằng phương pháp nào?">
+            <option value="PE">PE</option>
+            <option value="PB">PB</option>
+        </select>
+
     </div>
-    <h3 id="title"></h3>
-    <div class="container">
-        <div id="container" class="tactical" style="width:100%; height:400px;"></div>
-        <div id="bieudo" class="tactical" style="width:100%; height:400px;"></div>
-    </div>
-    <div id="khuyen" style="width:100%;text-align:left;"></div>
     <script>
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
@@ -64,6 +64,7 @@
         loading();
         const inputF = document.getElementById('inputField');
         let mack = inputF.value;
+        let jsonData = {};
         let lastPrice = 0;
         document.getElementById('inputField').addEventListener('input', function(event) {
             let inputValue = event.target.value.toUpperCase();
@@ -77,56 +78,24 @@
             }
         });
 
-        function getCurrentDate() {
-            const t = new Date();
-            return t.getFullYear() + "-" + String(t.getMonth() + 1)
-                .padStart(2, "0") + "-" + String(t.getDate())
-                .padStart(2, "0");
-        }
-        async function fetchData(ticker) {
-            var timeUnix = Math.floor(new Date().getTime() / 1000);
-
-            const peUrl = `https://api-finance-t19.24hmoney.vn/v1/ios/company/financial-graph?symbol=${ticker}&graph_type=6&year_report=5`;
-
-            const priceUrl = 'https://mastrade.masvn.com/api/v1/tradingview/history?symbol=' + ticker + '&resolution=1D&from=' + parseInt(Date.parse("2020-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
-
-            const [peResponse, priceResponse] = await Promise.all([
-                fetch(peUrl),
-                fetch(priceUrl)
-            ]);
-
-            const [pe, price] = await Promise.all([
-                peResponse.json(),
-                priceResponse.json()
-            ]);
-
-            return {
-                pe,
-                price
-            };
-        }
-
-        let latestEPS = null;
-
-        function getLatestEPS(priceTime, epsData) {
-            for (var i = 0; i < epsData.length; i++) {
-                if (i < epsData.length - 1 && (priceTime >= epsData[i][0]) && (priceTime < epsData[i + 1][0])) {
-                    latestEPS = epsData[i][1];
-                    break; // Dừng lại khi tìm thấy EPS gần nhất
-                }
-                if (i == epsData.length - 1 && (priceTime >= epsData[i][0])) {
-                    latestEPS = epsData[i][1];
-                    break; // Dừng lại khi tìm thấy EPS gần nhất
-                }
+        function OptionChange(value) {
+            if (value === "PE") {
+                drawchart(jsonData, "PE", mack)
+            } else if (value === "PB") {
+                drawchart(jsonData, "PB", mack)
             }
-
-            return latestEPS;
         }
+
         getBaocao(mack);
 
-
+        function percentDifference(a, b) {
+            if (a === 0) {
+                return 'Không thể chia cho 0';
+            }
+            const difference = ((b - a) / a) * 100;
+            return difference.toFixed(2) + '%';
+        }
         async function showInfo(dataBaocao) {
-            const khuyen = document.getElementById('khuyen');
             const title = document.getElementById('title');
             if (dataBaocao.data) {
                 let data = dataBaocao.data.filter(s => s.targetPrice !== undefined)
@@ -161,26 +130,30 @@
                     reversed: true // Đảo ngược trục x
                 },
                 tooltip: {
-                    headerFormat: "<b>{point.key}</b><br>",
-                    pointFormat: "{series.name}: {point.y:.0f}<br>",
-                    footerFormat: 'Trung bình: ' + average.toFixed(0) + '<br/>Hôm nay: ' + lastPrice.toFixed(0),
-                    shared: !0,
-                    useHTML: !0,
+                    useHTML: true,
+                    shared: true,
+                    zIndex: 11,
+                    formatter: function() {
+                        let point = this.points[0];
+                        return `<b>${point.key}</b><br>` + `${point.series.name}: ${point.y.toFixed(0)}(${percentDifference(lastPrice, point.y)})<br>` +
+                            `Trung bình: ${average.toFixed(0)}(${percentDifference(lastPrice, average)})<br/>` +
+                            `Nguồn: ${data[point.x].source} `;
+                    }
                 },
                 yAxis: {
                     title: {
                         text: ''
                     },
                     plotLines: [{
-                        color: 'red',
+                        color: 'black',
                         width: 1,
                         value: lastPrice, // Giá trị tham chiếu
-                        zIndex: 6,
+                        zIndex: 10,
                         label: {
                             text: 'Hôm nay: ' + lastPrice.toFixed(0),
                             align: 'left',
                             style: {
-                                color: 'red'
+                                color: 'black'
                             }
                         }
                     }]
@@ -203,6 +176,7 @@
                     }
                 }
             });
+            console.log(data)
 
             function handleClick(point) {
                 window.open(data[point.x].attachedLink, '_blank').focus();
@@ -210,196 +184,26 @@
 
             // Thêm đường ngang qua giá trị trung bình
             chart.yAxis[0].addPlotLine({
-                color: 'yellow',
+                color: 'gray',
                 width: 1,
                 value: average,
                 dashStyle: 'dash',
-                zIndex: 5,
+                zIndex: 9,
                 label: {
                     text: 'Trung bình: ' + average.toFixed(0),
                     align: 'left',
                     style: {
-                        color: 'yellow'
+                        color: 'grey'
                     }
                 }
             });
         }
 
-        function convertUnixToDate(unixTime) {
-            const date = new Date(parseInt(unixTime, 10)); // nhân 1000 vì Unix time tính theo giây
-            const day = String(date.getDate()).padStart(2, '0');
-            const month = String(date.getMonth() + 1).padStart(2, '0'); // tháng bắt đầu từ 0
-            const year = date.getFullYear();
-            return `${day}/${month}/${year}`;
-        }
-        // hàm tính mean và STD
-        function calculateStats(arr) {
-            const mean = arr.reduce((sum, val) => sum + val, 0) / arr.length;
-            const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
-            const stdDev = Math.sqrt(variance);
-
-            return {
-                mean: mean,
-                meanPlus1Std: mean + stdDev,
-                meanMinus1Std: mean - stdDev,
-                meanPlus2Std: mean + 2 * stdDev,
-                meanMinus2Std: mean - 2 * stdDev
-            };
-        }
 
         // tải báo cáo theo định giá
         async function getBaocao(symbol) {
-            await fetchData(symbol).then((data) => {
-                var dataprice = [];
-                for (var i = 0; i < data.price.t.length; i++) {
-                    dataprice.push([data.price.t[i] * 1000, data.price.c[i]]) // giá
-                }
-                lastPrice = dataprice[dataprice.length - 1][1];
+            await fetchChartAndIndicatorData(symbol);
 
-                var epsdata = data.pe.data.points.map(s => [s.x * 1000, s.y]);
-
-                var peRatios = dataprice.map(data => {
-                    const eps = getLatestEPS(data[0], epsdata);
-                    return {
-                        time: data[0],
-                        price: data[1],
-                        eps: eps,
-                        peRatio: eps ? (data[1] / eps) : null
-                    };
-                });
-
-                peRatios = peRatios.filter(item => item.peRatio !== null);
-
-                let PlusRangeData = [],
-                    MinusRangeData = [];
-                const pe = peRatios.map(data => [data.time, data.peRatio])
-                const statistics = calculateStats(pe.map(s => s[1]));
-
-                for (var i = 0; i < peRatios.length; i++) {
-                    PlusRangeData.push([peRatios[i].time, statistics.meanPlus1Std / peRatios[i].peRatio * peRatios[i].price, statistics.meanPlus2Std / peRatios[i].peRatio * peRatios[i].price])
-                    MinusRangeData.push([peRatios[i].time, statistics.meanMinus1Std / peRatios[i].peRatio * peRatios[i].price, statistics.meanMinus2Std / peRatios[i].peRatio * peRatios[i].price])
-                }
-                console.log(PlusRangeData);
-                // Tạo biểu đồ Highcharts
-                Highcharts.chart('container', {
-                    chart: {
-                        zoomType: 'x' // Cho phép zoom trục X
-                    },
-                    title: {
-                        text: 'Vùng biến động ' + symbol + ' và P/E'
-                    },
-                    subtitle: {
-                        text: 'Dữ liệu update đến ngày ' + convertUnixToDate(dataprice[dataprice.length - 1][0]),
-                        align: 'center', // Căn giữa
-                        style: {
-                            fontSize: '12px', // Kích thước chữ
-                            color: '#666666' // Màu chữ (xám nhạt)
-                        }
-                    },
-                    xAxis: {
-                        type: 'datetime',
-                        title: {
-                            text: 'Ngày'
-                        },
-                        crosshair: {
-                            enabled: true, // Bật crosshair
-                            color: '#666666', // Màu của đường kẻ dọc (xám nhạt, bạn có thể đổi)
-                            width: 1, // Độ dày của đường kẻ
-                            dashStyle: 'Solid' // Kiểu đường (Solid, Dash, Dot, v.v.)
-                        }
-                    },
-
-                    yAxis: {
-                        title: {
-                            text: ''
-                        }
-                    },
-                    legend: {
-                        enabled: true
-                    },
-                    // Ẩn credit
-                    credits: {
-                        enabled: false
-                    },
-
-                    tooltip: {
-                        shared: true,
-                        valueDecimals: 2, // Hiển thị 2 chữ số thập phân cho giá trị
-                        formatter: function() {
-                            // Lấy thời gian từ trục X và định dạng thành ngày/tháng/năm
-                            const date = Highcharts.dateFormat('%d/%m/%Y', this.x);
-                            let s = `<b>${date}</b><br/>`; // Hiển thị ngày tháng năm in đậm
-
-                            // Lặp qua các điểm dữ liệu để hiển thị giá trị
-                            this.points.forEach(point => {
-                                if (point.series.type === 'line') {
-                                    s += `${point.series.name}: ${point.y.toFixed(0)}<br/>`;
-                                } else if (point.series.type === 'arearange') {
-                                    s += `${point.series.name}: <b>${point.low.toFixed(0)} - ${point.high.toFixed(0)}</b><br/>`;
-                                }
-                            });
-
-                            return s;
-                        }
-                    },
-                    plotOptions: {
-                        arearange: {
-                            fillOpacity: 0.3,
-                            lineWidth: 1,
-                            marker: {
-                                enabled: false
-                            }
-                        },
-                        line: {
-                            lineWidth: 1,
-                            marker: {
-                                enabled: true
-                            }
-                        }
-                    },
-                    // Thêm cấu hình exporting
-                    exporting: {
-                        enabled: true, // Bật tính năng xuất dữ liệu
-                        buttons: {
-                            contextButton: {
-                                menuItems: [
-                                    'viewFullscreen', // Xem toàn màn hình
-                                    'separator', // Dòng phân cách
-                                    'downloadPNG', // Tải xuống PNG
-                                    'downloadJPEG', // Tải xuống JPEG
-                                    'downloadPDF', // Tải xuống PDF
-                                    'separator', // Dòng phân cách
-                                    'downloadCSV', // Tải xuống CSV
-                                    'downloadXLS', // Tải xuống XLS
-                                ]
-                            }
-                        }
-                    },
-                    series: [{
-                            type: 'spline',
-                            name: symbol,
-                            data: dataprice,
-                            color: 'blue' // Màu đen cho VNINDEX
-
-                        },
-                        {
-                            type: 'arearange',
-                            name: 'Vùng đắt theo PE',
-                            data: PlusRangeData,
-                            color: '#FF0000', // Màu đỏ cho dải PBplus
-                            fillOpacity: 0.3
-                        },
-                        {
-                            type: 'arearange',
-                            name: 'Vùng rẻ theo PE',
-                            data: MinusRangeData,
-                            color: '#00FF00', // Màu xanh lá cho dải PBminus
-                            fillOpacity: 0.3
-                        }
-                    ]
-                });
-
-            });
             const url = `https://api2.simplize.vn/api/company/analysis-report/list?ticker=${symbol}&isWl=false&page=0&size=10`;
             try {
                 const response = await fetch(url);
@@ -412,6 +216,262 @@
                 console.error('There was a problem with the fetch operation:', error);
                 loading(0)
             }
+        }
+
+
+
+
+        // vẽ biểu đồ
+
+        function convertDateFormat(dateStr) {
+            const [month, day, year] = dateStr.split('/');
+            return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+        }
+
+
+        function drawchart(data, type, symbol) {
+            // Chuẩn bị dữ liệu cho biểu đồ
+            const vnindexData = data.map(item => [new Date(item.Date).getTime(), item.VNINDEX]);
+            let PlusRangeData, MinusRangeData;
+            if (type == "PB") {
+                PlusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PBplus1std, item.PBplus2std]);
+                MinusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PBminus2std, item.PBminus1std]);
+            } else {
+                PlusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PEplus1std, item.PEplus2std]);
+                MinusRangeData = data.map(item => [new Date(item.Date).getTime(), item.PEminus2std, item.PEminus1std]);
+            }
+            // Tạo biểu đồ Highcharts
+            Highcharts.chart('container', {
+                chart: {
+                    zoomType: 'x' // Cho phép zoom trục X
+                },
+                title: {
+                    text: 'Vùng biến động ' + symbol + ' tương quan với định giá ' + type
+                },
+                subtitle: {
+                    text: 'Dữ liệu update đến ngày ' + convertDateFormat(data[data.length - 1].Date),
+                    align: 'center', // Căn giữa
+                    style: {
+                        fontSize: '12px', // Kích thước chữ
+                        color: '#666666' // Màu chữ (xám nhạt)
+                    }
+                },
+                xAxis: {
+                    type: 'datetime',
+                    title: {
+                        text: 'Ngày'
+                    },
+                    crosshair: {
+                        enabled: true, // Bật crosshair
+                        color: '#666666', // Màu của đường kẻ dọc (xám nhạt, bạn có thể đổi)
+                        width: 1, // Độ dày của đường kẻ
+                        dashStyle: 'Solid' // Kiểu đường (Solid, Dash, Dot, v.v.)
+                    }
+                },
+
+                yAxis: {
+                    title: {
+                        text: ''
+                    }
+                },
+                legend: {
+                    enabled: true
+                },
+                // Ẩn credit
+                credits: {
+                    enabled: false
+                },
+
+                tooltip: {
+                    shared: true,
+                    valueDecimals: 2, // Hiển thị 2 chữ số thập phân cho giá trị
+                    formatter: function() {
+                        // Lấy thời gian từ trục X và định dạng thành ngày/tháng/năm
+                        const date = Highcharts.dateFormat('%d/%m/%Y', this.x);
+                        let s = `<b>${date}</b><br/>`; // Hiển thị ngày tháng năm in đậm
+
+                        // Lặp qua các điểm dữ liệu để hiển thị giá trị
+                        this.points.forEach(point => {
+                            if (point.series.type === 'line') {
+                                s += `${point.series.name}: ${point.y.toFixed(2)}<br/>`;
+                            } else if (point.series.type === 'arearange') {
+                                s += `${point.series.name}: <b>${point.low.toFixed(2)} - ${point.high.toFixed(2)}</b><br/>`;
+                            }
+                        });
+
+                        return s;
+                    }
+                },
+                plotOptions: {
+                    arearange: {
+                        fillOpacity: 0.3,
+                        lineWidth: 1,
+                        marker: {
+                            enabled: false
+                        }
+                    },
+                    line: {
+                        lineWidth: 1,
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                },
+                // Thêm cấu hình exporting
+                exporting: {
+                    enabled: true, // Bật tính năng xuất dữ liệu
+                    buttons: {
+                        contextButton: {
+                            menuItems: [
+                                'viewFullscreen', // Xem toàn màn hình
+                                'separator', // Dòng phân cách
+                                'downloadPNG', // Tải xuống PNG
+                                'downloadJPEG', // Tải xuống JPEG
+                                'downloadPDF', // Tải xuống PDF
+                                'separator', // Dòng phân cách
+                                'downloadCSV', // Tải xuống CSV
+                                'downloadXLS', // Tải xuống XLS
+                            ]
+                        }
+                    }
+                },
+                series: [{
+                        type: 'spline',
+                        name: 'VNINDEX',
+                        data: vnindexData,
+                        color: 'blue' // Màu đen cho VNINDEX
+
+                    },
+                    {
+                        type: 'arearange',
+                        name: 'Vùng đắt theo ' + type,
+                        data: PlusRangeData,
+                        color: '#FF0000', // Màu đỏ cho dải PBplus
+                        fillOpacity: 0.3
+                    },
+                    {
+                        type: 'arearange',
+                        name: 'Vùng rẻ theo ' + type,
+                        data: MinusRangeData,
+                        color: '#00FF00', // Màu xanh lá cho dải PBminus
+                        fillOpacity: 0.3
+                    }
+                ]
+            });
+        }
+
+        function formatCustomDate(isoString) {
+            const date = new Date(isoString);
+            const day = date.getUTCDate();
+            const month = date.getUTCMonth() + 1; // Tháng bắt đầu từ 0
+            const year = date.getUTCFullYear();
+            return `${month}/${day}/${year}`;
+        }
+
+        async function fetchChartAndIndicatorData(symbol) {
+            const toDate = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+            const vnindexURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetStockChartData?Code=${symbol}&DerivativeCode=&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Stock`;
+            const peURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=${symbol}&Code=PE&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Stock`;
+            const pbURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=${symbol}&Code=PB&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Stock`;
+
+            try {
+                const [vnindexRes, peRes, pbRes] = await Promise.all([
+                    fetch(vnindexURL),
+                    fetch(peURL),
+                    fetch(pbURL),
+                ]);
+
+                if (!vnindexRes.ok || !peRes.ok || !pbRes.ok) {
+                    throw new Error('Không thể lấy dữ liệu từ một hoặc cả ba API');
+                }
+
+                const [Vnindex, PE, PB] = await Promise.all([
+                    vnindexRes.json(),
+                    peRes.json(),
+                    pbRes.json(),
+                ]);
+                // tính toán
+                // sửa ngày vnindẽ
+                const VNINDEX = Vnindex.data.map(item => {
+                    const originalDate = new Date(item.tradingDate);
+                    originalDate.setUTCDate(originalDate.getUTCDate() + 1); // dịch sang ngày kế tiếp
+                    return {
+                        ...item,
+                        tradingDate: originalDate.toISOString()
+                    };
+                });
+
+                lastPrice = VNINDEX[VNINDEX.length - 1].closePrice;
+
+                function mergeVnindexPEPB(vni, pe, pb) {
+                    // Tạo bản đồ tra cứu cho PE và PB theo ngày
+                    const mapPE = pe.reduce((acc, item) => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        acc[date] = item.value;
+                        return acc;
+                    }, {});
+
+                    const mapPB = pb.reduce((acc, item) => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        acc[date] = item.value;
+                        return acc;
+                    }, {});
+
+                    // Gộp dữ liệu từ vnindex
+                    const jsondata = vni.map(item => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        return {
+                            Date: formatCustomDate(date),
+                            VNINDEX: item.closePrice,
+                            PE: mapPE[date] ?? null,
+                            PB: mapPB[date] ?? null
+                        };
+                    });
+
+                    return jsondata;
+                }
+
+                jsonData = mergeVnindexPEPB(VNINDEX, PE.data, PB.data);
+
+                // tính trung bình
+                var peCal = calculateStats(jsonData.map(d => d.PE))
+                var pbCal = calculateStats(jsonData.map(d => d.PB))
+
+                for (var i = 0; i < jsonData.length; i++) {
+                    jsonData[i].PEplus1std = peCal.meanPlusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEplus2std = peCal.meanPlus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEminus1std = peCal.meanMinusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEminus2std = peCal.meanMinus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+
+                    jsonData[i].PBplus1std = pbCal.meanPlusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBplus2std = pbCal.meanPlus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBminus1std = pbCal.meanMinusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBminus2std = pbCal.meanMinus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                }
+
+                console.log('Data:', jsonData);
+                let type = document.getElementById('opt').value;
+                drawchart(jsonData, type, symbol)
+
+            } catch (error) {
+                console.error('Lỗi khi gọi API:', error);
+            }
+        }
+
+
+        // hàm tính mean và STD
+        function calculateStats(arr) {
+            const mean = arr.reduce((sum, val) => sum + val, 0) / arr.length;
+            const variance = arr.reduce((sum, val) => sum + Math.pow(val - mean, 2), 0) / arr.length;
+            const stdDev = Math.sqrt(variance);
+
+            return {
+                mean: mean,
+                meanPlusStd: mean + stdDev,
+                meanMinusStd: mean - stdDev,
+                meanPlus2Std: mean + 2 * stdDev,
+                meanMinus2Std: mean - 2 * stdDev
+            };
         }
     </script>
 </body>

@@ -21,10 +21,10 @@
     <div id="container" style="width: 100%; height: 550px;"></div>
     <div id="container2" style="width: 100%; height: 550px;"></div>
     <script>
-function convertDateFormat(dateStr) {
-  const [month, day, year] = dateStr.split('/');
-  return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
-}
+        function convertDateFormat(dateStr) {
+            const [month, day, year] = dateStr.split('/');
+            return `${day.padStart(2, '0')}/${month.padStart(2, '0')}/${year}`;
+        }
 
 
         function drawchart(data, type, id) {
@@ -158,105 +158,105 @@ function convertDateFormat(dateStr) {
             });
         }
 
-function formatCustomDate(isoString) {
-  const date = new Date(isoString);
-  const day = date.getUTCDate();
-  const month = date.getUTCMonth() + 1; // Tháng bắt đầu từ 0
-  const year = date.getUTCFullYear();
-  return `${month}/${day}/${year}`;
-}
+        function formatCustomDate(isoString) {
+            const date = new Date(isoString);
+            const day = date.getUTCDate();
+            const month = date.getUTCMonth() + 1; // Tháng bắt đầu từ 0
+            const year = date.getUTCFullYear();
+            return `${month}/${day}/${year}`;
+        }
 
-async function fetchChartAndIndicatorData() {
-const toDate = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
-  const vnindexURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetStockChartData?Code=VNINDEX&DerivativeCode=&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
-  const peURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=VNINDEX&Code=PE&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
-  const pbURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=VNINDEX&Code=PB&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
+        async function fetchChartAndIndicatorData() {
+            const toDate = new Date().toISOString().split('T')[0]; // 'YYYY-MM-DD'
+            const vnindexURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetStockChartData?Code=VNINDEX&DerivativeCode=&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
+            const peURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=VNINDEX&Code=PE&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
+            const pbURL = `https://lite-api.fiintrade.vn/technical/TradingView/GetIndicators?OrganCode=VNINDEX&Code=PB&Frequency=Daily&From=2012-01-01T00%3A00%3A00.000Z&To=${toDate}T00%3A00%3A00.000Z&Type=Index`;
 
-  try {
-    const [vnindexRes, peRes, pbRes] = await Promise.all([
-      fetch(vnindexURL),
-      fetch(peURL),
-      fetch(pbURL),
-    ]);
+            try {
+                const [vnindexRes, peRes, pbRes] = await Promise.all([
+                    fetch(vnindexURL),
+                    fetch(peURL),
+                    fetch(pbURL),
+                ]);
 
-    if (!vnindexRes.ok || !peRes.ok || !pbRes.ok) {
-      throw new Error('Không thể lấy dữ liệu từ một hoặc cả ba API');
-    }
+                if (!vnindexRes.ok || !peRes.ok || !pbRes.ok) {
+                    throw new Error('Không thể lấy dữ liệu từ một hoặc cả ba API');
+                }
 
-    const [Vnindex, PE, PB] = await Promise.all([
-      vnindexRes.json(),
-      peRes.json(),
-      pbRes.json(),
-    ]);
-// tính toán
-// sửa ngày vnindẽ
-const VNINDEX = Vnindex.data.map(item => {
-  const originalDate = new Date(item.tradingDate);
-  originalDate.setUTCDate(originalDate.getUTCDate() + 1); // dịch sang ngày kế tiếp
-  return {
-    ...item,
-    tradingDate: originalDate.toISOString()
-  };
-});
+                const [Vnindex, PE, PB] = await Promise.all([
+                    vnindexRes.json(),
+                    peRes.json(),
+                    pbRes.json(),
+                ]);
+                // tính toán
+                // sửa ngày vnindẽ
+                const VNINDEX = Vnindex.data.map(item => {
+                    const originalDate = new Date(item.tradingDate);
+                    originalDate.setUTCDate(originalDate.getUTCDate() + 1); // dịch sang ngày kế tiếp
+                    return {
+                        ...item,
+                        tradingDate: originalDate.toISOString()
+                    };
+                });
 
-function mergeVnindexPEPB(vni, pe, pb) {
-  // Tạo bản đồ tra cứu cho PE và PB theo ngày
-  const mapPE = pe.reduce((acc, item) => {
-    const date = new Date(item.tradingDate).toISOString().split('T')[0];
-    acc[date] = item.value;
-    return acc;
-  }, {});
+                function mergeVnindexPEPB(vni, pe, pb) {
+                    // Tạo bản đồ tra cứu cho PE và PB theo ngày
+                    const mapPE = pe.reduce((acc, item) => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        acc[date] = item.value;
+                        return acc;
+                    }, {});
 
-  const mapPB = pb.reduce((acc, item) => {
-    const date = new Date(item.tradingDate).toISOString().split('T')[0];
-    acc[date] = item.value;
-    return acc;
-  }, {});
+                    const mapPB = pb.reduce((acc, item) => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        acc[date] = item.value;
+                        return acc;
+                    }, {});
 
-  // Gộp dữ liệu từ vnindex
-  const jsondata = vni.map(item => {
-    const date = new Date(item.tradingDate).toISOString().split('T')[0];
-    return {
-      Date: formatCustomDate(date),
-      VNINDEX: item.closePrice,
-      PE: mapPE[date] ?? null,
-      PB: mapPB[date] ?? null
-    };
-  });
+                    // Gộp dữ liệu từ vnindex
+                    const jsondata = vni.map(item => {
+                        const date = new Date(item.tradingDate).toISOString().split('T')[0];
+                        return {
+                            Date: formatCustomDate(date),
+                            VNINDEX: item.closePrice,
+                            PE: mapPE[date] ?? null,
+                            PB: mapPB[date] ?? null
+                        };
+                    });
 
-  return jsondata;
-}
+                    return jsondata;
+                }
 
-var  jsonData = mergeVnindexPEPB(VNINDEX, PE.data, PB.data);
+                var jsonData = mergeVnindexPEPB(VNINDEX, PE.data, PB.data);
 
-// tính trung bình
- var peCal = calculateStats(jsonData.map(d => d.PE))
- var pbCal = calculateStats(jsonData.map(d => d.PB))
+                // tính trung bình
+                var peCal = calculateStats(jsonData.map(d => d.PE))
+                var pbCal = calculateStats(jsonData.map(d => d.PB))
 
-           for (var i = 0; i < jsonData.length; i++) {
-                jsonData[i].PEplus1std = peCal.meanPlusStd / jsonData[i].PE * jsonData[i].VNINDEX
-                jsonData[i].PEplus2std = peCal.meanPlus2Std / jsonData[i].PE * jsonData[i].VNINDEX
-                jsonData[i].PEminus1std = peCal.meanMinusStd / jsonData[i].PE * jsonData[i].VNINDEX
-                jsonData[i].PEminus2std = peCal.meanMinus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+                for (var i = 0; i < jsonData.length; i++) {
+                    jsonData[i].PEplus1std = peCal.meanPlusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEplus2std = peCal.meanPlus2Std / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEminus1std = peCal.meanMinusStd / jsonData[i].PE * jsonData[i].VNINDEX
+                    jsonData[i].PEminus2std = peCal.meanMinus2Std / jsonData[i].PE * jsonData[i].VNINDEX
 
-                jsonData[i].PBplus1std = pbCal.meanPlusStd / jsonData[i].PB * jsonData[i].VNINDEX
-                jsonData[i].PBplus2std = pbCal.meanPlus2Std / jsonData[i].PB * jsonData[i].VNINDEX
-                jsonData[i].PBminus1std = pbCal.meanMinusStd / jsonData[i].PB * jsonData[i].VNINDEX
-                jsonData[i].PBminus2std = pbCal.meanMinus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBplus1std = pbCal.meanPlusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBplus2std = pbCal.meanPlus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBminus1std = pbCal.meanMinusStd / jsonData[i].PB * jsonData[i].VNINDEX
+                    jsonData[i].PBminus2std = pbCal.meanMinus2Std / jsonData[i].PB * jsonData[i].VNINDEX
+                }
+
+                console.log('Data:', jsonData);
+
+                drawchart(jsonData, "PE", "container")
+                drawchart(jsonData, "PB", "container2")
+
+            } catch (error) {
+                console.error('Lỗi khi gọi API:', error);
             }
-
-    console.log('Data:', jsonData);
-
-            drawchart(jsonData, "PE", "container")
-           drawchart(jsonData, "PB", "container2")
-
-  } catch (error) {
-    console.error('Lỗi khi gọi API:', error);
-  }
-}
+        }
 
 
-fetchChartAndIndicatorData();
+        fetchChartAndIndicatorData();
 
         // hàm tính mean và STD
         function calculateStats(arr) {
@@ -272,7 +272,6 @@ fetchChartAndIndicatorData();
                 meanMinus2Std: mean - 2 * stdDev
             };
         }
-
     </script>
 
 </html>
