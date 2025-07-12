@@ -432,7 +432,7 @@
     </div>
     <script>
         // khai báo biến
-        const defaultkey = 13;
+        const defaultkey = 1;
 	const bangtin = `<table style="font-size:0.8rem;"><tr><th>Cấp 3 (Tháng, quý)</th><th>Cấp 2 (Tháng quý)</th><th>Cấp 1 (hàng ngày)</th></tr>
 <tr>
 <td><ul>
@@ -474,86 +474,85 @@
                 enable: 1
             },
             4: {
-                src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
-                title: "Định giá VN-Index",
-                info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
-                enable: 1
-            },
-            5: {
-                src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
-                title: "Thống kê GD theo NĐT",
-                info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
-                enable: 1
-            },
-            6: {
-                src: "https://temp-portal.fidt.vn/data/ty-gia",
-                title: "Tỷ giá USD/VND",
-                info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
-                enable: 1
-            },
-            7: {
-                src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
-                title: "Giá hàng hóa",
-                info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
-                enable: 1
-            },
-            8: {
-                src: "https://temp-portal.fidt.vn/data/thep",
-                title: "Giá thép",
-                info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
-                enable: 1
-            },
-            9: {
-                src: "https://temp-portal.fidt.vn/data/fdi",
-                title: "Đầu tư FDI",
-                info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
-                enable: 1
-            },
-            10: {
-                src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
-                title: "Xuất nhập khẩu",
-                info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
-                enable: 1
-            },
-            12: {
-                src: "chart.html",
-                title: "Vĩ mô/hàng hóa",
-                info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...."+bangtin,
-                enable: 1
-            },
-
-            13: {
-                src: "tradingview.html",
-                title: "Biểu đồ Tradingview",
-                info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu."+bangtin,
-                enable: 1
-            },
-            14: {
-                src: "finbox.html",
-                title: "Finbox khuyến nghị",
-                info: "Danh sách các cổ phiếu khuyến nghị của finbox. Lưu ý cổ phiếu của Finbox mua theo công cụ và triết lý riêng.",
-                enable: 1
-            },
-            15: {
                 src: "dinhgia.html",
                 title: "Định giá cổ phiếu",
                 info: "Công cụ giúp theo dõi định giá cổ phiếu theo P/E và mức dự phóng của các công ty chứng khoán.",
                 enable: 1
             },
-            16: {
+            5: {
                 src: "valuation.html",
                 title: "VNINDEX và PB, PE",
                 info: "Theo dõi biến động VNINDEX và định giá P/B và P/E để xác định vùng định giá đắt rẻ. <br/> Cần cập nhật dữ liệu thủ công file data.csv.",
                 enable: 1
             },
+            6: {
+                src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
+                title: "Định giá VN-Index",
+                info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
+                enable: 1
+            },
+            7: {
+                src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
+                title: "Thống kê GD theo NĐT",
+                info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
+                enable: 1
+            },
+            8: {
+                src: "https://temp-portal.fidt.vn/data/ty-gia",
+                title: "Tỷ giá USD/VND",
+                info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
+                enable: 1
+            },
+            9: {
+                src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
+                title: "Giá hàng hóa",
+                info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
+                enable: 1
+            },
+            10: {
+                src: "https://temp-portal.fidt.vn/data/thep",
+                title: "Giá thép",
+                info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
+                enable: 1
+            },
+            11: {
+                src: "https://temp-portal.fidt.vn/data/fdi",
+                title: "Đầu tư FDI",
+                info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
+                enable: 1
+            },
+            12: {
+                src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
+                title: "Xuất nhập khẩu",
+                info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
+                enable: 1
+            },
+            13: {
+                src: "chart.html",
+                title: "Vĩ mô/hàng hóa",
+                info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...."+bangtin,
+                enable: 1
+            },
+            14: {
+                src: "tradingview.html",
+                title: "Biểu đồ Tradingview",
+                info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu."+bangtin,
+                enable: 1
+            },
+            15: {
+                src: "finbox.html",
+                title: "Finbox khuyến nghị",
+                info: "Danh sách các cổ phiếu khuyến nghị của finbox. Lưu ý cổ phiếu của Finbox mua theo công cụ và triết lý riêng.",
+                enable: 1
+            },
 
-            18: {
+            16: {
                 src: "fmarket.html",
                 title: "Hiệu suất quỹ CP",
                 info: "Thống kê các cổ phiếu được các quỹ cổ phiếu nắm giữ.<br/> Xem biểu đồ scratter plot để đánh giá rủi ro - lợi nhuận của các quỹ mở so với VNINDEX. Chỉ những quỹ mở có hiệu suất tốt hơn trong dài hạn, và có mức độ biến động thấp mới đáng lựa chọn để đầu tư.",
                 enable: 1
             },
-            19: {
+            17: {
                 src: "kqkd.html",
                 title: "Kết quả kinh doanh",
                 info: `Xem kết quả kinh doanh quý gần nhất của các doanh nghiệp trên sàn, nguồn Stocks.vn.<br/> Chú ý mức tăng trưởng lợi nhuận sau thuế so với cùng kỳ của các doanh nghiệp để đánh giá khả năng tăng trưởng đột phá về lợi nhuận.<br/><br/>
