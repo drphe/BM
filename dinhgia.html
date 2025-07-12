@@ -109,13 +109,21 @@
             var sum = dataPrice.reduce(function(a, b) {
                 return a + b;
             }, 0);
-            var average = sum / dataPrice.length;
+            var average = Math.ceil(sum / dataPrice.length / 100) * 100
             var chart = Highcharts.chart('bieudo', {
                 chart: {
                     type: 'column'
                 },
                 title: {
                     text: 'Dự phóng ' + mack
+                },
+                subtitle: {
+                    text: 'Trung bình: ' + average + ' (Upside: '+percentDifference(lastPrice, average)+')',
+                    align: 'center', // Căn giữa
+                    style: {
+                        fontSize: '12px', // Kích thước chữ
+                        color: '#666666' // Màu chữ (xám nhạt)
+                    }
                 },
                 credits: {
                     enabled: false // Tắt hiển thị credits
@@ -134,7 +142,7 @@
                     formatter: function() {
                         let point = this.points[0];
                         return `<b>${point.key}</b><br>` + `${point.series.name}: ${point.y.toFixed(0)}(${percentDifference(lastPrice, point.y)})<br>` +
-                            `Trung bình: ${average.toFixed(0)}(${percentDifference(lastPrice, average)})<br/>` +
+                            `Trung bình: ${average}(${percentDifference(lastPrice, average)})<br/>` +
                             `Nguồn: ${data[point.x].source} `;
                     }
                 },
