@@ -23,10 +23,8 @@
     option,
     input[type="text"],
     input[type="number"] {
-        width: 100px;
-        padding: 8px;
+        padding: 2px;
         border-radius: 4px;
-
         background: transparent;
     }
 
@@ -48,9 +46,9 @@
         <div id="container" class="tactical" style="width:100%; height: calc(-74px + 100vh);"></div>
         <div id="bieudo" class="tactical" style="width:100%; height: calc(-74px + 100vh)"></div>
     </div>
-    <div>
+    <div style="text-align:center;">
         <div id="load"></div>
-        Định giá mã chứng khoán: <input placeholder="Mã" style="width: 60px;" value="CTG" type="text" autocomplete="off" id="inputField" maxlength="3" />
+        Mã chứng khoán: <input placeholder="Mã" style="width: 60px;" title="Nhập và nhấn Enter" value="CTG" type="text" autocomplete="off" id="inputField" maxlength="3" />
         <select id="opt" onchange="OptionChange(this.value)" title="Định giá bằng phương pháp nào?">
             <option value="PE">PE</option>
             <option value="PB">PB</option>
@@ -176,7 +174,6 @@
                     }
                 }
             });
-            console.log(data)
 
             function handleClick(point) {
                 window.open(data[point.x].attachedLink, '_blank').focus();
@@ -211,6 +208,7 @@
                     throw new Error('Network response was not ok');
                 }
                 dataBaocao = await response.json();
+		            console.log(dataBaocao)
                 await showInfo(dataBaocao)
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
@@ -454,7 +452,10 @@
                 drawchart(jsonData, type, symbol)
 
             } catch (error) {
-                console.error('Lỗi khi gọi API:', error);
+		alert("Không tải được dữ liệu!");
+		jsonData = {}
+                drawchart(jsonData, 'PE', symbol)
+                console.log('Lỗi khi gọi API:', error);
             }
         }
 
