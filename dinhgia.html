@@ -50,8 +50,8 @@
         <div id="load"></div>
         Mã chứng khoán: <input placeholder="Mã" style="width: 60px;" title="Nhập và nhấn Enter" value="CTG" type="text" autocomplete="off" id="inputField" maxlength="3" />
         <select id="opt" onchange="OptionChange(this.value)" title="Định giá bằng phương pháp nào?">
-            <option value="PE">PE</option>
-            <option value="PB">PB</option>
+            <option value="PE">P/E</option>
+            <option value="PB">P/B</option>
         </select>
 
     </div>
@@ -78,9 +78,9 @@
 
         function OptionChange(value) {
             if (value === "PE") {
-                drawchart(jsonData, "PE", mack)
+                drawchart(jsonData, "P/E", mack)
             } else if (value === "PB") {
-                drawchart(jsonData, "PB", mack)
+                drawchart(jsonData, "P/B", mack)
             }
         }
 
@@ -247,7 +247,7 @@
                     text: symbol + ' với định giá ' + type
                 },
                 subtitle: {
-                    text: 'Dữ liệu update đến ngày ' + convertDateFormat(data[data.length - 1].Date),
+                    text: 'Updated: ' + convertDateFormat(data[data.length - 1].Date),
                     align: 'center', // Căn giữa
                     style: {
                         fontSize: '12px', // Kích thước chữ
@@ -449,12 +449,13 @@
 
                 console.log('Data:', jsonData);
                 let type = document.getElementById('opt').value;
+		type = type == "PE"? "P/E": "P/B";
                 drawchart(jsonData, type, symbol)
 
             } catch (error) {
 		alert("Không tải được dữ liệu!");
 		jsonData = {}
-                drawchart(jsonData, 'PE', symbol)
+                drawchart(jsonData, 'P/E', symbol)
                 console.log('Lỗi khi gọi API:', error);
             }
         }

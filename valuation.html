@@ -44,7 +44,7 @@
                     zoomType: 'x' // Cho phép zoom trục X
                 },
                 title: {
-                    text: ' VNINDEX và định giá' + type
+                    text: ' VNINDEX và định giá ' + type
                 },
                 subtitle: {
                     text: 'Updated: ' + convertDateFormat(data[data.length - 1].Date),
@@ -247,8 +247,8 @@
 
                 console.log('Data:', jsonData);
 
-                drawchart(jsonData, "PE", "container")
-                drawchart(jsonData, "PB", "container2")
+                drawchart(jsonData, "P/E", "container")
+                drawchart(jsonData, "P/B", "container2")
 
             } catch (error) {
                 console.error('Lỗi khi gọi API:', error);
