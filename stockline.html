@@ -187,7 +187,7 @@
     <div id="overlay" class="overlay"></div>
     <div id="button" style="height: 30px;display: flex;align-items: center;">
         <a class="button active" id="tamdiem">Tâm điểm thị trường</a>
-        <a class="button " id="finbox">Finbox Fast Report</a>
+        <a class="button " id="finbox">Lịch kinh tế</a>
     </div>
 
     <div id="container" style="height: calc(-55px + 100vh); overflow: scroll;"></div>
@@ -217,14 +217,23 @@
             b.addEventListener('click', (e) => {
                 var type = e.target.id
                 if (type && type != "button") {
-                    if (type == 'finbox') fetchArticles();
+                    if (type == 'finbox') lichkinhte()//fetchArticles();
                     else showList();
                     buttons.forEach(btn => btn.classList.remove('active'));
                     b.classList.add('active');
                 }
             });
         });
+	function lichkinhte(){
+    const container = document.getElementById("container");
+    container.style.display = 'block';
+    if (!container) {
+        console.error("Container element not found!");
+        return;
+    }
+    container.innerHTML = `<iframe allowtransparency="true" frameborder="0" height="600" marginheight="0" marginwidth="0" scrolling="yes" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&amp;category=_employment,_economicActivity,_inflation,_centralBanks,_confidenceIndex&amp;importance=2,3&amp;features=timeselector,filters&amp;countries=5&amp;calType=day&amp;timeZone=27&amp;lang=52" style="margin-top:-35px;width:100%;overflow">`;
 
+	}
         function showList(number) {
             var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';
             loading(1);
@@ -256,6 +265,7 @@
 
         function createlist(arrs) {
             let contentId = document.getElementById("container");
+	   contentId.style.display = 'grid';
             contentId.innerHTML = ``;
             arrs.forEach(arr => {
                 let l = document.createElement("div");
