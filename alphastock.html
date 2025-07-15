@@ -94,25 +94,26 @@
   z-index:999;
 "></div>
 
-    <div id="popup" style="
-  display:none;
-  position:fixed;
-  top:10%;
-  left:50%;
-  transform:translateX(-50%);
-  background-color:white;
-  border:1px solid #ccc;
-  padding:20px;
-  box-shadow:0 0 10px rgba(0,0,0,0.3);
-  max-width:600px;
-  z-index:1000;
-    max-height: 400px;
-    overflow: auto;
+<div id="popup" style="
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+  width: 70%;
+  max-height: 500px;
+  overflow: auto;
+  z-index: 1000;
 ">
-        <h3 id="popupTitle">📘 Tóm tắt báo cáo</h3>
-        <p id="popupContent">Đang tải...</p>
-        <button onclick="closePopup()">Đóng</button>
-    </div>
+  <p id="popupContent">Đang tải...</p>
+  <button onclick="closePopup()">Đóng</button>
+</div>
+
 
     <script>
         let allData = []
