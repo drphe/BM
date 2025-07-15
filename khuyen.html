@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Biểu đồ Highcharts Tùy Biến</title>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <style>
+        #controls {
+            margin-bottom: 20px;
+        }
+
+        select,
+        button {
+            margin-right: 10px;
+            padding: 6px 10px;
+            cursor: pointer;
+        }
+
+        #days button.active {
+            background-color: #0066cc;
+            color: white;
+        }
+
+        #container {
+            width: 100%;
+            height: 400px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="controls" style="display:flex">
+        <select id="type">
+            <option value="1">Khuyến nghị mua</option>
+            <option value="2">Khuyến nghị bán</option>
+            <option value="3">Top upside hiện tại</option>
+            <option value="4">Top upside tăng trưởng LNDP</option>
+        </select>
+
+        <div id="days">
+            <button data-value="30D">30D</button>
+            <button data-value="60D">60D</button>
+            <button data-value="90D">90D</button>
+            <button data-value="180D" class="active">180D</button>
+        </div>
+    </div>
+
+    <div id="container"></div>
+
+    <script>
+        let currentDay = "180D";
+        let currentType = document.getElementById("type").value;
+
+        async function loadChart() {
+            const url = `https://api.alphastock.vn/api/report/top?days=${currentDay}&type=${currentType}`;
+
+            try {
+                const response = await fetch(url);
+                const rawData = await response.json();
+
+                const categories = rawData.map(item => item.code);
+                const seriesData = rawData.map(item => {
+                    const tooltip = item.tooltip.map(row => `${row.source}: ${row.date}`).join('<br/>');
+                    return {
+                        name: item.code,
+                        y: item.value,
+                        tooltipData: tooltip
+                    };
+                });
+
+                Highcharts.chart('container', {
+                    chart: {
+                        type: 'bar'
+                    },
+                    title: {
+                        text: ''
+                    },
+                    xAxis: {
+                        categories: categories,
+                        visible: true,
+                        title: {
+                            text: ''
+                        },
+                        labels: {
+                            style: {
+                                fontWeight: 'bold',
+                                fontSize: '14px'
+                            }
+                        }
+                    },
+
+                    legend: {
+                        enabled: false
+                    }, // 🔒 Ẩn legend
+                    credits: {
+                        enabled: false
+                    }, // 🔒 Ẩn credit
+                    yAxis: {
+                        visible: false,
+                        title: {
+                            text: ''
+                        }
+                    },
+
+                    plotOptions: {
+                        series: {
+                            dataLabels: {
+                                enabled: true,
+                                formatter: function() {
+                                    if (currentType === "3" || currentType === "4") {
+                                        return Highcharts.numberFormat(this.y, 2) + ' %';
+                                    } else {
+                                        return this.y + ' lần';
+                                    }
+                                }
+                            }
+                        }
+                    },
+
+                    tooltip: {
+                        useHTML: true,
+                        formatter: function() {
+                            const label = (currentType === "3" || currentType === "4") ?
+                                Highcharts.numberFormat(this.y, 2) + ' %' :
+                                this.y + ' lần';
+                            return `<b>Nguồn dữ liệu</b><br/>${this.point.tooltipData}`;
+                        }
+                    },
+                    series: [{
+                        name: 'Khuyến nghị',
+                        data: seriesData
+                    }]
+                });
+
+            } catch (err) {
+                alert("Lỗi khi tải dữ liệu. Kiểm tra kết nối hoặc API.");
+                console.error(err);
+            }
+        }
+
+        // 🔄 Sự kiện cập nhật khi thay đổi type
+        document.getElementById("type").addEventListener("change", function() {
+            currentType = this.value;
+            loadChart();
+        });
+
+        // 🔄 Sự kiện khi click vào nút day
+        document.querySelectorAll("#days button").forEach(btn => {
+            btn.addEventListener("click", function() {
+                document.querySelectorAll("#days button").forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
+                currentDay = this.getAttribute("data-value");
+                loadChart();
+            });
+        });
+
+        window.onload = loadChart;
+    </script>
+</body>
+
+</html>

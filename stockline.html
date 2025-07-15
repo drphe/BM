@@ -114,11 +114,13 @@
             width: -webkit-fill-available !important;
             height: auto !important;
         }
-.art-sapo{
-    background: #ffdedf;
-    color:#96171b;
-    padding:4px;
-}
+
+        .art-sapo {
+            background: #ffdedf;
+            color: #96171b;
+            padding: 4px;
+        }
+
         .news-style {
             flex-grow: 1;
             display: inline-block;
@@ -131,7 +133,7 @@
             -webkit-box-align: start;
             align-items: center;
             border-bottom: 1px solid #ddd;
-	   padding:4px;
+            padding: 4px;
         }
 
         .mainContent {
@@ -162,7 +164,11 @@
             background-color: var(--headercl);
             border-radius: 6px 6px 0px 0px;
         }
-	.popup * {line-height:24px;}
+
+        .popup * {
+            line-height: 24px;
+        }
+
         #button {
             border-bottom: 1px solid var(--bp3button);
             padding: 0px;
@@ -176,8 +182,11 @@
             padding: 6px 2px;
             margin: 4px;
         }
-.popup-content img, .popup-content b{display:block}
 
+        .popup-content img,
+        .popup-content b {
+            display: block
+        }
     </style>
     <link rel="stylesheet" type="text/css" href="loading.css">
 </head>
@@ -187,6 +196,7 @@
     <div id="overlay" class="overlay"></div>
     <div id="button" style="height: 30px;display: flex;align-items: center;">
         <a class="button active" id="tamdiem">Tâm điểm thị trường</a>
+        <a class="button " id="khuyen">Top CTCK khuyến nghị</a>
         <a class="button " id="finbox">Lịch kinh tế</a>
     </div>
 
@@ -217,23 +227,37 @@
             b.addEventListener('click', (e) => {
                 var type = e.target.id
                 if (type && type != "button") {
-                    if (type == 'finbox') lichkinhte()//fetchArticles();
+                    if (type == 'finbox') lichkinhte();
+                    else if (type == 'khuyen') khuyennghi();
                     else showList();
                     buttons.forEach(btn => btn.classList.remove('active'));
                     b.classList.add('active');
                 }
             });
         });
-	function lichkinhte(){
-    const container = document.getElementById("container");
-    container.style.display = 'block';
-    if (!container) {
-        console.error("Container element not found!");
-        return;
-    }
-    container.innerHTML = `<iframe allowtransparency="true" frameborder="0" height="600" marginheight="0" marginwidth="0" scrolling="yes" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&amp;category=_employment,_economicActivity,_inflation,_centralBanks,_confidenceIndex&amp;importance=2,3&amp;features=timeselector,filters&amp;countries=5&amp;calType=day&amp;timeZone=27&amp;lang=52" style="margin-top:-35px;width:100%;overflow">`;
 
-	}
+        function lichkinhte() {
+            const container = document.getElementById("container");
+            container.style.display = 'block';
+            if (!container) {
+                console.error("Container element not found!");
+                return;
+            }
+            container.innerHTML = `<iframe style="margin-top:-35px!important;width:100%;overflow" allowtransparency="true" frameborder="0" height="600" marginheight="0" marginwidth="0" scrolling="yes" src="https://sslecal2.investing.com?columns=exc_flags,exc_currency,exc_importance,exc_actual,exc_forecast,exc_previous&amp;category=_employment,_economicActivity,_inflation,_centralBanks,_confidenceIndex&amp;importance=2,3&amp;features=timeselector,filters&amp;countries=5&amp;calType=day&amp;timeZone=27&amp;lang=52" >`;
+
+        }
+
+        function khuyennghi() {
+            const container = document.getElementById("container");
+            container.style.display = 'block';
+            if (!container) {
+                console.error("Container element not found!");
+                return;
+            }
+            container.innerHTML = `<iframe allowtransparency="true" frameborder="0" height="600" marginheight="0" marginwidth="0" scrolling="yes" src="khuyen.html" style="width:100%;overflow">`;
+
+        }
+
         function showList(number) {
             var url = 'https://stockline.vn/vi/ntag-tam-diem-thi-truong-7';
             loading(1);
@@ -265,7 +289,7 @@
 
         function createlist(arrs) {
             let contentId = document.getElementById("container");
-	   contentId.style.display = 'grid';
+            contentId.style.display = 'grid';
             contentId.innerHTML = ``;
             arrs.forEach(arr => {
                 let l = document.createElement("div");

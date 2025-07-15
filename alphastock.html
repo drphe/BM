@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Báo cáo cổ phiếu theo loại</title>
+    <link rel="stylesheet" type="text/css" href="loading.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: var(--backgroundColor) !important;
+            color: var(--black);
+        }
+
+        .tabs {
+            margin-bottom: 15px;
+        }
+
+        .tabs button {
+            padding: 8px 16px;
+            margin-right: 5px;
+            cursor: pointer;
+            border: none;
+            border-bottom: 2px solid transparent;
+            background-color: #eee;
+        }
+
+        .tabs button.active {
+            border-bottom: 2px solid #333;
+            background-color: #ddd;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            cursor: pointer;
+            background-color: #f2f2f2;
+        }
+
+        th,
+        td {
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: left;
+        }
+
+        .pagination {
+            margin-top: 10px;
+            text-align: center;
+        }
+
+        .pagination button {
+            padding: 5px 10px;
+            margin: 0 2px;
+        }
+    </style>
+</head>
+
+<body>
+    <h2>📊 Báo cáo phân tích</h2>
+    <div class="tabs">
+        <button onclick="switchType(1)" id="tab1">Doanh nghiệp</button>
+        <button onclick="switchType(2)" id="tab2">Ngành</button>
+        <button onclick="switchType(3)" id="tab3">Chiến lược</button>
+        <button onclick="switchType(4)" id="tab4">Vĩ mô/chuyên đề</button>
+    </div>
+    <table id="reportTable">
+        <thead>
+            <tr>
+                <th onclick="sortTable('code')">Mã</th>
+                <th onclick="sortTable('title')">Tiêu đề</th>
+                <th onclick="sortTable('source')">Nguồn</th>
+                <th onclick="sortTable('recommendations')">Khuyến nghị</th>
+                <th onclick="sortTable('target')">Giá mục tiêu</th>
+                <th>File</th>
+            </tr>
+        </thead>
+        <tbody id="tableBody"></tbody>
+    </table>
+    <div class="pagination" id="pagination"></div>
+    <div id="overlay" style="
+  display:none;
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background-color:rgba(0,0,0,0.5);
+  z-index:999;
+"></div>
+
+    <div id="popup" style="
+  display:none;
+  position:fixed;
+  top:10%;
+  left:50%;
+  transform:translateX(-50%);
+  background-color:white;
+  border:1px solid #ccc;
+  padding:20px;
+  box-shadow:0 0 10px rgba(0,0,0,0.3);
+  max-width:600px;
+  z-index:1000;
+    max-height: 400px;
+    overflow: auto;
+">
+        <h3 id="popupTitle">📘 Tóm tắt báo cáo</h3>
+        <p id="popupContent">Đang tải...</p>
+        <button onclick="closePopup()">Đóng</button>
+    </div>
+
+    <script>
+        let allData = []
+        let currentData = []
+        let currentType = 1
+        let currentPage = 1
+        const rowsPerPage = 20
+        let currentSort = {
+            column: '',
+            asc: true
+        }
+        const typeConfigs = {
+            1: {
+                headers: ["Mã", "Tiêu đề", "Nguồn", "Giá mục tiêu", "Upside hiện tại", "LNDP", "TT LNDP", "Ngày phát hành", "Xem"],
+                fields: ["code", "title", "source", "target", "upside", "profit", "growth", "date", "file"]
+            },
+            2: {
+                headers: ["Ngành", "Tiêu đề", "Nguồn", "Ngày phát hành", "Xem"],
+                fields: ["code", "title", "source", "date", "file"]
+            },
+            3: {
+                headers: ["Kỳ báo cáo", "Tiêu đề", "Nguồn", "Ngày phát hành", "Xem"],
+                fields: ["code", "title", "source", "date", "file"]
+            },
+            4: {
+                headers: ["Kỳ báo cáo", "Tiêu đề", "Nguồn", "Ngày phát hành", "File"],
+                fields: ["code", "title", "source", "date", "file"]
+            }
+        }
+        const downloadicon = `<svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" clip-rule="evenodd" d="M15.3125 4.55L11.2125 0.425L10.775 0.25H1.125L0.5 0.875V7.75H1.75V1.5H9.25V5.875L9.875 6.5H14.25V7.75H15.5V5L15.3125 4.55ZM10.5 5.25V1.5L14.25 5.25H10.5ZM1.125 9L0.5 9.625V17.125L1.125 17.75H14.875L15.5 17.125V9.625L14.875 9H1.125ZM14.25 15.25V16.5H1.75V10.25H14.25V15.25ZM4.25 14H3.85V15.25H3V11.5H4.325C5.2625 11.5 5.7375 11.95 5.7375 12.75C5.73992 12.92 5.70541 13.0885 5.63635 13.2439C5.56729 13.3993 5.46532 13.5379 5.3375 13.65C5.02772 13.8915 4.64246 14.0155 4.25 14ZM4.175 12.1875H3.85V13.35H4.175C4.625 13.35 4.85 13.15 4.85 12.7625C4.85 12.375 4.625 12.1875 4.175 12.1875ZM9.25 14.725C9.43461 14.5432 9.57896 14.3246 9.67371 14.0834C9.76845 13.8422 9.81148 13.5839 9.8 13.325C9.8 12.075 9.1375 11.5 7.8 11.5H6.475V15.25H7.8C8.06441 15.2628 8.32873 15.223 8.57764 15.1329C8.82654 15.0428 9.05508 14.9041 9.25 14.725ZM7.3125 14.5625V12.1875H7.725C7.88443 12.1774 8.04425 12.1999 8.1947 12.2536C8.34515 12.3073 8.48306 12.3912 8.6 12.5C8.70595 12.6113 8.78826 12.7428 8.84197 12.8868C8.89567 13.0307 8.91967 13.184 8.9125 13.3375C8.93122 13.667 8.81889 13.9905 8.6 14.2375C8.48556 14.347 8.35017 14.4322 8.20195 14.4881C8.05373 14.544 7.89575 14.5693 7.7375 14.5625H7.3125ZM12.875 13.8H11.6625V15.25H10.8125V11.5H12.9875V12.1875H11.6625V13.1125H12.875V13.8Z" fill="blue"></path></svg>`;
+
+        async function fetchData() {
+            try {
+                const response = await fetch("https://api.alphastock.vn/api/report")
+                const json = await response.json()
+                allData = Object.values(json).flat()
+                switchType(1)
+            } catch (error) {
+                console.error("Lỗi khi lấy dữ liệu:", error)
+            }
+        }
+
+        function switchType(type) {
+            currentType = type
+            currentPage = 1
+            currentSort = {
+                column: '',
+                asc: true
+            }
+            currentData = allData.filter(item => item.type === type)
+
+            document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"))
+            document.getElementById(`tab${type}`).classList.add("active")
+
+            renderTableHeaders(type)
+            renderTable()
+            renderPagination()
+            console.log("Type hiện tại:", currentType)
+            console.log("Dữ liệu lọc:", currentData)
+        }
+
+        function renderTableHeaders(type) {
+            const config = typeConfigs[type]
+            const thead = document.querySelector("#reportTable thead")
+            thead.innerHTML = "<tr>" + config.headers.map((title, i) => {
+                const field = config.fields[i]
+                return field !== "file" ?
+                    `<th onclick="sortTable('${field}')">${title}</th>` :
+                    `<th>${title}</th>`
+            }).join('') + "</tr>"
+        }
+
+        function renderTable() {
+            const config = typeConfigs[currentType]
+            const start = (currentPage - 1) * rowsPerPage
+            const end = start + rowsPerPage
+            const pageData = currentData.slice(start, end)
+
+            const tbody = document.getElementById("tableBody")
+            tbody.innerHTML = pageData.map(item => {
+                const row = config.fields.map(field =>
+                    field === "file" ?
+                    `<td onclick="event.stopPropagation()"><a href="${item[field]}" target="_blank">${downloadicon}</a></td>` :
+                    field === "upside" ?
+                    `<td>${item[field] !== null && item[field] !== undefined ? item[field].toFixed(2) : ""}</td>` :
+                    `<td>${item[field] ?? ""}</td>`
+                ).join('')
+                return `<tr onclick="openPopup(${item.id})">${row}</tr>`
+            }).join('')
+        }
+
+
+        function renderPagination() {
+            const totalPages = Math.ceil(currentData.length / rowsPerPage)
+            const container = document.getElementById("pagination")
+            container.innerHTML = ''
+
+            const input = document.createElement("input")
+            input.type = "number"
+            input.min = 1
+            input.max = totalPages
+            input.placeholder = `1-${totalPages}`
+            input.style.marginRight = "10px"
+            input.style.width = "60px"
+
+            const goBtn = document.createElement("button")
+            goBtn.textContent = "Đi tới"
+            goBtn.onclick = () => {
+                const page = parseInt(input.value)
+                if (page >= 1 && page <= totalPages) {
+                    currentPage = page
+                    renderTable()
+                } else {
+                    alert(`Trang không hợp lệ. Chỉ chấp nhận từ 1 đến ${totalPages}.`)
+                }
+            }
+
+            container.appendChild(input)
+            container.appendChild(goBtn)
+        }
+
+        function sortTable(column) {
+            if (currentSort.column === column) {
+                currentSort.asc = !currentSort.asc
+            } else {
+                currentSort.column = column
+                currentSort.asc = true
+            }
+            currentData.sort((a, b) => {
+                const valA = a[column] ?? ''
+                const valB = b[column] ?? ''
+                if (typeof valA === 'number') {
+                    return currentSort.asc ? valA - valB : valB - valA
+                } else {
+                    return currentSort.asc ? valA.toString().localeCompare(valB.toString()) : valB.toString().localeCompare(valA.toString())
+                }
+            })
+            renderTable()
+        }
+
+        function openPopup(id) {
+            document.getElementById("popup").style.display = "block"
+            document.getElementById("overlay").style.display = "block"
+            document.getElementById("popupContent").textContent = "Đang tải tóm tắt..."
+
+            fetch(`https://api.alphastock.vn/api/report/${id}`)
+                .then(res => res.json())
+                .then(data => {
+                    const summary = data[0].content ?? "Không có tóm tắt."
+                    document.getElementById("popupContent").innerHTML = summary
+                })
+                .catch(err => {
+                    document.getElementById("popupContent").textContent = "Không thể tải dữ liệu báo cáo."
+                    console.error("Lỗi khi lấy báo cáo chi tiết:", err)
+                })
+        }
+
+        function closePopup() {
+            document.getElementById("popup").style.display = "none"
+            document.getElementById("overlay").style.display = "none"
+        }
+        document.getElementById("overlay").addEventListener("click", closePopup)
+        fetchData()
+    </script>
+</body>
+
+</html>
