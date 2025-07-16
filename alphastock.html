@@ -3,16 +3,20 @@
 
 <head>
     <meta charset="UTF-8" />
-    <title>Báo cáo cổ phiếu theo loại</title>
+    <title>Báo cáo phân tích</title>
     <link rel="stylesheet" type="text/css" href="loading.css">
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 20px;
             background-color: var(--backgroundColor) !important;
-            color: var(--black)!important;
+            color: var(--black) !important;
         }
-	ul {color: black!important;}
+
+        * {
+            color: black !important;
+        }
+
         .tabs {
             margin-bottom: 15px;
         }
@@ -68,6 +72,8 @@
         <button onclick="switchType(2)" id="tab2">Ngành</button>
         <button onclick="switchType(3)" id="tab3">Chiến lược</button>
         <button onclick="switchType(4)" id="tab4">Vĩ mô/chuyên đề</button>
+        <input id="filterInput" placeholder="Lọc..." oninput="applyFilter()" style="margin-left:10px; padding:6px;" />
+
     </div>
     <table id="reportTable">
         <thead>
@@ -93,7 +99,7 @@
   background-color:rgba(0,0,0,0.5);
   z-index:999;
 "></div>
-<div id="toast" style="
+    <div id="toast" style="
   position: absolute;
   display: none;
   background-color: #333;
@@ -105,7 +111,7 @@
   white-space: nowrap;
   box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 "></div>
-<div id="popup" style="
+    <div id="popup" style="
   display: none;
   position: fixed;
   top: 50%;
@@ -121,9 +127,9 @@
   overflow: auto;
   z-index: 1000;
 ">
-  <p id="popupContent">Đang tải...</p>
-  <button onclick="closePopup()">Đóng</button>
-</div>
+        <p id="popupContent">Đang tải...</p>
+        <button onclick="closePopup()">Đóng</button>
+    </div>
 
 
     <script>
@@ -136,9 +142,11 @@
             column: '',
             asc: true
         }
+        let unfilteredData = []
+
         const typeConfigs = {
             1: {
-                headers: ["Mã", "Tiêu đề", "Nguồn", "Giá mục tiêu", "Upside hiện tại", "LNDP", "TT LNDP", "Ngày phát hành", "Xem"],
+                headers: ["Mã", "Tiêu đề", "Nguồn", "Giá mục tiêu", "Upside hiện tại (%)", "LNDP (tỷ)", "TT LNDP(%)", "Ngày phát hành", "Xem"],
                 fields: ["code", "title", "source", "target", "upside", "profit", "growth", "date", "file"]
             },
             2: {
@@ -174,7 +182,11 @@
                 column: '',
                 asc: true
             }
-            currentData = allData.filter(item => item.type === type)
+
+            document.getElementById("filterInput").value = "" // Xóa ô lọc
+
+            unfilteredData = allData.filter(item => item.type === type)
+            currentData = [...unfilteredData] // sao chép để lọc động
 
             document.querySelectorAll(".tabs button").forEach(btn => btn.classList.remove("active"))
             document.getElementById(`tab${type}`).classList.add("active")
@@ -182,8 +194,24 @@
             renderTableHeaders(type)
             renderTable()
             renderPagination()
-            console.log("Type hiện tại:", currentType)
-            console.log("Dữ liệu lọc:", currentData)
+        }
+
+        function applyFilter() {
+            const keyword = document.getElementById("filterInput").value.trim().toLowerCase()
+
+            if (keyword === "") {
+                currentData = [...unfilteredData]
+            } else {
+                if (currentType === 1 || currentType === 2) {
+                    currentData = unfilteredData.filter(item => item.code?.toLowerCase().includes(keyword))
+                } else {
+                    currentData = unfilteredData.filter(item => item.title?.toLowerCase().includes(keyword))
+                }
+            }
+
+            currentPage = 1
+            renderTable()
+            renderPagination()
         }
 
         function renderTableHeaders(type) {
@@ -216,31 +244,34 @@
                 return `<tr onclick="openPopup(${item.id})">${row}</tr>`
             }).join('')
         }
-function copyLink(event, url) {
-  event.preventDefault() // Ngăn menu chuột phải
 
-  navigator.clipboard.writeText(url).then(() => {
-    showToast(event.target, "📎 Đã sao chép link!")
-  }).catch(err => {
-    showToast(event.target, "❌ Sao chép thất bại!")
-    console.error("Không thể sao chép link:", err)
-  })
-}
-function showToast(targetElement, message) {
-  const toast = document.getElementById("toast")
-  toast.textContent = message
-  toast.style.display = "block"
+        function copyLink(event, url) {
+            event.preventDefault() // Ngăn menu chuột phải
 
-  // Tính vị trí bên phải dưới của phần tử mục tiêu
-  const rect = targetElement.getBoundingClientRect()
-  toast.style.top = `${rect.bottom + window.scrollY + 5}px`
-  toast.style.left = `${rect.left + window.scrollX - 100}px`
+            navigator.clipboard.writeText(url).then(() => {
+                showToast(event.target, "📎 Đã sao chép link!")
+            }).catch(err => {
+                showToast(event.target, "❌ Sao chép thất bại!")
+                console.error("Không thể sao chép link:", err)
+            })
+        }
 
-  // Tự động ẩn sau 2 giây
-  setTimeout(() => {
-    toast.style.display = "none"
-  }, 2000)
-}
+        function showToast(targetElement, message) {
+            const toast = document.getElementById("toast")
+            toast.textContent = message
+            toast.style.display = "block"
+
+            // Tính vị trí bên phải dưới của phần tử mục tiêu
+            const rect = targetElement.getBoundingClientRect()
+            toast.style.top = `${rect.bottom + window.scrollY + 5}px`
+            toast.style.left = `${rect.left + window.scrollX - 100}px`
+
+            // Tự động ẩn sau 2 giây
+            setTimeout(() => {
+                toast.style.display = "none"
+            }, 2000)
+        }
+
         function renderPagination() {
             const totalPages = Math.ceil(currentData.length / rowsPerPage)
             const container = document.getElementById("pagination")
