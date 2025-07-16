@@ -41,15 +41,15 @@
         <div id="days">
             <button data-value="30D">30D</button>
             <button data-value="60D">60D</button>
-            <button data-value="90D">90D</button>
-            <button data-value="180D" class="active">180D</button>
+            <button data-value="90D"  class="active">90D</button>
+            <button data-value="180D">180D</button>
         </div>
     </div>
 
     <div id="container"></div>
 
     <script>
-        let currentDay = "180D";
+        let currentDay = "90D";
         let currentType = document.getElementById("type").value;
 
         async function loadChart() {
