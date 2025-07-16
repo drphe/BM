@@ -93,7 +93,18 @@
   background-color:rgba(0,0,0,0.5);
   z-index:999;
 "></div>
-
+<div id="toast" style="
+  position: absolute;
+  display: none;
+  background-color: #333;
+  color: #fff;
+  padding: 6px 10px;
+  border-radius: 4px;
+  font-size: 13px;
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+"></div>
 <div id="popup" style="
   display: none;
   position: fixed;
@@ -196,7 +207,8 @@
             tbody.innerHTML = pageData.map(item => {
                 const row = config.fields.map(field =>
                     field === "file" ?
-                    `<td onclick="event.stopPropagation()"><a href="${item[field]}" target="_blank">${downloadicon}</a></td>` :
+                    `<td onclick="event.stopPropagation()" oncontextmenu="copyLink(event, '${item[field]}')"
+><a href="${item[field]}" target="_blank">${downloadicon}</a></td>` :
                     field === "upside" ?
                     `<td>${item[field] !== null && item[field] !== undefined ? item[field].toFixed(2) : ""}</td>` :
                     `<td>${item[field] ?? ""}</td>`
@@ -204,8 +216,31 @@
                 return `<tr onclick="openPopup(${item.id})">${row}</tr>`
             }).join('')
         }
+function copyLink(event, url) {
+  event.preventDefault() // Ngăn menu chuột phải
 
+  navigator.clipboard.writeText(url).then(() => {
+    showToast(event.target, "📎 Đã sao chép link!")
+  }).catch(err => {
+    showToast(event.target, "❌ Sao chép thất bại!")
+    console.error("Không thể sao chép link:", err)
+  })
+}
+function showToast(targetElement, message) {
+  const toast = document.getElementById("toast")
+  toast.textContent = message
+  toast.style.display = "block"
 
+  // Tính vị trí bên phải dưới của phần tử mục tiêu
+  const rect = targetElement.getBoundingClientRect()
+  toast.style.top = `${rect.bottom + window.scrollY + 5}px`
+  toast.style.left = `${rect.left + window.scrollX - 100}px`
+
+  // Tự động ẩn sau 2 giây
+  setTimeout(() => {
+    toast.style.display = "none"
+  }, 2000)
+}
         function renderPagination() {
             const totalPages = Math.ceil(currentData.length / rowsPerPage)
             const container = document.getElementById("pagination")
