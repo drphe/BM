@@ -1,0 +1,426 @@
+/* Cài đặt chung và biến màu */
+:root {
+    --bg-color: #131314;
+    --sidebar-bg: #1e1f20;
+    --text-color: #e3e3e3;
+    --secondary-text-color: #bdc1c6;
+    --border-color: #3b4043;
+    --hover-bg: #282a2c;
+    --input-bg: #1e1f20;
+    --message-user-bg: #282a2c;
+}
+
+
+body[data-theme="light"] {
+    --bg-color: #f0f4f9;
+    --sidebar-bg: #ffffff;
+    --text-color: #1f1f1f;
+    --secondary-text-color: #5f6368;
+    --border-color: #dadce0;
+    --hover-bg: #e8f0fe;
+    --input-bg: #ffffff;
+    --message-user-bg: #e8f0fe;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body,
+html {
+    height: 100%;
+    font-family: 'Google Sans', sans-serif, Arial;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    overflow: hidden;
+}
+
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* --- Thanh bên (Sidebar) --- */
+#sidebar {
+    width: 250px;
+    background-color: var(--sidebar-bg);
+    display: flex;
+    flex-direction: column;
+    padding: 16px;
+    transition: margin-left 0.3s ease-in-out;
+    flex-shrink: 0;
+    border-right: 1px solid var(--border-color);
+}
+
+#sidebar.collapsed {
+    margin-left: -261px;
+}
+
+.home-btn {
+    background-color: var(--hover-bg);
+    color: var(--text-color);
+    border: none;
+    border-radius: 24px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+}
+
+.home-btn:hover {
+    opacity: 0.9;
+}
+
+.chat-history {
+    flex-grow: 1;
+}
+
+.chat-history p {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    margin-bottom: 12px;
+}
+
+.chat-history ul {
+    list-style: none;
+    overflow-y: scroll;
+    max-height: 80vh;
+    padding: 4px 0px;
+}
+
+.chat-history ul li a {
+    color: var(--text-color);
+    text-decoration: none;
+    display: block;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.chat-history ul li a:hover {
+    background-color: var(--hover-bg);
+}
+
+.chat-history i {
+    margin-right: 12px;
+}
+
+.sidebar-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: auto;
+    /* Đẩy footer xuống dưới */
+}
+
+.sidebar-footer a {
+    color: var(--text-color);
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.sidebar-footer a:hover {
+    background-color: var(--hover-bg);
+    cursor: pointer;
+}
+
+/* --- Khung Chat Chính --- */
+.chat-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.chat-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+#menu-toggle {
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+#menu-toggle:hover {
+    background-color: var(--hover-bg);
+}
+
+.chat-messages {
+    flex-grow: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message {
+    max-width: 80%;
+    align-self: flex-start;
+}
+
+.message .message-content {
+    background-color: transparent;
+    padding: 15px;
+    border-radius: 8px;
+    line-height: 1.6;
+}
+
+.user-message {
+    align-self: flex-end;
+}
+
+.user-message .message-content {
+    background-color: var(--message-user-bg);
+}
+
+/* Vùng nhập liệu */
+.chat-input-area {
+    padding: 20px;
+}
+
+.chat-input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: var(--input-bg);
+    border-radius: 28px;
+    padding: 5px 15px;
+    border: 1px solid var(--border-color);
+}
+
+#chat-input {
+    flex-grow: 1;
+    background: none;
+    border: none;
+    color: var(--text-color);
+    font-size: 16px;
+    padding: 12px 0;
+}
+
+#chat-input:focus {
+    outline: none;
+}
+
+#send-btn {
+    background: none;
+    border: none;
+    color: var(--secondary-text-color);
+    font-size: 20px;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+#send-btn:hover {
+    background-color: var(--hover-bg);
+}
+
+.disclaimer {
+    font-size: 12px;
+    color: var(--secondary-text-color);
+    text-align: center;
+    margin-top: 10px;
+}
+
+/* --- CSS cho Popup (đã sửa lỗi) --- */
+.popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: none;
+    /* Ẩn mặc định */
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+    backdrop-filter: blur(5px);
+}
+
+.popup-overlay.show {
+    display: flex;
+    /* Hiện khi có class 'show' */
+}
+
+.popup-content {
+    background-color: var(--sidebar-bg);
+    padding: 30px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    position: relative;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content h2 {
+    margin-bottom: 15px;
+}
+
+.popup-content p,
+.popup-content li {
+    color: var(--secondary-text-color);
+    line-height: 1.7;
+}
+
+.popup-content ul {
+    padding-left: 20px;
+    margin-top: 10px;
+}
+
+.close-popup {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: var(--secondary-text-color);
+    cursor: pointer;
+}
+
+
+/* Ẩn sidebar mặc định khi màn hình nhỏ */
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.collapsed {
+        transform: translateX(-100%);
+    }
+
+    .sidebar:not(.collapsed) {
+        transform: translateX(0);
+    }
+
+    #sidebar {
+        position: absolute;
+        top: 0;
+        left: 0px;
+    }
+}
+
+#info {
+
+    margin-top: 20px;
+}
+
+.theme-options {
+    display: flex;
+    /* Hiển thị ngang hàng */
+    gap: 10px;
+    /* Khoảng cách giữa nút */
+    justify-content: center;
+    /* Căn giữa nếu cần */
+    position: absolute;
+    right: 8px;
+
+}
+
+.theme-btn {
+    width: 15px;
+    /* Kích thước nút */
+    height: 15px;
+    border: none;
+    /* Không viền */
+    border-radius: 50%;
+    /* Hình tròn */
+    font-size: 20px;
+    /* Kích thước emoji */
+    cursor: pointer;
+    /* Con trỏ tay khi hover */
+    transition: transform 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+    /* Hiệu ứng mượt */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+/* Style cho nút sáng (mặt trời) */
+.light-btn {
+    background-color: #FFD700;
+    /* Vàng nhạt cho mặt trời */
+    color: #FFFFFF;
+    /* Màu emoji trắng nếu cần */
+}
+
+.light-btn:hover {
+    transform: scale(1.1);
+    /* Phóng to nhẹ */
+    background-color: #FFC107;
+    /* Thay đổi màu khi hover */
+    box-shadow: 0 4px 8px rgba(255, 215, 0, 0.5);
+    /* Thêm bóng vàng */
+}
+
+/* Style cho nút tối (mặt trăng) */
+.dark-btn {
+    background-color: #333333;
+    /* Xám tối cho mặt trăng */
+    color: #FFFFFF;
+    /* Màu emoji trắng */
+}
+
+.dark-btn:hover {
+    transform: scale(1.1);
+    /* Phóng to nhẹ */
+    background-color: #1A1A1A;
+    /* Thay đổi màu khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+    /* Thêm bóng đen */
+}
+
+/* Responsive cho mobile/tablet */
+@media (max-width: 768px) {
+    .theme-btn {
+        width: 15px;
+        height: 15px;
+        font-size: 18px;
+    }
+}
+
+iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    display: block;
+}
+
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 0 grey;
+    border-radius: 1px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background: #ccc;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
