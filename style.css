@@ -460,7 +460,7 @@ iframe {
 #iframe-loader {
   position: fixed;
   top: 50%;
-  left: 60%;
+  left: 50%;
   transform: translate(-50%, -50%);
   font-size: 20px;
   font-family: 'Segoe UI', sans-serif;
