@@ -286,6 +286,18 @@ html {
     overflow: scroll;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+  animation: zoomIn 0.3s ease-out;
+}
+/* Hiệu ứng thu phóng */
+@keyframes zoomIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
 }
 
 .popup-content img {
@@ -464,7 +476,7 @@ iframe {
   transform: translate(-50%, -50%);
   font-size: 20px;
   font-family: 'Segoe UI', sans-serif;
-  color: #333;
+  color: var(--secondary-text-color);
   z-index: 9999;
   text-align: center;
 }
@@ -485,3 +497,4 @@ iframe {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+
