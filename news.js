@@ -38,7 +38,6 @@ function createArticlesList(articles) {
         id++;
         listItem.onclick = (e) => {
             e.preventDefault();
-
             showPopup(cleanHTML(article.content), article.title);
         };
 
@@ -46,6 +45,7 @@ function createArticlesList(articles) {
         container.appendChild(listItem);
     });
 }
+
 function cleanHTML(html) {
     // Tạo thẻ div tạm để chứa nội dung
     let tempDiv = document.createElement("div");
@@ -60,7 +60,7 @@ function cleanHTML(html) {
 
     // Xóa các đoạn <br/><br/> và <br/><br/><br/>
     tempDiv.innerHTML = tempDiv.innerHTML.replace(/<br\s*\/?><br\s*\/?>/g, "")
-                                         .replace(/<br\s*\/?><br\s*\/?><br\s*\/?>/g, "");
+        .replace(/<br\s*\/?><br\s*\/?><br\s*\/?>/g, "");
     // Lấy tất cả <p> có style cụ thể
     let paragraphs = tempDiv.querySelectorAll('p[style="font-size: 14px;text-align: justify;"]');
 
@@ -74,99 +74,17 @@ function cleanHTML(html) {
 }
 document.body.addEventListener("click", function(e) {
     document.getElementById("load").contains(e.target) && loading(0);
-    const closeButton = document.querySelector(".popup-close");
-    try {
-        let popup = document.querySelector(".popup");
-        closeButton.contains(e.target) && (popup.style.display = "none");
-    } catch (e) {}
 
 });
+
 // Hàm hiển thị popup với nội dung bài viết
 function showPopup(content, title) {
-    let popup = document.querySelector(".popup");
-    const closeButton = document.createElement("button");
-    closeButton.className = "popup-close";
-    closeButton.textContent = "Đóng";
-
-    // Nếu popup đã tồn tại, cập nhật nội dung
-    if (popup) {
-        const popupContent = popup.querySelector(".popup-content");
-        popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
-        popupContent.appendChild(closeButton);
-        popup.style.display = "flex";
-        popupContent.scrollTo({
-            top: 0,
-            behavior: "smooth"
-        });
-        return;
-    }
-
-    // Tạo popup mới nếu chưa có
-    popup = document.createElement("div");
-    popup.className = "popup";
-
-    const popupContent = document.createElement("div");
-    popupContent.className = "popup-content";
-    popupContent.innerHTML = `<div class="nowrap" style="font-weight: 600;font-size: 16px;background: white;padding: 7px; position: sticky;top: 0px; border-bottom: 1px solid #ddd;">${title||''}</div><p>${content}</p>`;
-
-    closeButton.onclick = () => {
-        popup.style.display = "none";
-    };
-    popup.onclick = (event) => {
-        if (event.target === popup) {
-            popup.style.display = "none";
-        }
-    };
-    popup.appendChild(popupContent);
-    popupContent.appendChild(closeButton);
-    document.body.appendChild(popup);
-
-    // Áp dụng CSS cho popup
-    const style = document.createElement("style");
-    style.textContent = `
-	.popup img {width: -webkit-fill-available!important;height:auto!important;max-width:450px!important;}
-        .popup {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        .popup-content {
-            background: white;
-            padding: 20px;
-	    padding-top:0px;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            text-align: left;
-	    max-height:500px;
-	    overflow-y:scroll;
-        }
-@media (min-width: 768px) {
-  .popup-content {
-    width: 70%; /* Chiều rộng khi màn hình lớn hơn 768px */
-  }
-}
-        .popup-close {
-            margin-top: 10px;
-            padding: 5px 10px;
-            background: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;    float: inline-end;
-        }
-        .popup-close:hover {
-            background: #0056b3;
-        }
-    `;
-    document.head.appendChild(style);
+    // khi popup hiển thị
+    window.parent.postMessage({
+        popup: true,
+        title: title || "",
+        content: content,
+    }, "*");
 }
 
 

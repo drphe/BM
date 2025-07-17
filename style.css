@@ -249,14 +249,14 @@ html {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
+    background-color: rgba(0, 0, 0, 0.5);
     display: none;
     /* Ẩn mặc định */
     justify-content: center;
     align-items: center;
     z-index: 2000;
-    backdrop-filter: blur(5px);
 }
+
 
 .popup-overlay.show {
     display: flex;
@@ -265,12 +265,40 @@ html {
 
 .popup-content {
     background-color: var(--sidebar-bg);
-    padding: 30px;
     border-radius: 12px;
     width: 90%;
-    max-width: 500px;
+    max-width: 60%;
+    max-height: 80vh;
+    overflow: scroll;
     position: relative;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+.popup-content img {
+    width: -webkit-fill-available !important;
+    height: auto !important;
+    max-width: 450px !important;
+}
+
+.popup-content img,
+.popup-content b {
+    display: block;
+}
+
+.nowrap {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #11344f;
+}
+
+.popup-content * {
+    line-height: 24px;
+    font-size: 14px !important;
+}
+
+.popup-content h1 {
+    font-size: 16px;
 }
 
 .popup-content h2 {
@@ -290,7 +318,7 @@ html {
 
 .close-popup {
     position: absolute;
-    top: 10px;
+    top: 6px;
     right: 15px;
     background: none;
     border: none;
@@ -324,7 +352,7 @@ html {
 
 #info {
 
-    margin-top: 20px;
+    margin: 10px 20px;
 }
 
 .theme-options {
