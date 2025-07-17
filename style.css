@@ -322,7 +322,7 @@ html {
     right: 15px;
     background: none;
     border: none;
-    font-size: 28px;
+    font-size: 28px!important;
     color: var(--secondary-text-color);
     cursor: pointer;
 }
