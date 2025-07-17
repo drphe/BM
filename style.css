@@ -10,7 +10,21 @@
     --message-user-bg: #282a2c;
 }
 
+::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 0 grey;
+    border-radius: 1px;
+}
 
+::-webkit-scrollbar-thumb {
+    border-radius: 0px;
+    background: #ccc;
+}
+
+::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+    background: transparent;
+}
 body[data-theme="light"] {
     --bg-color: #f0f4f9;
     --sidebar-bg: #ffffff;
@@ -267,7 +281,6 @@ html {
 .popup-content {
     background-color: var(--sidebar-bg);
     border-radius: 12px;
-    width: 90%;
     max-width: 60%;
     max-height: 80vh;
     overflow: scroll;
@@ -430,6 +443,9 @@ html {
         height: 15px;
         font-size: 18px;
     }
+.popup-content {
+    max-width: 90%;
+}
 }
 strong {
     font-family:auto;
@@ -441,18 +457,31 @@ iframe {
     display: block;
 }
 
-::-webkit-scrollbar-track {
-    box-shadow: inset 0 0 0 grey;
-    border-radius: 1px;
+#iframe-loader {
+  position: fixed;
+  top: 50%;
+  left: 60%;
+  transform: translate(-50%, -50%);
+  font-size: 20px;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  z-index: 9999;
+  text-align: center;
 }
 
-::-webkit-scrollbar-thumb {
-    border-radius: 0px;
-    background: #ccc;
+#iframe-loader::after {
+  content: '';
+  display: block;
+  margin: 16px auto 0;
+  width: 40px;
+  height: 40px;
+  border: 4px solid #ccc;
+  border-top: 4px solid #0078d4; /* màu xanh Microsoft */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
-::-webkit-scrollbar {
-    width: 0px;
-    height: 0px;
-    background: transparent;
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
