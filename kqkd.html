@@ -80,12 +80,16 @@
             border-radius: 2px 2px 0 0;
             border-collapse: collapse;
             border-spacing: 0;
-            table-layout: fixed;
             width: 100%;
-	    min-width:700px;
 	    overflow:scroll;
         }
+        /* Responsive cho mobile/tablet */
+        @media (max-width: 768px) {
+            table {
+                table-layout: fixed;
 
+            }
+        }
         thead tr:first-child {
             position: sticky;
             top: 0;
