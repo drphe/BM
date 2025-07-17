@@ -195,7 +195,7 @@
             thead.innerHTML = "<tr>" + config.headers.map((title, i) => {
                 const field = config.fields[i]
                 return field !== "file" ?
-                    `<th onclick="sortTable('${field}')">${title}</th>` :
+                    `<th onclick="sortTable('${field}')">${title} ⇅</th>` :
                     `<th>${title}</th>`
             }).join('') + "</tr>"
         }
