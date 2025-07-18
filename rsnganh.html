@@ -39,9 +39,9 @@
             flex-wrap: wrap;
             justify-content: center;
             align-items: center;
-            gap: 20px;
-            margin-bottom: 20px;
-            padding: 15px;
+            gap: 10px;
+            margin-bottom: 10px;
+            padding: 10px;
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -76,7 +76,8 @@
         #chart-container {
             width: 100%;
             height: 500px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
+	    border-radius:8px;
         }
 
         #sector-checkboxes {
@@ -378,8 +379,9 @@
 
             const loadDataByLimit = async (limit) => {
                 const url = `https://api.alphastock.vn/api/developments?limit=${limit}`;
-                const data = await fetchData(url);
-                if (data) {
+                const odata = await fetchData(url);
+                if (odata) {
+		    const data = odata.sort((a, b) => a.order - b.order);
                     processData(data);
                     let sortDirection = {}; // lưu trạng thái sắp xếp từng cột
 
