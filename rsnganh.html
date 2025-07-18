@@ -57,7 +57,7 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-
+	.time-presets {display: flex;}
         .time-presets button:hover,
         #filter-btn:hover {
             background-color: #0056b3;
@@ -134,12 +134,14 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	    overflow:scroll;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+	    table-layout: block;
             font-family: Arial, sans-serif;
             font-size: 14px;
         }
@@ -195,11 +197,11 @@
 <body>
     <div class="controls">
         <div class="time-presets">
-            <button data-limit="1" class="active">1 Tháng</button>
-            <button data-limit="2">3 Tháng</button>
-            <button data-limit="3">6 Tháng</button>
-            <button data-limit="4">1 Năm</button>
-            <button data-limit="5">2 Năm</button>
+            <button data-limit="1" class="active">1M</button>
+            <button data-limit="2">3M</button>
+            <button data-limit="3">6M</button>
+            <button data-limit="4">1Y</button>
+            <button data-limit="5">2Y</button>
         </div>
         <div class="time-range">
             <label for="from">Từ:</label>
