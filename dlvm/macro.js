@@ -329,7 +329,6 @@ function init() {
         period = "3M";
         document.querySelector(".vimo")
             .style.display = "none";
-        document.querySelector("#changeperiod").style.top = "400px";
         document.querySelector("#changeperiod").style.right = "60px";
         document.querySelector(".v-suggestions")
             .style.right = "6px";
