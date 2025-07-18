@@ -47,7 +47,7 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        .time-presets button,
+        .goback, .time-presets button,
         #filter-btn {
             padding: 4px 8px;
             border: none;
@@ -57,7 +57,11 @@
             cursor: pointer;
             transition: background-color 0.3s;
         }
-	.time-presets {display: flex;}
+
+        .time-presets {
+            display: flex;
+        }
+
         .time-presets button:hover,
         #filter-btn:hover {
             background-color: #0056b3;
@@ -77,9 +81,9 @@
             width: 100%;
             height: 500px;
             margin-bottom: 10px;
-	    border-radius:8px;
+            border-radius: 8px;
         }
-
+	a {text-decoration: none;}
         #sector-checkboxes {
             flex-wrap: wrap;
             justify-content: center;
@@ -91,12 +95,13 @@
             margin-bottom: 15px;
             max-height: 460px;
             overflow: scroll;
+	    min-width:150px;
         }
 
         .checkbox-container {
             display: flex;
             align-items: center;
-	    margin:4px;
+            margin: 4px;
         }
 
         .checkbox-container input {
@@ -135,14 +140,14 @@
             background-color: #fff;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	    overflow:scroll;
+            overflow: scroll;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
-	    table-layout: block;
+            table-layout: block;
             font-family: Arial, sans-serif;
             font-size: 14px;
         }
@@ -176,7 +181,7 @@
 
         #app {
             display: flex;
-	    align-items: stretch;
+            align-items: stretch;
         }
 
         /* Responsive cho mobile/tablet */
@@ -218,22 +223,9 @@
     </div>
     <div id="table">
         <table id="sectorTable">
-            <thead>
-                <tr>
-                    <th data-key="order">Số thứ tự</th>
-                    <th data-key="name">Ngành</th>
-                    <th data-key="adClose">Chỉ số ngành</th>
-                    <th data-key="pctChange">Giá (%)</th>
-                    <th data-key="MarketCapital">Vốn hóa (Tỷ)</th>
-                    <th data-key="nmVolume">Khối lượng GD (tr)</th>
-                    <th data-key="nmValue">Giá trị GD (tỷ)</th>
-                    <th data-key="rsRating">RS rating</th>
-                    <th data-key="strength">Vùng sức mạnh</th>
-                </tr>
-            </thead>
+            <thead></thead>
             <tbody></tbody>
         </table>
-
 
     </div>
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -247,9 +239,14 @@
             const toInput = document.getElementById('to');
             let chart;
             let allSeriesData = [];
+            let sectorID = 0;
+            let lastfetch = '';
+            let lastdata = [];
 
             const fetchData = async (url) => {
                 try {
+                    lastfetch = url;
+                    if (sectorID) url += `&sectorId=${sectorID}`;
                     const response = await fetch(url);
                     if (!response.ok) {
                         throw new Error(`HTTP error! status: ${response.status}`);
@@ -269,7 +266,12 @@
                         zoomType: 'x'
                     },
                     title: {
-                        text: 'Biến động ngành'
+                        text: 'Biến động ngành',
+                        style: {
+                            fontSize: "16px",
+                            fontFamily: "arial",
+                            display: "block"
+                        }
                     },
                     xAxis: {
                         type: 'datetime',
@@ -330,7 +332,6 @@
                         id: sector.sectorId,
                         name: sector.name,
                         data: cumulativeArray,
-                        // SỬA ĐỔI: Chỉ hiển thị các ngành có trong danh sách defaultVisibleSectors
                         visible: defaultVisibleSectors.includes(sector.sectorId)
                     };
                 });
@@ -338,8 +339,157 @@
                 updateChartSeries();
             };
 
+            const processDataSector = (data) => {
+                const defaultVisibleSectors = data.map(sector => sector.code).slice(0, 3);
+
+                allSeriesData = data.map(sector => {
+                    const chartData = sector.chart.map(point => {
+                        const year = parseInt(point.date.substring(0, 4));
+                        const month = parseInt(point.date.substring(4, 6)) - 1;
+                        const day = parseInt(point.date.substring(6, 8));
+                        return [Date.UTC(year, month, day), point.value];
+                    });
+
+                    const cumulativeArray = [];
+                    let cumulativeSum = 0;
+
+                    for (const [timestamp, value] of chartData) {
+                        cumulativeSum += value;
+                        cumulativeArray.push([timestamp, cumulativeSum]);
+                    }
+
+                    return {
+                        id: sector.code,
+                        name: sector.code,
+                        data: cumulativeArray,
+                        visible: defaultVisibleSectors.includes(sector.code)
+                    };
+                });
+                renderCheckboxes();
+                updateChartSeries();
+            };
+            const sectorColumns = [{
+                    label: "Số thứ tự",
+                    key: "order"
+                },
+                {
+                    label: "Ngành",
+                    key: "name"
+                },
+                {
+                    label: "Chỉ số ngành",
+                    key: "adClose",
+                    format: val => val.toFixed(2)
+                },
+                {
+                    label: "Giá (%)",
+                    key: "pctChange",
+                    format: val => val.toFixed(2) + "%"
+                },
+                {
+                    label: "Vốn hóa (Tỷ)",
+                    key: "MarketCapital",
+                    format: val => (val / 1e12).toFixed(2)
+                },
+                {
+                    label: "Khối lượng GD (tr)",
+                    key: "nmVolume",
+                    format: val => (val / 1e6).toFixed(2)
+                },
+                {
+                    label: "Giá trị GD (tỷ)",
+                    key: "nmValue",
+                    format: val => (val / 1e9).toFixed(2)
+                },
+                {
+                    label: "RS rating",
+                    key: "rsRating"
+                }
+            ];
+
+
+            // hàm load dữ liệu của từng ngành
+            async function loadsector(id) {
+                sectorID = id; // gán id => thay đổi url
+                const odata = await fetchData(lastfetch);
+                if (odata) {
+                    const data = odata.sort((a, b) => a.order - b.order);
+                    processDataSector(data);
+                    let label = data[0].label;
+                    const sectorColumns2 = [{
+                            label: "Mã",
+                            key: "code"
+                        },
+                        {
+                            label: "Giá",
+                            key: "adClose",
+                            format: val => val.toFixed(2)
+                        },
+                        {
+                            label: "Giá (%)",
+                            key: "pctChange",
+                            format: val => val.toFixed(2) + "%"
+                        },
+                        {
+                            label: "EPS 4Q",
+                            key: "EPS",
+                            format: val => val.toFixed(0)
+                        },
+                        {
+                            label: "TT DT YoY " + label + "(%)",
+                            key: "growthRevenue",
+                            format: val => (val).toFixed(2) + "%"
+                        },
+                        {
+                            label: "TT LN YoY " + label + "(%)",
+                            key: "growthProfit",
+                            format: val => (val).toFixed(2) + "%"
+                        },
+                        {
+                            label: "ROEA (%)",
+                            key: "ROEA",
+                            format: val => (val).toFixed(2) + "%"
+                        },
+                        {
+                            label: "ROAA (%)",
+                            key: "ROAA",
+                            format: val => (val).toFixed(2) + "%"
+                        },
+                        {
+                            label: "P/E ",
+                            key: "PE",
+                            format: val => (typeof val === "number" ? val.toFixed(2) : "--")
+                        },
+                        {
+                            label: "P/B",
+                            key: "PB",
+                            format: val => (typeof val === "number" ? val.toFixed(2) : "--")
+                        },
+                        {
+                            label: "RS Rating",
+                            key: "rsRating"
+                        }
+                    ];
+                    createSortableTable(sectorColumns2, data.slice(1)); // bỏ qua mã đầu tiên
+                }
+            }
+
             const renderCheckboxes = () => {
+
                 sectorCheckboxes.innerHTML = '';
+                if (sectorID) {
+                    const bt = document.createElement('button');
+                    bt.textContent = "Quay lại";
+		    bt.setAttribute("class", "goback")
+                    bt.addEventListener('click', (e) => {
+                        sectorID = 0;
+                        e.preventDefault();
+                        processData(lastdata);
+                        createSortableTable(sectorColumns, lastdata);
+                    });
+                    sectorCheckboxes.appendChild(bt);
+                }
+
                 allSeriesData.forEach(series => {
                     const checkboxContainer = document.createElement('div');
                     checkboxContainer.className = 'checkbox-container';
@@ -352,7 +502,18 @@
 
                     const label = document.createElement('label');
                     label.htmlFor = `sector-${series.id}`;
-                    label.textContent = series.name;
+                if (!sectorID) {
+                    const link = document.createElement('a');
+                    link.href = '#';
+                    link.textContent = series.name;
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        loadsector(series.id);
+                    });
+                    label.appendChild(link);
+		}else{
+			label.textContent = series.name;
+		}
 
                     checkboxContainer.appendChild(checkbox);
                     checkboxContainer.appendChild(label);
@@ -382,65 +543,78 @@
 
             const loadDataByLimit = async (limit) => {
                 const url = `https://api.alphastock.vn/api/developments?limit=${limit}`;
+                if (sectorID) {
+                    lastfetch = url;
+                    loadsector(sectorID);
+                    return;
+                }
                 const odata = await fetchData(url);
                 if (odata) {
-		    const data = odata.sort((a, b) => a.order - b.order);
+		    lastdata=odata
+                    const data = odata.sort((a, b) => a.order - b.order);
                     processData(data);
-                    let sortDirection = {}; // lưu trạng thái sắp xếp từng cột
+                    createSortableTable(sectorColumns, data)
+                }
+            };
 
-                    const tbody = document.querySelector("#sectorTable tbody");
 
-                    function renderTable(dataArray) {
-                        tbody.innerHTML = "";
-                        dataArray.forEach(item => {
-                            const row = document.createElement("tr");
-                            row.innerHTML = `
-          <td>${item.order}</td>
-          <td>${item.name}</td>
-          <td>${item.adClose.toFixed(2)}</td>
-          <td>${(item.pctChange).toFixed(2)}%</td>
-          <td>${(item.MarketCapital / 1e12).toFixed(2)}</td>
-          <td>${(item.nmVolume/ 1e6).toFixed(2)}</td>
-          <td>${(item.nmValue/1e9).toFixed(2)}</td>
-          <td>${item.rsRating}</td>
-          <td>${item.strength == 2 ?"Điều chỉnh": item.strength== 1? "Dẫn đầu":"Suy yếu"}</td>
-        `;
-                            tbody.appendChild(row);
-                        });
-                    }
+            function createSortableTable(columns, data) {
+                const table = document.getElementById('sectorTable');
+                const thead = table.querySelector("thead");
+                const tbody = table.querySelector("tbody");
+                let sortDirection = {};
+                console.log(table, thead)
+                // Tạo tiêu đề bảng
+                thead.innerHTML = "<tr>" + columns.map(col =>
+                    `<th data-key="${col.key}">${col.label}</th>`
+                ).join("") + "</tr>";
 
-                    function sortBy(key) {
-                        const isNumeric = typeof data[0][key] === "number";
-                        sortDirection[key] = !sortDirection[key]; // đảo chiều
+                // Hàm render dữ liệu
+                function renderTable(dataArray) {
+                    tbody.innerHTML = "";
+                    dataArray.forEach(item => {
+                        const row = document.createElement("tr");
+                        row.innerHTML = columns.map(col => {
+                            const raw = item[col.key];
+                            const formatted = col.format ? col.format(raw) : raw;
+                            return `<td>${formatted}</td>`;
+                        }).join("");
+                        tbody.appendChild(row);
+                    });
+                }
 
-                        data.sort((a, b) => {
-                            let valA = a[key];
-                            let valB = b[key];
+                // Hàm sắp xếp
+                function sortBy(key) {
+                    const isNumeric = typeof data[0][key] === "number";
+                    sortDirection[key] = !sortDirection[key];
 
-                            if (!isNumeric) {
-                                valA = valA.toString().toLowerCase();
-                                valB = valB.toString().toLowerCase();
-                            }
+                    data.sort((a, b) => {
+                        let valA = a[key];
+                        let valB = b[key];
 
-                            if (valA < valB) return sortDirection[key] ? -1 : 1;
-                            if (valA > valB) return sortDirection[key] ? 1 : -1;
-                            return 0;
-                        });
+                        if (!isNumeric) {
+                            valA = valA.toString().toLowerCase();
+                            valB = valB.toString().toLowerCase();
+                        }
 
-                        renderTable(data);
-                    }
-
-                    document.querySelectorAll("th[data-key]").forEach(th => {
-                        th.addEventListener("click", () => {
-                            const key = th.getAttribute("data-key");
-                            sortBy(key);
-                        });
+                        if (valA < valB) return sortDirection[key] ? -1 : 1;
+                        if (valA > valB) return sortDirection[key] ? 1 : -1;
+                        return 0;
                     });
 
                     renderTable(data);
-
                 }
-            };
+
+                // Gắn sự kiện click vào tiêu đề
+                thead.querySelectorAll("th[data-key]").forEach(th => {
+                    th.addEventListener("click", () => {
+                        const key = th.getAttribute("data-key");
+                        sortBy(key);
+                    });
+                });
+
+                renderTable(data);
+            }
 
             const loadDataByDateRange = async (from, to) => {
                 if (!from || !to) {
@@ -448,9 +622,17 @@
                     return;
                 }
                 const url = `https://api.alphastock.vn/api/developments?from=${from}&to=${to}`;
-                const data = await fetchData(url);
-                if (data) {
+                if (sectorID) {
+                    lastfetch = url;
+                    loadsector(sectorID);
+                    return;
+                }
+                const odata = await fetchData(url);
+                if (odata) {
+		    lastdata=odata
+                    const data = odata.sort((a, b) => a.order - b.order);
                     processData(data);
+                    createSortableTable(sectorColumns, data)
                 }
             };
 
