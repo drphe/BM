@@ -413,7 +413,8 @@
                 sectorID = id; // gán id => thay đổi url
                 const odata = await fetchData(lastfetch);
                 if (odata) {
-                    const data = odata.sort((a, b) => a.order - b.order);
+                    const data = odata.sort((b, a) => a.MarketCapital - b.MarketCapital).filter(item => item.MarketCapital > 1000 * 1e9);// sắp xếp và lấy vốn hóa>1000 tỷ
+console.log(data)
                     processDataSector(data);
                     let label = data[0].label;
                     const sectorColumns2 = [{
@@ -563,7 +564,6 @@
                 const thead = table.querySelector("thead");
                 const tbody = table.querySelector("tbody");
                 let sortDirection = {};
-                console.log(table, thead)
                 // Tạo tiêu đề bảng
                 thead.innerHTML = "<tr>" + columns.map(col =>
                     `<th data-key="${col.key}">${col.label}</th>`
