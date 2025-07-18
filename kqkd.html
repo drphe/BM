@@ -248,7 +248,7 @@
     <script>
         const emptyData = '<div style="margin:auto;text-align: center;padding:10px;"> <svg width="90"  height="60" viewBox="0 0 64 41" xmlns="http://www.w3.org/2000/svg"><g transform="translate(0 1)" fill="none" fill-rule="evenodd"><ellipse fill="#f5f5f5" cx="32" cy="33" rx="32" ry="7"></ellipse><g fill-rule="nonzero" stroke="#d9d9d9"><path d="M55 12.76L44.854 1.258C44.367.474 43.656 0 42.907 0H21.093c-.749 0-1.46.474-1.947 1.257L9 12.761V22h46v-9.24z"></path><path d="M41.613 15.931c0-1.605.994-2.93 2.227-2.931H55v18.137C55 33.26 53.68 35 52.05 35h-40.1C10.32 35 9 33.259 9 31.137V13h11.16c1.233 0 2.227 1.323 2.227 2.928v.022c0 1.605 1.005 2.901 2.237 2.901h14.752c1.232 0 2.237-1.308 2.237-2.913v-.007z" fill="#fafafa"></path></g></g></svg></div>'
 
-        const titleArr = ["Mã", "Ngành", "Doanh thu thuần (Tỷ VNĐ)", "Lãi ròng (Tỷ VNĐ)", "Doanh thu thuần (%YoY)", "Lãi ròng (%YoY)", "Giá (D)", "Khối lượng GD (D)", "Vốn hoá (Tỷ VNĐ - D)", "ROE", "Ngày cập nhật"],
+        const titleArr = ["Mã", "Ngành", "Doanh thu thuần (Tỷ)", "Lãi ròng (Tỷ)", "Doanh thu thuần (%YoY)", "Lãi ròng (%YoY)", "ROE","Giá trị GD (tỷ/D)",  "Vốn hoá (Tỷ)", "Ngày cập nhật"],
             sector = [{
                 Id: "316",
                 Name: "Đại lý và môi giới bất động sản",
@@ -2251,52 +2251,79 @@
             }
         }
 
-        function taoTable(data) {
-            var table = document.createElement('table');
-            table.id = "ket-qua-kinh-doanh"
-            var thead = document.createElement('thead');
-            var tbody = document.createElement('tbody');
-            var colgroup = document.createElement('colgroup');
-            var headRow = document.createElement('tr');
-            titleArr.forEach(function(el) {
-                var th = document.createElement('th');
-                var col = document.createElement('col');
-                col.setAttribute("style", "width:auto;")
-                th.rowspan = 2
-                th.appendChild(document.createTextNode(el));
-                headRow.appendChild(th);
-                colgroup.appendChild(col);
-            });
-            thead.appendChild(headRow);
-            table.appendChild(thead);
-            table.appendChild(colgroup);
-            // Tạo nội dung bảng
-            data.forEach(function(el) {
-                var tr = document.createElement('tr');
-                cTd(el.Code, tr, 1)
-                cTd(gsector(el.Sector), tr)
-                cTd(num2(parseFloat(el.periodValue.revenue) / 1e6), tr, 2)
-                cTd(num2(parseFloat(el.periodValue.profit) / 1e6), tr, 2)
-                cTd(num1(el[800]) + " %", tr, 2)
-                cTd(num1(el[804]) + " %", tr, 2)
-                cTd(num0(el[200]), tr)
-                cTd(num0(el[201]), tr)
-                cTd(num2(parseFloat(el[100]) / 1e9), tr)
-                cTd(num2(el[512]) + " %", tr)
-                cTd(formatDateTime(el.KqkdDate), tr)
-                tbody.appendChild(tr);
-            })
-            table.appendChild(tbody);
-            // Thêm bảng vào trang HTML
-            document.getElementById("tieude")
-                .innerHTML = `Kết quả kinh doanh quý ${kqkd.termCode}/${kqkd.yearPeriod} (Số kết quả: ${data.length}) `
-            document.getElementById("noidung")
-                .innerHTML = ""
-            document.getElementById("noidung")
-                .appendChild(table);
-            loading(0);
+  function taoTable(data) {
+    var table = document.createElement('table');
+    table.id = "ket-qua-kinh-doanh";
+    var thead = document.createElement('thead');
+    var tbody = document.createElement('tbody');
+    var colgroup = document.createElement('colgroup');
+    var headRow = document.createElement('tr');
+
+    titleArr.forEach(function(el, index) {
+        var th = document.createElement('th');
+        var col = document.createElement('col');
+        col.setAttribute("style", "width:auto;");
+        th.rowspan = 2;
+        th.appendChild(document.createTextNode(el));
+        th.style.cursor = "pointer";
+        th.setAttribute("data-index", index);
+        th.addEventListener("click", function() {
+            sortTable(table, index);
+        });
+        headRow.appendChild(th);
+        colgroup.appendChild(col);
+    });
+
+    thead.appendChild(headRow);
+    table.appendChild(thead);
+    table.appendChild(colgroup);
+
+    // Tạo nội dung bảng
+    data.forEach(function(el) {
+        var tr = document.createElement('tr');
+        cTd(el.Code, tr, 1);
+        cTd(gsector(el.Sector), tr);
+        cTd(num2(parseFloat(el.periodValue.revenue) / 1e6), tr, 2);
+        cTd(num2(parseFloat(el.periodValue.profit) / 1e6), tr, 2);
+        cTd(num1(el[800]) + " %", tr, 2);
+        cTd(num1(el[804]) + " %", tr, 2);
+        cTd(num2(el[512]) + " %", tr);
+        cTd(num2(el[200]*el[201]/1e9), tr);
+        cTd(num2(parseFloat(el[100]) / 1e9), tr);
+        cTd(formatDateTime(el.KqkdDate), tr);
+        tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+
+    document.getElementById("tieude").innerHTML =
+        `Kết quả kinh doanh quý ${kqkd.termCode}/${kqkd.yearPeriod} (Số kết quả: ${data.length})`;
+    document.getElementById("noidung").innerHTML = "";
+    document.getElementById("noidung").appendChild(table);
+    loading(0);
+}
+function sortTable(table, columnIndex) {
+    var tbody = table.querySelector("tbody");
+    var rows = Array.from(tbody.querySelectorAll("tr"));
+    var isNumeric = !isNaN(rows[0].children[columnIndex].textContent.replace(/[^0-9.-]/g, ''));
+
+    let ascending = table.getAttribute("data-sort-dir") !== "asc";
+    table.setAttribute("data-sort-dir", ascending ? "asc" : "desc");
+
+    rows.sort(function(a, b) {
+        let aText = a.children[columnIndex].textContent.trim();
+        let bText = b.children[columnIndex].textContent.trim();
+
+        if (isNumeric) {
+            aText = parseFloat(aText.replace(/[^0-9.-]/g, '')) || 0;
+            bText = parseFloat(bText.replace(/[^0-9.-]/g, '')) || 0;
         }
 
+        return ascending ? aText > bText ? 1 : -1 : aText < bText ? 1 : -1;
+    });
+
+    rows.forEach(row => tbody.appendChild(row));
+}
         function num0(s) {
             return s.toLocaleString('en-US', {
                 minimumFractionDigits: 0,
