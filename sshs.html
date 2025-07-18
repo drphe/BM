@@ -8,15 +8,13 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
-    <script id="theme-script" src="https://code.highcharts.com/themes/brand-dark.js"></script>
+    <script id="theme-script" src="https://code.highcharts.com/themes/brand-light.js"></script>
 
     <style>
         /* Cải thiện giao diện của trang */
         body {
-            background-color:#1f1836;
-            /* Nền tối */
-            color: #fff;
-            /* Chữ màu trắng */
+            background-color:#fff;
+            color: #000;
             font-family: Arial, sans-serif;
 	    overflow: hidden;
         }
@@ -27,7 +25,7 @@
         }
 
         .button-container button {
-            padding: 5px 10px;
+            padding: 3px 6px;
             margin-right: 10px;
             cursor: pointer;
             border: 2px solid #007bff;
@@ -47,9 +45,7 @@
         /* Hiệu ứng khi người dùng di chuột vào nút */
         .button-container button:hover {
             background-color: #0056b3;
-            /* Màu nền thay đổi khi hover */
             transform: scale(1.1);
-            /* Phóng to nút khi di chuột vào */
         }
 
         /* Hiệu ứng khi nút được nhấn */
@@ -77,7 +73,7 @@
         <button onclick="updateChart('1')">1 Year</button>
         <button onclick="updateChart('3')">3 Years</button>
         <button onclick="updateChart('5')">5 Years</button>
-        <button onclick="generateTable()" style="float:right;" title="Xem bảng dữ liệu"><svg fill="#000000" width="20px" height="20px" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg">
+        <button onclick="generateTable()" style="float:right;" title="Xem bảng dữ liệu"><svg fill="#000000" width="16px" height="16px" viewBox="0 0 32 32" id="icon" xmlns="http://www.w3.org/2000/svg">
   <defs>
     <style>
       .cls-1 {
@@ -161,7 +157,6 @@
             chart: {
                 type: 'scatter',
                 zoomType: 'xy',
-                width: '600'
             },
             title: {
                 text: 'Risk-Return: 5 năm'
@@ -180,7 +175,7 @@
                 gridLineWidth: 0, // Tắt tất cả các đường kẻ ngang
                 plotLines: [{
                     value: 0, // Đặt giá trị plotLine tại y = 0
-                    color: '#fff', // Màu của đường kẻ
+                    color: '#ddd0', // Màu của đường kẻ
                     width: 1, // Độ dày của đường kẻ
                     zIndex: 5 // Đảm bảo đường kẻ này nằm trên các phần tử khác
                 }]
@@ -225,7 +220,7 @@
             Object.keys(data).forEach(key => {
                 const companyData = data[key];
                 const point = companyData[period];
-                let color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow' : (point.cagr > vnindexCAGR ? 'white' : 'red'));
+                let color = point.cagr == vnindexCAGR ? 'blue' : (point.cagr == maxCAGR ? 'yellow' : (point.cagr > vnindexCAGR ? 'gray' : 'red'));
 		if(point.sharpe == maxSharpe) {color = "purple";}
                 const enableLable = point.cagr === maxCAGR || point.cagr == vnindexCAGR || point.sharpe == maxSharpe;
                 dataForPeriod.push({

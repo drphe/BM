@@ -50,68 +50,9 @@
 
         #app {
             max-width: 100%;
-            max-height: calc(100vh - 100px);
+            max-height: calc(100vh - 120px);
             overflow: scroll;
         }
-
-        /* CSS cho popup */
-.popup {
-    display: none;
-    position: fixed;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%) scale(0); /* Bắt đầu với kích thước 0 */
-    border: 2px solid #ddd;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #fff;
-    z-index: 1000;
-    transition: transform 0.3s ease, opacity 0.3s ease; /* Thêm hiệu ứng cho transform và opacity */
-    opacity: 0; /* Bắt đầu với độ mờ */
-}
-/* Khi popup được hiển thị */
-.popup.show {
-    display: block;
-    transform: translate(-50%, -50%) scale(1); /* Phóng lên đến kích thước ban đầu */
-    opacity: 1; /* Đảm bảo popup có độ mờ là 1 */
-}
-
-        .popup table {
-            width: 400px;
-            border-collapse: collapse;
-            font-size: 12px;
-        }
-
-        .popup table,
-        .popup th,
-        .popup td {
-            border: 1px solid #000;
-            width: max-content;
-        }
-
-        .popup th,
-        .popup td {
-            padding: 8px;
-            text-align: left;
-        }
-
-        .popup-close {
-            cursor: pointer;
-            color: red;
-            float: right;
-            font-size: 20px;
-        }
-.overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7); /* Màu nền mờ */
-    backdrop-filter: blur(5px); /* Hiệu ứng mờ nền */
-    z-index: 999;
-    display: none; /* Ẩn khi chưa mở popup */
-}
     </style>
 </head>
 
@@ -122,33 +63,13 @@
         <div id='date' style="color:white; ">(Theo số liệu Fmarket tính đến: DD/MM/YYYY)</div>
     </div>
     <div id="app"></div>
-    <p align="center">
+    <p align="center" style="margin: 6px;">
         <span style="background-color:#a4e8e8;border:1px solid #000;margin:4px; pading:4px;"> Quỹ cổ phiếu</span>
         <span style="background-color:#fff;border:1px solid #000;margin:4px; pading:4px;">Quỹ cân bằng</span>
         <i>Tỉ trọng tính theo %<br /> Click vào từng quỹ để xem danh sách cổ phiếu nắm giữ.</i>
     </p>
-    <div id="overlay" class="overlay"></div>
-    <div id="popup" class="popup">
-        <span> Danh mục cổ phiếu nắm giữ </span>
-        <span id="closePopup" class="popup-close">&times;</span>
-        <table id="dataTable">
-            <thead>
-                <tr>
-                    <th>Mã</th>
-                    <th>Giá</th>
-                    <th>+/-(%)</th>
-                    <th>Ngành</th>
-                    <th>Tỷ trọng</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Rows will be added here dynamically -->
-            </tbody>
-        </table>
-    </div>
 
     <script>
-const overlay = document.getElementById("overlay");
         // Hàm lấy ngày hiện tại theo định dạng yyyy-mm-dd
         function getCurrentDate() {
             const t = new Date();
@@ -213,132 +134,136 @@ const overlay = document.getElementById("overlay");
             return ngayHienTai;
         }
 
-function calculatePerformance(NavData) {
-NavData.forEach(item => {
-    if (item.createdAt === null) {
-        item.createdAt = new Date(item.navDate).getTime(); 
-    }
-});
-    // Chuyển đổi thời gian thành ngày (tính theo ngày)
-    const msInDay = 1000 * 60 * 60 * 24;
-    const msInMonth = 1000 * 60 * 60 * 24 * 15; // 1/2 tháng = 15 ngày
+        function calculatePerformance(NavData) {
+            NavData.forEach(item => {
+                if (item.createdAt === null) {
+                    item.createdAt = new Date(item.navDate).getTime();
+                }
+            });
+            // Chuyển đổi thời gian thành ngày (tính theo ngày)
+            const msInDay = 1000 * 60 * 60 * 24;
+            const msInMonth = 1000 * 60 * 60 * 24 * 15; // 1/2 tháng = 15 ngày
 
-    // Tính CAGR (Tỷ suất lợi nhuận hàng năm)
-    const calculateCAGR = (startNav, endNav, years) => {
-        return Math.pow(endNav / startNav, 1 / years) - 1;
-    };
-
-    // Tính độ lệch chuẩn
-    const calculateStandardDeviation = (values) => {
-        const mean = values.reduce((a, b) => a + b, 0) / values.length;
-        const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
-        return Math.sqrt(variance);
-    };
-// Tính sharpe với ls phi rủi ro 3%
-const calculateSharpe = (stdDev, mean) => {
-    if (stdDev === 0) {
-        return 0; // Hoặc giá trị nào bạn muốn xử lý khi stdDev = 0
-    }
-    return ((mean - 3) / stdDev);
-};
-
-    // Tính độ lệch chuẩn phần trăm
-    const calculateCVPercent = (stdDev, mean) => {
-        return (stdDev / mean) * 100;
-    };
-    // Lấy giá trị NAV đầu năm (từ ngày 1 tháng 1 của năm hiện tại)
-    const getNavForYearStart = () => {
-        const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
-        const startNav = NavData.find(item => item.createdAt >= startOfYear);
-        if (!startNav) return null; // Không tìm thấy dữ liệu đầu năm
-        return startNav.nav;
-    };
-    // Tìm giá trị NAV đầu kỳ gần nhất với periodStartDate (không cách quá 1 tháng)
-    const getNavForPeriod = (days) => {
-        const periodStartDate = Date.now() - (days * msInDay);
-        // Lọc tất cả các item có createdAt lớn hơn hoặc bằng periodStartDate
-        const validNavData = NavData.filter(item => item.createdAt >= periodStartDate);
-        
-        // Nếu không có dữ liệu nào thỏa mãn, trả về null
-        if (validNavData.length === 0) return null;
-
-        // Tìm giá trị NAV gần nhất với periodStartDate
-        const startNav = validNavData.reduce((prev, curr) => {
-            // Nếu khoảng cách giữa current.nav và periodStartDate > 1 tháng (30 ngày), thì bỏ qua
-            if (Math.abs(curr.createdAt - periodStartDate) > msInMonth) {
-                return prev; // Giữ lại phần tử trước đó
-            }
-            return (Math.abs(curr.createdAt - periodStartDate) < Math.abs(prev.createdAt - periodStartDate)) ? curr : prev;
-        });
-
-        // Nếu giá trị gần nhất cách quá 1 tháng, trả về null
-        if (Math.abs(startNav.createdAt - periodStartDate) > msInMonth) {
-            return null;
-        }
-
-        return startNav.nav;
-    };
-
-    // Kiểm tra xem có đủ dữ liệu trong khoảng thời gian yêu cầu không
-    const isDataSufficientForPeriod = (periodInDays) => {
-        const periodStartDate = Date.now() - (periodInDays * msInDay);
-        const dataInPeriod = NavData.filter(item => item.createdAt >= periodStartDate);
-        return dataInPeriod.length > 1; // Kiểm tra có ít nhất 2 giá trị NAV trong khoảng thời gian
-    };
-
-    // Tính CAGR và độ lệch chuẩn theo phần trăm cho 1 năm, 3 năm, 5 năm
-    let returns = {};
-    let periods = [365, 3 * 365, 5 * 365]; // 1 năm = 365 ngày, 3 năm = 3*365 ngày, 5 năm = 5*365 ngày
-    periods.forEach(periodInDays => {
-        if (isDataSufficientForPeriod(periodInDays)) {
-            const startNav = getNavForPeriod(periodInDays);
-            const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại (mới nhất)
-            if (!startNav) {
-                returns[periodInDays / 365] = { cagr: 0, std: 0, sharpe:0 }; // Không đủ dữ liệu
-                return;
-            }
-            const years = periodInDays / 365; // Số năm tương ứng
-            const cagr = calculateCAGR(startNav, latestNav, years);
-            const navValues = NavData.filter(item => item.createdAt >= (Date.now() - (periodInDays * msInDay))).map(item => item.nav);
-            const stdDev = calculateStandardDeviation(navValues);
-            const cvPercent = calculateCVPercent(stdDev, navValues.reduce((a, b) => a + b, 0) / navValues.length); // Tính độ lệch chuẩn phần trăm
-	    const sharpe = calculateSharpe(cvPercent, cagr*100);
-            returns[years] = {
-                cagr: cagr * 100, // Tỷ suất lợi nhuận theo năm, chuyển sang phần trăm
-                std: cvPercent,
-		sharpe: sharpe
+            // Tính CAGR (Tỷ suất lợi nhuận hàng năm)
+            const calculateCAGR = (startNav, endNav, years) => {
+                return Math.pow(endNav / startNav, 1 / years) - 1;
             };
-        } else {
-            const years = periodInDays / 365;
-            returns[years] = {
-                cagr: 0,
-                std: 0,
-		sharpe:0
+
+            // Tính độ lệch chuẩn
+            const calculateStandardDeviation = (values) => {
+                const mean = values.reduce((a, b) => a + b, 0) / values.length;
+                const variance = values.reduce((a, b) => a + Math.pow(b - mean, 2), 0) / values.length;
+                return Math.sqrt(variance);
             };
+            // Tính sharpe với ls phi rủi ro 3%
+            const calculateSharpe = (stdDev, mean) => {
+                if (stdDev === 0) {
+                    return 0; // Hoặc giá trị nào bạn muốn xử lý khi stdDev = 0
+                }
+                return ((mean - 3) / stdDev);
+            };
+
+            // Tính độ lệch chuẩn phần trăm
+            const calculateCVPercent = (stdDev, mean) => {
+                return (stdDev / mean) * 100;
+            };
+            // Lấy giá trị NAV đầu năm (từ ngày 1 tháng 1 của năm hiện tại)
+            const getNavForYearStart = () => {
+                const startOfYear = new Date(new Date().getFullYear(), 0, 1).getTime();
+                const startNav = NavData.find(item => item.createdAt >= startOfYear);
+                if (!startNav) return null; // Không tìm thấy dữ liệu đầu năm
+                return startNav.nav;
+            };
+            // Tìm giá trị NAV đầu kỳ gần nhất với periodStartDate (không cách quá 1 tháng)
+            const getNavForPeriod = (days) => {
+                const periodStartDate = Date.now() - (days * msInDay);
+                // Lọc tất cả các item có createdAt lớn hơn hoặc bằng periodStartDate
+                const validNavData = NavData.filter(item => item.createdAt >= periodStartDate);
+
+                // Nếu không có dữ liệu nào thỏa mãn, trả về null
+                if (validNavData.length === 0) return null;
+
+                // Tìm giá trị NAV gần nhất với periodStartDate
+                const startNav = validNavData.reduce((prev, curr) => {
+                    // Nếu khoảng cách giữa current.nav và periodStartDate > 1 tháng (30 ngày), thì bỏ qua
+                    if (Math.abs(curr.createdAt - periodStartDate) > msInMonth) {
+                        return prev; // Giữ lại phần tử trước đó
+                    }
+                    return (Math.abs(curr.createdAt - periodStartDate) < Math.abs(prev.createdAt - periodStartDate)) ? curr : prev;
+                });
+
+                // Nếu giá trị gần nhất cách quá 1 tháng, trả về null
+                if (Math.abs(startNav.createdAt - periodStartDate) > msInMonth) {
+                    return null;
+                }
+
+                return startNav.nav;
+            };
+
+            // Kiểm tra xem có đủ dữ liệu trong khoảng thời gian yêu cầu không
+            const isDataSufficientForPeriod = (periodInDays) => {
+                const periodStartDate = Date.now() - (periodInDays * msInDay);
+                const dataInPeriod = NavData.filter(item => item.createdAt >= periodStartDate);
+                return dataInPeriod.length > 1; // Kiểm tra có ít nhất 2 giá trị NAV trong khoảng thời gian
+            };
+
+            // Tính CAGR và độ lệch chuẩn theo phần trăm cho 1 năm, 3 năm, 5 năm
+            let returns = {};
+            let periods = [365, 3 * 365, 5 * 365]; // 1 năm = 365 ngày, 3 năm = 3*365 ngày, 5 năm = 5*365 ngày
+            periods.forEach(periodInDays => {
+                if (isDataSufficientForPeriod(periodInDays)) {
+                    const startNav = getNavForPeriod(periodInDays);
+                    const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại (mới nhất)
+                    if (!startNav) {
+                        returns[periodInDays / 365] = {
+                            cagr: 0,
+                            std: 0,
+                            sharpe: 0
+                        }; // Không đủ dữ liệu
+                        return;
+                    }
+                    const years = periodInDays / 365; // Số năm tương ứng
+                    const cagr = calculateCAGR(startNav, latestNav, years);
+                    const navValues = NavData.filter(item => item.createdAt >= (Date.now() - (periodInDays * msInDay))).map(item => item.nav);
+                    const stdDev = calculateStandardDeviation(navValues);
+                    const cvPercent = calculateCVPercent(stdDev, navValues.reduce((a, b) => a + b, 0) / navValues.length); // Tính độ lệch chuẩn phần trăm
+                    const sharpe = calculateSharpe(cvPercent, cagr * 100);
+                    returns[years] = {
+                        cagr: cagr * 100, // Tỷ suất lợi nhuận theo năm, chuyển sang phần trăm
+                        std: cvPercent,
+                        sharpe: sharpe
+                    };
+                } else {
+                    const years = periodInDays / 365;
+                    returns[years] = {
+                        cagr: 0,
+                        std: 0,
+                        sharpe: 0
+                    };
+                }
+            });
+
+            // Tính lợi suất từ đầu năm (YTD%) và biến động YTD
+            const startOfYearNav = getNavForYearStart();
+            if (startOfYearNav) {
+                const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại
+                const ytdReturn = ((latestNav - startOfYearNav) / startOfYearNav) * 100; // Tính YTD% 
+
+                // Lọc dữ liệu NAV từ đầu năm tới hiện tại
+                const navValuesYTD = NavData.filter(item => item.createdAt >= new Date(new Date().getFullYear(), 0, 1).getTime()).map(item => item.nav);
+                const stdDevYTD = calculateStandardDeviation(navValuesYTD);
+                const cvPercentYTD = calculateCVPercent(stdDevYTD, navValuesYTD.reduce((a, b) => a + b, 0) / navValuesYTD.length); // Tính độ lệch chuẩn YTD phần trăm
+                const sharpeYTD = calculateSharpe(cvPercentYTD, ytdReturn);
+
+                returns.ytd = {
+                    cagr: ytdReturn,
+                    std: cvPercentYTD,
+                    sharpe: sharpeYTD
+                };
+            }
+
+            return returns;
         }
-    });
-
-    // Tính lợi suất từ đầu năm (YTD%) và biến động YTD
-    const startOfYearNav = getNavForYearStart();
-    if (startOfYearNav) {
-        const latestNav = NavData[NavData.length - 1].nav; // NAV hiện tại
-        const ytdReturn = ((latestNav - startOfYearNav) / startOfYearNav) * 100; // Tính YTD% 
-
-        // Lọc dữ liệu NAV từ đầu năm tới hiện tại
-        const navValuesYTD = NavData.filter(item => item.createdAt >= new Date(new Date().getFullYear(), 0, 1).getTime()).map(item => item.nav);
-        const stdDevYTD = calculateStandardDeviation(navValuesYTD);
-        const cvPercentYTD = calculateCVPercent(stdDevYTD, navValuesYTD.reduce((a, b) => a + b, 0) / navValuesYTD.length); // Tính độ lệch chuẩn YTD phần trăm
-	const sharpeYTD = calculateSharpe(cvPercentYTD, ytdReturn);
-
-        returns.ytd = {
-            cagr: ytdReturn,
-            std: cvPercentYTD,
-	    sharpe: sharpeYTD
-        };
-    }
-
-    return returns;
-}
 
         // Hàm tính drawdown (sụt giảm tối đa)
         function calculateDrawdown(navData) {
@@ -464,19 +389,26 @@ const calculateSharpe = (stdDev, mean) => {
 
         }
 
-        async function showChart(id, name) {
-            const popup = document.getElementById('load'); const targetItem = ccq.find(item => item.id === id);
-            popup.innerHTML = `<div class="popup show" style="display:block;">Biểu đồ giá - ${name} (${unixToDate(targetItem.extra.lastNAVDate/1000)})<span class="popup-close">&times;</span><div id="lineChart" style="width: 600px; height: 400px;"></div></div>`;
-            popup.style.display = "none";
-            await fmarketChart(id, name);
-            popup.style.display = "block";
-	    overlay.style.display = "block";
-        }
-
+        /// show bảng 
         function showDs(data) {
-            const popup = document.getElementById('popup');
-            const tbody = document.getElementById('dataTable').getElementsByTagName('tbody')[0];
-            tbody.innerHTML = '';
+            const table = document.createElement('table');
+            table.id = 'dataTable';
+
+            // Tạo phần thead
+            const thead = document.createElement('thead');
+            const headerRow = document.createElement('tr');
+            const headers = ['Mã', 'Giá', '+/-(%)', 'Ngành', 'Tỷ trọng'];
+
+            headers.forEach(text => {
+                const th = document.createElement('th');
+                th.textContent = text;
+                headerRow.appendChild(th);
+            });
+            thead.appendChild(headerRow);
+            table.appendChild(thead);
+
+            // Tạo phần tbody
+            const tbody = document.createElement('tbody');
             data.forEach(item => {
                 const row = tbody.insertRow();
                 row.insertCell().textContent = item.stockCode;
@@ -485,28 +417,13 @@ const calculateSharpe = (stdDev, mean) => {
                 row.insertCell().textContent = item.industry;
                 row.insertCell().textContent = item.netAssetPercent;
             });
-            popup.style.display = 'block';
-	    overlay.style.display = "block";
-	    setTimeout(() => popup.classList.add("show"), 10);
+            table.appendChild(tbody);
+            window.parent.postMessage({
+                popup: true,
+                title: "Danh sách cổ phiếu nắm giữ",
+                content: table.outerHTML,
+            }, "*");
         };
-
-        document.addEventListener('click', function(event) {
-            if (event.target.classList.contains('popup-close')||event.target.classList.contains('overlay')) {
-                document.getElementById('load').innerHTML = '';
-            let popup = document.getElementById('popup')
-		popup.style.display = 'none';
-		popup.classList.remove("show")
-		overlay.style.display = "none";
-		
-            }
-        });
-
-        document.getElementById('closePopup').addEventListener('click', function() {
-            let popup = document.getElementById('popup')
-		popup.style.display = 'none';
-		popup.classList.remove("show")
-	    	    overlay.style.display = "none";
-        });
 
         function loading(i = !0) {
             document.getElementById("load").innerHTML = i ? `<div class="loading-container"><div class="lds-roller"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div></div>` : ""
@@ -585,7 +502,9 @@ const calculateSharpe = (stdDev, mean) => {
                 "owner": {
                     "shortName": "HOSE"
                 },
-		"extra": { "lastNAVDate":  new Date(),},
+                "extra": {
+                    "lastNAVDate": new Date(),
+                },
                 "productNavChange": {
                     "navToLastYear": VNINDEXdata.ytd.cagr.toFixed(2),
                     "navTo12Months": VNINDEXdata["1"].cagr.toFixed(2),
@@ -638,14 +557,18 @@ const calculateSharpe = (stdDev, mean) => {
                     if (item.id !== 18000) {
                         showDs(item.productTopHoldingList);
                     } else {
-			loading(1)
+                        loading(1)
                         if (Object.keys(sosanhhieusuat).length === 0) {
-    				await fetchSequentiallyData(ccq);   
-			} 
-			localStorage.setItem("sshs", JSON.stringify(sosanhhieusuat));
-            		const popup = document.getElementById('load');
-            		popup.innerHTML = `<div class="popup show" style="display:block;border: 2px solid #2c2c2c;background-color: #1f1836;color:white">Biểu đồ phân tán hiệu suất<span class="popup-close">&times;</span><iframe src="sshs.html" style="border: none;" width="620" height="460"></iframe></div>`;
-			overlay.style.display = "block";
+                            await fetchSequentiallyData(ccq);
+                        }
+                        localStorage.setItem("sshs", JSON.stringify(sosanhhieusuat));
+                        // khi popup hiển thị
+                        window.parent.postMessage({
+                            popup: true,
+                            title: "Biểu đồ phân tán hiệu suất",
+                            content: '<iframe src="sshs.html" style="border: none;height:450px;min-width: 50vw;"></iframe>',
+                        }, "*");
+                        loading(0)
                     }
                 };
 
@@ -656,9 +579,6 @@ const calculateSharpe = (stdDev, mean) => {
                 navytdCell.style.backgroundColor = "#5e3c3c";
                 navytdCell.style.textAlign = 'center';
                 row.appendChild(navytdCell);
-                navytdCell.onclick = function() {
-                    showChart(item.id, item.shortName);
-                };
                 const nav1yCell = document.createElement("td");
                 nav1yCell.textContent = item.productNavChange.navTo12Months || "-"; // 1y
                 nav1yCell.style.padding = "8px";
@@ -702,7 +622,6 @@ const calculateSharpe = (stdDev, mean) => {
 
         // Gọi hàm để in kết quả ra bảng
         fetchData();
-
         async function fetchSequentially(data) {
             for (const s of data) {
                 try {
@@ -713,8 +632,6 @@ const calculateSharpe = (stdDev, mean) => {
                 }
             }
         }
-
-
         function addObjectToArray(array, obj, uniqueKey) {
             const existingItem = array.find(item => item[uniqueKey] === obj[uniqueKey]);
             if (existingItem) {
@@ -728,7 +645,6 @@ const calculateSharpe = (stdDev, mean) => {
 
 
         async function fetchProductDetails(productId) {
-
             const url = `https://api.fmarket.vn/res/products/${productId}`;
             const headers = {
                 "accept": "application/json, text/plain, */*",

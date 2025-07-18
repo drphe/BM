@@ -497,4 +497,15 @@ iframe {
   from { transform: rotate(0deg); }
   to { transform: rotate(360deg); }
 }
+#info table, #dataTable {
+        border-collapse: collapse;
+        width: 100%;
+        font-family: Arial, sans-serif;
+    }
+
+ #info table th, #info table td,    #dataTable th, #dataTable td {
+        border: 1px solid #ccc; /* Đường kẻ mỏng, màu xám nhạt */
+        padding: 4px;
+        text-align: left;
+    }
 

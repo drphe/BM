@@ -49,7 +49,7 @@
 
         .time-presets button,
         #filter-btn {
-            padding: 8px 15px;
+            padding: 4px 8px;
             border: none;
             background-color: #007bff;
             color: white;
@@ -68,7 +68,7 @@
         }
 
         .time-range input[type="date"] {
-            padding: 5px;
+            padding: 4px;
             border: 1px solid #ccc;
             border-radius: 5px;
         }
@@ -108,7 +108,7 @@
         }
 
         .time-presets button {
-            padding: 8px 16px;
+            padding: 4px 8px;
             margin: 4px;
             border: 1px solid #ccc;
             background-color: #795252;
@@ -225,8 +225,8 @@
                     <th data-key="adClose">Chỉ số ngành</th>
                     <th data-key="pctChange">Giá (%)</th>
                     <th data-key="MarketCapital">Vốn hóa (Tỷ)</th>
-                    <th data-key="nmVolume">Khối lượng GD</th>
-                    <th data-key="nmValue">Giá trị GD</th>
+                    <th data-key="nmVolume">Khối lượng GD (tr)</th>
+                    <th data-key="nmValue">Giá trị GD (tỷ)</th>
                     <th data-key="rsRating">RS rating</th>
                     <th data-key="strength">Vùng sức mạnh</th>
                 </tr>
@@ -269,7 +269,7 @@
                         zoomType: 'x'
                     },
                     title: {
-                        text: 'Sức mạnh ngành theo thời gian'
+                        text: 'Biến động ngành'
                     },
                     xAxis: {
                         type: 'datetime',
@@ -398,12 +398,12 @@
           <td>${item.order}</td>
           <td>${item.name}</td>
           <td>${item.adClose.toFixed(2)}</td>
-          <td>${(item.pctChange * 100).toFixed(2)}%</td>
+          <td>${(item.pctChange).toFixed(2)}%</td>
           <td>${(item.MarketCapital / 1e12).toFixed(2)}</td>
-          <td>${item.nmVolume.toLocaleString()}</td>
-          <td>${item.nmValue.toLocaleString()}</td>
+          <td>${(item.nmVolume/ 1e6).toFixed(2)}</td>
+          <td>${(item.nmValue/1e9).toFixed(2)}</td>
           <td>${item.rsRating}</td>
-          <td>${item.strength}</td>
+          <td>${item.strength == 2 ?"Điều chỉnh": item.strength== 1? "Dẫn đầu":"Suy yếu"}</td>
         `;
                             tbody.appendChild(row);
                         });
