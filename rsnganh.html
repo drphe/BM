@@ -46,8 +46,9 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-
-        .goback, .time-presets button,
+	.goback {width:100%; margin:4px;}
+        .goback,
+        .time-presets button,
         #filter-btn {
             padding: 4px 8px;
             border: none;
@@ -83,7 +84,11 @@
             margin-bottom: 10px;
             border-radius: 8px;
         }
-	a {text-decoration: none;}
+
+        a {
+            text-decoration: none;
+        }
+
         #sector-checkboxes {
             flex-wrap: wrap;
             justify-content: center;
@@ -95,13 +100,16 @@
             margin-bottom: 15px;
             max-height: 460px;
             overflow: scroll;
-	    min-width:150px;
+            min-width: 150px;
         }
 
         .checkbox-container {
             display: flex;
             align-items: center;
             margin: 4px;
+background: aliceblue;
+    padding: 4px;
+    border-radius: 4px;
         }
 
         .checkbox-container input {
@@ -197,6 +205,95 @@
 
             }
         }
+
+
+
+        .slider-container {
+            padding: 50px 20px 20px;
+	    display: none;
+            margin-bottom: 10px;
+            background: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .market-slider {
+            position: relative;
+            height: 10px;
+        }
+
+        .slider-track {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #e9ecef;
+            border-radius: 5px;
+            top: 0;
+        }
+
+        .slider-range {
+            position: absolute;
+            height: 100%;
+            background-color: #007bff;
+            /* Màu của vùng Midcap */
+            border-radius: 5px;
+            z-index: 1;
+        }
+
+        .handle {
+            position: absolute;
+            width: 24px;
+            height: 24px;
+            background-color: #fff;
+            border: 2px solid #007bff;
+            border-radius: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            cursor: grab;
+            z-index: 2;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+        }
+
+        .handle:active {
+            cursor: grabbing;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .handle-label {
+            position: absolute;
+            top: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #343a40;
+            color: #fff;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+
+        .limit-labels,
+        .zone-labels {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #495057;
+        }
+
+        .zone-labels {
+            margin-top: 5px;
+            font-weight: bold;
+        }
+
+        .zone-labels .midcap {
+            text-align: center;
+        }
+
+        .zone-labels .bluechip {
+            text-align: right;
+        }
     </style>
 </head>
 
@@ -221,6 +318,31 @@
         <div id="chart-container"></div>
         <div id="sector-checkboxes"></div>
     </div>
+    <div class="slider-container">
+        <div class="market-slider">
+            <div class="slider-track"></div>
+            <div class="slider-range" id="slider-range"></div>
+
+            <div class="handle" id="handle-1">
+                <div class="handle-label" id="label-1"></div>
+            </div>
+
+            <div class="handle" id="handle-2">
+                <div class="handle-label" id="label-2"></div>
+            </div>
+        </div>
+
+        <div class="limit-labels">
+            <span id="min-label">0</span>
+            <span id="max-label"></span>
+        </div>
+
+        <div class="zone-labels">
+            <span class="penny">Penny</span>
+            <span class="midcap">Midcap</span>
+            <span class="bluechip">Bluechip</span>
+        </div>
+    </div>
     <div id="table">
         <table id="sectorTable">
             <thead></thead>
@@ -242,6 +364,7 @@
             let sectorID = 0;
             let lastfetch = '';
             let lastdata = [];
+            let sectorName = "";
 
             const fetchData = async (url) => {
                 try {
@@ -266,7 +389,7 @@
                         zoomType: 'x'
                     },
                     title: {
-                        text: 'Biến động ngành',
+                        text: 'Biến động ngành ',
                         style: {
                             fontSize: "16px",
                             fontFamily: "arial",
@@ -341,7 +464,7 @@
 
             const processDataSector = (data) => {
                 const defaultVisibleSectors = data.map(sector => sector.code).slice(0, 3);
-
+		updateChartTitle('Biến động ngành')
                 allSeriesData = data.map(sector => {
                     const chartData = sector.chart.map(point => {
                         const year = parseInt(point.date.substring(0, 4));
@@ -379,7 +502,7 @@
                 {
                     label: "Chỉ số ngành",
                     key: "adClose",
-                    format: val => val.toFixed(2)
+                    format: val => (typeof val === 'number' ? val.toFixed(2) : '')
                 },
                 {
                     label: "Giá (%)",
@@ -407,15 +530,14 @@
                 }
             ];
 
-
+            let marketdata = [];
             // hàm load dữ liệu của từng ngành
             async function loadsector(id) {
                 sectorID = id; // gán id => thay đổi url
                 const odata = await fetchData(lastfetch);
                 if (odata) {
-                    const data = odata.sort((b, a) => a.MarketCapital - b.MarketCapital).filter(item => item.MarketCapital > 1000 * 1e9);// sắp xếp và lấy vốn hóa>1000 tỷ
-console.log(data)
-                    processDataSector(data);
+                    const data = odata.sort((b, a) => a.MarketCapital - b.MarketCapital);
+                    processDataSector(data.filter(item => item.MarketCapital > 1000 * 1e9)); // vẽ biểu đồ nhóm vốn hóa lớn
                     let label = data[0].label;
                     const sectorColumns2 = [{
                             label: "Mã",
@@ -424,7 +546,7 @@ console.log(data)
                         {
                             label: "Giá",
                             key: "adClose",
-                            format: val => val.toFixed(2)
+                            format: val => (typeof val === 'number' ? val.toFixed(2) : '')
                         },
                         {
                             label: "Giá (%)",
@@ -471,24 +593,231 @@ console.log(data)
                             key: "rsRating"
                         }
                     ];
-                    createSortableTable(sectorColumns2, data.slice(1)); // bỏ qua mã đầu tiên
+                    marketdata = data;
+		    updateChartTitle('Dòng tiền theo cổ phiếu - '+data[0].code)
+                    createSortableTable(sectorColumns2, data); // bỏ qua mã đầu tiên
                 }
             }
+            const slider = document.querySelector('.market-slider');
+
+            const track = document.querySelector('.slider-track');
+            const range = document.getElementById('slider-range');
+
+            const handle1 = document.getElementById('handle-1');
+            const handle2 = document.getElementById('handle-2');
+
+            const label1 = document.getElementById('label-1');
+            const label2 = document.getElementById('label-2');
+
+            const maxLabel = document.getElementById('max-label');
+
+            const formatValue = (value) => {
+                const valueInTy = Math.round(value / 1e9);
+                return `${valueInTy.toLocaleString('vi-VN')} tỷ`;
+            };
+
+	    // tính toán dòng tiền theo nhóm vốn hóa
+            function marketcap(data) {
+		updateChartTitle('Dòng tiền theo vốn hóa - '+data[0].code)
+                const validItems = data.filter(item => typeof item.MarketCapital === 'number');
+
+                const maxItem = validItems.reduce((max, item) =>
+                    item.MarketCapital > max.MarketCapital ? item : max
+                );
+
+                const MAX_CAP = maxItem.MarketCapital;
+                const MIN_CAP = 0;
+
+                let value1 = 1000 * 1e9; // 1,000 tỷ
+                let value2 = 10000 * 1e9; // 10,000 tỷ
+
+                // --- 1. Phân nhóm cổ phiếu 
+                let bluechipStocks = [];
+                let midcapStocks = [];
+                let pennyStocks = [];
+
+                //thay đổi dạng thời gian
+                const parseDateToTimestamp = (dateString) => {
+                    const year = parseInt(dateString.substring(0, 4), 10);
+                    const month = parseInt(dateString.substring(4, 6), 10) - 1;
+                    const day = parseInt(dateString.substring(6, 8), 10);
+                    return new Date(year, month, day).getTime();
+                };
+                // tính chỉ số 
+                const calculateIndex = (groupName, stockGroup, id) => {
+                    if (stockGroup.length === 0) {
+                        return {
+                            id,
+                            name: groupName,
+                            data: []
+                        };
+                    }
+
+                    const totalMarketCap = stockGroup.reduce((sum, stock) => sum + stock.MarketCapital, 0);
+
+                    stockGroup.forEach(stock => {
+                        stock.weight = stock.MarketCapital / totalMarketCap;
+                        stock.chartMap = new Map(stock.chart.map(c => [c.date, c.value]));
+                    });
+
+                    const tradingDates = stockGroup[0].chart.map(c => c.date);
+                    const indexChart = [];
+
+                    tradingDates.forEach(date => {
+                        let weightedDailyChange = 0;
+                        stockGroup.forEach(stock => {
+                            const dayValue = stock.chartMap.get(date) || 0;
+                            weightedDailyChange += dayValue * stock.weight;
+                        });
+
+                        const timestamp = parseDateToTimestamp(date);
+                        indexChart.push([timestamp, weightedDailyChange]);
+                    });
+                    // tính chỉ số tích lũy
+                    const cumulativeArray = [];
+                    let cumulativeSum = 0;
+
+                    for (const [timestamp, value] of indexChart) {
+                        cumulativeSum += value;
+                        cumulativeArray.push([timestamp, cumulativeSum]);
+                    }
+
+                    return {
+                        id,
+                        name: groupName,
+                        data: cumulativeArray,
+                        visible: true
+                    };
+                };
+
+                // cập nhật lable
+                const updateLabels = () => {
+                    label1.textContent = formatValue(value1);
+                    label2.textContent = formatValue(value2);
+                    maxLabel.textContent = formatValue(MAX_CAP);
+                };
+                // cập nhật range
+                const updateRange = () => {
+                    const pos1 = (value1 / MAX_CAP) * 100;
+                    const pos2 = (value2 / MAX_CAP) * 100;
+                    range.style.left = `${pos1}%`;
+                    range.style.width = `${pos2 - pos1}%`;
+                };
+
+                const updateHandles = () => {
+                    handle1.style.left = `${(value1 / MAX_CAP) * 100}%`;
+                    handle2.style.left = `${(value2 / MAX_CAP) * 100}%`;
+                };
+
+                // khởi tạo
+                const initHandle = (handle) => {
+                    handle.addEventListener('mousedown', (e) => {
+                        e.preventDefault();
+                        const trackRect = track.getBoundingClientRect();
+
+                        const onMouseMove = (moveEvent) => {
+                            // Tính vị trí mới dựa trên di chuyển của chuột
+                            let newX = moveEvent.clientX - trackRect.left;
+
+                            // Giới hạn vị trí trong khoảng của thanh trượt
+                            newX = Math.max(0, Math.min(newX, trackRect.width));
+
+                            // Chuyển vị trí pixel sang % và giá trị vốn hóa
+                            const percent = (newX / trackRect.width) * 100;
+                            let newValue = (percent / 100) * MAX_CAP;
+
+                            // Logic để 2 thanh gạt không vượt qua nhau
+                            if (handle === handle1) {
+                                value1 = Math.min(newValue, value2); // Không cho gạt 1 vượt gạt 2
+                            } else {
+                                value2 = Math.max(newValue, value1); // Không cho gạt 2 vượt gạt 1
+                            }
+
+                            // Cập nhật lại toàn bộ UI
+                            updateUI();
+                        };
+
+                        const onMouseUp = () => {
+                            document.removeEventListener('mousemove', onMouseMove);
+                            document.removeEventListener('mouseup', onMouseUp);
+                        };
+
+                        document.addEventListener('mousemove', onMouseMove);
+                        document.addEventListener('mouseup', onMouseUp);
+                    });
+                };
+
+
+                const updateUI = () => {
+                    let BLUECHIP_THRESHOLD = value2;
+                    let PENNY_THRESHOLD = value1;
+                    //reset
+                    bluechipStocks = [];
+                    midcapStocks = [];
+                    pennyStocks = [];
+                    data.forEach(stock => {
+                        if ('MarketCapital' in stock) {
+
+                            if (stock.MarketCapital > BLUECHIP_THRESHOLD) {
+                                bluechipStocks.push(stock);
+                            } else if (stock.MarketCapital > PENNY_THRESHOLD) {
+                                midcapStocks.push(stock);
+                            } else {
+                                pennyStocks.push(stock);
+                            }
+                        }
+                    });
+                    // ---Tạo 3 biến chỉ số 
+                    const bluechipIndex = calculateIndex('Bluechip', bluechipStocks, 'blue');
+                    const midcapIndex = calculateIndex('Midcap', midcapStocks, 'mid');
+                    const pennyIndex = calculateIndex('Penny', pennyStocks, 'penny');
+                    allSeriesData = [bluechipIndex, midcapIndex, pennyIndex];
+                    // vẽ lại checkbox và biểu đồ
+                    renderCheckboxes();
+                    updateChartSeries();
+                    updateHandles();
+                    updateRange();
+                    updateLabels();
+                };
+
+                // --- Khởi tạo ---
+                initHandle(handle1);
+                initHandle(handle2);
+
+                updateUI();
+            }
+
+            function getSectorNameById(data, id) {
+                const found = data.find(item => item.sectorId === id);
+                return found ? found.name : null;
+            }
+
 
             const renderCheckboxes = () => {
 
                 sectorCheckboxes.innerHTML = '';
                 if (sectorID) {
                     const bt = document.createElement('button');
-                    bt.textContent = "Quay lại";
-		    bt.setAttribute("class", "goback")
+                    bt.textContent = getSectorNameById(lastdata, sectorID);
+                    bt.setAttribute("class", "goback")
                     bt.addEventListener('click', (e) => {
                         sectorID = 0;
                         e.preventDefault();
                         processData(lastdata);
                         createSortableTable(sectorColumns, lastdata);
+		        document.querySelector('.slider-container').style.display = 'none';
                     });
                     sectorCheckboxes.appendChild(bt);
+
+                    const bt2 = document.createElement('button');
+                    bt2.textContent = "Nhóm dòng tiền";
+                    bt2.setAttribute("class", "goback")
+                    bt2.addEventListener('click', (e) => {
+                        e.preventDefault();
+		        document.querySelector('.slider-container').style.display = 'block';
+                        marketcap(marketdata);
+                    });
+                    sectorCheckboxes.appendChild(bt2);
                 }
 
                 allSeriesData.forEach(series => {
@@ -503,18 +832,18 @@ console.log(data)
 
                     const label = document.createElement('label');
                     label.htmlFor = `sector-${series.id}`;
-                if (!sectorID) {
-                    const link = document.createElement('a');
-                    link.href = '#';
-                    link.textContent = series.name;
-                    link.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        loadsector(series.id);
-                    });
-                    label.appendChild(link);
-		}else{
-			label.textContent = series.name;
-		}
+                    if (!sectorID) {
+                        const link = document.createElement('a');
+                        link.href = '#';
+                        link.textContent = series.name;
+                        link.addEventListener('click', (e) => {
+                            e.preventDefault();
+                            loadsector(series.id);
+                        });
+                        label.appendChild(link);
+                    } else {
+                        label.textContent = series.name;
+                    }
 
                     checkboxContainer.appendChild(checkbox);
                     checkboxContainer.appendChild(label);
@@ -529,7 +858,11 @@ console.log(data)
                 });
                 updateChartSeries();
             };
-
+const updateChartTitle = (newTitle) => {
+  if (chart && typeof chart.setTitle === 'function') {
+    chart.setTitle({ text: newTitle });
+  }
+};
             const updateChartSeries = () => {
                 while (chart.series.length > 0) {
                     chart.series[0].remove(false);
@@ -551,7 +884,7 @@ console.log(data)
                 }
                 const odata = await fetchData(url);
                 if (odata) {
-		    lastdata=odata
+                    lastdata = odata
                     const data = odata.sort((a, b) => a.order - b.order);
                     processData(data);
                     createSortableTable(sectorColumns, data)
@@ -573,13 +906,15 @@ console.log(data)
                 function renderTable(dataArray) {
                     tbody.innerHTML = "";
                     dataArray.forEach(item => {
-                        const row = document.createElement("tr");
-                        row.innerHTML = columns.map(col => {
-                            const raw = item[col.key];
-                            const formatted = col.format ? col.format(raw) : raw;
-                            return `<td>${formatted}</td>`;
-                        }).join("");
-                        tbody.appendChild(row);
+                        if ('MarketCapital' in item) {
+                            const row = document.createElement("tr");
+                            row.innerHTML = columns.map(col => {
+                                const raw = item[col.key];
+                                const formatted = col.format ? col.format(raw) : raw;
+                                return `<td>${formatted}</td>`;
+                            }).join("");
+                            tbody.appendChild(row);
+                        }
                     });
                 }
 
@@ -629,7 +964,7 @@ console.log(data)
                 }
                 const odata = await fetchData(url);
                 if (odata) {
-		    lastdata=odata
+                    lastdata = odata
                     const data = odata.sort((a, b) => a.order - b.order);
                     processData(data);
                     createSortableTable(sectorColumns, data)
@@ -662,6 +997,7 @@ console.log(data)
                     console.log('Đã chọn giới hạn:', selectedLimit);
                 });
             });
+
         });
     </script>
 </body>
