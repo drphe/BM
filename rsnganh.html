@@ -46,7 +46,13 @@
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-	.goback {width:100%; margin:4px;}
+
+        .goback {
+            width: 100%;
+            margin: 4px;
+            font-size: 1em;
+        }
+
         .goback,
         .time-presets button,
         #filter-btn {
@@ -107,9 +113,9 @@
             display: flex;
             align-items: center;
             margin: 4px;
-background: aliceblue;
-    padding: 4px;
-    border-radius: 4px;
+            background: aliceblue;
+            padding: 4px;
+            border-radius: 4px;
         }
 
         .checkbox-container input {
@@ -210,7 +216,7 @@ background: aliceblue;
 
         .slider-container {
             padding: 50px 20px 20px;
-	    display: none;
+            display: none;
             margin-bottom: 10px;
             background: #ffffff;
             border-radius: 12px;
@@ -365,6 +371,7 @@ background: aliceblue;
             let lastfetch = '';
             let lastdata = [];
             let sectorName = "";
+            let marketdata = [];
 
             const fetchData = async (url) => {
                 try {
@@ -464,7 +471,7 @@ background: aliceblue;
 
             const processDataSector = (data) => {
                 const defaultVisibleSectors = data.map(sector => sector.code).slice(0, 3);
-		updateChartTitle('Biến động ngành')
+                updateChartTitle('Biến động ngành')
                 allSeriesData = data.map(sector => {
                     const chartData = sector.chart.map(point => {
                         const year = parseInt(point.date.substring(0, 4));
@@ -530,7 +537,6 @@ background: aliceblue;
                 }
             ];
 
-            let marketdata = [];
             // hàm load dữ liệu của từng ngành
             async function loadsector(id) {
                 sectorID = id; // gán id => thay đổi url
@@ -594,7 +600,7 @@ background: aliceblue;
                         }
                     ];
                     marketdata = data;
-		    updateChartTitle('Dòng tiền theo cổ phiếu - '+data[0].code)
+                    updateChartTitle('Dòng tiền theo cổ phiếu - ' + data[0].code)
                     createSortableTable(sectorColumns2, data); // bỏ qua mã đầu tiên
                 }
             }
@@ -616,9 +622,9 @@ background: aliceblue;
                 return `${valueInTy.toLocaleString('vi-VN')} tỷ`;
             };
 
-	    // tính toán dòng tiền theo nhóm vốn hóa
+            // tính toán dòng tiền theo nhóm vốn hóa
             function marketcap(data) {
-		updateChartTitle('Dòng tiền theo vốn hóa - '+data[0].code)
+                updateChartTitle('Dòng tiền theo vốn hóa - ' + data[0].code)
                 const validItems = data.filter(item => typeof item.MarketCapital === 'number');
 
                 const maxItem = validItems.reduce((max, item) =>
@@ -708,46 +714,49 @@ background: aliceblue;
                     handle1.style.left = `${(value1 / MAX_CAP) * 100}%`;
                     handle2.style.left = `${(value2 / MAX_CAP) * 100}%`;
                 };
-
-                // khởi tạo
                 const initHandle = (handle) => {
-                    handle.addEventListener('mousedown', (e) => {
+                    const startHandler = (e) => {
                         e.preventDefault();
+
+                        // Lấy tọa độ tương ứng cho cảm ứng hoặc chuột
+                        const clientX = e.type.startsWith('touch') ? e.touches[0].clientX : e.clientX;
                         const trackRect = track.getBoundingClientRect();
 
-                        const onMouseMove = (moveEvent) => {
-                            // Tính vị trí mới dựa trên di chuyển của chuột
-                            let newX = moveEvent.clientX - trackRect.left;
+                        const moveHandler = (moveEvent) => {
+                            const clientXMove = moveEvent.type.startsWith('touch') ? moveEvent.touches[0].clientX : moveEvent.clientX;
+                            let newX = clientXMove - trackRect.left;
 
-                            // Giới hạn vị trí trong khoảng của thanh trượt
                             newX = Math.max(0, Math.min(newX, trackRect.width));
-
-                            // Chuyển vị trí pixel sang % và giá trị vốn hóa
                             const percent = (newX / trackRect.width) * 100;
                             let newValue = (percent / 100) * MAX_CAP;
 
-                            // Logic để 2 thanh gạt không vượt qua nhau
                             if (handle === handle1) {
-                                value1 = Math.min(newValue, value2); // Không cho gạt 1 vượt gạt 2
+                                value1 = Math.min(newValue, value2);
                             } else {
-                                value2 = Math.max(newValue, value1); // Không cho gạt 2 vượt gạt 1
+                                value2 = Math.max(newValue, value1);
                             }
 
-                            // Cập nhật lại toàn bộ UI
                             updateUI();
                         };
 
-                        const onMouseUp = () => {
-                            document.removeEventListener('mousemove', onMouseMove);
-                            document.removeEventListener('mouseup', onMouseUp);
+                        const endHandler = () => {
+                            document.removeEventListener('mousemove', moveHandler);
+                            document.removeEventListener('mouseup', endHandler);
+                            document.removeEventListener('touchmove', moveHandler);
+                            document.removeEventListener('touchend', endHandler);
                         };
 
-                        document.addEventListener('mousemove', onMouseMove);
-                        document.addEventListener('mouseup', onMouseUp);
+                        document.addEventListener('mousemove', moveHandler);
+                        document.addEventListener('mouseup', endHandler);
+                        document.addEventListener('touchmove', moveHandler);
+                        document.addEventListener('touchend', endHandler);
+                    };
+
+                    handle.addEventListener('mousedown', startHandler);
+                    handle.addEventListener('touchstart', startHandler, {
+                        passive: false
                     });
                 };
-
-
                 const updateUI = () => {
                     let BLUECHIP_THRESHOLD = value2;
                     let PENNY_THRESHOLD = value1;
@@ -792,7 +801,6 @@ background: aliceblue;
                 return found ? found.name : null;
             }
 
-
             const renderCheckboxes = () => {
 
                 sectorCheckboxes.innerHTML = '';
@@ -805,7 +813,7 @@ background: aliceblue;
                         e.preventDefault();
                         processData(lastdata);
                         createSortableTable(sectorColumns, lastdata);
-		        document.querySelector('.slider-container').style.display = 'none';
+                        document.querySelector('.slider-container').style.display = 'none';
                     });
                     sectorCheckboxes.appendChild(bt);
 
@@ -814,7 +822,7 @@ background: aliceblue;
                     bt2.setAttribute("class", "goback")
                     bt2.addEventListener('click', (e) => {
                         e.preventDefault();
-		        document.querySelector('.slider-container').style.display = 'block';
+                        document.querySelector('.slider-container').style.display = 'block';
                         marketcap(marketdata);
                     });
                     sectorCheckboxes.appendChild(bt2);
@@ -858,11 +866,13 @@ background: aliceblue;
                 });
                 updateChartSeries();
             };
-const updateChartTitle = (newTitle) => {
-  if (chart && typeof chart.setTitle === 'function') {
-    chart.setTitle({ text: newTitle });
-  }
-};
+            const updateChartTitle = (newTitle) => {
+                if (chart && typeof chart.setTitle === 'function') {
+                    chart.setTitle({
+                        text: newTitle
+                    });
+                }
+            };
             const updateChartSeries = () => {
                 while (chart.series.length > 0) {
                     chart.series[0].remove(false);
