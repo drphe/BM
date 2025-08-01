@@ -106,6 +106,12 @@ async function getData() {
     if (symbol == '') {
         symbol = s, document.getElementById("mack").value = s
     }
+
+//https://www.fireant.vn/api/Data/Finance/LastestFinancialInfo?symbol=DXG  // chỉ số tài chính
+// https://www.fireant.vn/api/Data/Finance/YearlyFinancialInfo?symbol=VCB&fromYear=2016&toYear=2019 // chỉ số tài chính theo năm
+// https://www.fireant.vn/api/Data/Finance/QuarterlyFinancialInfo?symbol=VCB&fromYear=2020&fromQuarter=1&toYear=2025&toQuarter=4 // theo quý
+// báo cáo tài chính 
+
     var URL = `https://www.fireant.vn/api/Data/Finance/LastestFinancialReports?symbol=${symbol.toUpperCase()}&type=${type}&year=${currentYear+1}&quarter=${check}&count=${socot}`
     const xhr = new XMLHttpRequest();
     xhr.open('GET', URL, false);
