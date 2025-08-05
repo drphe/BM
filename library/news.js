@@ -31,9 +31,57 @@ async function getNews(list = []) {
     } catch (e) {}
 }
 
-function showDiscount(symbol) {
-    var iframeHtml = `<iframe style="border: none;margin: auto;width: 100%;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
-    showPopup(iframeHtml, "Phân tích cổ phiếu");
+// kiểm tra phiên nước rút
+    function checkLatestGrowth(data) {
+      const DAY = 86400;
+      const latest = data[data.length - 1];
+      const results = {
+        week15: "📈 Giá tăng ít nhất 15% trong 1 tuần",
+        twoWeek20: "🚀 Giá tăng hơn 20% trong 2 tuần",
+        month30_50: "🌟 Giá tăng trong khoảng 30–50% trong 1 tháng"
+      };
+      let messages = {
+        week15: results.week15 + " ❌",
+        twoWeek20: results.twoWeek20 + " ❌",
+        month30_50: results.month30_50 + " ❌"
+      };
+
+      let passed = false;
+
+      for (let i = data.length - 2; i >= 0; i--) {
+        const deltaDays = (latest.time - data[i].time) / DAY;
+        const percent = ((latest.value - data[i].value) / data[i].value) * 100;
+
+        if (deltaDays <= 7 && percent >= 15) {
+          messages.week15 = `${results.week15} : +${percent.toFixed(2)}%`;
+          passed = true;
+        }
+        if (deltaDays <= 14 && percent > 20) {
+          messages.twoWeek20 = `${results.twoWeek20} : +${percent.toFixed(2)}%`;
+          passed = true;
+        }
+        if (deltaDays <= 30 && percent >= 30 ) {
+          messages.month30_50 = `${results.month30_50} : +${percent.toFixed(2)}%`;
+          passed = true;
+        }
+      }
+
+      return passed ? Object.values(messages) : [];
+    }
+
+
+function showDiscount(symbol, data) {
+     const resultMe = checkLatestGrowth(data);
+    var iframeHtml = `<div style="width: 400px;justify-content: center;margin: auto;">`;
+	if (resultMe.length > 0) {
+        	iframeHtml += `<h3>📊 Chú ý phiên chạy nước rút</h3><ul style="text-align:left;">` + resultMe.map(msg => `<li>${msg}</li>`).join('') + `</ul>`;
+    	}
+
+    iframeHtml += `<h3>📊 Các đợt điều chỉnh và mức chiết khấu</h3></div><iframe style="border: none;margin: auto;width: 500px;height: 400px;" src="discount.html?code=${symbol}" id="popupiframe" title="Tính mức chiết khấu"></iframe>`;
+
+    showPopup(iframeHtml, "Phân tích biểu đồ kỹ thuật");
+
+
 }
 var andiko = localStorage.getItem("andiko");
 

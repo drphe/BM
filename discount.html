@@ -27,6 +27,7 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             width: 100%;
             max-width: 400px;
+	    line-height: 24px;
         }
 
         h1 {
@@ -148,8 +149,8 @@
 
 <body>
     <div class="container">
-        <input type="text" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
-        <button onclick="analyzeStock()">Thống kê</button>
+        <input type="text" style="display:none" id="stockCode" value="VN-INDEX" placeholder="Nhập mã cổ phiếu...">
+        <button onclick="analyzeStock()" style="display:none">Thống kê</button>
         <div class="tabGroup">
             <div class="tab-g active" onclick="selectTab('resultBox')">Kết quả</div>
             <div class="tab-g" onclick="selectTab('scratter')">Biểu đồ phân tán</div>
@@ -385,15 +386,20 @@
             output[output.length - 1].recover = 100 * peak / output[output.length - 1].bottom - 100; // tính mức recover
 
             ckht = ''; //reset ckht;
+	    let temp ='';
+            if (data[data.length - 1].value > trough) {
+                temp= `<br/>Đã tăng từ đáy ${formatTimestamp(ttrough)}: ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% `;
+            }else {
+                temp= `<br/> Đã tăng từ đáy ${results[results.length-1].bottomDate}: ${results[results.length-1].recover.toFixed(2)}%.`;
+	}
+	//console.log(results)
             if (data[data.length - 1].value * 1.02 < peak) {
                 let gg = ((1 - data[data.length - 1].value / peak) * 100).toFixed(2);
-                ckht += `Chiết khấu hiện tại từ đỉnh ${formatTimestamp(tpeak)}: ${gg}%.<br/>${predict(output, gg)}`;
+                ckht += `Chiết khấu hiện tại từ đỉnh ${formatTimestamp(tpeak)}: ${gg}%.${temp}<br/>${predict(output, gg)}`;
             } else {
                 let gg = output[output.length - 1].drawdown.toFixed(2);
-                ckht += `Chiết khấu từ đỉnh cũ ${output[output.length-1].startDate}: ${gg}%.<br/>${predict(output, gg)}`;
-            }
-            if (data[data.length - 1].value > trough) {
-                ckht += `<br/>Đã hồi phục từ đáy ${formatTimestamp(ttrough)}: ${((data[data.length-1].value/trough-1)*100).toFixed(2)}% `;
+temp= `<br/> Đã tăng từ đáy ${results[results.length-1].bottomDate}: ${results[results.length-1].recover.toFixed(2)}%.`;
+                ckht += `Chiết khấu từ đỉnh cũ ${output[output.length-1].startDate}: ${gg}%.${temp}<br/>${predict(output, gg)}`;
             }
 
             return output;
@@ -571,7 +577,7 @@
             const df = dropLevels.length - 2;
             const significant = isSignificant(tValue, df);
 
-            return `------<br/>Hệ số tương quan: ${correlation.toFixed(2)}<br/>Hệ số hồi quy: Slope = ${regression.slope.toFixed(2)}, Intercept = ${regression.intercept.toFixed(2)}<br>Giá trị t: ${tValue.toFixed(2)}, Mối tương quan ${significant} ý nghĩa thống kê.<br/>------<br/>Dự báo mức hồi phục là: ${probabilitys.toFixed(2)}% (xs 90%)`;
+            return `<i>Mức hồi phục dự báo là: ${probabilitys.toFixed(2)}% (xs 90%)</i><br/>------<br/>Hệ số tương quan: ${correlation.toFixed(2)}<br/>Hệ số hồi quy: Slope = ${regression.slope.toFixed(2)}, Intercept = ${regression.intercept.toFixed(2)}<br>Giá trị t: ${tValue.toFixed(2)}, Mối tương quan ${significant} ý nghĩa thống kê.<br/>`;
         }
 
         function calculateCorrelation(x, y) {

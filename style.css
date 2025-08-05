@@ -282,6 +282,8 @@ html {
     background-color: var(--sidebar-bg);
     border-radius: 12px;
     max-width: 60%;
+    width:100%;
+    width: max-content;
     max-height: 80vh;
     overflow: scroll;
     position: relative;
