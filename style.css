@@ -72,7 +72,10 @@ html {
 #sidebar.collapsed {
     margin-left: -251px;
 }
-
+.tb{
+	font-weight:600; 
+font-color:green;
+}
 .home-btn {
     background-color: var(--hover-bg);
     color: var(--text-color);
