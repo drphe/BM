@@ -156,19 +156,20 @@ async function getNews(list = []) {
 
             ckht = ''; //reset ckht;
 	    let temp ='';
+	    // kiểm tra giá trị mới nhất và đáy
             if (data[data.length - 1].value > trough) {
-                temp= `Đã tăng từ đáy ${formatTimestamp(ttrough)}:<span class="tb"> ${((data[data.length-1].value/trough-1)*100).toFixed(2)}%</span>. `;
+                temp= `Đã hồi phục từ ngày ${formatTimestamp(ttrough)}:<span class="tb"> ${((data[data.length-1].value/trough-1)*100).toFixed(2)}%</span>. `;
             }else {
-                temp= `Đã tăng từ đáy ${results[results.length-1].bottomDate}: <span class="tb">${results[results.length-1].recover.toFixed(2)}%</span>.`;
-	}
+                temp= `Đã tăng từ đáy ${output[output.length-1].bottomDate}: <span class="tb">${output[output.length-1].recover.toFixed(2)}%</span>.`;
+	    }
 
             if (data[data.length - 1].value * 1.02 < peak) {
                 let gg = ((1 - data[data.length - 1].value / peak) * 100).toFixed(2);
-                ckht += `Chiết khấu hiện tại từ đỉnh ${formatTimestamp(tpeak)}: <span class="tb">${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
+                ckht += ` <span title="Đang hồi phục sau chiết khấu">HIỆN TẠI</span> đang chiết khấu từ đỉnh ${formatTimestamp(tpeak)}: <span class="tb" >${gg}% </span>.${temp}<br/>${predict(output, gg)}`;
             } else {
                 let gg = output[output.length - 1].drawdown.toFixed(2);
 		temp= ` Đã tăng từ đáy ${results[results.length-1].bottomDate}: <span class="tb">${results[results.length-1].recover.toFixed(2)}</span>%.`;
-                ckht += `Chiết khấu từ đỉnh cũ ${output[output.length-1].startDate}: <span class="tb">${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
+                ckht += `Mức chiết khấu của <span title="Đang xu hướng tăng hoặc đi ngang" đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
             }
 
             return output;
@@ -256,10 +257,10 @@ function showDiscount(symbol, data) {
      const resultMe = checkLatestGrowth(data);
     var iframeHtml = ``;
 	if (resultMe.length > 0) {
-        	iframeHtml += `<h3>📊 Chú ý phiên chạy nước rút</h3><ul style="text-align:left;">` + resultMe.map(msg => `<li>${msg}</li>`).join('') + `</ul><br/`;
+        	iframeHtml += `<h3>📊 Chú ý phiên chạy nước rút</h3><ul style="text-align:left;">` + resultMe.map(msg => `<li>${msg}</li>`).join('') + `</ul><br/>`;
     	}
 
-    iframeHtml += `<h3>📊 Các đợt điều chỉnh và mức chiết khấu</h3>`+ mockResult;
+    iframeHtml += `<h3>📊 Các đợt điều chỉnh và mức chiết khấu</h3> `+ mockResult;
 
     showPopup(iframeHtml, "Phân tích biểu đồ kỹ thuật");
 

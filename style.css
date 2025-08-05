@@ -74,7 +74,7 @@ html {
 }
 .tb{
 	font-weight:600; 
-font-color:green;
+	color:green;
 }
 .home-btn {
     background-color: var(--hover-bg);
