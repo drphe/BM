@@ -1,221 +1,257 @@
 <html>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+
 <head>
-    <title>Biểu đồ kỹ thuật </title>
-    <link rel="stylesheet" type="text/css" href="./library/main.css">
-    <link rel="stylesheet" type="text/css" href="./library/loading.css">
-    <style>
-tr,
-td {
-    min-width: 0px;
-    border: none;
-}
-
-body::-webkit-scrollbar {
-    display: none !important;
-}
-
-body {
-    max-width: 100%;
-    margin: 0 auto;
-    font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
-    font-size: 14px;
-    line-height: 24px;
-    font-weight: 500;
-    background-color: var(--chartbg);
-}
-
-.tophead {
-    display: flex;
-    height: 30px;
-    align-items: center;
-    justify-content: space-between;
-    color: var(--text);
-    background-color: var(--bgcl);
-    margin: 0px;
-}
-
-.title {
-    font-size: 18px;
-    white-space:nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-    box-sizing: border-box;
-    max-width: calc(100vw - 200px);
-}
-
-.suggestions {
-    position: absolute;
-    z-index: 1001;
-    left: 0px;
-justify-content: start!important;
-}
-
-
-li.item:hover {
-    box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
-}
-
-.suggestions .item {
-    border-bottom: solid 1px var(--bdcl);
-    margin-bottom: 2px;
-    padding: 6px;
-    padding-left: 0.5rem;
-    cursor: pointer;
-    font-size: 0.875rem;
-    border-radius: 0.125rem;
-    background: var(--bgcl);
-    color: var(--black);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    box-sizing: border-box;
-    width: 300px;
-}
-
-ol,
-ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-}
-
-#listCK {
-    width: 300px;
-    max-height: 200px;
-    overflow: auto;
-    background-color: var(--bgcl);
-    border-radius: 3px;
-    box-shadow: 0 0 0 1px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
-}
-
-.menu {
-    position: fixed;
-    right: 5px;
-    top: 35px;
-    box-shadow: rgba(16, 22, 26, 0.1) 0px 0px 0px 1px, rgba(16, 22, 26, 0.2) 0px 2px 4px, rgba(16, 22, 26, 0.2) 0px 8px 24px;
-    transform: scale(1);
-    border-radius: 3px;
-    display: inline-block;
-    z-index: 1001;
-    padding: 2px;
-    width: 150px;
-    background-color: var(--pocl);
-    color: var(--pot);
-}
-
-.menu .rows {
-    display: flex;
-    flex-direction: row;
-    align-items: flex-start;
-    border-radius: 2px;
-    color: inherit;
-    line-height: 20px;
-    padding: 5px 7px;
-    text-decoration: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-    justify-content: space-between;
-}
-
-.menu .rows:hover {
-    background-color: var(--hov);
-    cursor: pointer;
-}
-
-:root {
-    --bgcl: white;
-    --bgbt: #f5f8fa;
-    --white: white;
-    --black: black;
-    --gray: #fafafa;
-    --hov: #f5f5f5;
-    --lie: #106ba3;
-    --bdcl: #eeeff2;
-    --bdin: rgba(66, 153, 225, 0.3);
-    --pocl: rgb(255, 255, 255);
-    --pot: rgb(92, 112, 128);
-    --clbt: #f5f8fa;
-    --chartbg: white;
-    --text: black;
-    --bdchart: rgb(0 2 6 / 13%);
-}
-
-
-.tabledumuaban td, .dumuaban td {
-    background-color: var(--bgbt);
-    color: var(--black);
-    border-color: var(--clbt);
-}
-
-.status {
-    color: #089981;
-    border-radius: 50%;
-    background-color: rgba(66, 153, 225, 0.1);
-    border: 1px solid rgba(66, 153, 225, 0.1);
-    scale: 0.8;
-}
-
-#mychartcontainers {
-    background: var(--white);
-}
-
-#mychartcontainers div {
-    margin-right: 0px;
-    border-color: var(--bdchart);
-}
-
-input:focus {
-    border: none;
-    outline: none;
-}
-
-.clock {
-    color: #a28282;
-    font-size: 16px;
-}
-.news{
-    border: 2px solid #e4e9ed;
-    border-radius: 5px;
-    border-bottom:1px solid #ddd;
-}
-
-
-    </style>
+	<title>Biểu đồ kỹ thuật </title>
+	<link rel="stylesheet" type="text/css" href="./library/main.css">
+	<link rel="stylesheet" type="text/css" href="./library/loading.css">
+	<style>
+	tr,
+	td {
+		min-width: 0px;
+		border: none;
+	}
+	
+	body::-webkit-scrollbar {
+		display: none !important;
+	}
+	
+	body {
+		max-width: 100%;
+		margin: 0 auto;
+		font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif;
+		font-size: 14px;
+		line-height: 24px;
+		font-weight: 500;
+		background-color: var(--chartbg);
+	}
+	
+	.tophead {
+		display: flex;
+		height: 30px;
+		align-items: center;
+		justify-content: space-between;
+		color: var(--text);
+		background-color: var(--bgcl);
+		margin: 0px;
+	}
+	
+	.title {
+		font-size: 18px;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		box-sizing: border-box;
+		max-width: calc(100vw - 200px);
+	}
+	
+	.suggestions {
+		position: absolute;
+		z-index: 1001;
+		left: 0px;
+		justify-content: start!important;
+	}
+	
+	li.item:hover {
+		box-shadow: inset 1px 0 0 #dadce0, inset -1px 0 0 #dadce0, 0 1px 2px 0 rgba(60, 64, 67, .3), 0 1px 3px 1px rgba(60, 64, 67, .15);
+	}
+	
+	.suggestions .item {
+		border-bottom: solid 1px var(--bdcl);
+		margin-bottom: 2px;
+		padding: 6px;
+		padding-left: 0.5rem;
+		cursor: pointer;
+		font-size: 0.875rem;
+		border-radius: 0.125rem;
+		background: var(--bgcl);
+		color: var(--black);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		box-sizing: border-box;
+		width: 300px;
+	}
+	
+	ol,
+	ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+	}
+	
+	#listCK {
+		width: 300px;
+		max-height: 200px;
+		overflow: auto;
+		background-color: var(--bgcl);
+		border-radius: 3px;
+		box-shadow: 0 0 0 1px rgba(16, 22, 26, .15), 0 0 0 rgba(16, 22, 26, 0), 0 0 0 rgba(16, 22, 26, 0);
+	}
+	
+	.menu {
+		position: fixed;
+		right: 5px;
+		top: 35px;
+		box-shadow: rgba(16, 22, 26, 0.1) 0px 0px 0px 1px, rgba(16, 22, 26, 0.2) 0px 2px 4px, rgba(16, 22, 26, 0.2) 0px 8px 24px;
+		transform: scale(1);
+		border-radius: 3px;
+		display: inline-block;
+		z-index: 1001;
+		padding: 2px;
+		width: 150px;
+		background-color: var(--pocl);
+		color: var(--pot);
+	}
+	
+	.menu .rows {
+		display: flex;
+		flex-direction: row;
+		align-items: flex-start;
+		border-radius: 2px;
+		color: inherit;
+		line-height: 20px;
+		padding: 5px 7px;
+		text-decoration: none;
+		-webkit-user-select: none;
+		-ms-user-select: none;
+		user-select: none;
+		justify-content: space-between;
+	}
+	
+	.menu .rows:hover {
+		background-color: var(--hov);
+		cursor: pointer;
+	}
+	
+	:root {
+		--bgcl: white;
+		--bgbt: #f5f8fa;
+		--white: white;
+		--black: black;
+		--gray: #fafafa;
+		--hov: #f5f5f5;
+		--lie: #106ba3;
+		--bdcl: #eeeff2;
+		--bdin: rgba(66, 153, 225, 0.3);
+		--pocl: rgb(255, 255, 255);
+		--pot: rgb(92, 112, 128);
+		--clbt: #f5f8fa;
+		--chartbg: white;
+		--text: black;
+		--bdchart: rgb(0 2 6 / 13%);
+	}
+	
+	.tabledumuaban td,
+	.dumuaban td {
+		background-color: var(--bgbt);
+		color: var(--black);
+		border-color: var(--clbt);
+	}
+	
+	.status {
+		color: #089981;
+		border-radius: 50%;
+		background-color: rgba(66, 153, 225, 0.1);
+		border: 1px solid rgba(66, 153, 225, 0.1);
+		scale: 0.8;
+	}
+	
+	#mychartcontainers {
+		background: var(--white);
+	}
+	
+	#mychartcontainers div {
+		margin-right: 0px;
+		border-color: var(--bdchart);
+	}
+	
+	input:focus {
+		border: none;
+		outline: none;
+	}
+	
+	.clock {
+		color: #a28282;
+		font-size: 16px;
+	}
+	
+	.news {
+		border: 2px solid #e4e9ed;
+		border-radius: 5px;
+		border-bottom: 1px solid #ddd;
+	}
+	
+	#overlay {
+		position: fixed;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background: rgba(0, 0, 0, 0.3);
+		/* Nền tối */
+		z-index: 9998;
+	}
+	
+	#popup {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: #fffdfd;
+		padding: 14px 16px;
+		border-radius: 12px;
+		box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+		z-index: 9999;
+		font-family: 'Segoe UI', sans-serif;
+		text-align: center;
+	}
+	
+	#closeBtn {
+		margin-top: 16px;
+		padding: 6px 8px;
+		background-color: #e63946;
+		color: white;
+		border: none;
+		border-radius: 6px;
+		font-size: 14px;
+		cursor: pointer;
+	}
+	</style>
 </head>
 
 <body>
-    <div class="tophead">
-        <div style="display: flex;align-items: center;">
-            <div class="title">Chỉ số VN-INDEX</div>
-            <div class="status"></div>
-            <div class="clock"></div>
-        </div>
-        <div>
-            <a id="theodoi" target="_blank" style="float:right">
-                <button class="hover:bg-blue-700 text-white py-1 px-2 mx-1 my-0 rounded text-sm shadow hover:shadow-sm" title="Danh sách theo dõi" style="height: 36px;scale: 0.7;background-color: #5c7080;">
-                    <svg data-icon="list" class="inline-block text-gray-800" style="margin-top: 1px;fill:var(--white);" width="20" height="20" viewBox="0 0 16 16">
-                        <desc>list</desc>
-                        <path d="M1 3h14c.55 0 1-.45 1-1s-.45-1-1-1H1c-.55 0-1 .45-1 1s.45 1 1 1zm14 10H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1zm0-4H1c-.55 0-1 .45-1 1s.45 1 1 1h14c.55 0 1-.45 1-1s-.45-1-1-1z" fill-rule="evenodd"></path>
-                    </svg></button>
-            </a>
-        </div>
-        <div class="suggestions">
-            <input autocomplete="off" class="input item completor-input" type="text" placeholder="Nhập mã chứng khoán" title="Nhập mã giao dịch!" id="searchCK" value="" style="height: 30px;width:300px; border:none;background-color: var(--bgcl);left:-500px;position:absolute;cursor:text" />
-            <ul id="listCK" style="display: none;" class="items border-t border-gray">
-            </ul>
-        </div>
-    </div>
-    <div id="mychartcontainers"></div>
-    <div class="tabledumuaban" style="font-size: 11px; line-height: 18px;padding:4px;"></div>
-    <div class="news" id="content" style="display: block;"></div>
-    <div id="load"></div>
-    <script src="./library/tv.js"></script>
-    <script src="./library/lunar.js"></script>
-    <script src="./library/tradingview.js"></script>
-    <script src="./library/news.js"></script>
+	<div class="tophead">
+		<div style="display: flex;align-items: center;margin:4px;padding:4px;">
+			<div class="title">Chỉ số VN-INDEX</div>
+			<div class="status"></div>
+			<div class="clock"></div>
+		</div>
+		<div>
+			<a id="theodoi" target="_blank" style="float:right">
+				<button class="hover:bg-blue-700 text-white py-1 px-2 mx-1 my-0 rounded text-sm shadow hover:shadow-sm" title="Danh sách theo dõi" style="height: 36px;border: none;background: none;">
+					<svg width="30px" height="30px" class="inline-block text-gray-800" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<path opacity="0.5" d="M20 6L3 6" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+						<path opacity="0.5" d="M10 16H3" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+						<path opacity="0.5" d="M9 11H3" stroke="#1C274C" stroke-width="1.5" stroke-linecap="round" />
+						<path d="M16.4901 16.3082L16.935 15.7045L16.935 15.7045L16.4901 16.3082ZM17.5 10.1062L16.9641 10.6309C17.1052 10.775 17.2983 10.8562 17.5 10.8562C17.7017 10.8562 17.8948 10.775 18.0359 10.6309L17.5 10.1062ZM18.5099 16.3083L18.9549 16.912L18.9549 16.912L18.5099 16.3083ZM17.5 16.8103L17.5 16.0603H17.5L17.5 16.8103ZM16.935 15.7045C16.2914 15.2302 15.4675 14.5568 14.8118 13.808C14.1328 13.0325 13.75 12.3064 13.75 11.7148H12.25C12.25 12.8758 12.9489 13.9574 13.6832 14.7961C14.4409 15.6614 15.3619 16.4085 16.0451 16.912L16.935 15.7045ZM13.75 11.7148C13.75 10.607 14.2445 10.0237 14.7533 9.83348C15.2705 9.6401 16.0951 9.74331 16.9641 10.6309L18.0359 9.58145C16.88 8.40091 15.4546 7.96984 14.228 8.42849C12.993 8.89028 12.25 10.1453 12.25 11.7148H13.75ZM18.9549 16.912C19.6381 16.4085 20.5591 15.6614 21.3168 14.7961C22.0511 13.9574 22.75 12.8758 22.75 11.7148H21.25C21.25 12.3064 20.8672 13.0326 20.1882 13.808C19.5325 14.5568 18.7086 15.2302 18.065 15.7045L18.9549 16.912ZM22.75 11.7148C22.75 10.1453 22.007 8.89027 20.772 8.42849C19.5454 7.96985 18.12 8.40091 16.9641 9.58145L18.0359 10.6309C18.9049 9.74331 19.7295 9.6401 20.2467 9.83348C20.7555 10.0237 21.25 10.607 21.25 11.7148H22.75ZM16.0451 16.912C16.4368 17.2007 16.8752 17.5603 17.5 17.5603L17.5 16.0603C17.4852 16.0603 17.4682 16.0626 17.399 16.0252C17.3008 15.972 17.178 15.8836 16.935 15.7045L16.0451 16.912ZM18.065 15.7045C17.822 15.8836 17.6992 15.972 17.601 16.0252C17.5318 16.0626 17.5148 16.0603 17.5 16.0603L17.5 17.5603C18.1248 17.5603 18.5632 17.2007 18.9549 16.912L18.065 15.7045Z" fill="#1C274C" /> </svg>
+				</button>
+			</a>
+		</div>
+		<div class="suggestions">
+			<input autocomplete="off" class="input item completor-input" type="text" placeholder="Nhập mã chứng khoán" title="Nhập mã giao dịch!" id="searchCK" value="" style="height: 30px;width:300px; border:none;background-color: var(--bgcl);left:-500px;position:absolute;cursor:text" />
+			<ul id="listCK" style="display: none;" class="items border-t border-gray"> </ul>
+		</div>
+	</div>
+	<div id="mychartcontainers"></div>
+	<div class="tabledumuaban" style="font-size: 11px; line-height: 18px;padding:4px;"></div>
+	<div class="news" id="content" style="display: block;"></div>
+	<div id="load"></div>
+	<script src="./library/tv.js"></script>
+	<script src="./library/lunar.js"></script>
+	<script src="./library/tradingview.js"></script>
+	<script src="./library/news.js"></script>
 </body>
 
 </html>

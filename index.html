@@ -2,446 +2,399 @@
 <html lang="vi">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Công cụ Tài chính</title>
-    <link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
-<!-- Favicon cho trình duyệt máy tính -->
-<link rel="icon" type="image/png" sizes="32x32" href="icons/f32.png">
-<link rel="icon" type="image/png" sizes="16x16" href="icons/f16.png">
-<link rel="shortcut icon" href="icons/favi.ico" type="image/x-icon">
-
-<!-- Apple devices (iPhone/iPad) -->
-<link rel="apple-touch-icon" sizes="180x180" href="icons/f180.png">
-<link rel="apple-touch-icon" sizes="152x152" href="icons/f152.png">
-<link rel="apple-touch-icon" sizes="120x120" href="icons/f120.png">
-<link rel="apple-touch-icon" sizes="76x76" href="icons/f76.png">
-
-<!-- Android devices -->
-<link rel="icon" type="image/png" sizes="192x192" href="icons/f192.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icons/f512.png">
-
-<!-- Windows 10+ (Pinned site tile) -->
-<meta name="msapplication-TileColor" content="#ffffff">
-<meta name="msapplication-TileImage" content="icons/f144.png">
-<meta name="theme-color" content="#ffffff">
-</head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Công cụ Tài chính</title>
+	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="https://site-assets.fontawesome.com/releases/v6.7.2/css/all.css">
+	<!-- Favicon cho trình duyệt máy tính -->
+	<link rel="icon" type="image/png" sizes="32x32" href="icons/f32.png">
+	<link rel="icon" type="image/png" sizes="16x16" href="icons/f16.png">
+	<link rel="shortcut icon" href="icons/favi.ico" type="image/x-icon">
+	<!-- Apple devices (iPhone/iPad) -->
+	<link rel="apple-touch-icon" sizes="180x180" href="icons/f180.png">
+	<link rel="apple-touch-icon" sizes="152x152" href="icons/f152.png">
+	<link rel="apple-touch-icon" sizes="120x120" href="icons/f120.png">
+	<link rel="apple-touch-icon" sizes="76x76" href="icons/f76.png">
+	<!-- Android devices -->
+	<link rel="icon" type="image/png" sizes="192x192" href="icons/f192.png">
+	<link rel="icon" type="image/png" sizes="512x512" href="icons/f512.png">
+	<!-- Windows 10+ (Pinned site tile) -->
+	<meta name="msapplication-TileColor" content="#ffffff">
+	<meta name="msapplication-TileImage" content="icons/f144.png">
+	<meta name="theme-color" content="#ffffff"> </head>
 
 <body>
-    <div class="app-container">
-        <aside id="sidebar">
-            <div class="sidebar-header">
-                <button class="home-btn">
-                    <i class="fa-solid fa-house"></i>
-                    <span>Trang chủ</span>
-                </button>
-            </div>
-            <nav class="chat-history">
-                <ul id="module">
-                    <!--- DS module---->
-                </ul>
-            </nav>
-            <div class="sidebar-footer">
-                <a href="#" id="help-btn"><i class="fa-regular fa-circle-question"></i> Trợ giúp</a>
+	<div class="app-container">
+		<aside id="sidebar">
+			<div class="sidebar-header">
+				<button class="home-btn"> <i class="fa-solid fa-house"></i> <span>Trang chủ</span> </button>
+			</div>
+			<nav class="chat-history">
+				<ul id="module">
+					<!--- DS module---->
+				</ul>
+			</nav>
+			<div class="sidebar-footer"> <a href="#" id="help-btn"><i class="fa-regular fa-circle-question"></i> Trợ giúp</a> </div>
+		</aside>
+		<main class="chat-container">
+			<header class="chat-header">
+				<button id="menu-toggle"> <i class="fa-light fa-sidebar"></i> </button>
+				<h4 id="title-module">Trang chủ</h4>
+				<div id="theme-options" class="theme-options">
+					<button id="light-theme-btn" class="theme-btn light-btn" title="Chế độ sáng">☀️</button>
+					<button id="dark-theme-btn" class="theme-btn dark-btn" title="Chế độ tối">🌙</button>
+				</div>
+			</header>
+			<div class="chat-messages" id="chat-messages">
+				<div id="iframe-loader">Đang tải nội dung, vui lòng đợi...</div>
+				<div id="iframe-content-wrapper" style="height:100%">
+					<iframe id="sourcemodule" src="dinhgia.html" frameborder="0"></iframe>
+				</div>
+			</div>
+		</main>
+	</div>
+	<div id="help-popup" class="popup-overlay">
+		<div class="popup-content">
+			<div class="nowrap" id="title-info" style="font-weight: 600;font-size: 16px!important;background: white;padding: 4px 10px;padding-right: 50px;position: sticky;top: 0px; border-bottom: 1px solid #ddd;">Hướng dẫn sử dụng</div>
+			<button id="close-popup-btn" class="close-popup">&times;</button>
+			<div id="info"></div>
+		</div>
+	</div>
+	<script>
+	// Đảm bảo mã chỉ chạy khi toàn bộ trang đã được tải
+	document.addEventListener('DOMContentLoaded', () => {
+		// --- Các Element cần sử dụng ---
+		const menuToggle = document.getElementById('menu-toggle');
+		const sidebar = document.getElementById('sidebar');
+		const chatMessages = document.getElementById('chat-messages');
+		// Element cho popup
+		const helpBtn = document.getElementById('help-btn');
+		const helpPopup = document.getElementById('help-popup');
+		const closePopupBtn = document.getElementById('close-popup-btn');
+		// --- Xử lý Sidebar ---
+		menuToggle.addEventListener('click', () => {
+			sidebar.classList.toggle('collapsed');
+		});
 
-            </div>
-        </aside>
+		function handleResize() {
+			if(window.innerWidth <= 768) { // hoặc 576 tuỳ breakpoint bạn chọn
+				sidebar.classList.add('collapsed');
+			} else {
+				sidebar.classList.remove('collapsed');
+			}
+		}
+		window.addEventListener('resize', handleResize);
+		window.addEventListener('load', handleResize); // gọi khi load ban đầu
+		var text = '';
+		const device = getDeviceType();
+		const defaultkey = device == 'mobile' ? 15 : 1;
+		const bangtin = `<table style="font-size:0.8rem;"><tr><th>Cấp 3 (Tháng, quý)</th><th>Cấp 2 (Tháng quý)</th><th>Cấp 1 (hàng ngày)</th></tr><tr><td><ul><li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank">Fed fund rate</a></li><li><a href="https://vn.investing.com/rates-bonds/u.s.-10-year-bond-yield" target="_blank">US10Y</a></li><li><a href="https://vn.investing.com/indices/usdollar" target="_blank">DXY</a></li><li><a href="https://tradingeconomics.com/united-states/inflation-cpi" target="_blank">CPI</a>+<a href="https://vn.investing.com/economic-calendar/pce-price-index-906" target="_blank">PCE</a></li><li><a href="https://tradingeconomics.com/united-states/unemployment-rate" target="_blank">Tỷ lệ thất nghiệp</a></li><li><a href="https://tradingeconomics.com/commodity/brent-crude-oil" target="_blank">Giá dầu</a></li><li><a href="https://www.blackrock.com/corporate/insights/blackrock-investment-institute/interactive-charts/geopolitical-risk-dashboard/" target="_blank">Chỉ số đo lường rủi ro Black Rock</a></li></ul></td><td><ul><li>Lạm phát</li><li>Tăng trưởng tín dụng</li><li>Tốc độ giải ngân đầu tư công</li><li>Kỳ vọng lợi nhuận của thị trường</li></ul></td><td><ul><li>Lãi suất ON</li><li>Lợi suất TPCP</li><li>Bơm hút ròng OMO</li><li>Tỷ giá</li><li>Các dòng tiền (khối ngoại/khối nội)</li><li>Thanh khoản thị trường</li></ul></td></tr></table>`;
+		const iframeConfigs = {
+			1: {
+				src: "stockline.html",
+				title: "Tâm điểm thị trường",
+				info: "Xem nhanh báo cáo phân tích tâm điểm thị trường. <br/> Lấy nguồn từ Stockline.vn. Chuyên phân tích ngành nghề, để có lựa chọn cổ phiếu đầu tư.",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-font-awesome',
+				device: 'desktop' // chỉ desktop
+			},
+			2: {
+				src: "alphastock.html",
+				title: "Báo cáo phân tích",
+				info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. ",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-note-sticky',
+				device: 'mobile' // hỗ trợ mobile
+			},
+			3: {
+				src: "fidt.html",
+				title: "Báo cáo FIDT",
+				info: `Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.` + bangtin,
+				enable: true,
+				theme: 'light',
+				icon: 'fa-note-sticky',
+				device: 'desktop'
+			},
+			4: {
+				src: "dinhgia.html",
+				title: "Định giá cổ phiếu",
+				info: "Công cụ giúp theo dõi định giá cổ phiếu theo P/E và mức dự phóng của các công ty chứng khoán.",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-calculator',
+				device: 'mobile'
+			},
+			5: {
+				src: "valuation.html",
+				title: "Định giá VN-Index",
+				info: "Theo dõi biến động VNINDEX và định giá P/B và P/E để xác định vùng định giá đắt rẻ. <br/> Cần cập nhật dữ liệu thủ công file data.csv.",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-calculator',
+				device: 'mobile'
+			},
+			6: {
+				src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
+				title: "Định giá ngành",
+				info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-calculator',
+				device: 'mobile'
+			},
+			7: {
+				src: "rsnganh.html",
+				title: "Sức mạnh ngành",
+				info: "Theo dõi, so sánh sức mạnh các nhóm ngành, dòng tiền vào các nhóm ngành",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-chart-simple',
+				device: 'mobile'
+			},
+			8: {
+				src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
+				title: "Thống kê GD theo NĐT",
+				info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-chart-pie-simple',
+				device: 'mobile'
+			},
+			9: {
+				src: "https://temp-portal.fidt.vn/data/ty-gia",
+				title: "Tỷ giá USD/VND",
+				info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-money-bill-1',
+				device: 'mobile'
+			},
+			10: {
+				src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
+				title: "Giá hàng hóa",
+				info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-chart-simple',
+				device: 'mobile'
+			},
+			11: {
+				src: "https://temp-portal.fidt.vn/data/thep",
+				title: "Giá thép",
+				info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-chart-simple',
+				device: 'mobile'
+			},
+			12: {
+				src: "https://temp-portal.fidt.vn/data/fdi",
+				title: "Đầu tư FDI",
+				info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-chart-simple',
+				device: 'mobile'
+			},
+			13: {
+				src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
+				title: "Xuất nhập khẩu",
+				info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
+				enable: true,
+				theme: 'dark',
+				icon: 'fa-chart-simple',
+				device: 'mobile'
+			},
+			14: {
+				src: "chart.html",
+				title: "Vĩ mô/hàng hóa",
+				info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...." + bangtin,
+				enable: true,
+				theme: 'light',
+				icon: 'fa-chart-line',
+				device: 'mobile'
+			},
+			15: {
+				src: "tradingview.html",
+				title: "Biểu đồ kỹ thuật",
+				info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu." + bangtin,
+				enable: true,
+				theme: 'light',
+				icon: 'fa-chart-bar',
+				device: 'mobile'
+			},
+			16: {
+				src: "fmarket.html",
+				title: "Hiệu suất quỹ CP",
+				info: "Thống kê các cổ phiếu được các quỹ cổ phiếu nắm giữ.<br/> Xem biểu đồ scratter plot để đánh giá rủi ro - lợi nhuận của các quỹ mở so với VNINDEX. Chỉ những quỹ mở có hiệu suất tốt hơn trong dài hạn, và có mức độ biến động thấp mới đáng lựa chọn để đầu tư.",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-percent',
+				device: 'mobile'
+			},
+			17: {
+				src: "kqkd.html",
+				title: "Kết quả kinh doanh",
+				info: `Xem kết quả kinh doanh quý gần nhất của các doanh nghiệp trên sàn, nguồn Stocks.vn.<br/> Chú ý mức tăng trưởng lợi nhuận sau thuế so với cùng kỳ của các doanh nghiệp để đánh giá khả năng tăng trưởng đột phá về lợi nhuận.<br/><ul><li> % So với cùng kỳ : đang trong đà tăng liên tục.</li><li> % So với kỳ trước: bước vào chu kỳ mới </li></ul> <br/><table border='1' style="font-size: 0.8rem; " cellspacing='0'><thead><tr><th>Quý</th><th>Thời điểm kết thúc quý</th><th>Thời hạn công bố BCTC (công ty độc lập)</th><th>Thời hạn công bố BCTC (có công ty con hoặc đơn vị trực thuộc)</th></tr></thead><tbody><tr><td>I</td><td>31/03</td><td>20/04</td><td>30/04</td></tr><tr><td>II</td><td>30/06</td><td>20/07</td><td>30/07</td></tr><tr><td>III</td><td>30/09</td><td>20/10</td><td>30/10</td></tr><tr><td>IV</td><td>31/12</td><td>20/01 năm sau</td><td>30/01 năm sau</td></tr></tbody></table>`,
+				enable: true,
+				theme: 'light',
+				icon: 'fa-rectangle-list',
+				device: 'mobile'
+			},
+			18: {
+				src: "fireant.html",
+				title: "Báo cáo tài chính",
+				info: "Công cụ xem báo cáo tài chính chi tiết của từng doanh nghiệp.<br/> Có 3 bảng báo cáo: cân đối kế toán, báo cáo kinh doanh và lưu chuyển tiền tệ. Mặc định hiển thị kết quả kinh doanh của doanh nghiệp quan tâm, với 8 cột dữ liệu theo quý.",
+				enable: true,
+				theme: 'light',
+				icon: 'fa-rectangle-list',
+				device: 'desktop'
+			},
+			19: {
+				src: "24h.html",
+				title: "Biểu đồ tài chính",
+				info: "Công cụ giúp tạo biểu đồ tùy chỉnh và nâng cao.<br/>Kết hợp giữa kết quả tài chính từ báo cáo tài chính với dữ liệu giá cổ phiếu. <br/> Về dài hạn giá cổ phiếu là sự phản ánh kết quả, tình hình hoạt động kinh doanh của doanh nghiệp.<br/> Lưu ý: Giá cổ phiếu quý 4/2024 lấy giá đóng cửa của 31/12/2024, lấy cuối tháng của quý đó. Tương tự quý 3 thì lấy giá đóng cửa ngày cuối của tháng 9. Nghĩa là giá này là phản ánh của kết quả kinh doanh, giá phản ánh trước và kết quả kinh doanh confirm lại giá cổ phiếu. Vì sự tương đồng này nên cần tìm kiếm các doanh nghiệp trong quý tiếp theo có dự báo kết quả kinh doanh tăng trưởng thì giá sẽ tăng.",
+				enable: false,
+				theme: 'light',
+				icon: 'fa-pen-to-square',
+				device: 'desktop'
+			},
+			20: {
+				src: "./dlvm/dulieuvimo.html",
+				title: "Biểu đồ tùy chỉnh",
+				info: "Công cụ giúp tạo biểu đồ giá vĩ mô hàng hóa tùy chỉnh và nâng cao." + bangtin,
+				enable: true,
+				theme: 'light',
+				icon: 'fa-pen-to-square',
+				device: 'desktop'
+			},
+		};
 
-        <main class="chat-container">
-            <header class="chat-header">
-                <button id="menu-toggle">
-                   <i class="fa-light fa-sidebar"></i>
-                </button>
-                <h4 id="title-module">Trang chủ</h4>
-                <div id="theme-options" class="theme-options">
-                    <button id="light-theme-btn" class="theme-btn light-btn" title="Chế độ sáng">☀️</button>
-                    <button id="dark-theme-btn" class="theme-btn dark-btn" title="Chế độ tối">🌙</button>
-                </div>
-            </header>
-
-            <div class="chat-messages" id="chat-messages">
-                <div id="iframe-loader">Đang tải nội dung, vui lòng đợi...</div>
-                <div id="iframe-content-wrapper" style="height:100%">
-                    <iframe id="sourcemodule" src="dinhgia.html" frameborder="0"></iframe>
-                </div>
-            </div>
-
-        </main>
-    </div>
-
-    <div id="help-popup" class="popup-overlay">
-        <div class="popup-content">
-            <div class="nowrap" id="title-info" style="font-weight: 600;font-size: 16px!important;background: white;padding: 4px 10px;padding-right: 50px;position: sticky;top: 0px; border-bottom: 1px solid #ddd;">Hướng dẫn sử dụng</div>
-            <button id="close-popup-btn" class="close-popup">&times;</button>
-            <div id="info"></div>
-        </div>
-    </div>
-
-    <script>
-        // Đảm bảo mã chỉ chạy khi toàn bộ trang đã được tải
-        document.addEventListener('DOMContentLoaded', () => {
-
-            // --- Các Element cần sử dụng ---
-            const menuToggle = document.getElementById('menu-toggle');
-            const sidebar = document.getElementById('sidebar');
-            const chatMessages = document.getElementById('chat-messages');
-
-            // Element cho popup
-            const helpBtn = document.getElementById('help-btn');
-            const helpPopup = document.getElementById('help-popup');
-            const closePopupBtn = document.getElementById('close-popup-btn');
-
-            // --- Xử lý Sidebar ---
-            menuToggle.addEventListener('click', () => {
-                sidebar.classList.toggle('collapsed');
-            });
-
-            function handleResize() {
-                if (window.innerWidth <= 768) { // hoặc 576 tuỳ breakpoint bạn chọn
-                    sidebar.classList.add('collapsed');
-                } else {
-                    sidebar.classList.remove('collapsed');
-                }
-            }
-
-            window.addEventListener('resize', handleResize);
-            window.addEventListener('load', handleResize); // gọi khi load ban đầu
-
-            var text = '';
-            const device = getDeviceType();
-            const defaultkey = device == 'mobile' ? 15 : 1;
-            const bangtin = `<table style="font-size:0.8rem;"><tr><th>Cấp 3 (Tháng, quý)</th><th>Cấp 2 (Tháng quý)</th><th>Cấp 1 (hàng ngày)</th></tr><tr><td><ul><li><a href="https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm" target="_blank">Fed fund rate</a></li><li><a href="https://vn.investing.com/rates-bonds/u.s.-10-year-bond-yield" target="_blank">US10Y</a></li><li><a href="https://vn.investing.com/indices/usdollar" target="_blank">DXY</a></li><li><a href="https://tradingeconomics.com/united-states/inflation-cpi" target="_blank">CPI</a>+<a href="https://vn.investing.com/economic-calendar/pce-price-index-906" target="_blank">PCE</a></li><li><a href="https://tradingeconomics.com/united-states/unemployment-rate" target="_blank">Tỷ lệ thất nghiệp</a></li><li><a href="https://tradingeconomics.com/commodity/brent-crude-oil" target="_blank">Giá dầu</a></li><li><a href="https://www.blackrock.com/corporate/insights/blackrock-investment-institute/interactive-charts/geopolitical-risk-dashboard/" target="_blank">Chỉ số đo lường rủi ro Black Rock</a></li></ul></td><td><ul><li>Lạm phát</li><li>Tăng trưởng tín dụng</li><li>Tốc độ giải ngân đầu tư công</li><li>Kỳ vọng lợi nhuận của thị trường</li></ul></td><td><ul><li>Lãi suất ON</li><li>Lợi suất TPCP</li><li>Bơm hút ròng OMO</li><li>Tỷ giá</li><li>Các dòng tiền (khối ngoại/khối nội)</li><li>Thanh khoản thị trường</li></ul></td></tr></table>`;
-
-            const iframeConfigs = {
-                1: {
-                    src: "stockline.html",
-                    title: "Tâm điểm thị trường",
-                    info: "Xem nhanh báo cáo phân tích tâm điểm thị trường. <br/> Lấy nguồn từ Stockline.vn. Chuyên phân tích ngành nghề, để có lựa chọn cổ phiếu đầu tư.",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-font-awesome',
-                    device: 'desktop' // chỉ desktop
-                },
-                2: {
-                    src: "alphastock.html",
-                    title: "Báo cáo phân tích",
-                    info: "Xem nhanh báo cáo phân tích cổ phiếu và thị trường. ",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-note-sticky',
-                    device: 'mobile' // hỗ trợ mobile
-                },
-                3: {
-                    src: "fidt.html",
-                    title: "Báo cáo FIDT",
-                    info: `Đọc tin tức từ FIDT, chuyên trang về quản lý gia sản và tài chính cá nhân.` + bangtin,
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-note-sticky',
-                    device: 'desktop'
-                },
-                4: {
-                    src: "dinhgia.html",
-                    title: "Định giá cổ phiếu",
-                    info: "Công cụ giúp theo dõi định giá cổ phiếu theo P/E và mức dự phóng của các công ty chứng khoán.",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-calculator',
-                    device: 'mobile'
-                },
-                5: {
-                    src: "valuation.html",
-                    title: "Định giá VN-Index",
-                    info: "Theo dõi biến động VNINDEX và định giá P/B và P/E để xác định vùng định giá đắt rẻ. <br/> Cần cập nhật dữ liệu thủ công file data.csv.",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-calculator',
-                    device: 'mobile'
-                },
-                6: {
-                    src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
-                    title: "Định giá ngành",
-                    info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-calculator',
-                    device: 'mobile'
-                },
-                7: {
-                    src: "rsnganh.html",
-                    title: "Sức mạnh ngành",
-                    info: "Theo dõi, so sánh sức mạnh các nhóm ngành, dòng tiền vào các nhóm ngành",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-chart-simple',
-                    device: 'mobile'
-                },
-                8: {
-                    src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
-                    title: "Thống kê GD theo NĐT",
-                    info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-chart-pie-simple',
-                    device: 'mobile'
-                },
-                9: {
-                    src: "https://temp-portal.fidt.vn/data/ty-gia",
-                    title: "Tỷ giá USD/VND",
-                    info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-money-bill-1',
-                    device: 'mobile'
-                },
-                10: {
-                    src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
-                    title: "Giá hàng hóa",
-                    info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-chart-simple',
-                    device: 'mobile'
-                },
-                11: {
-                    src: "https://temp-portal.fidt.vn/data/thep",
-                    title: "Giá thép",
-                    info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-chart-simple',
-                    device: 'mobile'
-                },
-                12: {
-                    src: "https://temp-portal.fidt.vn/data/fdi",
-                    title: "Đầu tư FDI",
-                    info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-chart-simple',
-                    device: 'mobile'
-                },
-                13: {
-                    src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
-                    title: "Xuất nhập khẩu",
-                    info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
-                    enable: true,
-                    theme: 'dark',
-                    icon: 'fa-chart-simple',
-                    device: 'mobile'
-                },
-                14: {
-                    src: "chart.html",
-                    title: "Vĩ mô/hàng hóa",
-                    info: "Công cụ xem nhanh biểu đồ dữ liệu vĩ mô như GDP, lãi suất liên ngân hàng,... và các loại mặt hàng như Thép, dầu, thịt lợn...." + bangtin,
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-chart-line',
-                    device: 'mobile'
-                },
-                15: {
-                    src: "tradingview.html",
-                    title: "Biểu đồ Tradingview",
-                    info: "Công cụ xem nhanh biểu đồ của cổ phiếu, kết hợp xem dư mua dư bán, tin tức liên quan đến mã cổ phiếu." + bangtin,
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-chart-bar',
-                    device: 'mobile'
-                },
-                16: {
-                    src: "fmarket.html",
-                    title: "Hiệu suất quỹ CP",
-                    info: "Thống kê các cổ phiếu được các quỹ cổ phiếu nắm giữ.<br/> Xem biểu đồ scratter plot để đánh giá rủi ro - lợi nhuận của các quỹ mở so với VNINDEX. Chỉ những quỹ mở có hiệu suất tốt hơn trong dài hạn, và có mức độ biến động thấp mới đáng lựa chọn để đầu tư.",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-percent',
-                    device: 'mobile'
-                },
-                17: {
-                    src: "kqkd.html",
-                    title: "Kết quả kinh doanh",
-                    info: `Xem kết quả kinh doanh quý gần nhất của các doanh nghiệp trên sàn, nguồn Stocks.vn.<br/> Chú ý mức tăng trưởng lợi nhuận sau thuế so với cùng kỳ của các doanh nghiệp để đánh giá khả năng tăng trưởng đột phá về lợi nhuận.<br/><ul><li> % So với cùng kỳ : đang trong đà tăng liên tục.</li><li> % So với kỳ trước: bước vào chu kỳ mới </li></ul> <br/><table border='1' style="font-size: 0.8rem; " cellspacing='0'><thead><tr><th>Quý</th><th>Thời điểm kết thúc quý</th><th>Thời hạn công bố BCTC (công ty độc lập)</th><th>Thời hạn công bố BCTC (có công ty con hoặc đơn vị trực thuộc)</th></tr></thead><tbody><tr><td>I</td><td>31/03</td><td>20/04</td><td>30/04</td></tr><tr><td>II</td><td>30/06</td><td>20/07</td><td>30/07</td></tr><tr><td>III</td><td>30/09</td><td>20/10</td><td>30/10</td></tr><tr><td>IV</td><td>31/12</td><td>20/01 năm sau</td><td>30/01 năm sau</td></tr></tbody></table>`,
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-rectangle-list',
-                    device: 'mobile'
-                },
-                18: {
-                    src: "fireant.html",
-                    title: "Báo cáo tài chính",
-                    info: "Công cụ xem báo cáo tài chính chi tiết của từng doanh nghiệp.<br/> Có 3 bảng báo cáo: cân đối kế toán, báo cáo kinh doanh và lưu chuyển tiền tệ. Mặc định hiển thị kết quả kinh doanh của doanh nghiệp quan tâm, với 8 cột dữ liệu theo quý.",
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-rectangle-list',
-                    device: 'desktop'
-                },
-                19: {
-                    src: "24h.html",
-                    title: "Biểu đồ tài chính",
-                    info: "Công cụ giúp tạo biểu đồ tùy chỉnh và nâng cao.<br/>Kết hợp giữa kết quả tài chính từ báo cáo tài chính với dữ liệu giá cổ phiếu. <br/> Về dài hạn giá cổ phiếu là sự phản ánh kết quả, tình hình hoạt động kinh doanh của doanh nghiệp.<br/> Lưu ý: Giá cổ phiếu quý 4/2024 lấy giá đóng cửa của 31/12/2024, lấy cuối tháng của quý đó. Tương tự quý 3 thì lấy giá đóng cửa ngày cuối của tháng 9. Nghĩa là giá này là phản ánh của kết quả kinh doanh, giá phản ánh trước và kết quả kinh doanh confirm lại giá cổ phiếu. Vì sự tương đồng này nên cần tìm kiếm các doanh nghiệp trong quý tiếp theo có dự báo kết quả kinh doanh tăng trưởng thì giá sẽ tăng.",
-                    enable: false,
-                    theme: 'light',
-                    icon: 'fa-pen-to-square',
-                    device: 'desktop'
-                },
-                20: {
-                    src: "./dlvm/dulieuvimo.html",
-                    title: "Biểu đồ tùy chỉnh",
-                    info: "Công cụ giúp tạo biểu đồ giá vĩ mô hàng hóa tùy chỉnh và nâng cao." + bangtin,
-                    enable: true,
-                    theme: 'light',
-                    icon: 'fa-pen-to-square',
-                    device: 'desktop'
-                },
-
-            };
-
-            function getDeviceType() {
-                const ua = navigator.userAgent;
-
-                if (/Mobi|Android|iPhone|iPad|iPod/.test(ua)) {
-                    return "mobile";
-                } else {
-                    return "desktop";
-                }
-            }
-            // hàm thay đổi iframe
-            function changeIframeSrc(key) {
-                const configIframe = iframeConfigs[key];
-                const iframe = document.getElementById('sourcemodule');
-                const title = document.getElementById('title-module');
-                const loader = document.getElementById('iframe-loader'); // phần tử loading
-                const contentWrapper = document.getElementById('iframe-content-wrapper'); // bọc nội dung hiển thị
-
-                if (iframe) {
-                    // Hiển thị loading, ẩn nội dung
-                    if (loader) loader.style.display = 'block';
-                    if (contentWrapper) contentWrapper.style.display = 'none';
-
-                    // Thay đổi src, tiêu đề và theme
-                    iframe.src = configIframe.src;
-                    title.textContent = configIframe.title;
-                    text = configIframe.info;
-                    if (configIframe.theme) {
-                        document.body.setAttribute('data-theme', configIframe.theme);
-                    }
-
-                    // Khi iframe load xong
-                    iframe.onload = function() {
-                        if (loader) loader.style.display = 'none';
-                        if (contentWrapper) contentWrapper.style.display = 'block';
-                    };
-                } else {
-                    console.error(`Iframe with ID "${key}" not found.`);
-                }
-
-                handleResize();
-                console.log('Loading new iframe...');
-            }
-
-
-            // tạo menu li module
-            function createMenu(source, idbox) {
-                const container = document.getElementById(idbox);
-                const li = document.createElement('li');
-                Object.keys(source).forEach(key => {
-                    const item = source[key];
-                    if (device == 'mobile' && item.device === 'desktop') return;
-
-                    if (item.enable) {
-                        const a = document.createElement('a');
-                        a.innerHTML = `<i class="fa-regular ${item.icon ||'fa-message'}"></i> ${item.title}`;
-                        a.setAttribute("data-code", key);
-                        a.href = "#";
-                        let isProcessing = false;
-
-                        a.addEventListener('click', (e) => {
-                            e.preventDefault();
-                            if (isProcessing) return;
-
-                            isProcessing = true;
-                            changeIframeSrc(key);
-
-                            // Tùy bạn có reset isProcessing lại sau khi xử lý xong không
-                            // Ví dụ: reset sau 1 giây
-                            setTimeout(() => {
-                                isProcessing = false;
-                            }, 1000);
-                        });
-
-                        li.appendChild(a);
-                    }
-                });
-                container.appendChild(li);
-            }
-            document.querySelector('.home-btn').addEventListener('click', (e) => {
-                e.preventDefault(); 
-                changeIframeSrc(15)
-            });
-
-
-            createMenu(iframeConfigs, "module");
-            const ams = new URLSearchParams(window.location.search);
-            const quote = ams.get("id");
-            changeIframeSrc(quote ? quote : defaultkey);
-
-            window.addEventListener("message", function(event) {
-                // Nếu muốn bảo mật hơn, kiểm tra event.origin
-                const data = event.data;
-                if (data.popup === true) {
-                    document.getElementById('info').innerHTML = data.content;
-                    document.getElementById('title-info').innerHTML = data.title;
-                    helpPopup.classList.add('show');
-                } else if (data.popup === false) {
-                    helpPopup.classList.remove('show');
-                }
-            });
-
-            // --- Xử lý Popup Trợ giúp (Đã sửa lỗi) ---
-            // Mở popup khi nhấn nút Trợ giúp
-            helpBtn.addEventListener('click', (event) => {
-                event.preventDefault(); // Ngăn trang reload khi nhấn vào link '#'
-                document.getElementById('info').innerHTML = text;
-                document.getElementById('title-info').innerHTML = "Hướng dẫn sử dụng";
-                helpPopup.classList.add('show');
-            });
-
-            // Đóng popup khi nhấn nút 'X'
-            closePopupBtn.addEventListener('click', () => {
-                helpPopup.classList.remove('show');
-            });
-
-            // Đóng popup khi nhấn vào vùng nền mờ bên ngoài
-            helpPopup.addEventListener('click', (event) => {
-                // Chỉ đóng nếu click vào chính cái nền (overlay), không phải vào nội dung bên trong
-                if (event.target === helpPopup) {
-                    helpPopup.classList.remove('show');
-                }
-            });
-
-
-            // thay đổi theme
-            const lightThemeBtn = document.getElementById('light-theme-btn');
-            const darkThemeBtn = document.getElementById('dark-theme-btn');
-            lightThemeBtn.addEventListener('click', () => {
-                document.body.setAttribute('data-theme', 'light');
-            });
-
-            darkThemeBtn.addEventListener('click', () => {
-                document.body.setAttribute('data-theme', 'dark');
-            });
-            document.addEventListener('click', (e) => {
-                const isSmallScreen = window.innerWidth <= 768;
-                const isClickInside = sidebar.contains(e.target) || menuToggle.contains(e.target);
-
-                if (isSmallScreen && !isClickInside) {
-                    sidebar.classList.add('collapsed');
-                }
-            });
-
-        });
-    </script>
+		function getDeviceType() {
+			const ua = navigator.userAgent;
+			if(/Mobi|Android|iPhone|iPad|iPod/.test(ua)) {
+				return "mobile";
+			} else {
+				return "desktop";
+			}
+		}
+		// hàm thay đổi iframe
+		function changeIframeSrc(key) {
+			const configIframe = iframeConfigs[key];
+			const iframe = document.getElementById('sourcemodule');
+			const title = document.getElementById('title-module');
+			const loader = document.getElementById('iframe-loader'); // phần tử loading
+			const contentWrapper = document.getElementById('iframe-content-wrapper'); // bọc nội dung hiển thị
+			if(iframe) {
+				// Hiển thị loading, ẩn nội dung
+				if(loader) loader.style.display = 'block';
+				if(contentWrapper) contentWrapper.style.display = 'none';
+				// Thay đổi src, tiêu đề và theme
+				iframe.src = configIframe.src;
+				title.textContent = configIframe.title;
+				text = configIframe.info;
+				if(configIframe.theme) {
+					document.body.setAttribute('data-theme', configIframe.theme);
+				}
+				// Khi iframe load xong
+				iframe.onload = function() {
+					if(loader) loader.style.display = 'none';
+					if(contentWrapper) contentWrapper.style.display = 'block';
+				};
+			} else {
+				console.error(`Iframe with ID "${key}" not found.`);
+			}
+			handleResize();
+			console.log('Loading new iframe...');
+		}
+		// tạo menu li module
+		function createMenu(source, idbox) {
+			const container = document.getElementById(idbox);
+			const li = document.createElement('li');
+			Object.keys(source).forEach(key => {
+				const item = source[key];
+				if(device == 'mobile' && item.device === 'desktop') return;
+				if(item.enable) {
+					const a = document.createElement('a');
+					a.innerHTML = `<i class="fa-regular ${item.icon ||'fa-message'}"></i> ${item.title}`;
+					a.setAttribute("data-code", key);
+					a.href = "#";
+					let isProcessing = false;
+					a.addEventListener('click', (e) => {
+						e.preventDefault();
+						if(isProcessing) return;
+						isProcessing = true;
+						changeIframeSrc(key);
+						// Tùy bạn có reset isProcessing lại sau khi xử lý xong không
+						// Ví dụ: reset sau 1 giây
+						setTimeout(() => {
+							isProcessing = false;
+						}, 1000);
+					});
+					li.appendChild(a);
+				}
+			});
+			container.appendChild(li);
+		}
+		document.querySelector('.home-btn').addEventListener('click', (e) => {
+			e.preventDefault(); // Ngăn hành vi mặc định nếu cần
+			changeIframeSrc(15)
+		});
+		createMenu(iframeConfigs, "module");
+		const ams = new URLSearchParams(window.location.search);
+		const quote = ams.get("id");
+		changeIframeSrc(quote ? quote : defaultkey);
+		window.addEventListener("message", function(event) {
+			// Nếu muốn bảo mật hơn, kiểm tra event.origin
+			const data = event.data;
+			if(data.popup === true) {
+				document.getElementById('info').innerHTML = data.content;
+				document.getElementById('title-info').innerHTML = data.title;
+				helpPopup.classList.add('show');
+			} else if(data.popup === false) {
+				helpPopup.classList.remove('show');
+			}
+		});
+		// --- Xử lý Popup Trợ giúp (Đã sửa lỗi) ---
+		// Mở popup khi nhấn nút Trợ giúp
+		helpBtn.addEventListener('click', (event) => {
+			event.preventDefault(); // Ngăn trang reload khi nhấn vào link '#'
+			document.getElementById('info').innerHTML = text;
+			document.getElementById('title-info').innerHTML = "Hướng dẫn sử dụng";
+			helpPopup.classList.add('show');
+		});
+		// Đóng popup khi nhấn nút 'X'
+		closePopupBtn.addEventListener('click', () => {
+			helpPopup.classList.remove('show');
+		});
+		// Đóng popup khi nhấn vào vùng nền mờ bên ngoài
+		helpPopup.addEventListener('click', (event) => {
+			// Chỉ đóng nếu click vào chính cái nền (overlay), không phải vào nội dung bên trong
+			if(event.target === helpPopup) {
+				helpPopup.classList.remove('show');
+			}
+		});
+		// thay đổi theme
+		const lightThemeBtn = document.getElementById('light-theme-btn');
+		const darkThemeBtn = document.getElementById('dark-theme-btn');
+		lightThemeBtn.addEventListener('click', () => {
+			document.body.setAttribute('data-theme', 'light');
+		});
+		darkThemeBtn.addEventListener('click', () => {
+			document.body.setAttribute('data-theme', 'dark');
+		});
+		document.addEventListener('click', (e) => {
+			const isSmallScreen = window.innerWidth <= 768;
+			const isClickInside = sidebar.contains(e.target) || menuToggle.contains(e.target);
+			if(isSmallScreen && !isClickInside) {
+				sidebar.classList.add('collapsed');
+			}
+		});
+	});
+	</script>
 </body>
 
 </html>
