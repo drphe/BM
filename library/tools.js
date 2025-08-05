@@ -224,9 +224,9 @@ function renderResults(results) {
     results.forEach(result => {
         table += `<tr>
             <td>${result.startDate}</td>
-            <td>${result.start.toFixed(0)}</td>
+            <td>${result.start.toFixed(2)}</td>
             <td>${result.bottomDate}</td>
-            <td>${result.bottom.toFixed(0)}</td>
+            <td>${result.bottom.toFixed(2)}</td>
             <td>${result.drawdown.toFixed(2)} %</td>
             <td>${result.recover.toFixed(2)} %</td>
         </tr>`;
