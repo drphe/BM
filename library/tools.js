@@ -264,7 +264,6 @@ function showDiscount(symbol, data) {
 
     showPopup(iframeHtml, "Phân tích biểu đồ kỹ thuật");
 
-
 }
 var andiko = localStorage.getItem("andiko");
 
