@@ -525,8 +525,15 @@
                     });
 		// Sắp xếp theo thời gian để đảm bảo nối đúng
 		zigzagPoints.sort((a, b) => new Date(a.time) - new Date(b.time));
-
-                    zigzagSeries.setData(zigzagPoints);
+		// loại bỏ đối tượng trùng thời gian
+		const seenTimes = new Set();
+		const cleanedPoints = zigzagPoints.filter(p => {
+    			if (seenTimes.has(p.time)) return false;
+    			seenTimes.add(p.time);
+    			return true;
+		});
+		zigzagSeries.setData(cleanedPoints);
+                   // zigzagSeries.setData(zigzagPoints);
 
                     // Thêm marker cho đỉnh, đáy, hồi phục
                     const markers = [];
