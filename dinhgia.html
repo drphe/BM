@@ -70,7 +70,9 @@ const AllCompany = [{c:"0101264009",t:"DDB"},{c:"0104498100",t:"VVS"},{c:"010528
         }
         loading();
         const inputF = document.getElementById('inputField');
-        let mack = inputF.value;
+        const ams = new URLSearchParams(window.location.search);
+        let mack = ams.get("code") || inputF.value;
+	inputF.value = mack;
         let jsonData = {};
         let lastPrice = 0;
         document.getElementById('inputField').addEventListener('input', function(event) {
@@ -237,7 +239,7 @@ const data = dataBaocao.filter(item => {
                 const json = await response.json()
                 const allData = Object.values(json).flat()
   		dataBaocao = allData.filter(item => item.type === 1 && item.code === symbol && item.target !== null)
-		console.log(dataBaocao)
+		//console.log(dataBaocao)
                 await showInfo(dataBaocao)
             } catch (error) {
                 console.error('There was a problem with the fetch operation:', error);
@@ -477,7 +479,7 @@ const data = dataBaocao.filter(item => {
                     jsonData[i].PBminus2std = pbCal.meanMinus2Std / jsonData[i].PB * jsonData[i].VNINDEX
                 }
 
-                console.log('Data:', jsonData);
+                //console.log('Data:', jsonData);
                 let type = document.getElementById('opt').value;
 		type = type == "PE"? "P/E": "P/B";
                 drawchart(jsonData, type, symbol)

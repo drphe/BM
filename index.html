@@ -282,7 +282,16 @@
 			}
 		}
 		// hàm thay đổi iframe
-		function changeIframeSrc(key) {
+		var lastKeyframe = 0, lastCode = "";
+		function changeIframeSrc(key) {console.log(lastKeyframe,key, lastCode)
+			if(lastKeyframe == 15 && (key === '4' || key === '5')) { 
+				 let filehtml =  lastCode !== "VN-INDEX" ? `dinhgia.html?code=${lastCode}`: 'valuation.html';
+				document.getElementById('info').innerHTML = `<iframe style="border:none; width: 500px; height: 450px;" src="${filehtml}"></iframe>`;
+				document.getElementById('title-info').innerHTML = "Định giá nhanh";
+				helpPopup.classList.add('show');
+				return;
+			} 
+			lastKeyframe = key;
 			const configIframe = iframeConfigs[key];
 			const iframe = document.getElementById('sourcemodule');
 			const title = document.getElementById('title-module');
@@ -350,6 +359,7 @@
 		window.addEventListener("message", function(event) {
 			// Nếu muốn bảo mật hơn, kiểm tra event.origin
 			const data = event.data;
+			lastCode = data.code;
 			if(data.popup === true) {
 				document.getElementById('info').innerHTML = data.content;
 				document.getElementById('title-info').innerHTML = data.title;

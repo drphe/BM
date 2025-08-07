@@ -41,6 +41,10 @@
             title.innerHTML = items.fullname_vi;
             clearInterval(autoUpdate);
             await renderChart("mychartcontainers", lastWidth, lastHeight - 40, lastSymbol, true, theme, true);
+		// gửi mã cổ phiếu
+    		window.parent.postMessage({
+        		code: lastSymbol,
+   		 }, "*");
             let fillterCode = [];
             if (lastSymbol !== "VN-INDEX") {
                 fillterCode = lastSymbol
