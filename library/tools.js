@@ -169,7 +169,7 @@ async function getNews(list = []) {
             } else {
                 let gg = output[output.length - 1].drawdown.toFixed(2);
 		temp= ` Đã tăng từ đáy ${results[results.length-1].bottomDate}: <span class="tb">${results[results.length-1].recover.toFixed(2)}</span>%.`;
-                ckht += `Mức chiết khấu của đỉnh <span title="Đang xu hướng tăng hoặc đi ngang" đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
+                ckht += `Mức chiết khấu của đỉnh <span title="Đang xu hướng tăng hoặc đi ngang"> đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
             }
 
             return output;
