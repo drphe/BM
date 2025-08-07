@@ -459,9 +459,10 @@
             isMA20 = true,
             isMA50 = true,
             isMA150 = false,
-            isMA200 = true;
+            isMA200 = true,
+            isZigzag = true;
         autoUpdate = isStockMarketOpen() && setInterval(autoRefresh, 10000);
-
+	addZigzag();
         // Thêm chú giải
         const legend = document.createElement('div');
         legend.style = `position: absolute; top: 40px; z-index: 100; font-size: 13px; font-family: Inter, "Nunito Sans", Lexend, "Noto Sans", sans-serif; line-height: 18px; font-weight: bold; width:100%;background-color:transparent;display: flex;justify-content: space-between;width: 100%; margin:auto;`;
@@ -486,22 +487,9 @@
         // check yeuthich
         const stockList = getStockList();
         let yeuthich = stockList.includes(symbolName)
-
-        async function addIndicator() {
-            try {
-                zigzagSeries.setMarkers([]);
-                zigzagSeries.setData([]);
-
-                chart.removePane(1);
-            } catch (e) {}
-
-
-            current_indicator = localStorage.getItem("indicator");
-            showDumua = localStorage.getItem("dumuaban");
-            switch (current_indicator) {
-                case "zigzag":
+	function addZigzag(){
+		if (isZigzag){
                     var drawdowns = findRecoveries(closep);
-                    console.log(drawdowns) 
                     function convertDate(dateStr) {
                         const [day, month, year] = dateStr.split('/');
                         return `20${year.length === 2 ? year : year.slice(-2)}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
@@ -565,8 +553,21 @@
                     });
 			markers.sort((a, b) => new Date(a.time) - new Date(b.time));
                     zigzagSeries.setMarkers(markers);
+		}else {
+                	zigzagSeries.setMarkers([]);
+                	zigzagSeries.setData([]);
 
-                    break;
+		}
+	}
+        async function addIndicator() {
+            try {
+                chart.removePane(1);
+            } catch (e) {}
+
+
+            current_indicator = localStorage.getItem("indicator");
+            showDumua = localStorage.getItem("dumuaban");
+            switch (current_indicator) {
                 case "rs":
                     if (symbolName == "VN-INDEX") break;
                     var RS = await calculateRS(ohlc);
@@ -672,9 +673,8 @@
                         document.fullscreenElement ? document.exitFullscreen() : domElement.requestFullscreen();
                         break;
                     case "zigzag-indicator":
-                        current_indicator = "zigzag" === current_indicator ? "all" : "zigzag";
-                        localStorage.setItem('indicator', current_indicator);
-                        addIndicator();
+			isZigzag = !isZigzag
+                        addZigzag();
                         break;
                     case "rs-indicator":
                         current_indicator = "rs" === current_indicator ? "all" : "rs";
@@ -744,8 +744,8 @@
 <a id="ma50-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">MA50<span style="float:right">${isMA50?tickicon2:''}</span></a>
 <!--<a id="ma150-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">MA150<span style="float:right">${isMA150?tickicon2:''}</span></a>-->
 <a id="ma200-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">MA200<span style="float:right">${isMA200?tickicon2:''}</span></a>
+<a id="zigzag-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Đường Zigzag<span style="float:right">${isZigzag?tickicon2:''}</span></a>
 <span style="border-top: 1px solid rgba(16,22,26,.15);display: block; margin: 5px;width:90%"></span>
-<a id="zigzag-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Đường Zigzag<span style="float:right">${tindicator == "zigzag"?tickicon2:''}</span></a>
 <a id="mcdx-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Dòng tiền MCDX<span style="float:right">${tindicator == "mcdx"?tickicon2:''}</span></a>
 <a id="rs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Relative Strength<span style="float:right">${tindicator == "rs"?tickicon2:''}</span></a>
 <a id="bs-indicator" style="display: flex;flex-direction: row;align-items: flex-start;border-radius: 2px;color: inherit;line-height: 20px;padding: 5px 7px;text-decoration: none;-webkit-user-select: none;-ms-user-select: none;user-select: none;justify-content: space-between;">Mức chiết khấu<span style="float:right"></span></a>
