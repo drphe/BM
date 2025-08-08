@@ -121,9 +121,9 @@ async function getNews(list = []) {
                             peak = data[i].value; // Cập nhật đỉnh nếu giá hồi vượt đỉnh (không có đợt giảm sâu)
                             tpeak = data[i].time;
                             inDecline = false;
-                        } else {
+                        } else {console.log(i, data.length - 1)
                             // điều kiện xác nhận hồi phục khi đáy ở dưới ma20 và giá hồi phục vượt được ma20
-                            if (data[i].value > ma10[i] && trough < ma10[i]) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
+                            if ((data[i].value > ma10[i] && trough < ma10[i]) || (data.length-i < 6)) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
                                 const recoveryDate = data[i].time; // Thời điểm hồi phục
                                 results.push({
                                     drawdown: (1 - trough / peak) * 100,
@@ -146,6 +146,7 @@ async function getNews(list = []) {
                     }
                 }
             }
+
             // lọc các đợt drawdown <2% do sideway nằm trong biên độ nhỏ
             const output = results.filter(item => item.drawdown > 2);
             // tính mức hồi phục bằng đỉnh mới- đáy cũ
@@ -169,7 +170,7 @@ async function getNews(list = []) {
             } else {
                 let gg = output[output.length - 1].drawdown.toFixed(2);
 		temp= ` Đã tăng từ đáy ${results[results.length-1].bottomDate}: <span class="tb">${results[results.length-1].recover.toFixed(2)}</span>%.`;
-                ckht += `Mức chiết khấu của đỉnh <span title="Đang xu hướng tăng hoặc đi ngang"> đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
+                ckht += `Mức chiết khấu của <span title="Đang xu hướng tăng hoặc đi ngang"> đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
             }
 
             return output;
