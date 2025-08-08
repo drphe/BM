@@ -121,7 +121,7 @@ async function getNews(list = []) {
                             peak = data[i].value; // Cập nhật đỉnh nếu giá hồi vượt đỉnh (không có đợt giảm sâu)
                             tpeak = data[i].time;
                             inDecline = false;
-                        } else {console.log(i, data.length - 1)
+                        } else {
                             // điều kiện xác nhận hồi phục khi đáy ở dưới ma20 và giá hồi phục vượt được ma20
                             if ((data[i].value > ma10[i] && trough < ma10[i]) || (data.length-i < 6)) { // giá vượt ngưỡng  phục hồi hoặc vượt MA20
                                 const recoveryDate = data[i].time; // Thời điểm hồi phục
