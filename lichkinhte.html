@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #f3f4f6;
         }
+
         /* Custom styles for the switch */
         .toggle-switch-container {
             position: relative;
@@ -18,11 +20,13 @@
             width: 44px;
             height: 24px;
         }
+
         .toggle-switch-container input {
             opacity: 0;
             width: 0;
             height: 0;
         }
+
         .slider {
             position: absolute;
             cursor: pointer;
@@ -34,6 +38,7 @@
             transition: .4s;
             border-radius: 34px;
         }
+
         .slider:before {
             position: absolute;
             content: "";
@@ -45,32 +50,41 @@
             transition: .4s;
             border-radius: 50%;
         }
-        input:checked + .slider {
-            background-color: #3b82f6; /* bg-blue-500 */
+
+        input:checked+.slider {
+            background-color: #3b82f6;
+            /* bg-blue-500 */
         }
-        input:checked + .slider:before {
+
+        input:checked+.slider:before {
             transform: translateX(20px);
         }
+
         /* Flatpickr styling */
         .flatpickr-calendar {
             z-index: 9999;
-	    top:84px!important;
-	    left:15%!important;
+            top: 84px !important;
+            left: 15% !important;
         }
+
         /* Custom table styling */
-        .custom-table th, .custom-table td {
+        .custom-table th,
+        .custom-table td {
             padding: 12px;
             text-align: left;
             border-bottom: 1px solid #e5e7eb;
         }
+
         .custom-table th {
             background-color: #f9fafb;
             color: #374151;
             font-weight: 600;
         }
+
         .custom-table tr:hover {
             background-color: #f3f4f6;
         }
+
         /* New loading overlay styles */
         .loading-overlay {
             position: absolute;
@@ -85,25 +99,58 @@
             backdrop-filter: blur(2px);
             z-index: 10;
         }
-	.image_inner{
-	    display: inline;
-	    width: 30px;
-	}
+
+        .image_inner {
+            display: inline;
+            width: 30px;
+        }
+
         .hidden {
             display: none;
         }
-tr:nth-child(odd) {
-    background: rgba(242, 242, 247, 1);
-}
-.important {
-    color: #ef4444;
-}
+
+        tr:nth-child(odd) {
+            background: rgba(242, 242, 247, 1);
+        }
+
+        .important {
+            color: #ef4444;
+        }
+
+        .positive {
+            background: rgb(227 243 248);
+            color: rgb(49 186 190);
+        }
+
+        .normal {
+            background: rgb(248 240 229);
+            color: rgb(237 173 63);
+        }
+
+        .negative {
+            background: rgb(248 240 229);
+            color: rgb(237 173 63);
+        }
+
+        .unrelease {
+            font-weight: 500;
+            background: rgb(237 196 125);
+            color: rgb(250 246 246);
+        }
+
+        span {
+            display: inline-flex;
+            align-items: center;
+            padding: 0 10px;
+            border-radius: 10px;
+        }
     </style>
     <!-- Flatpickr CSS & JS CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/vn.js"></script>
 </head>
+
 <body class="bg-gray-100 flex items-center justify-center min-h-screen p-4">
     <div class="bg-white p-6 rounded-xl shadow-lg w-full max-w-4xl">
         <!-- Header Controls -->
@@ -116,7 +163,7 @@ tr:nth-child(odd) {
                 </svg>
                 <span id="today-date-display">25 Tháng 10, 2023</span>
             </button>
-            
+
             <!-- Today Button -->
             <button id="today-btn" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-xl shadow hover:bg-gray-300 transition-colors duration-200 w-full sm:w-auto">
                 Hôm nay
@@ -178,10 +225,10 @@ tr:nth-child(odd) {
             const todayBtn = document.getElementById('today-btn');
             const importantNewsSwitch = document.getElementById('important-news-switch');
             const flatpickrInput = document.getElementById('flatpickr-input');
-            
+
             const corporateTableWrapper = document.getElementById('corporate-table-wrapper');
             const corporateLoadingOverlay = document.getElementById('corporate-loading-overlay');
-            
+
             const economicTableWrapper = document.getElementById('economic-table-wrapper');
             const economicLoadingOverlay = document.getElementById('economic-loading-overlay');
 
@@ -213,7 +260,10 @@ tr:nth-child(odd) {
 
                 data.forEach(event => {
                     const eventTime = new Date(event.event_time);
-                    const formattedTime = eventTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    const formattedTime = eventTime.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
                     const currency = event.area_code || '';
                     const eventContent = event.event_content || '';
                     const importance = event.star || 0;
@@ -237,59 +287,61 @@ tr:nth-child(odd) {
 
                 corporateTableWrapper.innerHTML = tableHTML;
             }
-function formatCompactNumber(num, decnum, unit) {
-  // Thử chuyển đổi giá trị đầu vào thành một số.
-  const numberValue = parseFloat(num);
 
-  // Kiểm tra nếu giá trị đã chuyển đổi không phải là số hợp lệ hoặc không hữu hạn, thì trả về một chuỗi rỗng.
-  if (isNaN(numberValue) || !isFinite(numberValue)) {
-    return '--';
-  }
+            function formatCompactNumber(num, decnum, unit) {
+                // Thử chuyển đổi giá trị đầu vào thành một số.
+                const numberValue = parseFloat(num);
 
-  // Tạo một đối tượng định dạng số mới.
-  const formatter = new Intl.NumberFormat('en-US', {
-    notation: 'compact', // Sử dụng ký hiệu rút gọn (ví dụ: 1M, 1K).
-    compactDisplay: 'short', // Hiển thị dưới dạng ngắn.
-    maximumFractionDigits: decnum // Số chữ số thập phân tối đa.
-  });
+                // Kiểm tra nếu giá trị đã chuyển đổi không phải là số hợp lệ hoặc không hữu hạn, thì trả về một chuỗi rỗng.
+                if (isNaN(numberValue) || !isFinite(numberValue)) {
+                    return '--';
+                }
 
-  // Định dạng số.
-  let value = formatter.format(numberValue);
+                // Tạo một đối tượng định dạng số mới.
+                const formatter = new Intl.NumberFormat('en-US', {
+                    notation: 'compact', // Sử dụng ký hiệu rút gọn (ví dụ: 1M, 1K).
+                    compactDisplay: 'short', // Hiển thị dưới dạng ngắn.
+                    maximumFractionDigits: decnum // Số chữ số thập phân tối đa.
+                });
 
-  // Thêm đơn vị nếu có.
-  if (unit === '%') {
-    return value + '%';
-  } else {
-    return value;
-  }
-}
-function getTrendIcon(trendStatus) {
-  // Biểu tượng SVG cho mũi tên lên (tích cực)
-  const upArrowIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-green-500 inline-block align-middle"><path d="m5 12l7-7l7 7"></path><path d="M12 19V5"></path></svg>`;
+                // Định dạng số.
+                let value = formatter.format(numberValue);
 
-  // Biểu tượng SVG cho mũi tên xuống (tiêu cực)
-  const downArrowIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-red-500 inline-block align-middle"><path d="m5 12l7 7l7-7"></path><path d="M12 5v14"></path></svg>`;
+                // Thêm đơn vị nếu có.
+                if (unit === '%') {
+                    return value + '%';
+                } else {
+                    return value;
+                }
+            }
 
-  // Biểu tượng SVG cho trạng thái không đáng kể
-  const negligibleIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-500 inline-block align-middle"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`;
-  
-  // Biểu tượng SVG cho trạng thái chưa công bố
-  const unreleasedIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 inline-block align-middle"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg>`;
+            function getTrendIcon(trendStatus) {
+                // Biểu tượng SVG cho mũi tên lên (tích cực)
+                const upArrowIcon = `<span class="positive"><svg data-v-9403c75a="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" w:m="r-2px" w:p="2px" w:w="24px" w:h="24px" w:flex="shrink-0" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--lucide"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 7h6v6"></path><path d="m22 7l-8.5 8.5l-5-5L2 17"></path></g></svg>`;
 
-  // Chuyển đổi đầu vào thành chữ in hoa để xử lý không phân biệt chữ hoa/thường
-  switch (trendStatus.toUpperCase()) {
-    case 'POSITIVE':
-      return upArrowIcon +'GOLD';
-    case 'NEGATIVE':
-      return downArrowIcon + 'GOLD';
-    case 'NEGLIGIBLE':
-      return negligibleIcon ;
-    case 'UNRELEASED':
-      return unreleasedIcon;
-    default:
-      return ''; // Trả về chuỗi rỗng cho trạng thái không hợp lệ
-  }
-}
+                // Biểu tượng SVG cho mũi tên xuống (tiêu cực)
+                const downArrowIcon = `<span class="negative"><svg data-v-9403c75a="" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true" role="img" w:m="r-2px" w:p="2px" w:w="24px" w:h="24px" w:flex="shrink-0" width="1em" height="1em" viewBox="0 0 24 24" class="iconify iconify--lucide"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><path d="M16 17h6v-6"></path><path d="m22 17l-8.5-8.5l-5 5L2 7"></path></g></svg>`;
+
+                // Biểu tượng SVG cho trạng thái không đáng kể
+                const negligibleIcon = `<span class="normal"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-500 inline-block align-middle"><line x1="5" y1="12" x2="19" y2="12"></line></svg></span>`;
+
+                // Biểu tượng SVG cho trạng thái chưa công bố
+                const unreleasedIcon = `<span class="unrelease"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4 text-gray-400 inline-block align-middle"><circle cx="12" cy="12" r="1"></circle><circle cx="19" cy="12" r="1"></circle><circle cx="5" cy="12" r="1"></circle></svg></span>`;
+
+                // Chuyển đổi đầu vào thành chữ in hoa để xử lý không phân biệt chữ hoa/thường
+                switch (trendStatus.toUpperCase()) {
+                    case 'POSITIVE':
+                        return upArrowIcon + ' GOLD</span>';
+                    case 'NEGATIVE':
+                        return downArrowIcon + ' GOLD</span>';
+                    case 'NEGLIGIBLE':
+                        return negligibleIcon;
+                    case 'UNRELEASED':
+                        return unreleasedIcon;
+                    default:
+                        return ''; // Trả về chuỗi rỗng cho trạng thái không hợp lệ
+                }
+            }
             // --- Helper function to render the economic table ---
             function renderEconomicTable(data) {
                 economicTableWrapper.innerHTML = '';
@@ -315,10 +367,13 @@ function getTrendIcon(trendStatus) {
                             </thead>
                             <tbody>
                 `;
-
+                let lastTime = '';
                 data.forEach(event => {
                     const eventTime = new Date(event.pub_time);
-                    const formattedTime = eventTime.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+                    let formattedTime = eventTime.toLocaleTimeString('vi-VN', {
+                        hour: '2-digit',
+                        minute: '2-digit'
+                    });
                     const currency = event.currency_code || '';
                     const name = event.title || '';
                     const importance = event.star || 0;
@@ -327,7 +382,12 @@ function getTrendIcon(trendStatus) {
                     const consensus = event.consensus !== null ? event.consensus : '-';
                     const previous = event.previous !== null ? event.previous : '-';
                     const affectStatus = event.affect_status || '-';
-                    
+                    if (formattedTime != lastTime) {
+                        lastTime = formattedTime;
+                    } else {
+                        formattedTime = '';
+                    }
+
                     tableHTML += `
                         <tr>
                             <td class="py-4 px-6">${formattedTime}</td>
@@ -337,7 +397,7 @@ function getTrendIcon(trendStatus) {
                             <td class="py-4 px-6">${formatCompactNumber(actual, event.num_decimal, event.unit)}</td>
                             <td class="py-4 px-6">${formatCompactNumber(consensus, event.num_decimal, event.unit)}</td>
                             <td class="py-4 px-6">${formatCompactNumber(previous, event.num_decimal, event.unit)}</td>
-                            <td class="py-4 px-6">${getTrendIcon(affectStatus)}</td>
+                            <td class="py-4 px-6" style="text-align: center;">${getTrendIcon(affectStatus)}</td>
                         </tr>
                     `;
                 });
@@ -354,11 +414,11 @@ function getTrendIcon(trendStatus) {
             // --- Function to filter and render data based on the switch state ---
             function filterAndRenderTables(date) {
                 const onlyImportant = importantNewsSwitch.checked;
-                
+
                 // Filter corporate events
                 let filteredCorporate = onlyImportant ? corporateEvents.filter(event => event.star >= 2) : corporateEvents;
                 renderCorporateTable(filteredCorporate);
-		console.log(date)
+                console.log(date)
 
                 // Filter economic events
                 let filteredEconomic = onlyImportant ? economicEvents.filter(event => event.star >= 3) : economicEvents;
@@ -370,7 +430,7 @@ function getTrendIcon(trendStatus) {
                 corporateLoadingOverlay.classList.remove('hidden');
                 const apiDate = date.toISOString();
                 const apiUrl = `https://api.mktnews.net/api/event?date=${apiDate}&category=corp`;
-                
+
                 try {
                     const response = await fetch(apiUrl);
                     const result = await response.json();
@@ -390,11 +450,11 @@ function getTrendIcon(trendStatus) {
                     filterAndRenderTables(date);
                 }
             }
-            
+
             // --- New function to fetch economic data ---
             async function fetchEconomicData(date) {
                 economicLoadingOverlay.classList.remove('hidden');
-                
+
                 const apiDate = date.toISOString(); // API này yêu cầu định dạng ISO string
                 const apiUrl = `https://api.mktnews.net/api/economic?date=${apiDate}`;
 
@@ -417,13 +477,14 @@ function getTrendIcon(trendStatus) {
                     filterAndRenderTables(date);
                 }
             }
-            
+
             // --- Main function to call both data fetching functions ---
             async function updateAllData(date) {
-		const resetDate = new Date(date); resetDate.setHours(0, 0, 0, 0);
-	        const adjustedDate = new Date(resetDate.getTime() - 7 * 60 * 60);
-                 fetchCorporateData(adjustedDate);
-                 fetchEconomicData(adjustedDate);
+                const resetDate = new Date(date);
+                resetDate.setHours(0, 0, 0, 0);
+                const adjustedDate = new Date(resetDate.getTime() - 7 * 60 * 60);
+                fetchCorporateData(adjustedDate);
+                fetchEconomicData(adjustedDate);
             }
 
             // Initialize Flatpickr
@@ -431,7 +492,7 @@ function getTrendIcon(trendStatus) {
                 locale: 'vn',
                 dateFormat: "j F, Y",
                 defaultDate: new Date(),
-		disableMobile: true,
+                disableMobile: true,
                 onChange: function(selectedDates, dateStr, instance) {
                     if (selectedDates.length > 0) {
                         const newDate = selectedDates[0];
@@ -466,4 +527,5 @@ function getTrendIcon(trendStatus) {
         });
     </script>
 </body>
+
 </html>
