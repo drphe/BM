@@ -85,9 +85,19 @@
             backdrop-filter: blur(2px);
             z-index: 10;
         }
+	.image_inner{
+	    display: inline;
+	    width: 30px;
+	}
         .hidden {
             display: none;
         }
+tr:nth-child(odd) {
+    background: rgba(242, 242, 247, 1);
+}
+.important {
+    color: #ef4444;
+}
     </style>
     <!-- Flatpickr CSS & JS CDN -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
@@ -116,7 +126,7 @@
             <div class="flex items-center space-x-3 w-full sm:w-auto">
                 <span class="text-gray-700">Chỉ tin quan trọng</span>
                 <label class="toggle-switch-container">
-                    <input type="checkbox" id="important-news-switch" checked>
+                    <input type="checkbox" id="important-news-switch">
                     <span class="slider shadow"></span>
                 </label>
             </div>
@@ -183,7 +193,7 @@
             function renderCorporateTable(data) {
                 corporateTableWrapper.innerHTML = '';
                 if (data.length === 0) {
-                    corporateTableWrapper.innerHTML = '<p class="text-center text-gray-500">Không có sự kiện doanh nghiệp nào trong ngày này.</p>';
+                    corporateTableWrapper.innerHTML = '<p class="text-center text-gray-500">Không có sự kiện quan trọng nào trong ngày này.</p>';
                     return;
                 }
 
@@ -212,8 +222,8 @@
                     tableHTML += `
                         <tr>
                             <td class="py-4 px-6">${formattedTime}</td>
-                            <td class="py-4 px-6">${currency}</td>
-                            <td class="py-4 px-6">${eventContent}</td>
+                            <td class="py-4 px-6 "><img src="https://mktnews.net/imgs/E_FLAG/${event.area_code}.png" loading="lazy" class="image_inner">${currency}</td>
+                            <td class="py-4 px-6 important">${eventContent}</td>
                             <td class="py-4 px-6">${starString}</td>
                         </tr>
                     `;
@@ -321,8 +331,8 @@ function getTrendIcon(trendStatus) {
                     tableHTML += `
                         <tr>
                             <td class="py-4 px-6">${formattedTime}</td>
-                            <td class="py-4 px-6">${currency}</td>
-                            <td class="py-4 px-6">${name}</td>
+                            <td class="py-4 px-6"><img src="https://mktnews.net/imgs/E_FLAG/${event.country_code}.png" loading="lazy" class="image_inner">${currency}</td>
+                            <td class="py-4 px-6 ${event.star >= 3 ? 'important':''}">${name}</td>
                             <td class="py-4 px-6">${starString}</td>
                             <td class="py-4 px-6">${formatCompactNumber(actual, event.num_decimal, event.unit)}</td>
                             <td class="py-4 px-6">${formatCompactNumber(consensus, event.num_decimal, event.unit)}</td>
@@ -342,23 +352,23 @@ function getTrendIcon(trendStatus) {
             }
 
             // --- Function to filter and render data based on the switch state ---
-            function filterAndRenderTables() {
+            function filterAndRenderTables(date) {
                 const onlyImportant = importantNewsSwitch.checked;
                 
                 // Filter corporate events
                 let filteredCorporate = onlyImportant ? corporateEvents.filter(event => event.star >= 2) : corporateEvents;
                 renderCorporateTable(filteredCorporate);
+		console.log(date)
 
                 // Filter economic events
-                let filteredEconomic = onlyImportant ? economicEvents.filter(event => event.star >= 2) : economicEvents;
+                let filteredEconomic = onlyImportant ? economicEvents.filter(event => event.star >= 3) : economicEvents;
                 renderEconomicTable(filteredEconomic);
             }
 
             // --- Function to fetch corporate data ---
             async function fetchCorporateData(date) {
                 corporateLoadingOverlay.classList.remove('hidden');
-                
-                const apiDate = date.toISOString().split('T')[0];
+                const apiDate = date.toISOString();
                 const apiUrl = `https://api.mktnews.net/api/event?date=${apiDate}&category=corp`;
                 
                 try {
@@ -377,7 +387,7 @@ function getTrendIcon(trendStatus) {
                     corporateTableWrapper.innerHTML = '<p class="text-center text-red-500">Đã xảy ra lỗi. Vui lòng thử lại sau.</p>';
                 } finally {
                     corporateLoadingOverlay.classList.add('hidden');
-                    filterAndRenderTables();
+                    filterAndRenderTables(date);
                 }
             }
             
@@ -404,14 +414,16 @@ function getTrendIcon(trendStatus) {
                     economicTableWrapper.innerHTML = '<p class="text-center text-red-500">Đã xảy ra lỗi. Vui lòng thử lại sau.</p>';
                 } finally {
                     economicLoadingOverlay.classList.add('hidden');
-                    filterAndRenderTables();
+                    filterAndRenderTables(date);
                 }
             }
             
             // --- Main function to call both data fetching functions ---
             async function updateAllData(date) {
-                await fetchCorporateData(date);
-                await fetchEconomicData(date);
+		const resetDate = new Date(date); resetDate.setHours(0, 0, 0, 0);
+	        const adjustedDate = new Date(resetDate.getTime() - 7 * 60 * 60);
+                 fetchCorporateData(adjustedDate);
+                 fetchEconomicData(adjustedDate);
             }
 
             // Initialize Flatpickr
@@ -419,6 +431,7 @@ function getTrendIcon(trendStatus) {
                 locale: 'vn',
                 dateFormat: "j F, Y",
                 defaultDate: new Date(),
+		disableMobile: true,
                 onChange: function(selectedDates, dateStr, instance) {
                     if (selectedDates.length > 0) {
                         const newDate = selectedDates[0];
