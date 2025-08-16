@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biểu đồ biến động ngành</title>
+    <script src="tailwindcss.js"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #374151;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .button {
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.2s ease-in-out;
+            cursor: pointer;
+            border: 1px solid #d1d5db;
+        }
+
+        .button.active {
+            background-color: #1f2937;
+            color: #ffffff;
+            border-color: #1f2937;
+        }
+
+        .button:hover:not(.active) {
+            background-color: #e5e7eb;
+        }
+
+        #chart-container {
+            height: 1000px;
+            background-color: #fff;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100">
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-8">Biểu đồ biến động ngành</h1>
+        <div class="flex justify-center space-x-4 mb-8">
+            <button id="day-btn" class="button active">1 Ngày</button>
+            <button id="week-btn" class="button">1 Tuần</button>
+            <button id="month-btn" class="button">1 Tháng</button>
+        </div>
+        <div>
+            <div id="chart-container"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        // Khai báo các biến và hằng số
+        const dayBtn = document.getElementById('day-btn');
+        const weekBtn = document.getElementById('week-btn');
+        const monthBtn = document.getElementById('month-btn');
+        const chartContainer = document.getElementById('chart-container');
+        const apiUrl = 'https://api.alphastock.vn/api/volatility';
+        const apiKey = "";
+
+        // Hàm để định dạng số lớn
+        function formatNumber(num) {
+            if (num >= 1000000000) {
+                return (num / 1000000000).toFixed(2) + ' tỷ';
+            }
+            if (num >= 1000000) {
+                return (num / 1000000).toFixed(2) + ' triệu';
+            }
+            if (num >= 1000) {
+                return (num / 1000).toFixed(2) + ' nghìn';
+            }
+            return num;
+        }
+
+        // Hàm để tạo biểu đồ
+        function createChart(data, period) {
+            let volumeKey, maKey, periodText, pctChangeKey;
+            switch (period) {
+                case 'week':
+                    periodText = 'tuần';
+                    volumeKey = 'nmVolumew';
+                    maKey = 'volMa20w';
+                    pctChangeKey = 'pctChangew';
+                    break;
+                case 'month':
+                    periodText = 'tháng';
+                    volumeKey = 'nmVolumem';
+                    maKey = 'volMa20m';
+                    pctChangeKey = 'pctChangem';
+                    break;
+                default: // day
+                    periodText = 'ngày';
+                    volumeKey = 'totalVol';
+                    maKey = 'volMa20';
+                    pctChangeKey = 'pctChange';
+                    break;
+            }
+
+            const categories = data.map(item => item.name);
+            const volumeData = data.map(item => ({
+                y: parseFloat(item[volumeKey]),
+                name: item.name,
+                color: '#10B981'
+            }));
+            const maData = data.map(item => ({
+                y: parseFloat(item[maKey]),
+                name: item.name,
+                color: '#6366F1'
+            }));
+            const pctChangeData = data.map(item => ({
+                y: parseFloat(item[pctChangeKey]),
+                name: item.name,
+                color: '#F59E0B'
+            }));
+
+            // Xóa nội dung biểu đồ cũ trước khi tạo mới
+            chartContainer.innerHTML = '';
+            // Cấu hình biểu đồ
+            Highcharts.chart(chartContainer, {
+                chart: {
+                    type: 'bar',
+                    style: {
+                        fontFamily: 'Inter, sans-serif'
+                    }
+                },
+                title: {
+                    text: `Biểu đồ biến động ngành (${periodText})`,
+                    align: 'left'
+                },
+                xAxis: {
+                    categories: categories
+                },
+                yAxis: [{
+                    // Trục Y cho khối lượng
+                    min: 0,
+                    title: {
+                        text: 'Khối lượng (cổ phiếu)'
+                    },
+                    labels: {
+                        formatter: function() {
+                            return formatNumber(this.value);
+                        }
+                    }
+                }, {
+                    // Trục Y cho % thay đổi
+                    min: -20,
+                    title: {
+                        text: 'Thay đổi (%)'
+                    },
+                    labels: {
+                        formatter: function() {
+                            return this.value.toFixed(2) + ' %';
+                        }
+                    },
+                    opposite: true // Đặt trục Y thứ hai ở phía bên phải
+                }],
+                tooltip: {
+                    shared: true, // Hiển thị tooltip chung cho tất cả các series
+                    formatter: function() {
+                        let tooltipContent = `<b>${this.category}</b><br/>`;
+                        this.points.forEach(point => {
+                            tooltipContent += `<span style="color:${point.color}">\u25CF</span> ${point.series.name}: <b>`;
+                            if (point.series.name.includes('Thay đổi')) {
+                                tooltipContent += `${point.y.toFixed(2)} %</b><br/>`;
+                            } else {
+                                tooltipContent += `${formatNumber(point.y)}</b><br/>`;
+                            }
+                        });
+                        tooltipContent += `<span style="color:green">\u25CF</span>Số mã tăng: <b>${data[this.x].totalIncrease}</b><br/>`;
+                        tooltipContent += `<span style="color:red">\u25CF</span>Số mã giảm: <b>${data[this.x].totalDecrease}</b><br/>`;
+                        return tooltipContent;
+                    }
+                },
+                plotOptions: {
+                    bar: {
+                        dataLabels: {
+                            enabled: true
+                        }
+                    }
+                },
+                credits: {
+                    enabled: 0,
+                },
+                series: [{
+                    name: 'Khối lượng khớp lệnh',
+                    data: volumeData,
+                    yAxis: 0,
+                    dataLabels: {
+                        enabled: false
+                    }
+                }, {
+                    name: `Khối lượng TB 20 ${periodText}`,
+                    data: maData,
+                    yAxis: 0,
+                    dataLabels: {
+                        enabled: false
+                    }
+                }, {
+                    name: `Thay đổi`,
+                    data: pctChangeData,
+                    yAxis: 1,
+                    dataLabels: {
+                        enabled: true,
+                        formatter: function() {
+                            return this.y.toFixed(2) + ' %';
+                        },
+                    }
+                }]
+            });
+        }
+
+        // Hàm để lấy dữ liệu từ API
+        async function fetchData() {
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                return await response.json();
+            } catch (error) {
+                console.error('Lỗi khi lấy dữ liệu từ API:', error);
+                return null;
+            }
+        }
+
+        // Xử lý sự kiện khi các nút được bấm
+        async function handleButtonClick(event) {
+            const buttons = [dayBtn, weekBtn, monthBtn];
+            buttons.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            const data = await fetchData();
+            if (data) {
+                const period = event.target.id.split('-')[0];
+                createChart(data, period);
+            }
+        }
+
+        // Tải dữ liệu và khởi tạo biểu đồ ban đầu khi trang được tải
+        document.addEventListener('DOMContentLoaded', async () => {
+            dayBtn.addEventListener('click', handleButtonClick);
+            weekBtn.addEventListener('click', handleButtonClick);
+            monthBtn.addEventListener('click', handleButtonClick);
+
+            const initialData = await fetchData();
+            if (initialData) {
+                createChart(initialData, 'day');
+            }
+        });
+    </script>
+</body>
+
+</html>

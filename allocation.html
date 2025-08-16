@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phân bổ tỷ trọng của các lớp tài sản</title>
+    <script src="tailwindcss.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="loading.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        .handle {
+            touch-action: none; /* Prevent scrolling on touch devices when dragging */
+            cursor: grab;
+            z-index: 10;
+            transition: left 0.2s ease-out, background-color 0.3s ease, border-color 0.3s ease;
+        }
+        .handle:active {
+            cursor: grabbing;
+        }
+        .slider-track {
+            position: relative;
+        }
+        .asset-label {
+            background-color: #f1f5f9; /* slate-100 */
+            border-radius: 0.375rem;
+            padding: 0.5rem 1rem;
+            text-align: center;
+            font-weight: 500;
+            color: #475569; /* slate-600 */
+        }
+    </style>
+</head>
+<body class="p-4 sm:p-6 md:p-8">
+
+    <div class="max-w-4xl mx-auto bg-white p-6 sm:p-8 rounded-2xl shadow-lg">
+        <!-- Header -->
+        <div class="bg-[#1e3a8a] text-white p-4 rounded-t-xl -m-6 sm:-m-8 mb-6 sm:mb-8">
+            <h1 class="text-xl sm:text-2xl font-bold">Phân bổ tỷ trọng của các lớp tài sản</h1>
+        </div>
+
+        <!-- Timeline Labels -->
+        <div class="flex justify-between items-center mb-10 px-2 sm:px-4 text-center text-xs sm:text-sm text-slate-600 font-medium">
+            <div class="w-1/5">
+                <div class="w-4 h-4 rounded-full bg-pink-300 mx-auto mb-2 border-2 border-pink-400"></div>
+                Tỷ trọng<br>rất thấp<br>(Very Underweight)
+            </div>
+            <div class="w-1/5">
+                <div class="w-4 h-4 rounded-full bg-fuchsia-500 mx-auto mb-2 border-2 border-fuchsia-600"></div>
+                Tỷ trọng<br>ít ưu tiên<br>(Underweight)
+            </div>
+            <div class="w-1/5">
+                <div class="w-4 h-4 rounded-full bg-slate-400 mx-auto mb-2 border-2 border-slate-500"></div>
+                Tỷ trọng<br>trung bình<br>(Neutral)
+            </div>
+            <div class="w-1/5">
+                <div class="w-4 h-4 rounded-full bg-sky-500 mx-auto mb-2 border-2 border-sky-600"></div>
+                Tỷ trọng<br>ưu tiên<br>(Overweight)
+            </div>
+            <div class="w-1/5">
+                <div class="w-4 h-4 rounded-full bg-blue-800 mx-auto mb-2 border-2 border-blue-900"></div>
+                Tỷ trọng<br>rất ưu tiên<br>(Very Overweight)
+            </div>
+        </div>
+
+        <!-- Asset Sliders -->
+        <div id="asset-container" class="space-y-4">
+            <!-- Asset rows will be injected here by JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const assetContainer = document.getElementById('asset-container');
+            const STORAGE_KEY = 'assetAllocationState';
+            
+            // Default data for asset classes, based on the image
+            // currentPosition/previousPosition: 0, 25, 50, 75, 100
+            let assets = [
+                { name: 'Tiền gửi /tiền mặt', currentPosition: 25, previousPosition: 0 },
+                { name: 'Trái phiếu/CCQ trái phiếu', currentPosition: 0, previousPosition: 0 },
+                { name: 'Vàng', currentPosition: 75, previousPosition: 100 },
+                { name: 'Cổ phiếu', currentPosition: 75, previousPosition: 100 },
+                { name: 'USD/VND', currentPosition: 75, previousPosition: 100 },
+                { name: 'Crypto', currentPosition: 75, previousPosition: 100 },
+            ];
+
+            const snapPoints = [0, 25, 50, 75, 100]; // in percentage
+
+            // Map positions to their corresponding color classes
+            const positionColors = {
+                0:   ['bg-pink-300', 'border-pink-400'],
+                25:  ['bg-fuchsia-500', 'border-fuchsia-600'],
+                50:  ['bg-slate-400', 'border-slate-500'],
+                75:  ['bg-sky-500', 'border-sky-600'],
+                100: ['bg-blue-800', 'border-blue-900'],
+            };
+            
+            const allColorClasses = Object.values(positionColors).flat();
+
+            // --- LocalStorage Functions ---
+            function saveState() {
+                const stateToSave = assets.map(asset => ({
+                    currentPosition: asset.currentPosition,
+                    previousPosition: asset.previousPosition
+                }));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
+            }
+
+            function loadState() {
+                const savedState = localStorage.getItem(STORAGE_KEY);
+                if (savedState) {
+                    try {
+                        const parsedState = JSON.parse(savedState);
+                        if (Array.isArray(parsedState) && parsedState.length === assets.length) {
+                            assets.forEach((asset, index) => {
+                                asset.currentPosition = parsedState[index].currentPosition;
+                                asset.previousPosition = parsedState[index].previousPosition;
+                            });
+                        }
+                    } catch (error) {
+                        console.error("Error loading state from localStorage:", error);
+                    }
+                }
+            }
+            
+            // --- UI Generation Function ---
+            function renderAssets() {
+                assetContainer.innerHTML = ''; // Clear existing assets before re-rendering
+                assets.forEach((asset, index) => {
+                    const currentColorClasses = positionColors[asset.currentPosition] || positionColors[50];
+                    const assetRow = document.createElement('div');
+                    assetRow.className = 'grid grid-cols-4 items-center gap-4';
+                    assetRow.innerHTML = `
+                        <div class="col-span-1 asset-label">
+                            ${asset.name}
+                        </div>
+                        <div class="col-span-3 relative flex items-center">
+                            <div class="w-full h-1 bg-slate-300 rounded-full slider-track">
+                                <!-- Previous Position Handle (White Dot) -->
+                                <div id="previous-handle-${index}" 
+                                     class="absolute w-5 h-5 bg-white border-2 border-slate-400 rounded-full shadow-sm" 
+                                     style="top: 50%; transform: translate(-50%, -50%); left: ${asset.previousPosition}%;">
+                                </div>
+                                <!-- Draggable Handle (Current Position) -->
+                                <div id="handle-${index}" 
+                                     data-index="${index}"
+                                     class="handle absolute w-5 h-5 rounded-full ${currentColorClasses.join(' ')} border-2 shadow-md" 
+                                     style="top: 50%; transform: translate(-50%, -50%); left: ${asset.currentPosition}%;">
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    assetContainer.appendChild(assetRow);
+                });
+                addDragListeners(); // Re-attach listeners after rendering
+            }
+
+            // --- Drag and Drop Logic ---
+            function addDragListeners() {
+                const handles = document.querySelectorAll('.handle');
+
+                handles.forEach(handle => {
+                    let isDragging = false;
+                    
+                    const startDrag = (e) => {
+                        isDragging = true;
+                        handle.style.transition = 'none';
+                        handle.classList.add('scale-125');
+                    };
+
+                    const endDrag = (e) => {
+                        if (!isDragging) return;
+                        isDragging = false;
+                        handle.style.transition = 'left 0.2s ease-out, background-color 0.3s ease, border-color 0.3s ease';
+                        handle.classList.remove('scale-125');
+
+                        const track = handle.parentElement;
+                        const trackRect = track.getBoundingClientRect();
+                        const handleRect = handle.getBoundingClientRect();
+                        
+                        const currentPosPercent = ((handleRect.left + handleRect.width / 2) - trackRect.left) / trackRect.width * 100;
+
+                        const closestSnapPoint = snapPoints.reduce((prev, curr) => {
+                            return (Math.abs(curr - currentPosPercent) < Math.abs(prev - currentPosPercent) ? curr : prev);
+                        });
+
+                        handle.style.left = `${closestSnapPoint}%`;
+
+                        // Update color based on new position
+                        const newColorClasses = positionColors[closestSnapPoint];
+                        handle.classList.remove(...allColorClasses);
+                        handle.classList.add(...newColorClasses);
+
+                        // Update state and save
+                        const assetIndex = parseInt(handle.dataset.index);
+                        const asset = assets[assetIndex];
+                        
+                        if (asset.currentPosition !== closestSnapPoint) {
+                            asset.previousPosition = asset.currentPosition;
+                            asset.currentPosition = closestSnapPoint;
+
+                            const previousHandle = document.getElementById(`previous-handle-${assetIndex}`);
+                            previousHandle.style.left = `${asset.previousPosition}%`;
+                            
+                            saveState();
+                        }
+                    };
+
+                    const onDrag = (e) => {
+                        if (!isDragging) return;
+                        e.preventDefault();
+                        
+                        const clientX = e.clientX || e.touches[0].clientX;
+                        const track = handle.parentElement;
+                        const trackRect = track.getBoundingClientRect();
+                        
+                        let newLeft = clientX - trackRect.left;
+
+                        if (newLeft < 0) newLeft = 0;
+                        if (newLeft > trackRect.width) newLeft = trackRect.width;
+
+                        handle.style.left = `${(newLeft / trackRect.width) * 100}%`;
+                    };
+
+                    handle.addEventListener('mousedown', startDrag);
+                    handle.addEventListener('touchstart', startDrag);
+                    
+                    document.addEventListener('mouseup', endDrag);
+                    document.addEventListener('touchend', endDrag);
+                    
+                    document.addEventListener('mousemove', onDrag);
+                    document.addEventListener('touchmove', onDrag, { passive: false });
+                });
+            }
+
+            // --- Initialisation ---
+            loadState();
+            renderAssets();
+        });
+    </script>
+
+</body>
+</html>

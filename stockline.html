@@ -146,7 +146,7 @@
     <div id="button" style="height: 30px;display: flex;align-items: center;">
         <a class="button active" id="tamdiem">Tâm điểm thị trường</a>
         <a class="button " id="khuyen">Top CTCK khuyến nghị</a>
-        <!---<a class="button " id="finbox">Lịch kinh tế</a>--->
+        <!---<a class="button " id="allocation">Phân bổ tài sản</a>---->
     </div>
 
     <div id="container" style="height: calc(-55px + 100vh); overflow: scroll;"></div>
@@ -176,7 +176,7 @@
             b.addEventListener('click', (e) => {
                 var type = e.target.id
                 if (type && type != "button") {
-                    if (type == 'finbox') lichkinhte();
+                    if (type == 'allocation') phanbotaisan();
                     else if (type == 'khuyen') khuyennghi();
                     else showList();
                     buttons.forEach(btn => btn.classList.remove('active'));
@@ -185,14 +185,14 @@
             });
         });
 
-        function lichkinhte() {
+        function phanbotaisan() {
             const container = document.getElementById("container");
             container.style.display = 'block';
             if (!container) {
                 console.error("Container element not found!");
                 return;
             }
-            container.innerHTML = `<iframe style="margin-top:-70px!important;width:100%;overflow" allowtransparency="true" frameborder="0" height="600" marginheight="0" marginwidth="0" scrolling="yes" src="https://tradingeconomics.com/calendar" >`;
+            container.innerHTML = `<iframe style="width:100%;border:none;height:100%" allowtransparency="true" src="allocation.html" >`;
 
         }
 
