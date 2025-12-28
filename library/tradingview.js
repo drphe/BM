@@ -941,7 +941,7 @@
                     "value": parseFloat(data.c[i]) / parseFloat(data.c[i - 1]) - 1
                 });
             }
-	    ohlc = await VNIndexExVIC(ohlc);
+
             let thaydoi = change[change.length - 1].value.toFixed(2);
             let thaydoip = (changep[changep.length - 1].value * 100).toFixed(2);
             document.querySelector(".clock").innerHTML = `<span style="color:${ccolor(thaydoi)}">${thaydoi} (${thaydoip}%)</span>`;
@@ -1143,93 +1143,4 @@
         }
         return code;
     }
-async function VNIndexExVIC(vnindexOHLC) {
-    let VICohlc = [];
-    const VIC = async () => {
-        var a = mastradingviewURL + '?symbol=VIC&resolution=1D&from=' + parseInt(Date.parse("2015-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
-        var b = await fetch(a)
-        var c = await b.json();
-        for (var i = 0; i < c.t.length; i += 1) {
-            VICohlc.push({
-                "time": parseInt(c.t[i]),
-                "open": parseFloat(c.o[i]) / 1000,
-                "high": parseFloat(c.h[i]) / 1000,
-                "low": parseFloat(c.l[i]) / 1000,
-                "close": parseFloat(c.c[i]) / 1000
-            });
-        }
-    }
-    let vicOHLC = await VIC();
-
-    function calcVNIndexExVIC(vnindex, vic, vicWeight = 0.08) {
-        const result = [];
-        const vicMap = new Map();
-        vic.forEach(d => vicMap.set(d.time, d));
-        for (let i = 1; i < vnindex.length; i++) {
-            const cur = vnindex[i];
-            const prev = vnindex[i - 1];
-            const vicCur = vicMap.get(cur.time);
-            const vicPrev = vicMap.get(prev.time);
-            // nếu thiếu VIC thì bỏ qua ngày đó
-            if (!vicCur || !vicPrev) continue;
-            const rVN = (cur.close - prev.close) / prev.close;
-            const rVIC = (vicCur.close - vicPrev.close) / vicPrev.close;
-            const rExVIC = (rVN - vicWeight * rVIC) / (1 - vicWeight);
-            const prevIndex = result.length > 0 ? result[result.length - 1].close : prev.close;
-            const exClose = prevIndex * (1 + rExVIC);
-            result.push({
-                time: cur.time,
-                open: prevIndex,
-                high: Math.max(prevIndex, exClose),
-                low: Math.min(prevIndex, exClose),
-                close: exClose,
-                rVN,
-                rVIC,
-                rExVIC
-            });
-        }
-        return result;
-    }
-
-    function calcDynamicWVIC(vnindex, vic) {
-        const result = [];
-        // map VIC theo time
-        const vicMap = new Map();
-        vic.forEach(d => vicMap.set(d.time, d));
-        for (let i = 0; i < vnindex.length; i++) {
-            const idx = vnindex[i];
-            const vicDay = vicMap.get(idx.time);
-            if (!vicDay || !vicDay.volume) continue;
-            // proxy market cap VIC
-            const vicProxy = vicDay.close * vicDay.volume;
-            // proxy market cap toàn thị trường (xấp xỉ)
-            const marketProxy = idx.close * idx.volume;
-            let wVIC = vicProxy / marketProxy;
-            // clamp để tránh nhiễu
-            wVIC = Math.max(0.03, Math.min(wVIC, 0.15));
-            result.push({
-                time: idx.time,
-                wVIC
-            });
-        }
-        return result;
-    }
-
-    function calcAverageWVIC(wVICSeries) {
-        if (!wVICSeries || wVICSeries.length === 0) return 0.08;
-        let sum = 0;
-        let count = 0;
-        for (const d of wVICSeries) {
-            if (typeof d.wVIC === "number" && !isNaN(d.wVIC)) {
-                sum += d.wVIC;
-                count++;
-            }
-        }
-        return count > 0 ? sum / count : 0.08;
-    }
-    const wVICSeries = calcDynamicWVIC(vnindexOHLC, vicOHLC);
-    const wVIC = wVICSeries.reduce((s, d) => s + d.wVIC, 0) / wVICSeries.length;
-    return calcVNIndexExVIC(vnindexOHLC, vicOHLC, wVIC);
-}
-
 })();
