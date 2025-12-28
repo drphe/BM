@@ -1151,17 +1151,17 @@ async function VNIndexExVIC(vnindexOHLC) {
         var c = await b.json();
         for (var i = 0; i < c.t.length; i += 1) {
             VICohlc.push({
-                "time": parseInt(data.t[i]),
-                "open": parseFloat(data.o[i]) / 1000,
-                "high": parseFloat(data.h[i]) / 1000,
-                "low": parseFloat(data.l[i]) / 1000,
-                "close": parseFloat(data.c[i]) / 1000
+                "time": parseInt(c.t[i]),
+                "open": parseFloat(c.o[i]) / 1000,
+                "high": parseFloat(c.h[i]) / 1000,
+                "low": parseFloat(c.l[i]) / 1000,
+                "close": parseFloat(c.c[i]) / 1000
             });
         }
     }
     let vicOHLC = await VIC();
 
-    function VNIndexExVIC(vnindex, vic, vicWeight = 0.08) {
+    function calcVNIndexExVIC(vnindex, vic, vicWeight = 0.08) {
         const result = [];
         const vicMap = new Map();
         vic.forEach(d => vicMap.set(d.time, d));
@@ -1229,7 +1229,7 @@ async function VNIndexExVIC(vnindexOHLC) {
     }
     const wVICSeries = calcDynamicWVIC(vnindexOHLC, vicOHLC);
     const wVIC = wVICSeries.reduce((s, d) => s + d.wVIC, 0) / wVICSeries.length;
-    const vnindexExVIC = calcVNIndexExVIC(vnindexOHLC, vicOHLC, wVIC);
+    return calcVNIndexExVIC(vnindexOHLC, vicOHLC, wVIC);
 }
 
 })();
