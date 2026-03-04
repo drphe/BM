@@ -147,8 +147,8 @@ async function getNews(list = []) {
                 }
             }
 
-            // lọc các đợt drawdown <2% do sideway nằm trong biên độ nhỏ
-            const output = results.filter(item => item.drawdown > 2);
+            // lọc các đợt drawdown <3% do sideway nằm trong biên độ nhỏ
+            const output = results.filter(item => item.drawdown > 3);
             // tính mức hồi phục bằng đỉnh mới- đáy cũ
             for (i = 0; i < output.length - 1; i++) {
                 output[i].recover = 100 * output[i + 1].start / output[i].bottom - 100;
