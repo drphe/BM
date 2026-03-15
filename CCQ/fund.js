@@ -111,14 +111,14 @@ async function showChart(id, name, shortName) {
                 type: 'area',
                 zoomType: "x",
                 backgroundColor: 'transparent',
-    resetZoomButton: {
-      position: {
-        align: 'right',        // 'left', 'center', hoặc 'right'
-        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
-        x: -10,                // offset theo trục x
-        y: -40                 // offset theo trục y
-      }
-    }
+                resetZoomButton: {
+                    position: {
+                        align: 'right', // 'left', 'center', hoặc 'right'
+                        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+                        x: -10, // offset theo trục x
+                        y: -40 // offset theo trục y
+                    }
+                }
             },
             title: {
                 text: ``,
@@ -152,7 +152,7 @@ async function showChart(id, name, shortName) {
                 }
             },
             yAxis: {
-		min: 9000,
+                min: 9000,
                 title: {
                     text: ''
                 }
@@ -232,9 +232,8 @@ async function showChart(id, name, shortName) {
         document.getElementById('analysisArea').innerHTML = mockResult;
         drawNormalCurve(sampleData, "container3", "Chiết khấu");
         drawNormalCurve(sampleData2, "container4", "Hồi phục");
-
         let arrayData = [];
-        for (var i = 0; i < drawdown.length-1; i++) {
+        for (var i = 0; i < drawdown.length - 1; i++) {
             arrayData.push({
                 date: drawdown[i].bottomDate,
                 price: drawdown[i].bottom,
@@ -245,7 +244,6 @@ async function showChart(id, name, shortName) {
                 price: drawdown[i].start,
                 change: "▲" + drawdown[i + 1].recover.toFixed(2) + "%"
             });
-
         }
         arrayData.reverse();
         let endValue = closep[closep.length - 1].value; // cuối cùng
@@ -471,31 +469,31 @@ function renderChart(data, c1, c2) {
         slope,
         intercept
     } = linearRegression(priceData);
-function isEnableChange(s, b, a) {
-  // lấy số từ chuỗi
-  const value = parseFloat(s.match(/[\d.]+/)[0]);
 
-  if (s.includes("▲")) {
-    return value > a;
-  } else {
-    return value > b;
-  }
-}
-
+    function isEnableChange(s, b, a) {
+        // lấy số từ chuỗi
+        const value = parseFloat(s.match(/[\d.]+/)[0]);
+        if (s.includes("▲")) {
+            return value > a;
+        }
+        else {
+            return value > b;
+        }
+    }
     // Tạo trendline
     const trendlineData = priceData.map((_, i) => slope * i + intercept);
     Highcharts.chart('container2', {
         chart: {
             type: 'line',
             zoomType: "x",
-    resetZoomButton: {
-      position: {
-        align: 'right',        // 'left', 'center', hoặc 'right'
-        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
-        x: -10,                // offset theo trục x
-        y: -40                 // offset theo trục y
-      }
-    },
+            resetZoomButton: {
+                position: {
+                    align: 'right', // 'left', 'center', hoặc 'right'
+                    verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+                    x: -10, // offset theo trục x
+                    y: -40 // offset theo trục y
+                }
+            },
             backgroundColor: 'transparent',
             events: {
                 load: function() {
@@ -657,6 +655,7 @@ async function fetchFundData(id) {
     }
 }
 let industryChartInstance;
+
 function renderUI(data) {
     // Ẩn loading, hiện content
     document.getElementById('content').classList.remove('hidden');
@@ -684,7 +683,7 @@ function renderUI(data) {
     document.getElementById('p-total').textContent = '+' + nav.navToEstablish + '%';
     // Top holding list
     const holdingBox = document.getElementById('holding-container');
-	holdingBox.innerHTML = "";
+    holdingBox.innerHTML = "";
     data.productTopHoldingList.slice(0, 6).forEach(stock => {
         const div = document.createElement('div');
         div.className = "flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors";
@@ -707,7 +706,7 @@ function renderUI(data) {
     });
     // Biểu đồ ngành
     const ctx = document.getElementById('industryChart').getContext('2d');
-    if (industryChartInstance)  industryChartInstance.destroy();
+    if (industryChartInstance) industryChartInstance.destroy();
     const industryData = data.productIndustriesHoldingList.slice(0, 7);
     industryChartInstance = new Chart(ctx, {
         type: 'bar',
@@ -766,14 +765,14 @@ function drawNormalCurve(data, id, name) {
         chart: {
             type: 'area',
             zoomType: 'x',
-    resetZoomButton: {
-      position: {
-        align: 'right',        // 'left', 'center', hoặc 'right'
-        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
-        x: -10,                // offset theo trục x
-        y: -40                 // offset theo trục y
-      }
-    },
+            resetZoomButton: {
+                position: {
+                    align: 'right', // 'left', 'center', hoặc 'right'
+                    verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+                    x: -10, // offset theo trục x
+                    y: -40 // offset theo trục y
+                }
+            },
         },
         credits: {
             enabled: false
@@ -789,7 +788,7 @@ function drawNormalCurve(data, id, name) {
             }
         },
         xAxis: {
-	   min: 0,
+            min: 0,
             title: {
                 text: 'Giá trị (Value)'
             },
