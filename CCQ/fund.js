@@ -231,19 +231,20 @@ async function showChart(id, name, shortName) {
         document.getElementById('analysisArea').innerHTML = mockResult;
         drawNormalCurve(sampleData, "container3", "Chiết khấu");
         drawNormalCurve(sampleData2, "container4", "Hồi phục");
-        //console.log(drawdown);
+
         let arrayData = [];
-        for (var i = 1; i < drawdown.length; i++) {
-            arrayData.push({
-                date: drawdown[i].startDate,
-                price: drawdown[i].start,
-                change: "▲" + drawdown[i - 1].recover.toFixed(2) + "%"
-            });
+        for (var i = 0; i < drawdown.length-1; i++) {
             arrayData.push({
                 date: drawdown[i].bottomDate,
                 price: drawdown[i].bottom,
                 change: "▼" + drawdown[i].drawdown.toFixed(2) + "%"
             });
+            arrayData.push({
+                date: drawdown[i].startDate,
+                price: drawdown[i].start,
+                change: "▲" + drawdown[i + 1].recover.toFixed(2) + "%"
+            });
+
         }
         arrayData.reverse();
         let endValue = closep[closep.length - 1].value; // cuối cùng
@@ -255,7 +256,7 @@ async function showChart(id, name, shortName) {
             price: endValue,
             change: iconChange + percentCh.toFixed(2) + "%"
         });
-        renderChart(arrayData)
+        renderChart(arrayData, ci.mean, ci2.mean)
     }
     catch (err) {
         console.error(err);
@@ -441,7 +442,7 @@ function getCurrentDate() {
     return t.getFullYear() + "-" + String(t.getMonth() + 1).padStart(2, "0") + "-" + String(t.getDate()).padStart(2, "0")
 }
 // vẽ biểu đồ
-function renderChart(data) {
+function renderChart(data, c1, c2) {
     // Lấy categories và data
     const categories = data.map(d => d.date);
     const priceData = data.map(d => d.price);
@@ -469,6 +470,17 @@ function renderChart(data) {
         slope,
         intercept
     } = linearRegression(priceData);
+function isEnableChange(s, b, a) {
+  // lấy số từ chuỗi
+  const value = parseFloat(s.match(/[\d.]+/)[0]);
+
+  if (s.includes("▲")) {
+    return value > a;
+  } else {
+    return value > b;
+  }
+}
+
     // Tạo trendline
     const trendlineData = priceData.map((_, i) => slope * i + intercept);
     Highcharts.chart('container2', {
@@ -591,7 +603,7 @@ function renderChart(data) {
             data: data.map(d => ({
                 y: d.price,
                 dataLabels: {
-                    enabled: true,
+                    enabled: isEnableChange(d.change, c1, c2),
                     color: d.change.includes("▲") ? 'green' : 'red',
                     format: d.change
                 }
@@ -635,7 +647,7 @@ async function fetchFundData(id) {
         //alert("Không thể tải dữ liệu từ API. Hãy kiểm tra CORS hoặc đường truyền.");
     }
 }
-
+let industryChartInstance;
 function renderUI(data) {
     // Ẩn loading, hiện content
     document.getElementById('content').classList.remove('hidden');
@@ -663,6 +675,7 @@ function renderUI(data) {
     document.getElementById('p-total').textContent = '+' + nav.navToEstablish + '%';
     // Top holding list
     const holdingBox = document.getElementById('holding-container');
+	holdingBox.innerHTML = "";
     data.productTopHoldingList.slice(0, 6).forEach(stock => {
         const div = document.createElement('div');
         div.className = "flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors";
@@ -684,10 +697,10 @@ function renderUI(data) {
         holdingBox.appendChild(div);
     });
     // Biểu đồ ngành
-    document.getElementById('industryChart').innerHTML = "";
     const ctx = document.getElementById('industryChart').getContext('2d');
+    if (industryChartInstance)  industryChartInstance.destroy();
     const industryData = data.productIndustriesHoldingList.slice(0, 7);
-    new Chart(ctx, {
+    industryChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: industryData.map(i => i.industry),
@@ -743,7 +756,7 @@ function drawNormalCurve(data, id, name) {
     Highcharts.chart(id, {
         chart: {
             type: 'area',
-            zoomType: 'x'
+            zoomType: 'x',
         },
         credits: {
             enabled: false
@@ -759,6 +772,7 @@ function drawNormalCurve(data, id, name) {
             }
         },
         xAxis: {
+	   min: 0,
             title: {
                 text: 'Giá trị (Value)'
             },
@@ -783,7 +797,7 @@ function drawNormalCurve(data, id, name) {
                 color: '#27ae60',
                 width: 2,
                 label: {
-                    text: `${ci.lowerBound.toFixed(2)}`,
+                    text: ``,
                     rotation: 0,
                     align: 'left',
                     y: 10,
@@ -797,7 +811,7 @@ function drawNormalCurve(data, id, name) {
                 color: '#27ae60',
                 width: 2,
                 label: {
-                    text: `${ci.upperBound.toFixed(2)}`,
+                    text: ``,
                     rotation: 0,
                     align: 'right',
                     y: 10,
@@ -850,7 +864,7 @@ function drawNormalCurve(data, id, name) {
             }
         }, {
             name: '95% Confidence Interval',
-            type: 'area',
+            type: 'arearange',
             data: normalCurve.filter(p => p[0] >= ci.lowerBound && p[0] <= ci.upperBound).map(p => [p[0], 0, p[1]]),
             color: 'rgba(46,204,113,0.35)',
             lineWidth: 0,

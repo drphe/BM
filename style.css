@@ -514,3 +514,28 @@ iframe {
         text-align: left;
     }
 
+    .input-container {
+      position: relative;
+    }
+    .input-container i {
+      position: absolute;
+      left: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #888;
+    }
+    .input-container input {
+      width: 100%;
+      padding: 10px 10px 10px 35px; /* chừa khoảng trống cho icon */
+      border: 1px solid #ccc;
+     border-radius: 10px;
+      font-size: 14px;
+    }
+    .input-container input:focus {
+      border-color: #007bff;
+      outline: none;
+    }
+    .input-container .fa-times {
+      left: 195px;
+      display: none; /* ẩn mặc định */
+    }
