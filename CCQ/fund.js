@@ -228,10 +228,10 @@ async function showChart(id, name, shortName) {
         const ci = calculateConfidenceInterval(sampleData);
         const ci2 = calculateConfidenceInterval(sampleData2);
         let table = renderResults(drawdown); // bảng dữ liệu
-        const mockResult = `Mức chiết khấu TB là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci.mean.toFixed(2)}%  [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>. Mức hồi phục TB là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
+        const mockResult = `<div>${ckht}</div>${table}`;
         document.getElementById('analysisArea').innerHTML = mockResult;
-        drawNormalCurve(sampleData, "container3", "Chiết khấu");
-        drawNormalCurve(sampleData2, "container4", "Hồi phục");
+        drawNormalCurve(sampleData, "container3", "Chiết khấu", ci);
+        drawNormalCurve(sampleData2, "container4", "Hồi phục", ci2);
         let arrayData = [];
         for (var i = 0; i < drawdown.length - 1; i++) {
             arrayData.push({
@@ -758,8 +758,8 @@ function generateNormalCurve(mean, sd, points = 100, range = 4) {
     return data;
 }
 
-function drawNormalCurve(data, id, name) {
-    const ci = calculateConfidenceInterval(data);
+function drawNormalCurve(data, id, name, ci) {
+    //const ci = calculateConfidenceInterval(data);
     const normalCurve = generateNormalCurve(ci.mean, ci.standardDeviation);
     Highcharts.chart(id, {
         chart: {
@@ -781,7 +781,7 @@ function drawNormalCurve(data, id, name) {
             text: ``
         },
         subtitle: {
-            text: `${name} : Mean = ${ci.mean.toFixed(2)}% (n = ${ci.n})`,
+            text: `${name} : Mean = ${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}] (n = ${ci.n})`,
             style: {
                 color: '#e74c3c',
                 fontWeight: 'bold'
