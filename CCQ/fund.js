@@ -110,7 +110,15 @@ async function showChart(id, name, shortName) {
             chart: {
                 type: 'area',
                 zoomType: "x",
-                backgroundColor: 'transparent'
+                backgroundColor: 'transparent',
+    resetZoomButton: {
+      position: {
+        align: 'right',        // 'left', 'center', hoặc 'right'
+        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+        x: -10,                // offset theo trục x
+        y: -40                 // offset theo trục y
+      }
+    }
             },
             title: {
                 text: ``,
@@ -144,6 +152,7 @@ async function showChart(id, name, shortName) {
                 }
             },
             yAxis: {
+		min: 9000,
                 title: {
                     text: ''
                 }
@@ -172,14 +181,6 @@ async function showChart(id, name, shortName) {
                             enabled: false // tắt highlight khi hover
                         }
                     }
-                }
-            },
-            resetZoomButton: {
-                position: {
-                    align: 'left',
-                    verticalAlign: 'top',
-                    x: 10, // Add 10px offset from the left edge
-                    y: 10 // Add 10px offset from the top edge
                 }
             },
             legend: {
@@ -487,6 +488,14 @@ function isEnableChange(s, b, a) {
         chart: {
             type: 'line',
             zoomType: "x",
+    resetZoomButton: {
+      position: {
+        align: 'right',        // 'left', 'center', hoặc 'right'
+        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+        x: -10,                // offset theo trục x
+        y: -40                 // offset theo trục y
+      }
+    },
             backgroundColor: 'transparent',
             events: {
                 load: function() {
@@ -757,6 +766,14 @@ function drawNormalCurve(data, id, name) {
         chart: {
             type: 'area',
             zoomType: 'x',
+    resetZoomButton: {
+      position: {
+        align: 'right',        // 'left', 'center', hoặc 'right'
+        verticalAlign: 'bottom', // 'top', 'middle', hoặc 'bottom'
+        x: -10,                // offset theo trục x
+        y: -40                 // offset theo trục y
+      }
+    },
         },
         credits: {
             enabled: false
