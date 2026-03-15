@@ -244,7 +244,17 @@ async function showChart(id, name, shortName) {
                 change: "▼" + drawdown[i].drawdown.toFixed(2) + "%"
             });
         }
-        renderChart(arrayData.reverse())
+	arrayData.reverse();
+        let endValue = closep[closep.length - 1].value; // cuối cùng
+        let endArrayValue = arrayData[arrayData.length - 1].price;
+        let iconChange = endValue > endArrayValue ? "▲" : "▼";
+        let percentCh = (endValue / endArrayValue - 1) * 100;
+        arrayData.push({
+            date: formatTimestamp(closep[closep.length - 1].time),
+            price: endValue,
+            change: iconChange + percentCh.toFixed(2) + "%"
+        });
+        renderChart(arrayData)
     }
     catch (err) {
         console.error(err);
