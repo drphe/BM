@@ -2,7 +2,6 @@ let THEME = 'light';
 let rawData = [];
 let chartB;
 let currentType = "ALL"
-const RISK_FREE_RATE = 0.03; // 3%
 const getNgayHienTai = () => {
     const d = new Date();
     return `${d.getFullYear()}${(d.getMonth() + 1).toString().padStart(2, '0')}${d.getDate().toString().padStart(2, '0')}`;
@@ -228,8 +227,10 @@ async function showChart(id, name, shortName) {
         const ci = calculateConfidenceInterval(sampleData);
         const ci2 = calculateConfidenceInterval(sampleData2);
         let table = renderResults(drawdown); // bảng dữ liệu
-        const mockResult = `Mức chiết khấu trung bình là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci.mean.toFixed(2)}%  [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>. Mức hồi phục trung bình là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
+        const mockResult = `Mức chiết khấu TB là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci.mean.toFixed(2)}%  [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>. Mức hồi phục TB là <span style="padding: 2px; color: rgb(0, 170, 0);">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
         document.getElementById('analysisArea').innerHTML = mockResult;
+        drawNormalCurve(sampleData, "container3", "Chiết khấu");
+        drawNormalCurve(sampleData2, "container4", "Hồi phục");
         //console.log(drawdown);
         let arrayData = [];
         for (var i = 1; i < drawdown.length; i++) {
@@ -244,7 +245,7 @@ async function showChart(id, name, shortName) {
                 change: "▼" + drawdown[i].drawdown.toFixed(2) + "%"
             });
         }
-	arrayData.reverse();
+        arrayData.reverse();
         let endValue = closep[closep.length - 1].value; // cuối cùng
         let endArrayValue = arrayData[arrayData.length - 1].price;
         let iconChange = endValue > endArrayValue ? "▲" : "▼";
@@ -387,25 +388,21 @@ function findRecoveries(data) {
 }
 
 function calculateConfidenceInterval(data) {
-    if (data.length === 0) return null; // Kiểm tra nếu mảng trống
     const n = data.length;
-    const mean = data.reduce((sum, value) => sum + value, 0) / n;
-    // Tính độ lệch chuẩn
-    const variance = data.reduce((sum, value) => sum + Math.pow(value - mean, 2), 0) / (n - 1);
+    if (n < 2) return null;
+    const mean = data.reduce((sum, v) => sum + v, 0) / n;
+    const variance = data.reduce((sum, v) => sum + (v - mean) ** 2, 0) / (n - 1);
     const standardDeviation = Math.sqrt(variance);
-    // Sai số chuẩn
     const standardError = standardDeviation / Math.sqrt(n);
-    // Giá trị Z cho mức tin cậy 95%
+    // dùng z nếu n >= 30
     const zScore = 1.96;
-    // Khoảng tin cậy
     const marginOfError = zScore * standardError;
-    const lowerBound = mean - marginOfError;
-    const upperBound = mean + marginOfError;
     return {
         mean,
-        lowerBound,
-        upperBound,
+        lowerBound: mean - marginOfError,
+        upperBound: mean + marginOfError,
         standardDeviation,
+        standardError,
         marginOfError,
         n
     };
@@ -723,5 +720,144 @@ function renderUI(data) {
                 }
             }
         }
+    });
+}
+// Hàm tạo dữ liệu đường cong chuẩn
+function generateNormalCurve(mean, sd, points = 100, range = 4) {
+    const data = [];
+    // Lấy khoảng từ mean - range*sd đến mean + range*sd
+    const start = mean - range * sd;
+    const end = mean + range * sd;
+    const step = (end - start) / points;
+    for (let x = start; x <= end; x += step) {
+        // Công thức mật độ xác suất chuẩn
+        const y = (1 / (sd * Math.sqrt(2 * Math.PI))) * Math.exp(-Math.pow(x - mean, 2) / (2 * sd * sd));
+        data.push([x, y]);
+    }
+    return data;
+}
+
+function drawNormalCurve(data, id, name) {
+    const ci = calculateConfidenceInterval(data);
+    const normalCurve = generateNormalCurve(ci.mean, ci.standardDeviation);
+    Highcharts.chart(id, {
+        chart: {
+            type: 'area',
+            zoomType: 'x'
+        },
+        credits: {
+            enabled: false
+        },
+        title: {
+            text: ``
+        },
+        subtitle: {
+            text: `${name} : Mean = ${ci.mean.toFixed(2)}% (n = ${ci.n})`,
+            style: {
+                color: '#e74c3c',
+                fontWeight: 'bold'
+            }
+        },
+        xAxis: {
+            title: {
+                text: 'Giá trị (Value)'
+            },
+            crosshair: true,
+            plotLines: [{
+                value: ci.mean,
+                color: '#e74c3c',
+                dashStyle: 'Dash',
+                width: 2,
+                label: {
+                    text: ``,
+                    rotation: 0,
+                    align: 'center',
+                    y: 10,
+                    style: {
+                        color: '#e74c3c',
+                        fontWeight: 'bold'
+                    }
+                }
+            }, {
+                value: ci.lowerBound,
+                color: '#27ae60',
+                width: 2,
+                label: {
+                    text: `${ci.lowerBound.toFixed(2)}`,
+                    rotation: 0,
+                    align: 'left',
+                    y: 10,
+                    x: -10,
+                    style: {
+                        color: '#27ae60'
+                    }
+                }
+            }, {
+                value: ci.upperBound,
+                color: '#27ae60',
+                width: 2,
+                label: {
+                    text: `${ci.upperBound.toFixed(2)}`,
+                    rotation: 0,
+                    align: 'right',
+                    y: 10,
+                    x: 10,
+                    style: {
+                        color: '#27ae60'
+                    }
+                }
+            }]
+        },
+        yAxis: {
+            title: {
+                text: ''
+            }
+        },
+        legend: {
+            enabled: false
+        },
+        tooltip: {
+            shared: true,
+            useHTML: true,
+            formatter: function() {
+                const x = this.x;
+                const y = this.points[0].y;
+                let label = '';
+                if (Math.abs(x - ci.mean) < ci.standardDeviation * 0.05) label = '<br><b>Mean</b>';
+                if (Math.abs(x - ci.lowerBound) < ci.standardDeviation * 0.05) label = '<br><b>Band dưới</b>';
+                if (Math.abs(x - ci.upperBound) < ci.standardDeviation * 0.05) label = '<br><b>Band trên</b>';
+                return `
+                <div style="font-size:13px">
+                <b>${name}:</b> ${x.toFixed(3)} %<br>
+                <b>Mật độ:</b> ${y.toFixed(4)}
+                ${label}
+                </div>`;
+            }
+        },
+        series: [{
+            name: 'Normal Distribution',
+            data: normalCurve,
+            color: '#3498db',
+            fillColor: {
+                linearGradient: [0, 0, 0, 300],
+                stops: [
+                    [0, 'rgba(52,152,219,0.5)'],
+                    [1, 'rgba(52,152,219,0.05)']
+                ]
+            },
+            marker: {
+                enabled: false
+            }
+        }, {
+            name: '95% Confidence Interval',
+            type: 'area',
+            data: normalCurve.filter(p => p[0] >= ci.lowerBound && p[0] <= ci.upperBound).map(p => [p[0], 0, p[1]]),
+            color: 'rgba(46,204,113,0.35)',
+            lineWidth: 0,
+            marker: {
+                enabled: false
+            },
+            enableMouseTracking: false
+        }]
     });
 }
