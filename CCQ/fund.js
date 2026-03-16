@@ -250,7 +250,15 @@ async function showChart(id, name, shortName) {
         let endArrayValue = arrayData[arrayData.length - 1].price;
         let iconChange = endValue > endArrayValue ? "▲" : "▼";
         let percentCh = (endValue / endArrayValue - 1) * 100;
-        document.getElementById('nav-update').textContent = formatTimestamp(closep[closep.length - 1].time);
+	function getUpdateText(data){
+		let currentDay = closep[closep.length - 1];
+		let prevDay = closep[closep.length - 2];
+		let change = currentDay.value - prevDay.value;
+		let changep = change*100/prevDay.value;
+		let c = change > 0? "green": change < 0? "red": "yellow";
+		return `<span style="color:${c};font-weight:bold;">${change.toFixed(0)}/${changep.toFixed(2)}% (${formatTimestamp(currentDay.time)})</span>`
+	}
+        document.getElementById('nav-update').innerHTML =getUpdateText(closep);
         arrayData.push({
             date: formatTimestamp(closep[closep.length - 1].time),
             price: endValue,
