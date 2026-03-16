@@ -172,7 +172,7 @@ async function showChart(id, name, shortName) {
                         y: chart.plotTop
                     };
                 },
-                valueDecimals: 2
+                valueDecimals: 0
             },
             plotOptions: {
                 series: {
@@ -250,6 +250,7 @@ async function showChart(id, name, shortName) {
         let endArrayValue = arrayData[arrayData.length - 1].price;
         let iconChange = endValue > endArrayValue ? "▲" : "▼";
         let percentCh = (endValue / endArrayValue - 1) * 100;
+        document.getElementById('nav-update').textContent = formatTimestamp(closep[closep.length - 1].time);
         arrayData.push({
             date: formatTimestamp(closep[closep.length - 1].time),
             price: endValue,
@@ -588,7 +589,7 @@ function renderChart(data, c1, c2) {
             },
             formatter: function() {
                 const d = data[this.point.index];
-                return `<b>${d.date}</b><br/>Giá: ${d.price.toFixed(2)}<br/>${d.change}`;
+                return `<b>${d.date}</b><br/>Giá: ${d.price.toFixed(0)}<br/>${d.change}`;
             }
         },
         legend: {
@@ -665,7 +666,6 @@ function renderUI(data) {
     document.getElementById('fund-code').textContent = data.code;
     document.getElementById('fund-type').textContent = data.dataFundAssetType.name;
     document.getElementById('nav-price').textContent = data.nav.toLocaleString() + 'đ';
-    document.getElementById('nav-update').textContent = data.productTradingSession.closedBankNoteTimeString;
     document.getElementById('owner-name').textContent = data.owner.name;
     document.getElementById('mgmt-fee').textContent = data.managementFee + '%/năm';
     document.getElementById('risk-level').textContent = data.riskLevel.name;
