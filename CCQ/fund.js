@@ -479,16 +479,6 @@ function renderChart(data, c1, c2) {
         intercept
     } = linearRegression(priceData);
 
-    function isEnableChange(s, b, a) {
-        // lấy số từ chuỗi
-        const value = parseFloat(s.match(/[\d.]+/)[0]);
-        if (s.includes("▲")) {
-            return value > a;
-        }
-        else {
-            return value > b;
-        }
-    }
     // Tạo trendline
     const trendlineData = priceData.map((_, i) => slope * i + intercept);
     Highcharts.chart('container2', {
@@ -618,11 +608,6 @@ function renderChart(data, c1, c2) {
             name: 'Giá',
             data: data.map(d => ({
                 y: d.price,
-                dataLabels: {
-                    enabled: isEnableChange(d.change, c1, c2),
-                    color: d.change.includes("▲") ? 'green' : 'red',
-                    format: d.change
-                }
             })),
             color: 'deepskyblue',
             lineWidth: 2,
