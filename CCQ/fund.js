@@ -655,7 +655,7 @@ function renderUI(data) {
     document.getElementById('content').classList.remove('hidden');
     console.log(data)
     // Header & Basic Info
-    document.getElementById('fund-name').textContent = data.name;
+    document.getElementById('fund-name').innerHTML = `<a href="https://smoney.com.vn/quy-dau-tu/${data.shortName}" target="_blank" class="text-blue-500 hover:text-blue-700">${data.name}</a>`;
     document.getElementById('fund-code').textContent = data.code;
     document.getElementById('fund-type').textContent = data.dataFundAssetType.name;
     document.getElementById('nav-price').textContent = data.nav.toLocaleString() + 'đ';
