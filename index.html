@@ -80,6 +80,11 @@ document.addEventListener('DOMContentLoaded', () => {
         sidebar.classList.toggle('collapsed');
     });
 
+function addTapParam(ID) {
+  const url = new URL(window.location.href);
+  url.searchParams.set("id", ID); // thêm hoặc cập nhật param tap
+  window.history.pushState({}, "", url); // cập nhật URL mà không reload
+}
     function handleResize() {
         if (window.innerWidth <= 768) { // hoặc 576 tuỳ breakpoint bạn chọn
             sidebar.classList.add('collapsed');
@@ -160,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         7: {
             src: "https://temp-portal.fidt.vn/data/dinh-gia-vni",
-            title: "Định giá ngành",
+            title: "Định giá ngành*",
             info: "Công cụ của FIDT, xây dựng module định giá VNINDEX theo PE và PB.<br/> Kết hợp dữ liệu mua bán của các thành phần nhà đầu tư, cập nhật vào cuối ngành, giúp đánh giá sự dịch chuyển của dòng tiền trên thị trường",
             enable: true,
             theme: 'dark',
@@ -169,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         8: {
             src: "https://temp-portal.fidt.vn/data/thong-ke-giao-dich-theo-ndt",
-            title: "Thống kê GD theo NĐT",
+            title: "Thống kê GD theo NĐT*",
             info: "Công cụ của FIDT, xây dựng module thống kê giá trị giao dịch theo từng nhóm nhà đầu tư, các mã cổ phiếu được từng nhóm nhà đầu tư quan tâm.",
             enable: true,
             theme: 'dark',
@@ -178,7 +183,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         9: {
             src: "https://temp-portal.fidt.vn/data/ty-gia",
-            title: "Tỷ giá USD/VND",
+            title: "Tỷ giá USD/VND*",
             info: "Công cụ của FIDT, xây dựng module theo dõi biến động tỉ giá.<br/> So sánh mức độ biến động của tỉ giá và tác động tới thị trường tài chính nói chung và thị trường chứng khoán nói riêng.",
             enable: true,
             theme: 'dark',
@@ -187,7 +192,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         10: {
             src: "https://temp-portal.fidt.vn/data/gia-hang-hoa",
-            title: "Giá hàng hóa",
+            title: "Giá hàng hóa*",
             info: "Công cụ của FIDT, xây dựng module giá hàng hóa.<br/> Theo dõi một số mặt hàng phổ biến như thép chẳng hạn.",
             enable: true,
             theme: 'dark',
@@ -196,7 +201,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         11: {
             src: "https://temp-portal.fidt.vn/data/thep",
-            title: "Giá thép",
+            title: "Giá thép*",
             info: "Công cụ của FIDT, xây dựng module giá thép.<br/> Theo dõi các loại thép, tồn kho....",
             enable: true,
             theme: 'dark',
@@ -205,7 +210,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         12: {
             src: "https://temp-portal.fidt.vn/data/fdi",
-            title: "Đầu tư FDI",
+            title: "Đầu tư FDI*",
             info: "Công cụ của FIDT, xây dựng module thống kê giá trị đầu tư trực tiếp nước ngoài FDI.",
             enable: true,
             theme: 'dark',
@@ -214,7 +219,7 @@ document.addEventListener('DOMContentLoaded', () => {
         },
         13: {
             src: "https://temp-portal.fidt.vn/data/xuat-nhap-khau",
-            title: "Xuất nhập khẩu",
+            title: "Xuất nhập khẩu*",
             info: "Công cụ của FIDT, xây dựng module thống kê giá xuất nhập khẩu trong nước.",
             enable: true,
             theme: 'dark',
@@ -318,6 +323,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         lastKeyframe = key;
+	addTapParam(lastKeyframe);
         const configIframe = iframeConfigs[key];
         const iframe = document.getElementById('sourcemodule');
         const title = document.getElementById('title-module');
@@ -330,6 +336,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Thay đổi src, tiêu đề và theme
             iframe.src = configIframe.src;
             title.textContent = configIframe.title;
+	    document.title = "Công cụ tài chính - "+ configIframe.title;
             text = configIframe.info;
             if (configIframe.theme) {
                 document.body.setAttribute('data-theme', configIframe.theme);
@@ -402,9 +409,9 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
     createMenu(iframeConfigs, "module");
-    const ams = new URLSearchParams(window.location.search);
-    const quote = ams.get("id");
-    changeIframeSrc(quote ? quote : defaultkey);
+    const param = new URLSearchParams(window.location.search);
+    const ID = param.get("id");
+    changeIframeSrc(ID || defaultkey);
     window.addEventListener("message", function(event) {
         // Nếu muốn bảo mật hơn, kiểm tra event.origin
         const data = event.data;
