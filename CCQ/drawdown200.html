@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VNINDEX - Drawdown từ đỉnh 200 phiên</title>
+    <script src="highcharts.js"></script>
+    <script src="annotations.js"></script>
+    <style>
+        body { background-color: #fff; margin: 0; padding: 20px; font-family: Arial, sans-serif; }
+        #container { width: 100%; height: 600px; background-color: #fff; }
+        .loading { color: #333; text-align: center; margin-top: 100px; }
+    </style>
+</head>
+<body>
+
+<div id="loading" class="loading">Đang tải dữ liệu từ Simplize...</div>
+<div id="container"></div>
+
+<script>
+async function drawDrawdownChart() {
+    const ticker = "VNINDEX";
+    const apiUrl = `https://api.simplize.vn/api/historical/prices/ohlcv?ticker=${ticker}&size=4000&interval=1d&type=index`;
+
+    try {
+        const response = await fetch(apiUrl);
+        const json = await response.json();
+        const rawData = json.data; // Mảng [timestamp, open, high, low, close, volume]
+
+        // 1. Xử lý dữ liệu tính Drawdown
+        const windowSize = 200;
+        let drawdownData = [];
+        let labelsToMark = []; // Lưu các điểm cực trị để vẽ nhãn
+
+        for (let i = 0; i < rawData.length; i++) {
+            const currentTime = rawData[i][0] * 1000; // Chuyển sang miliseconds cho Highcharts
+            const currentClose = rawData[i][4];
+
+            // Lấy giá cao nhất (High) trong 200 phiên gần nhất
+            let start = Math.max(0, i - windowSize + 1);
+            let window = rawData.slice(start, i + 1);
+            let rollingPeak = Math.max(...window.map(d => d[2])); // d[2] là giá High
+
+            // Tính % Drawdown
+            let dd = ((currentClose - rollingPeak) / rollingPeak) * 100;
+            drawdownData.push([currentTime, dd]);
+        }
+
+        // 2. Tìm các điểm sụt giảm mạnh nhất để đánh dấu (giống trong ảnh)
+        // Thuật toán đơn giản: Tìm điểm thấp nhất trong các vùng sụt giảm > 15%
+        for (let i = 5; i < drawdownData.length - 5; i++) {
+            let val = drawdownData[i][1];
+            if (val < -15 && val === Math.min(...drawdownData.slice(i-10, i+10).map(d => d[1]))) {
+                labelsToMark.push({
+                    point: { x: drawdownData[i][0], y: val, xAxis: 0, yAxis: 0 },
+                    text: `${val.toFixed(1)}%`
+                });
+            }
+        }
+
+        document.getElementById('loading').style.display = 'none';
+function unixToDate(unixTime) {
+  // Unix timestamp thường tính bằng giây, cần nhân 1000 để chuyển sang mili-giây
+  const date = new Date(unixTime * 1000);
+
+  // Lấy ngày, tháng, năm
+  const day = date.getDate();
+  const month = date.getMonth() + 1; // Tháng trong JS bắt đầu từ 0
+  const year = date.getFullYear();
+
+  // Trả về chuỗi theo định dạng dd/mm/yyyy
+  return `${day}/${month}/${year}`;
+}
+
+
+        // 3. Cấu hình Highcharts
+        Highcharts.chart('container', {
+            chart: {
+                backgroundColor: '#fff',
+                type: 'area',
+                zoomType: 'x'
+            },
+            title: {
+                text: 'VNINDEX - Drawdown từ đỉnh 200 phiên gần nhất',
+                style: { color: '#333', fontWeight: 'bold', fontSize: '22px' }
+            },
+            subtitle: {
+                text: 'Dữ liệu cập nhật tới ngày '+unixToDate(rawData[rawData.length-1][0]),
+                style: { color: '#666', fontWeight: '300', fontSize: '14px' }
+            },
+            xAxis: {
+                type: 'datetime',
+                lineColor: '#ccc',
+                tickColor: '#ccc',
+                labels: { style: { color: '#333' } }
+            },
+            yAxis: {
+                title: { text: '' },
+                labels: { 
+                    format: '{value}%',
+                    style: { color: '#333' } 
+                },
+                gridLineColor: '#ddd',
+                gridLineDashStyle: 'Dash',
+                max: 0,
+                plotLines: [{ value: 0, color: '#333', width: 2 }]
+            },
+            legend: { enabled: false },
+            tooltip: {
+                valueDecimals: 2,
+                valueSuffix: '%',
+                pointFormat: 'Drawdown: <b>{point.y}</b>'
+            },
+            plotOptions: {
+                area: {
+                    color: '#0066cc',
+                    fillColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [
+                            [0, 'rgba(0, 102, 204, 0.4)'],
+                            [1, 'rgba(0, 102, 204, 0.05)']
+                        ]
+                    },
+                    lineWidth: 1.5,
+                    threshold: null
+                }
+            },
+            annotations: [{
+                labelOptions: {
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    style: { color: '#333', fontSize: '11px', fontWeight: 'bold' },
+                    y: 15
+                },
+                labels: labelsToMark
+            }],
+            series: [{
+                name: 'Drawdown',
+                data: drawdownData
+            }],
+            credits: {
+                text: 'Nguồn: Simplize',
+                style: { color: '#999' }
+            }
+        });
+
+    } catch (error) {
+        console.error("Lỗi khi lấy dữ liệu:", error);
+        document.getElementById('loading').innerText = "Không thể tải dữ liệu. Vui lòng kiểm tra API.";
+    }
+}
+
+// Chạy hàm
+drawDrawdownChart();
+</script>
+
+</body>
+</html>
