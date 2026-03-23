@@ -104,6 +104,7 @@ async function showChart(id, name, shortName) {
         });
         const json = await res.json();
         const points = json.data.map(i => [new Date(i.navDate).getTime(), i.nav]).sort((a, b) => a[0] - b[0]);
+	drawDrawdownChart(points);
         const ma50 = calculateSMA(points, 50);
         // Vẽ biểu đồ
         chartB = Highcharts.chart('chartContainer', {
@@ -675,29 +676,7 @@ function renderUI(data) {
     setPerf('p-12m', nav.navTo12Months);
     setPerf('p-36m', nav.annualizedReturn36Months || 0);
     document.getElementById('p-total').textContent = '+' + nav.navToEstablish + '%';
-    // Top holding list
-    const holdingBox = document.getElementById('holding-container');
-    holdingBox.innerHTML = "";
-    data.productTopHoldingList.slice(0, 6).forEach(stock => {
-        const div = document.createElement('div');
-        div.className = "flex items-center justify-between p-3 rounded-lg hover:bg-slate-50 transition-colors";
-        div.innerHTML = `
-                    <div class="flex items-center gap-3">
-                        <div class="w-10 h-10 bg-blue-50 text-blue-600 flex items-center justify-center rounded-lg font-bold text-xs">${stock.stockCode}</div>
-                        <div>
-                            <p class="font-bold text-slate-700">${stock.stockCode}</p>
-                            <p class="text-[10px] text-slate-400 uppercase">${stock.industry}</p>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="font-bold text-slate-700">${stock.netAssetPercent}%</p>
-                        <p class="text-[10px] ${stock.changeFromPrevious >= 0 ? 'text-green-500' : 'text-red-500'} font-medium">
-                            ${stock.changeFromPrevious >= 0 ? '▲' : '▼'} ${Math.abs(stock.changeFromPreviousPercent)}%
-                        </p>
-                    </div>
-                `;
-        holdingBox.appendChild(div);
-    });
+
     // Biểu đồ ngành
     const ctx = document.getElementById('industryChart').getContext('2d');
     if (industryChartInstance) industryChartInstance.destroy();
@@ -884,4 +863,106 @@ function drawNormalCurve(data, id, name, ci) {
             enableMouseTracking: false
         }]
     });
+}
+
+
+async function drawDrawdownChart(rawData) {
+    try {
+        if (!rawData || !Array.isArray(rawData) || rawData.length === 0) return;
+
+        // 1. Xử lý dữ liệu sạch
+        const windowSize = 200;
+        let drawdownData = [];
+        let absoluteMin = 0; 
+
+        for (let i = 0; i < rawData.length; i++) {
+            const currentClose = Number(rawData[i][1]);
+            if (isNaN(currentClose)) continue;
+
+            let start = Math.max(0, i - windowSize + 1);
+            let windowSlice = rawData.slice(start, i + 1);
+            let rollingPeak = Math.max(...windowSlice.map(d => Number(d[1] || 0)));
+
+            let dd = rollingPeak === 0 ? 0 : ((currentClose - rollingPeak) / rollingPeak) * 100;
+            dd = Math.max(-100, Math.min(0, dd)); 
+            
+            drawdownData.push([rawData[i][0], dd]);
+            if (dd < absoluteMin) absoluteMin = dd;
+        }
+
+        // Tìm điểm max drawdown
+        let maxDrawdownIndex = drawdownData.findIndex(d => d[1] === absoluteMin);
+
+        // 2. Tìm các điểm sụt giảm mạnh nhất để đánh dấu (giống trong ảnh)
+        // Thuật toán đơn giản: Tìm điểm thấp nhất trong các vùng sụt giảm > 15%
+        let labelsToMark = [];
+        for (let i = 5; i < drawdownData.length - 5; i++) {
+            let val = drawdownData[i][1];
+            if (val < -15 && val === Math.min(...drawdownData.slice(i-10, i+10).map(d => d[1]))) {
+                labelsToMark.push({
+                    point: { x: drawdownData[i][0], y: val, xAxis: 0, yAxis: 0 },
+                    text: `${val.toFixed(1)}%`
+                });
+            }
+        }
+        // Thêm mark điểm maxdrawdown
+        labelsToMark.push({
+            point: { x: drawdownData[maxDrawdownIndex][0], y: absoluteMin, xAxis: 0, yAxis: 0 },
+            text: `Max DD: ${absoluteMin.toFixed(1)}%`
+        });
+
+        // 2. Cấu hình Highcharts chống tràn trục Y
+        Highcharts.chart('holding-container', {
+            chart: {
+                type: 'area',
+                zoomType: 'x',
+                backgroundColor: 'transparent',
+                marginRight: 10
+            },
+            title: { text: 'Drawdown từ đỉnh 200 phiên', style: { fontSize: '15px' } },
+            xAxis: { type: 'datetime' },
+            yAxis: {
+                title: { text: '' },
+                labels: { format: '{value}%' },
+                // --- PHẦN QUAN TRỌNG NHẤT ---
+                min: absoluteMin - 1, // Chỉ thấp hơn điểm thấp nhất 1% để tạo khoảng đệm
+                max: 0,
+                startOnTick: false,   // Tắt việc ép vạch chia ở điểm bắt đầu
+                endOnTick: false,     // Tắt việc ép vạch chia ở điểm kết thúc
+                tickAmount: undefined, // XÓA BỎ tickAmount cũ
+                allowDecimals: false,
+                gridLineDashStyle: 'Dash',
+                plotLines: [{ value: 0, color: '#333', width: 1, zIndex: 5 }]
+            },
+            tooltip: {
+                shared: true,
+                crosshairs: true,
+                valueDecimals: 2
+            },
+            plotOptions: {
+                area: {
+                    fillColor: {
+                        linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                        stops: [[0, 'rgba(239, 68, 68, 0.4)'], [1, 'rgba(255, 255, 255, 0)']]
+                    },
+                    color: '#ef4444',
+                    lineWidth: 1,
+                    threshold: 0
+                }
+            },
+            series: [{ name: 'Drawdown', data: drawdownData }],
+            annotations: [{
+                labelOptions: {
+                    backgroundColor: 'rgba(255,255,255,0.9)',
+                    borderWidth: 1,
+                    borderColor: '#ccc',
+                    style: { color: '#333', fontSize: '11px', fontWeight: 'bold' },
+                    y: 15
+                },
+                labels: labelsToMark
+            }],
+            credits: { enabled: false },
+	    legends: {enabled:false}
+        });
+    } catch (e) { console.error(e); }
 }
