@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.1
+// @version      1.2
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Tuấn
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -115,7 +115,7 @@ function getNext(dateStr) {
         const changePercent = ((totalChangeNAV / currentNAV) * 100).toFixed(3);
 
         // Chèn kết quả vào phần .portfolio-metrics của SMoney
-        const metricsContainer = document.querySelector('.portfolio-metrics');
+        const metricsContainer = document.querySelector('.portfolio-metrics .row');
         if (metricsContainer) {
             const dateStr = latestDateNav ? ` (${getNext(latestDateNav)})` : "";
             const html = `
