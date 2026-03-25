@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2.4
+// @version      1.2.6
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
@@ -75,7 +75,7 @@
          originalDiv.innerHTML += analysisHtml;
 	}
             // Chuẩn bị dữ liệu cho biểu đồ (giữ nguyên logic gốc)
-            const temp = drawdown.slice(-50);
+            const temp = drawdown;
             let arrayData = [];
             for (let i = 1; i < temp.length; i++) {
                 arrayData.push({
