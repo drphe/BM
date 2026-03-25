@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.4
+// @version      1.2.5
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Tuấn
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -52,36 +52,25 @@
         date.setDate(date.getDate() + 1);
         return date.toLocaleDateString('vi-VN');
     }
-    // 3. Gọi API Simplize lấy lịch sử giá (sử dụng GM_xmlhttpRequest để tránh CORS)
-    function getStockHistory(ticker) {
-        return new Promise((resolve) => {
-            GM_xmlhttpRequest({
-                method: "GET",
-                url: `https://api.simplize.vn/api/historical/prices/ohlcv?ticker=${ticker}&size=5&interval=1d&type=stock`,
-                onload: function(res) {
-                    try {
-                        const result = JSON.parse(res.responseText);
-                        if (result.status !== 200 || !result.data) resolve([]);
-                        const processedData = result.data.map((item, index, array) => {
-                            const closePrice = item[4];
-                            let change = 0;
-                            if (index > 0) change = closePrice - array[index - 1][4];
-                            return {
-                                date: new Date(item[0] * 1000).toLocaleDateString('vi-VN'),
-                                change: change,
-                                percent: index > 0 ? (change / array[index - 1][4] * 100) : 0
-                            };
-                        });
-                        resolve(processedData);
-                    }
-                    catch (e) {
-                        resolve([]);
-                    }
-                },
-                onerror: () => resolve([])
+function getStockHistory(ticker) {
+    return fetch(`https://api.simplize.vn/api/historical/prices/ohlcv?ticker=${ticker}&size=5&interval=1d&type=stock`)
+        .then(res => res.json())
+        .then(result => {
+            if (result.status !== 200 || !result.data) return [];
+            return result.data.map((item, index, array) => {
+                const closePrice = item[4];
+                let change = 0;
+                if (index > 0) change = closePrice - array[index - 1][4];
+                return {
+                    date: new Date(item[0] * 1000).toLocaleDateString('vi-VN'),
+                    change: change,
+                    percent: index > 0 ? (change / array[index - 1][4] * 100) : 0
+                };
             });
-        });
-    }
+        })
+        .catch(() => []);
+}
+
     // 4. Tính toán tổng biến động
     async function calculateTotalPortfolioChange(portfolio) {
         let totalChangeValue = 0;
@@ -228,6 +217,7 @@
     }
     // === HÀM VẼ BIỂU ĐỒ VỚI TRENDLINE (GIỮ NGUYÊN GỐC CỦA BẠN) ===
     function renderChart(data) {
+        console.log(data)
         if (!data || data.length === 0) return;
         const categories = data.map(d => d.date);
         const priceData = data.map(d => d.price);
@@ -256,7 +246,7 @@
             intercept
         } = linearRegression(priceData);
         const trendlineData = priceData.map((_, i) => slope * i + intercept);
-        const chartDom = document.getElementById('candles-chart2');
+        const chartDom = document.getElementById('candles-chart3');
         if (chartDom) {
             const myChart = echarts.init(chartDom);
             const option = {

@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2
+// @version      1.2.1
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
