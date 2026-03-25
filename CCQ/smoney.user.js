@@ -1,12 +1,10 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.5
+// @version      1.2.5.1
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Tuấn
 // @match        https://smoney.com.vn/quy-dau-tu/*
-// @grant        GM_xmlhttpRequest
-// @connect      api.simplize.vn
 // @updateURL    https://vnindex.vercel.app/CCQ/smoney.user.js
 // @downloadURL  https://vnindex.vercel.app/CCQ/smoney.user.js
 // ==/UserScript==
