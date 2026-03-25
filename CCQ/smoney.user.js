@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.2
+// @version      1.2.3
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Tuấn
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -132,7 +132,6 @@
     }
     let ckht = ''; // Biến toàn cục lưu trữ nội dung phân tích
     // Đợi trang load xong hoàn toàn vì danh mục thường render chậm
-    window.addEventListener('load', () => {
         setTimeout(initAnalysis, 2000);
         // vẽ biểu đồ chiết khấu
         setTimeout(function() {
@@ -155,7 +154,6 @@
                 fetchFundData(symbol, original);
             }
         }, 2000);
-    });
     async function fetchFundData(fundCode, originalDiv) {
         try {
             const url = `https://smoney.com.vn/quy-dau-tu/${fundCode}`;
