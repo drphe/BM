@@ -210,7 +210,36 @@ async function showChart(id, name, shortName) {
                 type: 'spline',
                 color: ' rgb(242, 54, 69)',
                 lineWidth: 2,
-            }]
+            }],
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 768
+                    },
+                    chartOptions: {
+                        chart: {
+                            height: 300
+                        },
+                        legend: {
+                            enabled: false
+                        },
+                        yAxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        },
+                        xAxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        }
+                    }
+                }]
+            }
         });
         let closep = []
         points.forEach(t => {
@@ -420,7 +449,7 @@ function calculateConfidenceInterval(data) {
 // vẽ bảng drawdown
 function renderResults(results) {
     results.reverse();
-    let table = `<div class="bp5-callout bp5-intent-primary PinturaScrollableContent"><table id="resultsTable" class="table-screens bp5-html-table bp5-html-table-striped bp5-interactive" style="width: 100%;table-layout: fixed; border-collapse: collapse;">
+    let table = `<div class="bp5-callout bp5-intent-primary PinturaScrollableContent" style="overflow-x: auto;"><table id="resultsTable" class="table-screens bp5-html-table bp5-html-table-striped bp5-interactive" style="width: 100%;border-collapse: collapse;">
         <thead>
             <tr>
                 <th style="text-align: right; white-space: nowrap;">Tạo đỉnh</th>
@@ -624,7 +653,36 @@ function renderChart(data, c1, c2) {
                     }
                 }
             }
-        }]
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 768
+                },
+                chartOptions: {
+                    chart: {
+                        height: 300
+                    },
+                    legend: {
+                        enabled: false
+                    },
+                    yAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px'
+                            }
+                        }
+                    },
+                    xAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px'
+                            }
+                        }
+                    }
+                }
+            }]
+        }
     });
 }
 async function fetchFundData(id) {
@@ -861,7 +919,38 @@ function drawNormalCurve(data, id, name, ci) {
                 enabled: false
             },
             enableMouseTracking: false
-        }]
+        }],
+        responsive: {
+            rules: [{
+                condition: {
+                    maxWidth: 768
+                },
+                chartOptions: {
+                    chart: {
+                        height: 300
+                    },
+                    subtitle: {
+                        style: {
+                            fontSize: '12px'
+                        }
+                    },
+                    yAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px'
+                            }
+                        }
+                    },
+                    xAxis: {
+                        labels: {
+                            style: {
+                                fontSize: '10px'
+                            }
+                        }
+                    }
+                }
+            }]
+        }
     });
 }
 
@@ -962,7 +1051,38 @@ async function drawDrawdownChart(rawData) {
                 labels: labelsToMark
             }],
             credits: { enabled: false },
-	    legends: {enabled:false}
+	    legends: {enabled:false},
+            responsive: {
+                rules: [{
+                    condition: {
+                        maxWidth: 768
+                    },
+                    chartOptions: {
+                        chart: {
+                            height: 300
+                        },
+                        title: {
+                            style: {
+                                fontSize: '14px'
+                            }
+                        },
+                        yAxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        },
+                        xAxis: {
+                            labels: {
+                                style: {
+                                    fontSize: '10px'
+                                }
+                            }
+                        }
+                    }
+                }]
+            }
         });
     } catch (e) { console.error(e); }
 }

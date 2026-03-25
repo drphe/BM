@@ -71,6 +71,18 @@ tr.negative-row {
     background: transparent;
 }
 
+@media (max-width: 768px) {
+    #resultsTable {
+        font-size: 12px;
+    }
+    #resultsTable th, #resultsTable td {
+        padding: 4px 8px;
+    }
+    #resultsTable th {
+        font-size: 11px;
+    }
+}
+
     </style>
 </head>
 
@@ -133,7 +145,7 @@ tr.negative-row {
                     </div>
                 </div>
 		    
-                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <h2 class="font-bold text-slate-800 mb-4 flex items-center gap-2">
                             <span class="w-1.5 h-5 bg-blue-500 rounded-full"></span> Thông tin quỹ
@@ -141,7 +153,7 @@ tr.negative-row {
                         <div class="space-y-4 text-sm">
                             <div class="flex justify-between border-b border-slate-50 pb-2">
                                 <span class="text-slate-500">Công ty quản lý</span>
-                                <span id="owner-name" class="font-semibold text-right max-w-[150px]"></span>
+                                <span id="owner-name" class="font-semibold text-right max-w-[120px] md:max-w-[150px] truncate"></span>
                             </div>
                             <div class="flex justify-between border-b border-slate-50 pb-2">
                                 <span class="text-slate-500">Phí quản lý</span>
@@ -153,36 +165,36 @@ tr.negative-row {
                             </div>
                             <div class="flex justify-between border-b border-slate-50 pb-2">
                                 <span class="text-slate-500">Ngày giao dịch</span>
-                                <span id="trade-date" class="font-semibold"></span>
+                                <span id="trade-date" class="font-semibold text-xs md:text-sm"></span>
                             </div>
                         </div>
                     </div>
-                    <div class="lg:col-span-2 bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
+                    <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <h2 class="font-bold text-slate-800 mb-6 flex items-center gap-2">
                             <span class="w-1.5 h-5 bg-green-500 rounded-full"></span> Tăng trưởng lợi nhuận
                         </h2>
-                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
                             <div class="p-4 rounded-xl bg-slate-50 text-center">
                                 <p class="text-xs text-slate-400 mb-1">1 Tháng</p>
-                                <p id="p-1m" class="text-lg font-bold"></p>
+                                <p id="p-1m" class="text-sm md:text-lg font-bold"></p>
                             </div>
                             <div class="p-4 rounded-xl bg-slate-50 text-center">
                                 <p class="text-xs text-slate-400 mb-1">1 Năm</p>
-                                <p id="p-12m" class="text-lg font-bold"></p>
+                                <p id="p-12m" class="text-sm md:text-lg font-bold"></p>
                             </div>
                             <div class="p-4 rounded-xl bg-slate-50 text-center">
                                 <p class="text-xs text-slate-400 mb-1">3 Năm (thường niên)</p>
-                                <p id="p-36m" class="text-lg font-bold"></p>
+                                <p id="p-36m" class="text-sm md:text-lg font-bold"></p>
                             </div>
-                            <div class="p-4 rounded-xl bg-blue-600 text-center text-white">
+                            <div class="p-4 rounded-xl bg-blue-600 text-center text-white col-span-2 md:col-span-1">
                                 <p class="text-xs text-blue-100 mb-1">Từ khi thành lập</p>
-                                <p id="p-total" class="text-lg font-bold"></p>
+                                <p id="p-total" class="text-sm md:text-lg font-bold"></p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div id="fund-description" class="text-slate-600 italic"></div>
-                <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
                         <h2 class="font-bold text-slate-800 mb-4">Tỷ trọng theo ngành</h2>
                         <div class="h-64">
@@ -193,13 +205,13 @@ tr.negative-row {
                         <div id="holding-container" class="space-y-3 w-full h-[300px]"></div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
-                    <div id="chartContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[400px]"></div>
-                    <div id="container2" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[400px]"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="chartContainer" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[300px] md:h-[400px]"></div>
+                    <div id="container2" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[300px] md:h-[400px]"></div>
                 </div>
-                <div class="grid grid-cols-2 lg:grid-cols-2 gap-6">
-                    <div id="container3" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[400px]"></div>
-                    <div id="container4" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[400px]"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div id="container3" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[300px] md:h-[400px]"></div>
+                    <div id="container4" class="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 w-full h-[300px] md:h-[400px]"></div>
                 </div>
                 <div id="analysisArea" class="mt-8 gap-4 border-t pt-6 bg-slate-50 rounded-2xl p-6"></div>
             </div>
