@@ -152,11 +152,11 @@
                 clone.style.height = "400px";
                 original.appendChild(h3);
                 original.appendChild(clone);
-                fetchData(symbol, original);
+                fetchFundData(symbol, original);
             }
         }, 2000);
     });
-    async function fetchData(fundCode, originalDiv) {
+    async function fetchFundData(fundCode, originalDiv) {
         try {
             const url = `https://smoney.com.vn/quy-dau-tu/${fundCode}`;
             const t = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -181,6 +181,10 @@
                     "value": data.data[i].nav
                 });
             }
+	    if(!closep.length) {
+		originalDiv.remove();
+		return;
+	    }
             const drawdown = findRecoveries(closep);
             const sampleData = drawdown.slice(1).map(d => d.drawdown);
             const sampleData2 = drawdown.slice(1).map(d => d.recover);

@@ -47,6 +47,10 @@
                     "value": parseFloat(data.c[i])
                 });
             }
+	    if(!closep.length) {
+		originalDiv.remove();
+		return;
+	    }
             const drawdown = findRecoveries(closep);
             const sampleData = drawdown.slice(1).map(d => d.drawdown);
             const sampleData2 = drawdown.slice(1).map(d => d.recover);
