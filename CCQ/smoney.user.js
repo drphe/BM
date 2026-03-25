@@ -119,9 +119,10 @@ function getStockHistory(ticker) {
         }
     }
 
-        setTimeout(initAnalysis, 2000);
+
         // vẽ biểu đồ chiết khấu
         setTimeout(function() {
+  	    initAnalysis();
             const target = document.querySelector(".symbol-chart");
             const url = window.location.href;
             const path = new URL(url).pathname; // "/quy-dau-tu/DCDE"
@@ -244,7 +245,7 @@ function getStockHistory(ticker) {
             intercept
         } = linearRegression(priceData);
         const trendlineData = priceData.map((_, i) => slope * i + intercept);
-        const chartDom = document.getElementById('candles-chart3');
+        const chartDom = document.getElementById('candles-chart2');
         if (chartDom) {
             const myChart = echarts.init(chartDom);
             const option = {
