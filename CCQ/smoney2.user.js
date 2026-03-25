@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2.2
+// @version      1.2.3
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
@@ -56,7 +56,7 @@
             const sampleData2 = drawdown.slice(1).map(d => d.recover);
             const ci = calculateConfidenceInterval(sampleData);
             const ci2 = calculateConfidenceInterval(sampleData2);
-            let table = renderResults(drawdown.slice(-30));
+            let table = renderResults(drawdown.slice(-20));
             const resultMe = checkLatestGrowth(closep);
             // Ghi nội dung phân tích vào div
             const analysisHtml = `<div>Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/> Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
@@ -66,7 +66,7 @@
          originalDiv.innerHTML += mockResult;
 	}
             // Chuẩn bị dữ liệu cho biểu đồ (giữ nguyên logic gốc)
-            const temp = drawdown.slice(-30);
+            const temp = drawdown.slice(-50);
             let arrayData = [];
             for (let i = 1; i < temp.length; i++) {
                 arrayData.push({
