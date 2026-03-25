@@ -50,10 +50,9 @@
         date.setDate(date.getDate() + 1);
         return date.toLocaleDateString('vi-VN');
     }
-function getStockHistory(ticker) {
-    return fetch(`https://api.simplize.vn/api/historical/prices/ohlcv?ticker=${ticker}&size=5&interval=1d&type=stock`)
-        .then(res => res.json())
-        .then(result => {
+
+    function getStockHistory(ticker) {
+        return fetch(`https://api.simplize.vn/api/historical/prices/ohlcv?ticker=${ticker}&size=5&interval=1d&type=stock`).then(res => res.json()).then(result => {
             if (result.status !== 200 || !result.data) return [];
             return result.data.map((item, index, array) => {
                 const closePrice = item[4];
@@ -65,10 +64,8 @@ function getStockHistory(ticker) {
                     percent: index > 0 ? (change / array[index - 1][4] * 100) : 0
                 };
             });
-        })
-        .catch(() => []);
-}
-
+        }).catch(() => []);
+    }
     // 4. Tính toán tổng biến động
     async function calculateTotalPortfolioChange(portfolio) {
         let totalChangeValue = 0;
@@ -92,7 +89,7 @@ function getStockHistory(ticker) {
         const navElement = document.querySelector('.total-assets.flex-between .value');
         if (!navElement) return;
         const currentNAV = parseFloat(navElement.textContent.replace(/,/g, '').replace('T', '')) * 1_000_000_000;
-        const changePercent = ((totalChangeNAV / (currentNAV+totalChangeNAV)) * 100).toFixed(2);
+        const changePercent = ((totalChangeNAV / (currentNAV + totalChangeNAV)) * 100).toFixed(2);
         // Chèn kết quả vào phần .portfolio-metrics của SMoney
         const metricsContainer = document.querySelector('.portfolio-metrics .row');
         if (metricsContainer) {
@@ -116,50 +113,44 @@ function getStockHistory(ticker) {
                 </div>
             `;
             metricsContainer.insertAdjacentHTML('beforeend', html);
-        console.log("Tính toán xong %NAV trong ngày!");
-	    
+            console.log("Tính toán xong %NAV trong ngày!");
         }
     }
-
-
-        // vẽ biểu đồ chiết khấu
-        setTimeout(function() {
-  	    initAnalysis();
-            const target = document.querySelector(".symbol-chart");
-            const url = window.location.href;
-            const path = new URL(url).pathname; // "/quy-dau-tu/DCDE"
-            const symbol = path.split("/").pop(); // "DCDE"
-            if (target && symbol) {
-		console.log("Thêm thẻ div...")
-                const original = document.createElement("div");
-                original.setAttribute("class", "discount-chart position-relative m-3");
-                target.parentNode.insertBefore(original, target.nextSibling);
-   	const buttons = document.createElement("div");
-	buttons.setAttribute("class","time-chart2 time-chart btn-chart d-inline-flex gap-1 gap-sm-2");
-	buttons.innerHTML = `<button class="" data-size="3T">3M</button>
-    <button class="" data-size="6T">6M</button>
-    <button class="" data-size="1N">1Y</button>
+    // vẽ biểu đồ chiết khấu
+    setTimeout(function() {
+        initAnalysis();
+        const target = document.querySelector(".symbol-chart");
+        const url = window.location.href;
+        const path = new URL(url).pathname; // "/quy-dau-tu/DCDE"
+        const symbol = path.split("/").pop(); // "DCDE"
+        if (target && symbol) {
+            console.log("Thêm thẻ div...")
+            const original = document.createElement("div");
+            original.setAttribute("class", "discount-chart position-relative m-3");
+            target.parentNode.insertBefore(original, target.nextSibling);
+            const buttons = document.createElement("div");
+            buttons.setAttribute("class", "time-chart2 time-chart btn-chart d-inline-flex gap-1 gap-sm-2");
+            buttons.innerHTML = `<button class="" data-size="1N">1Y</button>
     <button class="" data-size="3N">3Y</button>
     <button class="" data-size="5N">5Y</button>
     <button class="active" data-size="">All</button>`;
-                const h3 = document.createElement("h3");
-                h3.setAttribute("class", "title-symbol");
-                h3.innerText = "Phân tích chiết khấu quỹ " + symbol;
-                const clone = document.createElement("div");
-                clone.id = "candles-chart2";
-                clone.style.height = "400px";
-                original.appendChild(h3);
-        	original.appendChild(buttons);
-                original.appendChild(clone);
-                fetchFundData(symbol, original);
-            }
-        }, 2000);
-
+            const h3 = document.createElement("h3");
+            h3.setAttribute("class", "title-symbol");
+            h3.innerText = "Phân tích chiết khấu quỹ " + symbol;
+            const clone = document.createElement("div");
+            clone.id = "candles-chart2";
+            clone.style.height = "400px";
+            original.appendChild(h3);
+            original.appendChild(buttons);
+            original.appendChild(clone);
+            fetchFundData(symbol, original);
+        }
+    }, 2000);
     async function fetchFundData(fundCode, originalDiv) {
-    const convertToUnix = (dateString) => {
-        const date = new Date(dateString);
-        return Math.floor(date.getTime() / 1000);
-    };
+        const convertToUnix = (dateString) => {
+            const date = new Date(dateString);
+            return Math.floor(date.getTime() / 1000);
+        };
         try {
             const url = `https://smoney.com.vn/quy-dau-tu/${fundCode}`;
             const t = document.querySelector('meta[name="csrf-token"]').getAttribute("content");
@@ -184,10 +175,10 @@ function getStockHistory(ticker) {
                     "value": data.data[i].nav
                 });
             }
-	    if(!closep.length) {
-		originalDiv.remove();
-		return;
-	    }
+            if (!closep.length) {
+                originalDiv.remove();
+                return;
+            }
             const drawdown = findRecoveries(closep);
             const sampleData = drawdown.slice(1).map(d => d.drawdown);
             const sampleData2 = drawdown.slice(1).map(d => d.recover);
@@ -224,7 +215,7 @@ function getStockHistory(ticker) {
                 alert("📊 Chú ý phiên chạy nước rút:\n" + resultMe.join('\n'));
             }
             renderChart(arrayData);
-	   console.log(arrayData);
+            console.log(arrayData);
         }
         catch (error) {
             console.error('Error:', error);
@@ -327,48 +318,40 @@ function getStockHistory(ticker) {
             };
             myChart.setOption(option, true);
             window.addEventListener('resize', () => myChart.resize());
-function parseDate(str) {
-    const [y, m, d] = str.split('-').map(Number); // chuyển 2026-04-30 => datetime
-    return new Date(y, m - 1, d);
-}
 
-// Hàm xử lý sự kiện click chỉnh thời gian
-document.querySelectorAll('.time-chart2 button').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const size = this.getAttribute('data-size');
-        
-        // Cập nhật giao diện nút bấm
-        const activeBtn = document.querySelector('.time-chart2 .active');
-        if (activeBtn) activeBtn.classList.remove('active');
-        this.classList.add('active');
-
-        let startIndex = 0;
-        const totalPoints = categories.length;
-
-        if (size !== "" && totalPoints > 0) {
-            const lastDateObj = parseDate(categories[totalPoints - 1]);
-            let targetDate = new Date(lastDateObj);
-
-            // Tính toán mốc thời gian lùi lại
-            if (size === "3T") targetDate.setMonth(lastDateObj.getMonth() - 3);
-            else if (size === "6T") targetDate.setMonth(lastDateObj.getMonth() - 6);
-            else if (size === "1N") targetDate.setFullYear(lastDateObj.getFullYear() - 1);
-            else if (size === "3N") targetDate.setFullYear(lastDateObj.getFullYear() - 3);
-            else if (size === "5N") targetDate.setFullYear(lastDateObj.getFullYear() - 5);
-
-            startIndex = categories.findIndex(d => parseDate(d) >= targetDate);
-            if (startIndex === -1) startIndex = 0;
-        }
-
-        // Dùng setOption để "vẽ lại" vùng hiển thị
-        myChart.setOption({
-            dataZoom: [{
-                startValue: startIndex,
-                endValue: totalPoints - 1
-            }]
-        });
-    });
-});
+            function parseDate(str) {
+                const [y, m, d] = str.split('-').map(Number); // chuyển 2026-04-30 => datetime
+                return new Date(y, m - 1, d);
+            }
+            // Hàm xử lý sự kiện click chỉnh thời gian
+            document.querySelectorAll('.time-chart2 button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const size = this.getAttribute('data-size');
+                    // Cập nhật giao diện nút bấm
+                    const activeBtn = document.querySelector('.time-chart2 .active');
+                    if (activeBtn) activeBtn.classList.remove('active');
+                    this.classList.add('active');
+                    let startIndex = 0;
+                    const totalPoints = categories.length;
+                    if (size !== "" && totalPoints > 0) {
+                        const lastDateObj = parseDate(categories[totalPoints - 1]);
+                        let targetDate = new Date(lastDateObj);
+                        // Tính toán mốc thời gian lùi lại
+                        if (size === "1N") targetDate.setFullYear(lastDateObj.getFullYear() - 1);
+                        else if (size === "3N") targetDate.setFullYear(lastDateObj.getFullYear() - 3);
+                        else if (size === "5N") targetDate.setFullYear(lastDateObj.getFullYear() - 5);
+                        startIndex = categories.findIndex(d => parseDate(d) >= targetDate);
+                        if (startIndex === -1) startIndex = 0;
+                    }
+                    // Dùng setOption để "vẽ lại" vùng hiển thị
+                    myChart.setOption({
+                        dataZoom: [{
+                            startValue: startIndex,
+                            endValue: totalPoints - 1
+                        }]
+                    });
+                });
+            });
         }
     }
     // --- Copy lại toàn bộ các hàm xử lý dữ liệu từ file gốc của bạn ---

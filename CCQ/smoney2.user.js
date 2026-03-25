@@ -21,11 +21,9 @@
                 const original = document.createElement("div");
                 original.setAttribute("class", "discount-chart position-relative m-3");
                 target.parentNode.insertBefore(original, target.nextSibling);
-   	const buttons = document.createElement("div");
-	buttons.setAttribute("class","time-chart2 time-chart btn-chart d-inline-flex gap-1 gap-sm-2");
-	buttons.innerHTML = `<button class="" data-size="3T">3M</button>
-    <button class="" data-size="6T">6M</button>
-    <button class="" data-size="1N">1Y</button>
+                const buttons = document.createElement("div");
+                buttons.setAttribute("class", "time-chart2 time-chart btn-chart d-inline-flex gap-1 gap-sm-2");
+                buttons.innerHTML = `<button class="" data-size="1N">1Y</button>
     <button class="" data-size="3N">3Y</button>
     <button class="" data-size="5N">5Y</button>
     <button class="active" data-size="">All</button>`;
@@ -36,7 +34,7 @@
                 clone.id = "candles-chart2";
                 clone.style.height = "400px";
                 original.appendChild(h3);
-        	original.appendChild(buttons);
+                original.appendChild(buttons);
                 original.appendChild(clone);
                 fetchData(symbol, original);
             }
@@ -56,10 +54,10 @@
                     "value": parseFloat(data.c[i])
                 });
             }
-	    if(!closep.length) {
-		originalDiv.remove();
-		return;
-	    }
+            if (!closep.length) {
+                originalDiv.remove();
+                return;
+            }
             const drawdown = findRecoveries(closep);
             const sampleData = drawdown.slice(1).map(d => d.drawdown);
             const sampleData2 = drawdown.slice(1).map(d => d.recover);
@@ -69,11 +67,12 @@
             const resultMe = checkLatestGrowth(closep);
             // Ghi nội dung phân tích vào div
             const analysisHtml = `<div>Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/> Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
-        if (resultMe.length > 0) {
-            originalDiv.innerHTML += "📊 Chú ý phiên chạy nước rút:<br/>" + resultMe.join('<br/>') +'<br/>'+ analysisHtml;
-        }else {
-         originalDiv.innerHTML += analysisHtml;
-	}
+            if (resultMe.length > 0) {
+                originalDiv.innerHTML += "📊 Chú ý phiên chạy nước rút:<br/>" + resultMe.join('<br/>') + '<br/>' + analysisHtml;
+            }
+            else {
+                originalDiv.innerHTML += analysisHtml;
+            }
             // Chuẩn bị dữ liệu cho biểu đồ (giữ nguyên logic gốc)
             const temp = drawdown;
             let arrayData = [];
@@ -199,49 +198,40 @@
             };
             myChart.setOption(option, true);
             window.addEventListener('resize', () => myChart.resize());
-function parseDate(str) {
-    const [d, m, y] = str.split('/').map(Number); // chuyển 12/01/2025 => datetime
-    return new Date(y, m - 1, d);
-}
 
-// Hàm xử lý sự kiện click chỉnh thời gian
-document.querySelectorAll('.time-chart2 button').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const size = this.getAttribute('data-size');
-        
-        // Cập nhật giao diện nút bấm
-        const activeBtn = document.querySelector('.time-chart2 .active');
-        if (activeBtn) activeBtn.classList.remove('active');
-        this.classList.add('active');
-
-        let startIndex = 0;
-        const totalPoints = categories.length;
-
-        if (size !== "" && totalPoints > 0) {
-            const lastDateObj = parseDate(categories[totalPoints - 1]);
-            let targetDate = new Date(lastDateObj);
-
-            // Tính toán mốc thời gian lùi lại
-            if (size === "3T") targetDate.setMonth(lastDateObj.getMonth() - 3);
-            else if (size === "6T") targetDate.setMonth(lastDateObj.getMonth() - 6);
-            else if (size === "1N") targetDate.setFullYear(lastDateObj.getFullYear() - 1);
-            else if (size === "3N") targetDate.setFullYear(lastDateObj.getFullYear() - 3);
-            else if (size === "5N") targetDate.setFullYear(lastDateObj.getFullYear() - 5);
-
-            startIndex = categories.findIndex(d => parseDate(d) >= targetDate);
-            if (startIndex === -1) startIndex = 0;
-        }
-
-        // Dùng setOption để "vẽ lại" vùng hiển thị
-        myChart.setOption({
-            dataZoom: [{
-                startValue: startIndex,
-                endValue: totalPoints - 1
-            }]
-        });
-    });
-});
-
+            function parseDate(str) {
+                const [d, m, y] = str.split('/').map(Number); // chuyển 12/01/2025 => datetime
+                return new Date(y, m - 1, d);
+            }
+            // Hàm xử lý sự kiện click chỉnh thời gian
+            document.querySelectorAll('.time-chart2 button').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const size = this.getAttribute('data-size');
+                    // Cập nhật giao diện nút bấm
+                    const activeBtn = document.querySelector('.time-chart2 .active');
+                    if (activeBtn) activeBtn.classList.remove('active');
+                    this.classList.add('active');
+                    let startIndex = 0;
+                    const totalPoints = categories.length;
+                    if (size !== "" && totalPoints > 0) {
+                        const lastDateObj = parseDate(categories[totalPoints - 1]);
+                        let targetDate = new Date(lastDateObj);
+                        // Tính toán mốc thời gian lùi lại
+                        if (size === "1N") targetDate.setFullYear(lastDateObj.getFullYear() - 1);
+                        else if (size === "3N") targetDate.setFullYear(lastDateObj.getFullYear() - 3);
+                        else if (size === "5N") targetDate.setFullYear(lastDateObj.getFullYear() - 5);
+                        startIndex = categories.findIndex(d => parseDate(d) >= targetDate);
+                        if (startIndex === -1) startIndex = 0;
+                    }
+                    // Dùng setOption để "vẽ lại" vùng hiển thị
+                    myChart.setOption({
+                        dataZoom: [{
+                            startValue: startIndex,
+                            endValue: totalPoints - 1
+                        }]
+                    });
+                });
+            });
         }
     }
     // --- Copy lại toàn bộ các hàm xử lý dữ liệu từ file gốc của bạn ---
