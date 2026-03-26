@@ -972,22 +972,24 @@
                 var a = mastradingviewURL + '?symbol=VN-INDEX&resolution=1D&from=' + parseInt(Date.parse("2015-01-01") / 1000) + '&to=' + parseInt(Date.parse(getCurrentDate()) / 1000);
                 var b = await fetch(a)
                 var c = await b.json();
+
                 var rs = [],
-                    tmp = [],
-                    e = d.length - c.t.length;
+                    tmp = [];
                 for (var i = 0; i < c.t.length; i++) {
                     tmp.push({
                         "time": parseInt(c.t[i]),
                         "close": parseFloat(c.c[i])
                     });
-                    try {
-                        rs.push({
-                            "time": parseInt(c.t[i]),
-                            "value": 1000 * d[e + i].close / parseFloat(c.c[i]) || 0.0000001
-                        });
-                    } catch (e) {}
                 }
+		tmp.slice(-d.length);
                 console.log('Beta: ', calculateBeta(data, tmp));
+		for (var i = 0; i < data.length; i++) {
+                        rs.push({
+                            "time": parseInt(d[i].time),
+                            "value": 1000 * d[i].close / tmp[i].close || 0.0000001
+                        });
+		}
+		console.log(tmp, d)
                 return rs;
             }
             return RS(data);
