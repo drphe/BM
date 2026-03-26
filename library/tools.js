@@ -128,10 +128,10 @@ async function getNews(list = []) {
                                 results.push({
                                     drawdown: (1 - trough / peak) * 100,
                                     start: peak,
-                                    startDate: formatTimestamp(tpeak),
+                                    startDate: tpeak,
                                     bottom: trough,
-                                    bottomDate: formatTimestamp(ttrough),
-                                    recoveryDate: formatTimestamp(recoveryDate),
+                                    bottomDate: ttrough,
+                                    recoveryDate: recoveryDate,
                                     recoveryPrice: data[i].value,
                                     recover: 0,
                                 });
@@ -161,7 +161,7 @@ async function getNews(list = []) {
             if (data[data.length - 1].value > trough) {
                 temp= `Đã hồi phục từ ngày ${formatTimestamp(ttrough)}:<span class="tb"> ${((data[data.length-1].value/trough-1)*100).toFixed(2)}%</span>. `;
             }else {
-                temp= `Đã tăng từ đáy ${output[output.length-1].bottomDate}: <span class="tb">${output[output.length-1].recover.toFixed(2)}%</span>.`;
+                temp= `Đã tăng từ đáy ${formatTimestamp(output[output.length-1].bottomDate)}: <span class="tb">${output[output.length-1].recover.toFixed(2)}%</span>.`;
 	    }
 
             if (data[data.length - 1].value * 1.02 < peak) {
@@ -169,8 +169,8 @@ async function getNews(list = []) {
                 ckht += ` <span title="Đang hồi phục sau chiết khấu">HIỆN TẠI</span> đang chiết khấu từ đỉnh ${formatTimestamp(tpeak)}: <span class="tb" >${gg}% </span>.${temp}<br/>${predict(output, gg)}`;
             } else {
                 let gg = output[output.length - 1].drawdown.toFixed(2);
-		temp= ` Đã tăng từ đáy ${results[results.length-1].bottomDate}: <span class="tb">${results[results.length-1].recover.toFixed(2)}</span>%.`;
-                ckht += `Mức chiết khấu của <span title="Đang xu hướng tăng hoặc đi ngang"> đỉnh gần nhất </span>${output[output.length-1].startDate}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
+		temp= ` Đã tăng từ đáy ${formatTimestamp(results[results.length-1].bottomDate)}: <span class="tb">${results[results.length-1].recover.toFixed(2)}</span>%.`;
+                ckht += `Mức chiết khấu của <span title="Đang xu hướng tăng hoặc đi ngang"> đỉnh gần nhất </span>${formatTimestamp(output[output.length-1].startDate)}: <span class="tb" >${gg}%</span>.${temp}<br/>${predict(output, gg)}`;
             }
 
             return output;
@@ -224,9 +224,9 @@ function renderResults(results) {
 
     results.forEach(result => {
         table += `<tr>
-            <td>${result.startDate}</td>
+            <td>${formatTimestamp(result.startDate)}</td>
             <td>${result.start.toFixed(2)}</td>
-            <td>${result.bottomDate}</td>
+            <td>${formatTimestamp(result.bottomDate)}</td>
             <td>${result.bottom.toFixed(2)}</td>
             <td>${result.drawdown.toFixed(2)} %</td>
             <td>${result.recover.toFixed(2)} %</td>

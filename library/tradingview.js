@@ -508,15 +508,15 @@
                     const zigzagPoints = [];
                     drawdowns.forEach(dd => {
                         zigzagPoints.push({
-                            time: convertDate(dd.startDate),
+                            time: dd.startDate,
                             value: dd.start
                         }); // Đỉnh
                         zigzagPoints.push({
-                            time: convertDate(dd.bottomDate),
+                            time: dd.bottomDate,
                             value: dd.bottom
                         }); // Đáy
                         zigzagPoints.push({
-                            time: convertDate(dd.recoveryDate),
+                            time: dd.recoveryDate,
                             value: dd.recoveryPrice
                         }); // Hồi phục
                     });
@@ -534,31 +534,33 @@
 
                     // Thêm marker cho đỉnh, đáy, hồi phục
                     const markers = [];
-
+		    //console.log(drawdowns)
+		    let lastTop =0;
                     drawdowns.forEach(dd => {
                         markers.push({
-                            time: convertDate(dd.startDate),
+                            time: dd.startDate,
                             position: 'aboveBar',
                             color: 'red',
                             shape: 'arrowDown', // hoặc 'circle', 'square', 'arrowUp'
-                            text: 'Đỉnh'
+                            text: '▲' + lastTop + '%'
                         });
 
                         markers.push({
-                            time: convertDate(dd.bottomDate),
+                            time: dd.bottomDate,
                             position: 'belowBar',
                             color: 'green',
                             shape: 'arrowUp',
-                            text: 'Đáy'
+                            text: '▼'+dd.drawdown.toFixed(2) + '%'
                         });
 
                         markers.push({
-                            time: convertDate(dd.recoveryDate),
+                            time: dd.recoveryDate,
                             position: 'aboveBar',
                             color: 'blue',
                             shape: 'circle',
-                            text: 'Hồi phục'
+                            text: ''
                         });
+			lastTop = dd.recover.toFixed(2);
                     });
 			markers.sort((a, b) => new Date(a.time) - new Date(b.time));
                     zigzagSeries.setMarkers(markers);
