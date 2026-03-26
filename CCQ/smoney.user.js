@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6.2
+// @version      1.2.6.3
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Drphe
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -187,7 +187,7 @@
             let table = renderResults(drawdown.slice(-20));
             const resultMe = checkLatestGrowth(closep);
             // Ghi nội dung phân tích vào div
-            const analysisHtml = `<div class="caption"><p><Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/>Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/>${ckht}</p></div>${table}`;
+            const analysisHtml = `<div class="caption"><p>Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/>Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/>${ckht}</p></div>${table}`;
             originalDiv.innerHTML += analysisHtml;
             // Chuẩn bị dữ liệu cho biểu đồ (giữ nguyên logic gốc)
             const temp = drawdown;
