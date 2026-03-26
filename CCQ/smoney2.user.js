@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6.1
+// @version      1.2.6.2
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
@@ -66,12 +66,12 @@
             let table = renderResults(drawdown.slice(-20));
             const resultMe = checkLatestGrowth(closep);
             // Ghi nội dung phân tích vào div
-            const analysisHtml = `<div>Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/> Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</div>${table}`;
+            const analysisHtml = `Mức chiết khấu TB (n = ${ci.n}) là <span style="color: #00aa00;">${ci.mean.toFixed(2)}% [${ci.lowerBound.toFixed(2)}, ${ci.upperBound.toFixed(2)}]</span>.<br/> Mức hồi phục TB (n = ${ci2.n}) là <span style="color: #00aa00;">${ci2.mean.toFixed(2)}% [${ci2.lowerBound.toFixed(2)}, ${ci2.upperBound.toFixed(2)}]</span><br/> ${ckht}</p></div>${table}`;
             if (resultMe.length > 0) {
-                originalDiv.innerHTML += "📊 Chú ý phiên chạy nước rút:<br/>" + resultMe.join('<br/>') + '<br/>' + analysisHtml;
+                originalDiv.innerHTML += "<div class='caption'><p>📊 Chú ý phiên chạy nước rút:<br/>" + resultMe.join('<br/>') + '<br/>' + analysisHtml;
             }
             else {
-                originalDiv.innerHTML += analysisHtml;
+                originalDiv.innerHTML += `<div class="caption"><p>`+analysisHtml;
             }
             // Chuẩn bị dữ liệu cho biểu đồ (giữ nguyên logic gốc)
             const temp = drawdown;
@@ -150,6 +150,14 @@
                 },
                 yAxis: {
                     type: 'value',
+ 		splitLine: {
+                            show: !0,
+                            lineStyle: {
+                                type: "dashed",
+                                color: "#99999959",
+                                width: 1
+                            }
+                        },
                     min: 'dataMin',
                     max: 'dataMax',
                     axisLabel: {
