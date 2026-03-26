@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6
+// @version      1.2.6.1
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
@@ -226,6 +226,7 @@
                     // Dùng setOption để "vẽ lại" vùng hiển thị
                     myChart.setOption({
                         dataZoom: [{
+			    show:false,
                             startValue: startIndex,
                             endValue: totalPoints - 1
                         }]

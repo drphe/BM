@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6
+// @version      1.2.6.1
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Drphe
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -346,6 +346,7 @@
                     // Dùng setOption để "vẽ lại" vùng hiển thị
                     myChart.setOption({
                         dataZoom: [{
+			    show:false,
                             startValue: startIndex,
                             endValue: totalPoints - 1
                         }]
