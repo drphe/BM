@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         S-Money Stock Discount Analysis
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6.2
+// @version      1.2.6.3
 // @description  Phân tích chiết khấu và hồi phục cổ phiếu trực tiếp trên biểu đồ.
 // @author       Drphe
 // @match        https://smoney.com.vn/co-phieu/*
@@ -15,9 +15,10 @@
         // vẽ biểu đồ chiết khấu
         setTimeout(function() {
             const target = document.querySelector(".symbol-chart");
-            const symbolElement = document.querySelector('.symbol-stats');
-            const symbol = symbolElement ? symbolElement.getAttribute('data-symbol') : null;
-            if (target && symbol) {
+        const url = window.location.href;
+        const path = new URL(url).pathname; // "/quy-dau-tu/DCDE"
+        const symbol = path.split("/").pop(); // "DCDE"
+            if (target && symbol.length==3) {
                 const original = document.createElement("div");
                 original.setAttribute("class", "discount-chart position-relative m-3");
                 target.parentNode.insertBefore(original, target.nextSibling);
@@ -38,7 +39,7 @@
                 original.appendChild(clone);
                 fetchData(symbol, original);
             }
-        }, 2000);
+        }, 1000);
     });
     async function fetchData(code, originalDiv) {
         code = code == "VNINDEX" ? "VN-INDEX" : code;

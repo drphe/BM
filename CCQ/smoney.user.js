@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.7
+// @version      1.2.7.2
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Drphe
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -26,6 +26,16 @@ style.textContent = `
 `;
 
 document.head.appendChild(style);
+  const tabProfile = document.querySelector('.tab-profile');
+  const infoProfile = document.querySelector('.info-profile');
+
+  tabProfile.addEventListener('click', function() {
+    if (infoProfile.style.display === 'none' || infoProfile.style.display === '') {
+      infoProfile.style.display = 'block'; // hiện
+    } else {
+      infoProfile.style.display = 'none'; // ẩn
+    }
+  });
 
     function formatNumber(n) {
         const num = typeof n === 'string' ? Number(n.replace(/,/g, '').trim()) : n;
@@ -111,7 +121,7 @@ document.head.appendChild(style);
             const html = `
                 <div class="col-4 col-lg-2">
                     <div class="metric-card py-2 px-0 text-center">
-                        <div class="metric-label">ΔNAV% ${latestDateNav}</div>
+                        <div class="metric-label">ΔNAV% (${latestDateNav})</div>
                         <div class="metric-value" style="color: ${totalChangeNAVpre >= 0 ? '#28a745' : '#dc3545'};">
                             ${changePercentPre}%
                         </div>
@@ -135,6 +145,7 @@ document.head.appendChild(style);
                 </div>
             `;
             metricsContainer.insertAdjacentHTML('beforeend', html);
+		  infoProfile.style.display = 'none';
                 metricsContainer.scrollIntoView({
                     behavior: "smooth",
                     block: "center"
@@ -171,7 +182,7 @@ document.head.appendChild(style);
             original.appendChild(clone);
             fetchFundData(symbol, original);
         }
-    }, 2000);
+    }, 1000);
     async function fetchFundData(fundCode, originalDiv) {
         const convertToUnix = (dateString) => {
             const date = new Date(dateString);
