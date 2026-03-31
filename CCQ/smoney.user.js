@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         SMoney Fund Portfolio Tracker
 // @namespace    http://tampermonkey.net/
-// @version      1.2.6.7
+// @version      1.2.6.8
 // @description  Tính toán biến động NAV dự kiến dựa trên danh mục cổ phiếu của quỹ
 // @author       Drphe
 // @match        https://smoney.com.vn/quy-dau-tu/*
@@ -39,8 +39,9 @@ document.head.appendChild(style);
     // 2. Lấy danh mục từ bảng Portfolio của SMoney
     function getPortfolioFromDOM() {
         const table = document.querySelector('.portfolio-table table.table-hover');
-        if (!table) return [];
-        const rows = table.querySelectorAll('tbody tr');
+        if (!table) return []; 
+	try{
+        const rows = table.querySelectorAll('tbody tr'); 
         return Array.from(rows).map(row => {
             const cells = row.querySelectorAll('td');
             if (cells.length < 7 || !cells[2].querySelector('span')) return null;
@@ -50,6 +51,9 @@ document.head.appendChild(style);
                 ratio: parseFinanceValue(cells[7].innerText)
             };
         }).filter(item => item !== null);
+	}catch(e){
+	   return null;
+	}
     }
 
     function getNext(dateStr) {
@@ -75,12 +79,12 @@ document.head.appendChild(style);
         }).catch(() => []);
     }
     // 4. Tính toán tổng biến động
-    async function calculateTotalPortfolioChange(portfolio) {
+    async function calculateTotalPortfolioChange(portfolio, i=1) {
         let totalChangeValue = 0;
         const promises = portfolio.map(async (item) => {
             const history = await getStockHistory(item.symbol);
             if (history.length > 0) {
-                const latest = history[history.length - 1];
+                const latest = history[history.length - i];
                 totalChangeValue += item.quantity * latest.change;
                 latestDateNav = latest.date;
             }
@@ -93,16 +97,34 @@ document.head.appendChild(style);
         console.log("Đang phân tích danh mục quỹ...");
         const portfolio = getPortfolioFromDOM();
         if (portfolio.length === 0) return;
+        const totalChangeNAVpre = await calculateTotalPortfolioChange(portfolio,2);
         const totalChangeNAV = await calculateTotalPortfolioChange(portfolio);
         const navElement = document.querySelector('.total-assets.flex-between .value');
         if (!navElement) return;
         const currentNAV = parseFloat(navElement.textContent.replace(/,/g, '').replace('T', '')) * 1_000_000_000;
         const changePercent = ((totalChangeNAV / (currentNAV + totalChangeNAV)) * 100).toFixed(2);
+        const changePercentPre = ((totalChangeNAVpre / (currentNAV - totalChangeNAVpre)) * 100).toFixed(2);
         // Chèn kết quả vào phần .portfolio-metrics của SMoney
         const metricsContainer = document.querySelector('.portfolio-metrics .row');
         if (metricsContainer) {
             const dateStr = latestDateNav ? ` (${getNext(latestDateNav)})` : "";
             const html = `
+                <div class="col-4 col-lg-2">
+                    <div class="metric-card py-2 px-0 text-center">
+                        <div class="metric-label">ΔNAV ${latestDateNav}</div>
+                        <div class="metric-value" style="color: ${totalChangeNAVpre >= 0 ? '#28a745' : '#dc3545'};">
+                            ${formatNumber(totalChangeNAVpre)}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-4 col-lg-2">
+                    <div class="metric-card py-2 px-0 text-center">
+                        <div class="metric-label">ΔNAV% ${latestDateNav}</div>
+                        <div class="metric-value" style="color: ${totalChangeNAVpre >= 0 ? '#28a745' : '#dc3545'};">
+                            ${changePercentPre}%
+                        </div>
+                    </div>
+                </div>
                 <div class="col-4 col-lg-2">
                     <div class="metric-card py-2 px-0 text-center">
                         <div class="metric-label">ΔNAV ${dateStr}</div>
