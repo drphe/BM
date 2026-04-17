@@ -19,7 +19,7 @@ async function fetchData() {
                 "sortField": "navTo12Months",
                 "page": 1,
                 "pageSize": 100,
-                "fundAssetTypes": ["STOCK", "BALANCED"]
+                "fundAssetTypes": ["STOCK", "BALANCED", "BOND"]
             })
         });
         const result = await res.json();
@@ -734,7 +734,7 @@ function renderUI(data) {
     setPerf('p-12m', nav.navTo12Months);
     setPerf('p-36m', nav.annualizedReturn36Months || 0);
     document.getElementById('p-total').textContent = '+' + nav.navToEstablish + '%';
-
+   if(data.dataFundAssetType.code == "BOND") return;
     // Biểu đồ ngành
     const ctx = document.getElementById('industryChart').getContext('2d');
     if (industryChartInstance) industryChartInstance.destroy();
