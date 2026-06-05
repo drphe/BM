@@ -3,369 +3,339 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>iOS 26 Liquid Glass Effect - Demo</title>
+    <title>iOS 26 Liquid Glass - Đúng chất kính chảy</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            user-select: none; /* Tránh bôi đen text khi vuốt */
+            user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
         body {
             min-height: 100vh;
-            background: radial-gradient(circle at 20% 30%, #1a1a2e, #16213e);
+            background: radial-gradient(circle at 30% 40%, #1e1e2f, #0a0a15);
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: -apple-system, 'SF Pro Text', Helvetica, sans-serif;
+            font-family: -apple-system, 'SF Pro Text', system-ui, Helvetica, sans-serif;
             padding: 20px;
         }
 
-        /* CONTAINER CHÍNH */
-        .glass-nav {
+        /* Thanh điều hướng - Nền kính mờ */
+        .glass-bar {
             position: relative;
-            background: rgba(255, 255, 255, 0.15);
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            border-radius: 60px;
-            padding: 8px;
+            background: rgba(255, 255, 255, 0.12);
+            backdrop-filter: blur(24px) saturate(180%);
+            -webkit-backdrop-filter: blur(24px) saturate(180%);
+            border-radius: 100px;
+            padding: 6px;
             display: flex;
             gap: 8px;
-            border: 0.5px solid rgba(255, 255, 255, 0.3);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            transition: transform 0.2s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            border: 0.5px solid rgba(255, 255, 255, 0.25);
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            transition: transform 0.18s cubic-bezier(0.2, 0.9, 0.4, 1.1);
             transform-origin: center;
         }
 
-        /* Hiệu ứng phóng to toàn bộ khi đang touch */
-        .glass-nav.touch-active {
+        /* Phóng to nhẹ container khi đang touch */
+        .glass-bar.touching {
             transform: scale(1.02);
         }
 
-        /* CÁC ITEM BUTTON */
-        .nav-item {
+        /* Các nút bấm */
+        .glass-item {
             position: relative;
             z-index: 2;
-            padding: 14px 28px;
-            font-size: 1.1rem;
+            padding: 12px 28px;
+            font-size: 1rem;
             font-weight: 590;
-            color: white;
+            color: rgba(255, 255, 255, 0.9);
             text-align: center;
             cursor: pointer;
-            border-radius: 50px;
-            transition: color 0.2s ease;
-            backdrop-filter: blur(4px);
-            letter-spacing: 0.3px;
+            border-radius: 100px;
             background: transparent;
             border: none;
             font-family: inherit;
+            letter-spacing: 0.3px;
+            transition: color 0.2s;
+            backdrop-filter: blur(2px);
         }
 
-        /* HIỆU ỨNG LỚP PHỦ DI ĐỘNG (Liquid Glass) */
-        .liquid-glass-layer {
+        /* LỚP THỦY TINH LỎNG - đúng chất "màng sương kính trong" */
+        .liquid-glass {
             position: absolute;
-            top: 8px; /* Căn theo padding của container */
-            left: 8px;
-            background: rgba(255, 255, 255, 0.35);
-            backdrop-filter: blur(18px) saturate(200%);
-            -webkit-backdrop-filter: blur(18px) saturate(200%);
-            border-radius: 50px;
-            pointer-events: none; /* Quan trọng: để sự kiện chạm xuyên qua layer */
+            top: 6px;
+            left: 6px;
+            background: rgba(255, 255, 255, 0.4);
+            backdrop-filter: blur(20px) saturate(200%);
+            -webkit-backdrop-filter: blur(20px) saturate(200%);
+            border-radius: 100px;
+            pointer-events: none;
             z-index: 1;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.6);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255, 255, 255, 0.7);
             border: 0.5px solid rgba(255, 255, 255, 0.5);
-            transition: all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.2);
-            will-change: transform, width, opacity;
+            transition: all 0.28s cubic-bezier(0.2, 0.85, 0.4, 1);
+            will-change: transform, left, top, width, height, opacity;
         }
 
-        /* Trạng thái ẩn (thu nhỏ về 0 tại vị trí cũ) */
-        .liquid-glass-layer.hidden {
+        /* Trạng thái ẩn - thu nhỏ và mờ dần */
+        .liquid-glass.hidden {
             opacity: 0;
-            transform: scale(0.85);
-            transition: opacity 0.12s ease-out, transform 0.12s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+            transform: scale(0.75);
+            transition: opacity 0.12s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.12s cubic-bezier(0.2, 0.9, 0.4, 1);
         }
 
-        /* Animation xuất hiện phóng to từ điểm chạm sẽ dùng JS set style tạm thời */
-        /* Class dùng cho hiệu ứng "nổi lên phóng to" */
-        .liquid-glass-layer.ripple-reveal {
-            transition: opacity 0.12s ease-out, transform 0.22s cubic-bezier(0.15, 0.85, 0.3, 1.05);
+        /* Animation lúc xuất hiện (phóng to từ điểm chạm) */
+        .liquid-glass.ripple-in {
+            transition: all 0.22s cubic-bezier(0.15, 0.85, 0.3, 1.08);
             opacity: 1;
             transform: scale(1);
         }
     </style>
 </head>
 <body>
-
-<div class="glass-nav" id="glassNav">
-    <button class="nav-item" data-index="0">探索</button>
-    <button class="nav-item" data-index="1">动态</button>
-    <button class="nav-item" data-index="2">通知</button>
-    <button class="nav-item" data-index="3">我的</button>
-    <div class="liquid-glass-layer hidden" id="glassLayer"></div>
+<div class="glass-bar" id="glassBar">
+    <button class="glass-item" data-idx="0">Khám phá</button>
+    <button class="glass-item" data-idx="1">Khoảnh khắc</button>
+    <button class="glass-item" data-idx="2">Thông báo</button>
+    <button class="glass-item" data-idx="3">Hồ sơ</button>
+    <div class="liquid-glass hidden" id="liquidGlass"></div>
 </div>
 
 <script>
-    (function() {
-        // --- DOM elements ---
-        const container = document.getElementById('glassNav');
-        const items = document.querySelectorAll('.nav-item');
-        const glassLayer = document.getElementById('glassLayer');
+    (function(){
+        // DOM elements
+        const bar = document.getElementById('glassBar');
+        const items = document.querySelectorAll('.glass-item');
+        const glass = document.getElementById('liquidGlass');
 
-        // --- State ---
-        let currentActiveIndex = 0;        // item đang active (có lớp phủ)
-        let isDragging = false;             // trạng thái đang rê (touchmove)
-        let pendingIndex = null;            // khi kết thúc rê, index cần nhảy tới
-        let animationFrameId = null;        // cho mượt khi drag
-        let isAnimatingSnap = false;         // chặng spam transition khi đang snap mạnh
+        // State
+        let activeIndex = 0;            // item đang giữ lớp kính
+        let isActive = false;            // lớp kính có đang hiển thị không
+        let isDragging = false;          // đang rê ngón tay
+        let snapPending = false;          // đang chạy snap animation
+        let currentTouchId = null;
 
-        // Lấy tọa độ của 1 item so với container
-        function getItemRectRelativeToContainer(index) {
+        // Helper: lấy vị trí item so với container (dùng cho layer)
+        function getItemRelativeRect(index) {
             const item = items[index];
-            if (!item) return null;
-            const containerRect = container.getBoundingClientRect();
+            if(!item) return null;
+            const barRect = bar.getBoundingClientRect();
             const itemRect = item.getBoundingClientRect();
             return {
-                left: itemRect.left - containerRect.left,
-                top: itemRect.top - containerRect.top,
+                left: itemRect.left - barRect.left,
+                top: itemRect.top - barRect.top,
                 width: itemRect.width,
                 height: itemRect.height
             };
         }
 
-        // Di chuyển layer đến item (có thể kèm animation qua CSS)
-        function moveLayerToItem(index, withTransition = true) {
-            if (!glassLayer) return;
-            const rect = getItemRectRelativeToContainer(index);
-            if (!rect) return;
-
-            if (withTransition) {
-                glassLayer.style.transition = 'all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.2)';
+        // Di chuyển layer đến item (có thể bật/tắt transition)
+        function moveGlassToItem(index, withTransition = true) {
+            const rect = getItemRelativeRect(index);
+            if(!rect) return;
+            if(withTransition) {
+                glass.style.transition = 'all 0.28s cubic-bezier(0.2, 0.85, 0.4, 1)';
             } else {
-                glassLayer.style.transition = 'none';
+                glass.style.transition = 'none';
             }
-
-            glassLayer.style.left = rect.left + 'px';
-            glassLayer.style.top = rect.top + 'px';
-            glassLayer.style.width = rect.width + 'px';
-            glassLayer.style.height = rect.height + 'px';
-            
-            // Force reflow nếu không transition
-            if (!withTransition) {
-                void glassLayer.offsetHeight;
+            glass.style.left = rect.left + 'px';
+            glass.style.top = rect.top + 'px';
+            glass.style.width = rect.width + 'px';
+            glass.style.height = rect.height + 'px';
+            if(!withTransition) {
+                void glass.offsetHeight;
             }
         }
 
-        // Hiệu ứng "nổi lên phóng to" khi bắt đầu chạm: layer xuất hiện tại điểm chạm rồi nhanh về size đúng item
-        function animateRippleAtPoint(x, y, targetIndex) {
-            if (!glassLayer) return;
-            const containerRect = container.getBoundingClientRect();
-            const targetRect = items[targetIndex].getBoundingClientRect();
-            const targetRectRel = getItemRectRelativeToContainer(targetIndex);
+        // Hiệu ứng xuất hiện từ điểm chạm + phóng to (giống màng nước nổi lên)
+        function rippleRevealFromTouch(clientX, clientY, targetIndex) {
+            const barRect = bar.getBoundingClientRect();
+            const targetRect = getItemRelativeRect(targetIndex);
+            if(!targetRect) return;
+
+            // Tắt mọi transition, set layer nhỏ xíu tại điểm chạm
+            glass.style.transition = 'none';
+            glass.classList.remove('hidden');
+            const touchX = clientX - barRect.left;
+            const touchY = clientY - barRect.top;
+            glass.style.left = (touchX - 10) + 'px';
+            glass.style.top = (touchY - 10) + 'px';
+            glass.style.width = '20px';
+            glass.style.height = '20px';
+            glass.style.opacity = '1';
             
-            // Tính vị trí điểm chạm so với container
-            const touchX = x - containerRect.left;
-            const touchY = y - containerRect.top;
+            void glass.offsetHeight; // force repaint
             
-            // Tắt transition tạm để set vị trí nhỏ tại điểm chạm
-            glassLayer.style.transition = 'none';
-            glassLayer.style.left = (touchX - 8) + 'px';  // trừ padding 8px (giả lập small)
-            glassLayer.style.top = (touchY - 8) + 'px';
-            glassLayer.style.width = '16px';
-            glassLayer.style.height = '16px';
-            glassLayer.classList.remove('hidden');
+            // Bật transition để nở ra đúng kích thước item
+            glass.style.transition = 'all 0.22s cubic-bezier(0.15, 0.85, 0.3, 1.08)';
+            glass.style.left = targetRect.left + 'px';
+            glass.style.top = targetRect.top + 'px';
+            glass.style.width = targetRect.width + 'px';
+            glass.style.height = targetRect.height + 'px';
+            glass.classList.add('ripple-in');
             
-            void glassLayer.offsetHeight; // force repaint
-            
-            // Bật transition để phóng to về kích thước thật và vị trí đúng
-            glassLayer.style.transition = 'all 0.22s cubic-bezier(0.15, 0.85, 0.3, 1.05)';
-            glassLayer.style.left = targetRectRel.left + 'px';
-            glassLayer.style.top = targetRectRel.top + 'px';
-            glassLayer.style.width = targetRectRel.width + 'px';
-            glassLayer.style.height = targetRectRel.height + 'px';
-            
-            // Đảm bảo opacity = 1
-            glassLayer.style.opacity = '1';
-            glassLayer.classList.add('ripple-reveal');
-            
-            // Sau khi animation kết thúc, xóa class ripple
-            const onFinish = () => {
-                glassLayer.classList.remove('ripple-reveal');
-                glassLayer.removeEventListener('transitionend', onFinish);
+            // Xóa class ripple-in sau khi animation kết thúc
+            const onRippleEnd = () => {
+                glass.classList.remove('ripple-in');
+                glass.removeEventListener('transitionend', onRippleEnd);
             };
-            glassLayer.addEventListener('transitionend', onFinish, { once: true });
+            glass.addEventListener('transitionend', onRippleEnd, { once: true });
+            
+            activeIndex = targetIndex;
+            isActive = true;
         }
 
-        // Cập nhật layer khi rê (theo finger)
-        function updateLayerDuringDrag(clientX, clientY) {
-            if (!isDragging) return;
-            const containerRect = container.getBoundingClientRect();
-            // Tìm item nào dưới ngón tay (dựa theo hit test)
+        // Làm layer biến mất nhẹ nhàng (thu nhỏ và fade)
+        function fadeOutGlass() {
+            if(!glass) return;
+            glass.style.transition = 'opacity 0.12s cubic-bezier(0.2, 0.9, 0.4, 1), transform 0.12s cubic-bezier(0.2, 0.9, 0.4, 1)';
+            glass.classList.add('hidden');
+            glass.style.opacity = '0';
+            isActive = false;
+        }
+
+        // Khi bắt đầu touch vào 1 button (xử lý cả trường hợp đã ẩn layer)
+        function onTapStart(e, idx) {
+            e.preventDefault();
+            if(snapPending) return;
+            
+            const touch = e.touches ? e.touches[0] : e;
+            const clientX = touch.clientX;
+            const clientY = touch.clientY;
+            
+            // Phóng to thanh chứa
+            bar.classList.add('touching');
+            
+            // Trường hợp 1: Lớp kính đang ẩn (không hiển thị)
+            if(!isActive || glass.classList.contains('hidden')) {
+                // Hiện layer ngay tại vị trí cũ (activeIndex) KHÔNG animation
+                glass.classList.remove('hidden');
+                glass.style.transition = 'none';
+                glass.style.opacity = '1';
+                moveGlassToItem(activeIndex, false);
+                void glass.offsetHeight;
+                // Sau đó lập tức trượt NHANH đến item mới được chạm
+                snapPending = true;
+                glass.style.transition = 'all 0.28s cubic-bezier(0.2, 0.85, 0.4, 1)';
+                const newRect = getItemRelativeRect(idx);
+                if(newRect) {
+                    glass.style.left = newRect.left + 'px';
+                    glass.style.top = newRect.top + 'px';
+                    glass.style.width = newRect.width + 'px';
+                    glass.style.height = newRect.height + 'px';
+                }
+                activeIndex = idx;
+                isActive = true;
+                const onSnapDone = () => {
+                    snapPending = false;
+                    glass.style.transition = 'all 0.28s cubic-bezier(0.2, 0.85, 0.4, 1)';
+                    glass.removeEventListener('transitionend', onSnapDone);
+                };
+                glass.addEventListener('transitionend', onSnapDone, { once: true });
+                isDragging = true;
+                return;
+            }
+            
+            // Trường hợp 2: Layer đang hiện -> tạo hiệu ứng nổi từ điểm chạm như màng nước
+            if(isActive && !glass.classList.contains('hidden')) {
+                rippleRevealFromTouch(clientX, clientY, idx);
+                if(activeIndex !== idx) {
+                    activeIndex = idx;
+                } else {
+                    // Cùng index vẫn làm ripple nhẹ
+                }
+                isDragging = true;
+            }
+        }
+        
+        // Xử lý khi rê ngón tay (layer bám theo)
+        function onTouchMove(e) {
+            if(!isDragging || snapPending) return;
+            e.preventDefault();
+            const touch = e.touches[0];
+            const barRect = bar.getBoundingClientRect();
             let hoverIndex = -1;
-            for (let i = 0; i < items.length; i++) {
+            for(let i=0; i<items.length; i++) {
                 const rect = items[i].getBoundingClientRect();
-                if (clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom) {
+                if(touch.clientX >= rect.left && touch.clientX <= rect.right && touch.clientY >= rect.top && touch.clientY <= rect.bottom) {
                     hoverIndex = i;
                     break;
                 }
             }
-            if (hoverIndex !== -1 && hoverIndex !== currentActiveIndex) {
-                // Vuốt sang item khác: di chuyển layer tới vị trí đó KHÔNG có animation nhảy to,
-                // nhưng layer vẫn hiện. Nhưng để mượt mà, dùng transition nhanh?
-                // Theo tả của bạn: khi rê ngón tay sang ngang, lớp phủ đi theo (nhưng không có phóng to lại từ đầu)
-                // => di chuyển layer đến item mới với transition nhanh (0.2s) nhưng có cảm giác liền.
-                if (!isAnimatingSnap) {
-                    currentActiveIndex = hoverIndex;
-                    // di chuyển layer đến item mới, dùng transition hơi nhanh để bám theo ngón tay
-                    if (glassLayer) {
-                        glassLayer.style.transition = 'all 0.18s cubic-bezier(0.2, 0.8, 0.4, 1)';
-                        moveLayerToItem(currentActiveIndex, true);
-                    }
-                }
+            if(hoverIndex !== -1 && hoverIndex !== activeIndex) {
+                // Di chuyển layer tới item mới một cách mượt (dùng transition nhanh)
+                activeIndex = hoverIndex;
+                glass.style.transition = 'all 0.18s cubic-bezier(0.2, 0.8, 0.4, 1)';
+                moveGlassToItem(activeIndex, true);
             }
         }
         
-        // Kết thúc thao tác (touch end) : chọn item cuối cùng active và snap nếu có thay đổi,
-        // đồng thời nếu bỏ tay tại vị trí mới, nó sẽ biến mất ngược? Theo mô tả: "bỏ tay thì nó biến mất ngược".
-        // Nhưng thực tế trên iOS: sau khi thả tay layer sẽ fade out nhẹ và nếu chọn item khác nó xuất hiện lại ở vị trí cũ rồi trượt?
-        // Bạn mô tả: "Nếu chọn ở vị trí khác với lúc bỏ ra, nó vẫn hiện ở vị trí cũ nhưng trượt nhanh đến đối tượng ta touch vào"
-        // => Vậy sau khi thả tay, layer sẽ ẩn đi (fade out scale). Rồi khi touch vào một item bất kì, nó sẽ hiện ở vị trí cũ (active cũ) và lập tức trượt đến item mới.
-        
-        function finishTouch() {
-            if (!isDragging) return;
-            isDragging = false;
-            container.classList.remove('touch-active');
-            
-            // Ẩn layer với animation "biến mất ngược" (scale nhỏ, fade)
-            if (glassLayer) {
-                glassLayer.style.transition = 'opacity 0.12s ease-out, transform 0.12s cubic-bezier(0.2, 0.9, 0.4, 1.1)';
-                glassLayer.classList.add('hidden');
-                glassLayer.style.transform = 'scale(0.85)';
-                glassLayer.style.opacity = '0';
-            }
-            
-            // Sau khi ẩn xong, reset vị trí layer đúng với currentActiveIndex (nhưng vẫn hidden)
-            // Để lần touch tiếp theo nó hiện ngay tại vị trí cũ rồi trượt.
-            setTimeout(() => {
-                if (glassLayer && !isDragging) {
-                    // Set lại vị trí đúng của item active (cũ) nhưng hidden
-                    glassLayer.style.transition = 'none';
-                    moveLayerToItem(currentActiveIndex, false);
-                    glassLayer.style.transform = '';
-                    glassLayer.style.opacity = '0';
-                    glassLayer.classList.add('hidden');
-                }
-            }, 130);
-        }
-        
-        // Bắt đầu touch vào 1 item (tạo lớp phủ nổi lên và phóng to)
-        function onTouchStartHandler(e, index) {
-            e.preventDefault();
-            const touch = e.touches[0];
-            const targetIndex = index;
-            
-            // Nếu đang có animation snap thì dừng, không xử lý chồng
-            if (isAnimatingSnap) return;
-            
-            // Phóng to container
-            container.classList.add('touch-active');
-            
-            // Nếu layer đang hidden, cần hiện nó lên tại vị trí cũ (currentActiveIndex) RỒI trượt nhanh tới item mới
-            const isHiddenNow = glassLayer.classList.contains('hidden');
-            
-            if (isHiddenNow) {
-                // Bước 1: Hiện lại layer ở vị trí cũ (không animation đột ngột, set visible)
-                glassLayer.classList.remove('hidden');
-                glassLayer.style.transition = 'none';
-                glassLayer.style.opacity = '1';
-                moveLayerToItem(currentActiveIndex, false);
-                void glassLayer.offsetHeight;
-                // Bước 2: Lập tức trượt thật nhanh tới item mới (snap)
-                isAnimatingSnap = true;
-                glassLayer.style.transition = 'all 0.28s cubic-bezier(0.2, 0.9, 0.3, 1.2)';
-                const newRect = getItemRectRelativeToContainer(targetIndex);
-                if (newRect) {
-                    glassLayer.style.left = newRect.left + 'px';
-                    glassLayer.style.top = newRect.top + 'px';
-                    glassLayer.style.width = newRect.width + 'px';
-                    glassLayer.style.height = newRect.height + 'px';
-                }
-                currentActiveIndex = targetIndex;
-                const onSnapEnd = () => {
-                    isAnimatingSnap = false;
-                    glassLayer.style.transition = 'all 0.35s cubic-bezier(0.2, 0.9, 0.4, 1.2)';
-                    glassLayer.removeEventListener('transitionend', onSnapEnd);
-                };
-                glassLayer.addEventListener('transitionend', onSnapEnd, { once: true });
-                // Vẫn kích hoạt chế độ dragging để có thể rê tiếp
-                isDragging = true;
-                // Không thực hiện ripple nữa vì snap đã xử lý
+        // Kết thúc touch: layer biến mất ngược (thu nhỏ + fade)
+        function onTouchEnd(e) {
+            if(!isDragging) {
+                bar.classList.remove('touching');
                 return;
             }
+            e.preventDefault();
+            isDragging = false;
+            bar.classList.remove('touching');
             
-            // Trường hợp layer đang hiện: làm hiệu ứng "nổi lên" từ điểm chạm
-            if (!isHiddenNow) {
-                animateRippleAtPoint(touch.clientX, touch.clientY, targetIndex);
-            }
+            // Biến mất ngược (scale nhỏ và mờ)
+            fadeOutGlass();
             
-            // Cập nhật active index và di chuyển nếu khác
-            if (currentActiveIndex !== targetIndex) {
-                currentActiveIndex = targetIndex;
-                if (!isHiddenNow) {
-                    moveLayerToItem(currentActiveIndex, true);
+            // Reset vị trí layer chính xác theo activeIndex nhưng vẫn hidden cho lần sau
+            setTimeout(() => {
+                if(!isDragging && glass.classList.contains('hidden')) {
+                    glass.style.transition = 'none';
+                    moveGlassToItem(activeIndex, false);
+                    glass.style.opacity = '0';
                 }
-            }
-            isDragging = true;
-        }
-        
-        // Touch move global
-        function onGlobalTouchMove(e) {
-            if (!isDragging) return;
-            e.preventDefault();
-            const touch = e.touches[0];
-            if (animationFrameId) cancelAnimationFrame(animationFrameId);
-            animationFrameId = requestAnimationFrame(() => {
-                updateLayerDuringDrag(touch.clientX, touch.clientY);
-                animationFrameId = null;
-            });
-        }
-        
-        function onGlobalTouchEnd(e) {
-            if (!isDragging) return;
-            e.preventDefault();
-            finishTouch();
+            }, 130);
         }
         
         // Gắn sự kiện cho từng item
         items.forEach((item, idx) => {
             item.addEventListener('touchstart', (e) => {
                 e.stopPropagation();
-                onTouchStartHandler(e, idx);
+                onTapStart(e, idx);
             }, { passive: false });
             
-            // Hỗ trợ chuột (cho dev)
+            // Hỗ trợ chuột để test
             item.addEventListener('mousedown', (e) => {
                 e.preventDefault();
-                container.classList.add('touch-active');
+                bar.classList.add('touching');
                 const rect = item.getBoundingClientRect();
-                const fakeTouch = { touches: [{ clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 }] };
-                onTouchStartHandler(fakeTouch, idx);
+                const fakeEvent = { clientX: rect.left + rect.width/2, clientY: rect.top + rect.height/2 };
+                onTapStart(fakeEvent, idx);
             });
         });
         
         // Global events
-        document.addEventListener('touchmove', onGlobalTouchMove, { passive: false });
-        document.addEventListener('touchend', onGlobalTouchEnd);
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
         document.addEventListener('mouseup', () => {
-            if (isDragging) finishTouch();
-            container.classList.remove('touch-active');
+            if(isDragging) {
+                isDragging = false;
+                bar.classList.remove('touching');
+                fadeOutGlass();
+                setTimeout(() => {
+                    if(glass.classList.contains('hidden')) {
+                        glass.style.transition = 'none';
+                        moveGlassToItem(activeIndex, false);
+                        glass.style.opacity = '0';
+                    }
+                }, 130);
+            }
         });
         
-        // Khởi tạo layer tại item đầu, visible nhưng phải ẩn đi ban đầu chờ touch mới hiện
-        moveLayerToItem(0, false);
-        glassLayer.classList.add('hidden');
-        currentActiveIndex = 0;
+        // Khởi tạo: layer ở item 0 nhưng ẩn đi, chờ touch mới hiện
+        moveGlassToItem(0, false);
+        glass.classList.add('hidden');
+        activeIndex = 0;
+        isActive = false;
     })();
 </script>
 </body>
