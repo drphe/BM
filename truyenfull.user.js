@@ -1,13 +1,15 @@
 // ==UserScript==
 // @name         TruyenFull EPUB Downloader
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.5
 // @description  Tải truyện từ TruyenFull về dạng EPUB
 // @author       BS Phê
 // @match        https://truyenfull.today/*/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_download
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.9.1/jszip.min.js
+// @updateURL    https://vnindex.vercel.app/truyenfull.user.js
+// @downloadURL  https://vnindex.vercel.app/truyenfull.user.js
 // ==/UserScript==
 
 (function() {
@@ -418,7 +420,7 @@
                     downloadBtn.style.pointerEvents = 'auto';
                 });
 
-                console.log("✅ Đã khởi tạo nút 'Tải xuống EPUB (Anti-503)'!");
+                console.log("✅ Đã khởi tạo nút 'Tải xuống EPUB'!");
             }
         }, 500);
     }
@@ -814,7 +816,7 @@
             btn.classList.add('btn-danger');
             
             setTimeout(() => {
-                btn.textContent = "📥 Tải xuống EPUB (Anti-503)";
+                btn.textContent = "📥 Tải xuống EPUB";
                 btn.classList.remove('btn-danger');
                 btn.classList.add('btn-primary');
             }, 10000);
