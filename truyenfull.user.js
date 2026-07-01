@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         TruyenFull EPUB Downloader
 // @namespace    http://tampermonkey.net/
-// @version      2.5
+// @version      2.5.1
 // @description  Tải truyện từ TruyenFull về dạng EPUB
 // @author       BS Phê
 // @match        https://truyenfull.today/*/*
@@ -798,11 +798,11 @@
             
             // Định dạng chuỗi hiển thị (Ví dụ: 2p 15s hoặc chỉ 45s nếu chưa đến 1 phút)
             const timeString = minutes > 0 ? `${minutes}p ${seconds}s` : `${seconds}s`;
-            
-            btn.textContent = `🎉 Hoàn tất! ${timeString} - ${allChapters.length} chương`;
+            let textAlert= `🎉 Hoàn tất! ${timeString} - ${allChapters.length} chương`
+            btn.textContent = textAlert;
             btn.classList.remove('btn-primary', 'btn-danger');
             btn.classList.add('btn-success');
-            
+            alert(textAlert);
             setTimeout(() => {
                 btn.textContent = "📥 Tải xuống EPUB";
                 btn.classList.remove('btn-success');
