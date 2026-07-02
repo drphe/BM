@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Vnthuquan EPUB Downloader
+// @name         Vnthuquan EPUB Downloader (Auto Mode)
 // @namespace    http://tampermonkey.net/
-// @version      1.1
-// @description  Tải truyện từ vnthuquan.org về dạng EPUB (chỉ hiện nút khi có mục lục)
+// @version      2.0
+// @description  Tải truyện từ vnthuquan.org. Tự động nhận diện mục lục HTML hoặc Iframe Bibi để tải và đóng gói EPUB. Giữ nguyên cơ chế anti-spam.
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
 // @grant        GM_xmlhttpRequest
@@ -26,7 +26,7 @@
 
     // Cấu hình
     const CONFIG = {
-        MAX_CONCURRENT: 3,
+        MAX_CONCURRENT: 5,
         TIMEOUT: 30000,
         MAX_RETRIES: 3,
         RETRY_DELAY: 2000,
@@ -62,12 +62,12 @@
         });
     }
 
-    // Hàm fetch với retry và User-Agent ngẫu nhiên
+    // Hàm fetch với retry và User-Agent ngẫu nhiên (chống SPAM)
     async function fetchWithRetry(url, options = {}, retries = CONFIG.MAX_RETRIES) {
         const userAgent = getRandomUserAgent();
         const headers = {
             'User-Agent': userAgent,
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+            'Accept': '*/*',
             ...options.headers
         };
         const fetchOptions = { ...options, headers: headers };
@@ -80,7 +80,7 @@
                     new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout')), CONFIG.TIMEOUT))
                 ]);
 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                if (!response.ok) throw new Error(`HTTP ${response.status} tại ${url}`);
                 return response;
 
             } catch (error) {
@@ -104,11 +104,8 @@
                 responseType: 'blob',
                 headers: { 'User-Agent': getRandomUserAgent() },
                 onload: function(response) {
-                    if (response.status === 200 && response.response) {
-                        resolve(response.response);
-                    } else {
-                        reject(new Error('Failed to fetch'));
-                    }
+                    if (response.status === 200 && response.response) resolve(response.response);
+                    else reject(new Error('Failed to fetch'));
                 },
                 onerror: reject
             });
@@ -125,36 +122,57 @@
         return null;
     }
 
-    // Lấy danh sách chương từ DOM HTML
-    function getChapterList() {
-        const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
-        if (!chapterEls || chapterEls.length === 0) {
-            throw new Error("Không tìm thấy danh sách chương! Vui lòng mở mục lục hoặc đợi trang tải xong.");
-        }
-
-        return Array.from(chapterEls).map((el, index) => {
-            return {
-                title: el.textContent.replace(/\s+/g, ' ').trim(),
-                originalUrl: el.href,
-                chapterNumber: index + 1
-            };
-        });
+    function restoreButtonState(btn) {
+        btn.style.background = '#007bff';
+        btn.textContent = "📥 Tải xuống EPUB";
+        btn.disabled = false;
     }
 
-    // Hàm tải nhiều chương
+    // ==========================================
+    // CHẾ ĐỘ 1: ĐÓNG GÓI TỪ MỤC LỤC HTML
+    // ==========================================
+    function getChapterList() {
+        const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
+        if (!chapterEls || chapterEls.length === 0) throw new Error("Không tìm thấy danh sách chương!");
+        return Array.from(chapterEls).map((el, index) => ({
+            title: el.textContent.replace(/\s+/g, ' ').trim(),
+            originalUrl: el.href,
+            chapterNumber: index + 1
+        }));
+    }
+
     async function fetchChaptersWithRateLimit(chapters, zip, oebps, updateProgress) {
         const results = [];
         let completed = 0;
         const total = chapters.length;
-        const batchSize = CONFIG.MAX_CONCURRENT;
+        const batchSize = 3; 
 
         for (let i = 0; i < chapters.length; i += batchSize) {
             const batch = chapters.slice(i, i + batchSize);
             const batchPromises = batch.map(async (chap) => {
                 try {
                     await randomDelay(200, 800);
-                    const result = await fetchSingleChapter(chap, zip, oebps);
-                    return result;
+                    let chapterUrl = chap.originalUrl;
+                    if (chapterUrl.startsWith('/')) chapterUrl = window.location.origin + chapterUrl;
+
+                    const chapRes = await fetchWithRetry(chapterUrl);
+                    const chapHtml = await chapRes.text();
+                    const parser = new DOMParser();
+                    const chapDoc = parser.parseFromString(chapHtml, "text/html");
+
+                    let contentDiv = chapDoc.querySelector('#vntqTextContent');
+                    let cleanContent = contentDiv ? contentDiv.innerHTML : "<p>Không thể tải nội dung chương này.</p>";
+
+                    cleanContent = cleanContent
+                        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+                        .replace(/<br\s*\/?>/gi, '<br/>')
+                        .replace(/src="\//gi, 'src="https://vnthuquan.org/');
+
+                    const xhtmlStr = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${escapeXml(chap.title)}</title>\n  <style type="text/css">\n    body { font-family: "Times New Roman", Times, serif; line-height: 1.8; padding: 20px; max-width: 800px; margin: 0 auto; }\n    h2 { text-align: center; font-size: 1.8em; margin-bottom: 30px; color: #333; }\n    p { text-indent: 2em; margin-bottom: 1em; }\n    img { max-width: 100%; height: auto; display: block; margin: 10px auto; }\n  </style>\n</head>\n<body>\n  <h2>${escapeXml(chap.title)}</h2>\n  ${cleanContent}\n</body>\n</html>`;
+
+                    const fileName = `chuong-${chap.chapterNumber}.html`;
+                    oebps.file(fileName, xhtmlStr);
+                    return { ...chap, fileName, success: true };
                 } catch (err) {
                     console.error(`Lỗi chương ${chap.title}:`, err);
                     return { ...chap, error: true };
@@ -164,77 +182,234 @@
                 }
             });
 
-            const batchResults = await Promise.all(batchPromises);
-            results.push(...batchResults);
-
-            if (i + batchSize < chapters.length) {
-                await delay(1000 + Math.random() * 500);
-            }
+            await Promise.all(batchPromises);
+            if (i + batchSize < chapters.length) await delay(1000 + Math.random() * 500);
         }
         return results;
     }
 
-    // Hàm tải 1 chương
-    async function fetchSingleChapter(chap, zip, oebps) {
-        let chapterUrl = chap.originalUrl;
-        if (chapterUrl.startsWith('/')) {
-            chapterUrl = window.location.origin + chapterUrl;
-        } else if (!chapterUrl.startsWith('http')) {
-            chapterUrl = window.location.origin + '/' + chapterUrl;
+    async function startScrapingAndBuildingHTML(btn) {
+        try {
+            btn.textContent = "📂 Chọn thư mục...";
+            let dirHandle;
+            try {
+                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+            } catch (e) {
+                btn.textContent = "❌ Đã hủy chọn";
+                setTimeout(() => restoreButtonState(btn), 3000);
+                return;
+            }
+
+            const zip = new JSZip();
+            btn.textContent = "🔍 Đang trích xuất Metadata...";
+
+            let tname = document.querySelector('.vntq-reader-title')?.textContent.trim() || document.title;
+            let authorName = document.querySelector('.vntq-author-top a')?.textContent.trim() || 'Đang cập nhật';
+            let alias = tname.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-');
+            let description = "Truyện tải từ vnthuquan.org";
+
+            zip.file("mimetype", "application/epub+zip");
+            zip.folder("META-INF").file("container.xml", `<?xml version="1.0" encoding="UTF-8"?>\n<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">\n  <rootfiles>\n    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>\n  </rootfiles>\n</container>`);
+            const oebps = zip.folder("OEBPS");
+            const imagesFolder = oebps.folder("images");
+
+            let coverSaved = false;
+            const coverImg = document.querySelector('.vntq-large-cover-box img');
+            if (coverImg && coverImg.src) {
+                btn.textContent = "🖼️ Đang tải ảnh bìa...";
+                let coverUrl = coverImg.src;
+                if (coverUrl.startsWith('//')) coverUrl = 'https:' + coverUrl;
+                else if (coverUrl.startsWith('/')) coverUrl = window.location.origin + coverUrl;
+                
+                const coverBlob = await fetchCoverImage(coverUrl);
+                if (coverBlob) {
+                    imagesFolder.file("cover.jpg", coverBlob);
+                    coverSaved = true;
+                }
+            }
+
+            btn.textContent = `📋 Đang lấy danh sách chương...`;
+            const allChapters = getChapterList();
+
+            const coverXhtml = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>Bìa truyện</title>\n  <style type="text/css">\n    body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #ffffff; text-align: center; font-family: "Times New Roman", Times, serif; }\n    .cover { padding: 40px; max-width: 600px; }\n    .title { font-size: 2.5em; margin-bottom: 20px; font-weight: bold; }\n    .author { font-size: 1.5em; margin-bottom: 10px; }\n    .divider { width: 100px; height: 3px; background: #000; margin: 20px auto; }\n  </style>\n</head>\n<body>\n  <div class="cover">\n    ${coverSaved ? `<img src="images/cover.jpg" style="max-width: 100%; max-height: 600px;" alt="Cover"/>` : ''}\n    <div class="title">${escapeXml(tname)}</div>\n    <div class="divider"></div>\n    <div class="author">${escapeXml(authorName)}</div>\n  </div>\n</body>\n</html>`;
+            oebps.file("cover.xhtml", coverXhtml);
+
+            btn.textContent = `📥 Đang tải ${allChapters.length} chương...`;
+            let manifestItems = `    <item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml"/>\n`;
+            if (coverSaved) manifestItems += `    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n`;
+            let spineItems = `    <itemref idref="cover-page"/>\n`;
+
+            await fetchChaptersWithRateLimit(allChapters, zip, oebps, (completed, total) => {
+                if (completed % 5 === 0 || completed === total || completed === 1) {
+                    btn.textContent = `📥 Đã tải ${completed}/${total} chương...`;
+                }
+            });
+
+            let navXhtml = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head><title>Mục lục</title></head>\n<body><nav epub:type="toc" id="toc"><h1>Mục lục</h1><ol>\n`;
+            let tocNcx = `<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${alias}"/></head><docTitle><text>${escapeXml(tname)}</text></docTitle><navMap>\n`;
+
+            allChapters.forEach((chap, index) => {
+                chap.fileName = `chuong-${chap.chapterNumber}.html`;
+                manifestItems += `    <item id="chap_${index}" href="${chap.fileName}" media-type="application/xhtml+xml"/>\n`;
+                spineItems += `    <itemref idref="chap_${index}"/>\n`;
+                navXhtml += `<li><a href="${chap.fileName}">${escapeXml(chap.title)}</a></li>\n`;
+                tocNcx += `<navPoint id="navPoint-${index + 1}" playOrder="${index + 1}"><navLabel><text>${escapeXml(chap.title)}</text></navLabel><content src="${chap.fileName}"/></navPoint>\n`;
+            });
+            
+            navXhtml += `</ol></nav></body></html>`;
+            tocNcx += `</navMap></ncx>`;
+            oebps.file("nav.xhtml", navXhtml);
+            oebps.file("toc.ncx", tocNcx);
+
+            let opf = `<?xml version="1.0" encoding="utf-8"?>\n<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="pub-id">\n  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">\n    <dc:title>${escapeXml(tname)}</dc:title>\n    <dc:creator id="creator">${escapeXml(authorName)}</dc:creator>\n    <dc:language>vi</dc:language>\n    <dc:identifier id="pub-id">${escapeXml(alias)}</dc:identifier>\n    <dc:description>${escapeXml(description)}</dc:description>\n    <dc:publisher>Vnthuquan</dc:publisher>\n    <dc:date>${new Date().toISOString().split('T')[0]}</dc:date>\n    ${coverSaved ? `<meta name="cover" content="cover-image"/>\n` : ''}  </metadata>\n  <manifest>\n    <item id="toc" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>\n    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>\n${manifestItems}  </manifest>\n  <spine toc="ncx">\n${spineItems}  </spine>\n</package>`;
+            oebps.file("content.opf", opf);
+
+            btn.textContent = "📦 Đang khởi tạo file EPUB...";
+            const epubBlob = await zip.generateAsync({ type: "blob", mimeType: "application/epub+zip", compression: "STORE" }, 
+                (metadata) => btn.textContent = `📦 Đang nén: ${metadata.percent.toFixed(1)}%`
+            );
+
+            const safeTname = tname.replace(/[\\/:*?"<>|]/g, '-');
+            const safeAuthor = authorName.replace(/[\\/:*?"<>|]/g, '-');
+            const epubFileName = `${safeTname} - ${safeAuthor}.epub`;
+
+            const fileHandle = await dirHandle.getFileHandle(epubFileName, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(epubBlob);
+            await writable.close();
+
+            btn.style.background = '#28a745';
+            btn.textContent = `🎉 Hoàn tất HTML to EPUB!`;
+            setTimeout(() => restoreButtonState(btn), 5000);
+
+        } catch (error) {
+            console.error("Lỗi:", error);
+            btn.style.background = '#dc3545';
+            btn.textContent = `❌ Lỗi lấy HTML`;
+            setTimeout(() => restoreButtonState(btn), 5000);
         }
-
-        console.log(`📖 Đang tải: ${chap.title} - ${chapterUrl}`);
-        const chapRes = await fetchWithRetry(chapterUrl);
-        const chapHtml = await chapRes.text();
-
-        const parser = new DOMParser();
-        const chapDoc = parser.parseFromString(chapHtml, "text/html");
-
-        let contentDiv = chapDoc.querySelector('#vntqTextContent');
-        let cleanContent = '';
-
-        if (contentDiv) {
-            cleanContent = contentDiv.innerHTML;
-        } else {
-            cleanContent = "<p>Không thể tải nội dung chương này.</p>";
-        }
-
-        cleanContent = cleanContent
-            .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-            .replace(/<br\s*\/?>/gi, '<br/>')
-            .replace(/src="\//gi, 'src="https://vnthuquan.org/');
-
-        const xhtmlStr = `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>${escapeXml(chap.title)}</title>
-  <style type="text/css">
-    body { font-family: "Times New Roman", Times, serif; line-height: 1.8; padding: 20px; max-width: 800px; margin: 0 auto; }
-    h2 { text-align: center; font-size: 1.8em; margin-bottom: 30px; color: #333; }
-    p { text-indent: 2em; margin-bottom: 1em; }
-    img { max-width: 100%; height: auto; display: block; margin: 10px auto; }
-  </style>
-</head>
-<body>
-  <h2>${escapeXml(chap.title)}</h2>
-  ${cleanContent}
-</body>
-</html>`;
-
-        const fileName = `chuong-${chap.chapterNumber}.html`;
-        oebps.file(fileName, xhtmlStr);
-        return { ...chap, fileName, success: true };
     }
 
-    // Khởi tạo nút bấm nổi - chỉ xuất hiện khi tìm thấy mục lục
-    function setupButton() {
-        const checkExist = setInterval(() => {
-            const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
+    // ==========================================
+    // CHẾ ĐỘ 2: ĐÓNG GÓI TỪ BIBI SERVER
+    // ==========================================
+    async function repackBibiEpub(btn, iframeElement) {
+        try {
+            btn.textContent = "📂 Chọn thư mục lưu...";
+            let dirHandle;
+            try {
+                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+            } catch (e) {
+                btn.textContent = "❌ Đã hủy chọn";
+                setTimeout(() => restoreButtonState(btn), 3000);
+                return;
+            }
+
+            btn.textContent = "⏳ Đang phân tích cấu trúc EPUB...";
+
+            const srcUrl = iframeElement.getAttribute('data-src') || iframeElement.src;
+            let searchParams = srcUrl.includes('?') ? srcUrl.split('?')[1] : '';
+            const params = new URLSearchParams(searchParams);
+            let bookPath = params.get('book');
+            if (!bookPath) throw new Error("Không tìm thấy đường dẫn sách trong iframe.");
+
+            let baseBookUrl = bookPath;
+            if (!baseBookUrl.startsWith('http')) {
+                baseBookUrl = window.location.origin + (baseBookUrl.startsWith('/') ? '' : '/') + baseBookUrl;
+            }
+            baseBookUrl = baseBookUrl.replace(/\/$/, '');
+
+            const zip = new JSZip();
+            zip.file("mimetype", "application/epub+zip");
+
+            btn.textContent = "🔍 Đang đọc container.xml...";
+            const containerRes = await fetchWithRetry(`${baseBookUrl}/META-INF/container.xml`);
+            const containerXml = await containerRes.text();
+            zip.folder("META-INF").file("container.xml", containerXml);
+
+            const parser = new DOMParser();
+            const containerDoc = parser.parseFromString(containerXml, "text/xml");
+            const rootfile = containerDoc.querySelector("rootfile");
+            if (!rootfile) throw new Error("Không tìm thấy OPF trong container.xml");
+            const opfPath = rootfile.getAttribute("full-path");
+
+            btn.textContent = "🔍 Đang đọc file OPF...";
+            const opfRes = await fetchWithRetry(`${baseBookUrl}/${opfPath}`);
+            const opfXml = await opfRes.text();
+            zip.file(decodeURIComponent(opfPath), opfXml); 
+
+            const opfDoc = parser.parseFromString(opfXml, "text/xml");
+            const items = opfDoc.querySelectorAll("manifest item");
             
-            // Nếu tìm thấy ít nhất 1 chương trong mục lục
-            if (chapterEls && chapterEls.length > 0) {
-                clearInterval(checkExist); // Ngừng việc kiểm tra
+            let opfDir = opfPath.includes('/') ? opfPath.substring(0, opfPath.lastIndexOf('/')) : '';
+            const opfBaseUrl = opfDir ? `${baseBookUrl}/${opfDir}` : baseBookUrl;
+
+            const filesToDownload = Array.from(items).map(item => item.getAttribute("href")).filter(h => h);
+
+            let completed = 0;
+            const totalFiles = filesToDownload.length;
+            btn.textContent = `📥 Đang tải tài nguyên (0/${totalFiles})...`;
+
+            for (let i = 0; i < totalFiles; i += CONFIG.MAX_CONCURRENT) {
+                const batch = filesToDownload.slice(i, i + CONFIG.MAX_CONCURRENT);
+                await Promise.all(batch.map(async (href) => {
+                    try {
+                        const fileUrl = `${opfBaseUrl}/${href}`;
+                        const zipFilePath = opfDir ? `${opfDir}/${href}` : href;
+                        const decodedZipPath = decodeURIComponent(zipFilePath);
+
+                        const res = await fetchWithRetry(fileUrl);
+                        const blob = await res.blob();
+                        zip.file(decodedZipPath, blob);
+                    } catch (e) {
+                        console.warn(`Lỗi tải file ${href}:`, e);
+                    } finally {
+                        completed++;
+                    }
+                }));
+                btn.textContent = `📥 Đang tải tài nguyên (${completed}/${totalFiles})...`;
+                await delay(100 + Math.random() * 200); 
+            }
+
+            btn.textContent = "📦 Đang nén file EPUB...";
+            const epubBlob = await zip.generateAsync({ type: "blob", mimeType: "application/epub+zip", compression: "DEFLATE" }, 
+                (metadata) => btn.textContent = `📦 Đang nén: ${metadata.percent.toFixed(1)}%`
+            );
+
+            let title = opfDoc.querySelector("dc\\:title, title")?.textContent;
+            if (!title) title = document.querySelector('.vntq-reader-title')?.textContent.trim() || "Truyen_vnthuquan";
+            const safeTitle = title.replace(/[\\/:*?"<>|]/g, '-');
+            const epubFileName = `${safeTitle}.epub`;
+
+            const fileHandle = await dirHandle.getFileHandle(epubFileName, { create: true });
+            const writable = await fileHandle.createWritable();
+            await writable.write(epubBlob);
+            await writable.close();
+
+            btn.style.background = '#28a745';
+            btn.textContent = `🎉 Hoàn tất Repack EPUB!`;
+            setTimeout(() => restoreButtonState(btn), 5000);
+
+        } catch (error) {
+            console.error("Lỗi đóng gói từ Bibi:", error);
+            btn.style.background = '#dc3545';
+            btn.textContent = `❌ Lỗi Repack (Xem F12)`;
+            setTimeout(() => restoreButtonState(btn), 5000);
+        }
+    }
+
+    // ==========================================
+    // KHỞI TẠO NÚT BẤM (QUẢN LÝ ĐIỀU KIỆN XUẤT HIỆN)
+    // ==========================================
+    function setupButton() {
+        // Kiểm tra sự tồn tại của 1 trong 2 yếu tố liên tục
+        const checkExist = setInterval(() => {
+            const htmlChapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
+            const epubIframeEl = document.querySelector('iframe#epubIframe');
+            
+            // Chỉ hiện nút tải khi có Mục lục HOẶC có Iframe
+            if ((htmlChapterEls && htmlChapterEls.length > 0) || epubIframeEl) {
+                clearInterval(checkExist); 
 
                 if (document.getElementById('vntq-epub-btn')) return;
 
@@ -251,191 +426,21 @@
                 btn.addEventListener('click', async () => {
                     if (btn.disabled) return;
                     btn.disabled = true;
-                    await startScrapingAndBuilding(btn);
-                    btn.disabled = false;
+                    
+                    if (htmlChapterEls && htmlChapterEls.length > 0) {
+                        console.log("Đã tìm thấy mục lục HTML -> Chạy chế độ Scraping & Building.");
+                        await startScrapingAndBuildingHTML(btn);
+                    } else if (epubIframeEl) {
+                        console.log("Đã tìm thấy iframe Epub -> Chạy chế độ Bibi Repacker.");
+                        await repackBibiEpub(btn, epubIframeEl);
+                    }
                 });
                 
-                console.log("✅ Đã tìm thấy mục lục, hiển thị nút tải!");
+                console.log("✅ Điều kiện thỏa mãn. Nút tải đã được hiển thị.");
             }
-        }, 1000); // Kiểm tra mỗi giây 1 lần
+        }, 1000); 
     }
 
-    // Luồng xử lý chính
-    async function startScrapingAndBuilding(btn) {
-        const startTime = Date.now();
-
-        try {
-            btn.textContent = "📂 Chọn thư mục...";
-            let dirHandle;
-            try {
-                dirHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
-            } catch (e) {
-                btn.textContent = "❌ Đã hủy chọn thư mục";
-                setTimeout(() => btn.textContent = "📥 Tải xuống EPUB", 3000);
-                return;
-            }
-
-            const zip = new JSZip();
-            btn.textContent = "🔍 Đang trích xuất Metadata...";
-
-            // --- 1. LẤY THÔNG TIN METADATA ---
-            let tname = document.querySelector('.vntq-reader-title')?.textContent.trim() || document.title;
-            let authorName = document.querySelector('.vntq-author-top a')?.textContent.trim() || 'Đang cập nhật';
-            let alias = tname.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-z0-9]/g, '-');
-            let description = "Truyện tải từ vnthuquan.org";
-
-            // --- 2. TẠO CẤU TRÚC ZIP ---
-            zip.file("mimetype", "application/epub+zip");
-            const containerXml = `<?xml version="1.0" encoding="UTF-8"?>
-<container version="1.0" xmlns="urn:oasis:names:tc:opendocument:xmlns:container">
-  <rootfiles>
-    <rootfile full-path="OEBPS/content.opf" media-type="application/oebps-package+xml"/>
-  </rootfiles>
-</container>`;
-            zip.folder("META-INF").file("container.xml", containerXml);
-            const oebps = zip.folder("OEBPS");
-            const imagesFolder = oebps.folder("images");
-
-            // --- 3. TẢI ẢNH BÌA ---
-            let coverSaved = false;
-            const coverImg = document.querySelector('.vntq-large-cover-box img');
-            if (coverImg && coverImg.src) {
-                btn.textContent = "🖼️ Đang tải ảnh bìa...";
-                try {
-                    let coverUrl = coverImg.src;
-                    if (coverUrl.startsWith('//')) coverUrl = 'https:' + coverUrl;
-                    else if (coverUrl.startsWith('/')) coverUrl = window.location.origin + coverUrl;
-                    
-                    const coverBlob = await fetchCoverImage(coverUrl);
-                    if (coverBlob) {
-                        imagesFolder.file("cover.jpg", coverBlob);
-                        coverSaved = true;
-                    }
-                } catch (err) { console.error('Lỗi tải ảnh bìa:', err); }
-            }
-
-            // --- 4. LẤY DANH SÁCH CHƯƠNG TỪ DOM ---
-            btn.textContent = `📋 Đang lấy danh sách chương...`;
-            const allChapters = getChapterList();
-
-            // --- 5. TẠO COVER XHTML ---
-            const coverXhtml = `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-  <title>Bìa truyện</title>
-  <style type="text/css">
-    body { margin: 0; padding: 0; display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #ffffff; text-align: center; font-family: "Times New Roman", Times, serif; }
-    .cover { padding: 40px; max-width: 600px; }
-    .title { font-size: 2.5em; margin-bottom: 20px; font-weight: bold; }
-    .author { font-size: 1.5em; margin-bottom: 10px; }
-    .divider { width: 100px; height: 3px; background: #000; margin: 20px auto; }
-  </style>
-</head>
-<body>
-  <div class="cover">
-    ${coverSaved ? `<img src="images/cover.jpg" style="max-width: 100%; max-height: 600px;" alt="Cover"/>` : ''}
-    <div class="title">${escapeXml(tname)}</div>
-    <div class="divider"></div>
-    <div class="author">${escapeXml(authorName)}</div>
-  </div>
-</body>
-</html>`;
-            oebps.file("cover.xhtml", coverXhtml);
-
-            // --- 6. TẢI NỘI DUNG CHƯƠNG ---
-            btn.textContent = `📥 Đang tải ${allChapters.length} chương...`;
-            let manifestItems = `    <item id="cover-page" href="cover.xhtml" media-type="application/xhtml+xml"/>\n`;
-            if (coverSaved) manifestItems += `    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n`;
-            let spineItems = `    <itemref idref="cover-page"/>\n`;
-
-            const updateProgress = (completed, total) => {
-                if (completed % 5 === 0 || completed === total || completed === 1) {
-                    btn.textContent = `📥 Đã tải ${completed}/${total} chương...`;
-                }
-            };
-
-            await fetchChaptersWithRateLimit(allChapters, zip, oebps, updateProgress);
-
-            allChapters.forEach((chap, index) => {
-                chap.fileName = `chuong-${chap.chapterNumber}.html`;
-                manifestItems += `    <item id="chap_${index}" href="${chap.fileName}" media-type="application/xhtml+xml"/>\n`;
-                spineItems += `    <itemref idref="chap_${index}"/>\n`;
-            });
-
-            // --- 7. TẠO NAVIGATION ---
-            btn.textContent = "⚙️ Đang tạo cấu trúc Metadata...";
-            let navXhtml = `<?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">
-<head><title>Mục lục</title></head>
-<body><nav epub:type="toc" id="toc"><h1>Mục lục</h1><ol>\n`;
-            allChapters.forEach(chap => { navXhtml += `<li><a href="${chap.fileName}">${escapeXml(chap.title)}</a></li>\n`; });
-            navXhtml += `</ol></nav></body></html>`;
-            oebps.file("nav.xhtml", navXhtml);
-
-            let tocNcx = `<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${alias}"/></head><docTitle><text>${escapeXml(tname)}</text></docTitle><navMap>\n`;
-            allChapters.forEach((chap, index) => {
-                tocNcx += `<navPoint id="navPoint-${index + 1}" playOrder="${index + 1}"><navLabel><text>${escapeXml(chap.title)}</text></navLabel><content src="${chap.fileName}"/></navPoint>\n`;
-            });
-            tocNcx += `</navMap></ncx>`;
-            oebps.file("toc.ncx", tocNcx);
-
-            let opf = `<?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://www.idpf.org/2007/opf" version="3.0" unique-identifier="pub-id">
-  <metadata xmlns:dc="http://purl.org/dc/elements/1.1/">
-    <dc:title>${escapeXml(tname)}</dc:title>
-    <dc:creator id="creator">${escapeXml(authorName)}</dc:creator>
-    <dc:language>vi</dc:language>
-    <dc:identifier id="pub-id">${escapeXml(alias)}</dc:identifier>
-    <dc:description>${escapeXml(description)}</dc:description>
-    <dc:publisher>Vnthuquan</dc:publisher>
-    <dc:date>${new Date().toISOString().split('T')[0]}</dc:date>
-    ${coverSaved ? `<meta name="cover" content="cover-image"/>` : ''}
-  </metadata>
-  <manifest>
-    <item id="toc" href="nav.xhtml" media-type="application/xhtml+xml" properties="nav"/>
-    <item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
-${manifestItems}  </manifest>
-  <spine toc="ncx">
-${spineItems}  </spine>
-</package>`;
-            oebps.file("content.opf", opf);
-
-            // --- 8. NÉN VÀ LƯU FILE ---
-            btn.textContent = "📦 Đang khởi tạo file EPUB...";
-            const epubBlob = await zip.generateAsync({ type: "blob", mimeType: "application/epub+zip", compression: "STORE" }, 
-                function updateCallback(metadata) { btn.textContent = `📦 Đang nén: ${metadata.percent.toFixed(1)}%`; }
-            );
-
-            const safeTname = tname.replace(/[\\/:*?"<>|]/g, '-');
-            const safeAuthor = authorName.replace(/[\\/:*?"<>|]/g, '-');
-            const epubFileName = `${safeTname} - ${safeAuthor}.epub`;
-
-            const fileHandle = await dirHandle.getFileHandle(epubFileName, { create: true });
-            const writable = await fileHandle.createWritable();
-            await writable.write(epubBlob);
-            await writable.close();
-
-            btn.style.background = '#28a745';
-            btn.textContent = `🎉 Hoàn tất ${allChapters.length} chương!`;
-            setTimeout(() => {
-                btn.style.background = '#007bff';
-                btn.textContent = "📥 Tải xuống EPUB";
-            }, 5000);
-
-        } catch (error) {
-            console.error("Lỗi:", error);
-            btn.style.background = '#dc3545';
-            btn.textContent = `❌ Lỗi: Xem F12`;
-            setTimeout(() => {
-                btn.style.background = '#007bff';
-                btn.textContent = "📥 Tải xuống EPUB";
-            }, 5000);
-        }
-    }
-
-    // Bắt đầu setup button
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupButton);
     } else {
