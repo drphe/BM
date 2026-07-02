@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name         Vnthuquan EPUB Downloader (Auto Mode)
+// @name         Vnthuquan EPUB Downloader (Auto Mode + Offline Images)
 // @namespace    http://tampermonkey.net/
-// @version      2.0
-// @description  Tải truyện từ vnthuquan.org. Tự động nhận diện mục lục HTML hoặc Iframe Bibi để tải và đóng gói EPUB. Giữ nguyên cơ chế anti-spam.
+// @version      2.1
+// @description  Tải truyện từ vnthuquan.org. Hỗ trợ Iframe Bibi và Mục lục HTML (Bao gồm tải ảnh offline bên trong chương).
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
 // @grant        GM_xmlhttpRequest
@@ -24,7 +24,6 @@
         'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Safari/537.36 Edg/113.0.1774.35'
     ];
 
-    // Cấu hình
     const CONFIG = {
         MAX_CONCURRENT: 5,
         TIMEOUT: 30000,
@@ -34,12 +33,10 @@
         RANDOM_DELAY_MAX: 500
     };
 
-    // Hàm lấy User-Agent ngẫu nhiên
     function getRandomUserAgent() {
         return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
     }
 
-    // Hàm delay ngẫu nhiên
     function randomDelay(min = CONFIG.RANDOM_DELAY_MIN, max = CONFIG.RANDOM_DELAY_MAX) {
         const ms = Math.floor(Math.random() * (max - min + 1)) + min;
         return new Promise(resolve => setTimeout(resolve, ms));
@@ -47,7 +44,6 @@
 
     const delay = ms => new Promise(resolve => setTimeout(resolve, ms));
 
-    // Hàm escape XML
     function escapeXml(unsafe) {
         if (!unsafe) return '';
         return unsafe.replace(/[<>&'"]/g, function(c) {
@@ -62,11 +58,10 @@
         });
     }
 
-    // Hàm fetch với retry và User-Agent ngẫu nhiên (chống SPAM)
+    // Cơ chế chống Spam
     async function fetchWithRetry(url, options = {}, retries = CONFIG.MAX_RETRIES) {
-        const userAgent = getRandomUserAgent();
         const headers = {
-            'User-Agent': userAgent,
+            'User-Agent': getRandomUserAgent(),
             'Accept': '*/*',
             ...options.headers
         };
@@ -82,7 +77,6 @@
 
                 if (!response.ok) throw new Error(`HTTP ${response.status} tại ${url}`);
                 return response;
-
             } catch (error) {
                 console.warn(`⚠️ Lỗi request (lần ${attempt}/${retries}):`, error.message);
                 if (attempt < retries) {
@@ -95,8 +89,8 @@
         throw new Error(`Failed after ${retries} retries`);
     }
 
-    // Tải ảnh bìa
-    function fetchCoverImageGM(url) {
+    // Tải ảnh (Dùng cho cả Ảnh bìa và Ảnh bên trong chương - Bỏ qua lỗi CORS)
+    function fetchImageGM(url) {
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
                 method: 'GET',
@@ -112,12 +106,12 @@
         });
     }
 
-    async function fetchCoverImage(coverUrl) {
+    async function fetchImage(imageUrl) {
         try {
-            const blob = await fetchCoverImageGM(coverUrl);
+            const blob = await fetchImageGM(imageUrl);
             if (blob) return blob;
         } catch (e) {
-            console.warn('GM_xmlhttpRequest thất bại:', e);
+            console.warn('GM_xmlhttpRequest thất bại khi tải ảnh:', e);
         }
         return null;
     }
@@ -141,7 +135,8 @@
         }));
     }
 
-    async function fetchChaptersWithRateLimit(chapters, zip, oebps, updateProgress) {
+    // Hàm lấy chương có thêm đối số "imagesFolder" để ghi ảnh offline vào ZIP
+    async function fetchChaptersWithRateLimit(chapters, zip, oebps, imagesFolder, updateProgress) {
         const results = [];
         let completed = 0;
         const total = chapters.length;
@@ -163,10 +158,49 @@
                     let contentDiv = chapDoc.querySelector('#vntqTextContent');
                     let cleanContent = contentDiv ? contentDiv.innerHTML : "<p>Không thể tải nội dung chương này.</p>";
 
+                    // Xóa script và <br>
                     cleanContent = cleanContent
                         .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
-                        .replace(/<br\s*\/?>/gi, '<br/>')
-                        .replace(/src="\//gi, 'src="https://vnthuquan.org/');
+                        .replace(/<br\s*\/?>/gi, '<br/>');
+
+                    // TÌM VÀ TẢI ẢNH OFFLINE
+                    const tempDiv = document.createElement('div');
+                    tempDiv.innerHTML = cleanContent;
+                    const imgs = tempDiv.querySelectorAll('img');
+                    
+                    chap.images = []; // Thuộc tính mảng lưu tên file ảnh cục bộ
+                    let imgCounter = 0;
+
+                    for (const img of imgs) {
+                        let src = img.getAttribute('src');
+                        if (src) {
+                            // Chuẩn hóa link ảnh
+                            if (src.startsWith('//')) src = 'https:' + src;
+                            else if (src.startsWith('/')) src = window.location.origin + src;
+                            else if (!src.startsWith('http')) src = window.location.origin + '/' + src;
+
+                            imgCounter++;
+                            // Tách đuôi file để lưu (loại bỏ tham số ? nếu có)
+                            let ext = src.split('.').pop().split(/[#?]/)[0].toLowerCase();
+                            if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) ext = 'jpg';
+                            
+                            const localName = `img_chap${chap.chapterNumber}_${imgCounter}.${ext}`;
+                            const localPath = `images/${localName}`;
+                            
+                            // Thay đổi src của thẻ img trong HTML thành đường dẫn offline (images/...)
+                            img.setAttribute('src', localPath);
+                            
+                            // Tải Blob và nén ngay vào thư mục OEBPS/images
+                            const imgBlob = await fetchImage(src);
+                            if (imgBlob) {
+                                imagesFolder.file(localName, imgBlob);
+                                chap.images.push(localName);
+                            }
+                        }
+                    }
+
+                    // Lấy lại HTML sau khi đổi src ảnh
+                    cleanContent = tempDiv.innerHTML;
 
                     const xhtmlStr = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${escapeXml(chap.title)}</title>\n  <style type="text/css">\n    body { font-family: "Times New Roman", Times, serif; line-height: 1.8; padding: 20px; max-width: 800px; margin: 0 auto; }\n    h2 { text-align: center; font-size: 1.8em; margin-bottom: 30px; color: #333; }\n    p { text-indent: 2em; margin-bottom: 1em; }\n    img { max-width: 100%; height: auto; display: block; margin: 10px auto; }\n  </style>\n</head>\n<body>\n  <h2>${escapeXml(chap.title)}</h2>\n  ${cleanContent}\n</body>\n</html>`;
 
@@ -221,7 +255,7 @@
                 if (coverUrl.startsWith('//')) coverUrl = 'https:' + coverUrl;
                 else if (coverUrl.startsWith('/')) coverUrl = window.location.origin + coverUrl;
                 
-                const coverBlob = await fetchCoverImage(coverUrl);
+                const coverBlob = await fetchImage(coverUrl);
                 if (coverBlob) {
                     imagesFolder.file("cover.jpg", coverBlob);
                     coverSaved = true;
@@ -239,7 +273,7 @@
             if (coverSaved) manifestItems += `    <item id="cover-image" href="images/cover.jpg" media-type="image/jpeg" properties="cover-image"/>\n`;
             let spineItems = `    <itemref idref="cover-page"/>\n`;
 
-            await fetchChaptersWithRateLimit(allChapters, zip, oebps, (completed, total) => {
+            await fetchChaptersWithRateLimit(allChapters, zip, oebps, imagesFolder, (completed, total) => {
                 if (completed % 5 === 0 || completed === total || completed === 1) {
                     btn.textContent = `📥 Đã tải ${completed}/${total} chương...`;
                 }
@@ -248,12 +282,24 @@
             let navXhtml = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml" xmlns:epub="http://www.idpf.org/2007/ops">\n<head><title>Mục lục</title></head>\n<body><nav epub:type="toc" id="toc"><h1>Mục lục</h1><ol>\n`;
             let tocNcx = `<?xml version="1.0" encoding="UTF-8"?><ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" version="2005-1"><head><meta name="dtb:uid" content="${alias}"/></head><docTitle><text>${escapeXml(tname)}</text></docTitle><navMap>\n`;
 
+            // Khai báo chương và ảnh nội bộ vào manifest
             allChapters.forEach((chap, index) => {
                 chap.fileName = `chuong-${chap.chapterNumber}.html`;
                 manifestItems += `    <item id="chap_${index}" href="${chap.fileName}" media-type="application/xhtml+xml"/>\n`;
                 spineItems += `    <itemref idref="chap_${index}"/>\n`;
                 navXhtml += `<li><a href="${chap.fileName}">${escapeXml(chap.title)}</a></li>\n`;
                 tocNcx += `<navPoint id="navPoint-${index + 1}" playOrder="${index + 1}"><navLabel><text>${escapeXml(chap.title)}</text></navLabel><content src="${chap.fileName}"/></navPoint>\n`;
+                
+                // Khai báo ảnh đã tải của chương này
+                if (chap.images && chap.images.length > 0) {
+                    chap.images.forEach((imgName, imgIdx) => {
+                        let mime = 'image/jpeg';
+                        if (imgName.endsWith('.png')) mime = 'image/png';
+                        else if (imgName.endsWith('.gif')) mime = 'image/gif';
+                        else if (imgName.endsWith('.webp')) mime = 'image/webp';
+                        manifestItems += `    <item id="img_${index}_${imgIdx}" href="images/${imgName}" media-type="${mime}"/>\n`;
+                    });
+                }
             });
             
             navXhtml += `</ol></nav></body></html>`;
@@ -402,12 +448,10 @@
     // KHỞI TẠO NÚT BẤM (QUẢN LÝ ĐIỀU KIỆN XUẤT HIỆN)
     // ==========================================
     function setupButton() {
-        // Kiểm tra sự tồn tại của 1 trong 2 yếu tố liên tục
         const checkExist = setInterval(() => {
             const htmlChapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
             const epubIframeEl = document.querySelector('iframe#epubIframe');
             
-            // Chỉ hiện nút tải khi có Mục lục HOẶC có Iframe
             if ((htmlChapterEls && htmlChapterEls.length > 0) || epubIframeEl) {
                 clearInterval(checkExist); 
 
