@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Vnthuquan EPUB Downloader
 // @namespace    http://tampermonkey.net/
-// @version      1.0
-// @description  Tải truyện từ vnthuquan.org về dạng EPUB
+// @version      1.1
+// @description  Tải truyện từ vnthuquan.org về dạng EPUB (chỉ hiện nút khi có mục lục)
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
 // @grant        GM_xmlhttpRequest
@@ -125,7 +125,7 @@
         return null;
     }
 
-    // Lấy danh sách chương từ DOM HTML đã cung cấp
+    // Lấy danh sách chương từ DOM HTML
     function getChapterList() {
         const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
         if (!chapterEls || chapterEls.length === 0) {
@@ -134,7 +134,7 @@
 
         return Array.from(chapterEls).map((el, index) => {
             return {
-                title: el.textContent.replace(/\s+/g, ' ').trim(), // Làm sạch khoảng trắng thừa trong HTML
+                title: el.textContent.replace(/\s+/g, ' ').trim(),
                 originalUrl: el.href,
                 chapterNumber: index + 1
             };
@@ -227,26 +227,37 @@
         return { ...chap, fileName, success: true };
     }
 
-    // Khởi tạo nút bấm nổi
+    // Khởi tạo nút bấm nổi - chỉ xuất hiện khi tìm thấy mục lục
     function setupButton() {
-        if (document.getElementById('vntq-epub-btn')) return;
+        const checkExist = setInterval(() => {
+            const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
+            
+            // Nếu tìm thấy ít nhất 1 chương trong mục lục
+            if (chapterEls && chapterEls.length > 0) {
+                clearInterval(checkExist); // Ngừng việc kiểm tra
 
-        const btn = document.createElement('button');
-        btn.id = 'vntq-epub-btn';
-        btn.innerHTML = '📥 Tải xuống EPUB';
-        btn.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 999999; padding: 12px 24px; background: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s;';
-        
-        btn.onmouseover = () => btn.style.transform = 'scale(1.05)';
-        btn.onmouseout = () => btn.style.transform = 'scale(1)';
+                if (document.getElementById('vntq-epub-btn')) return;
 
-        document.body.appendChild(btn);
+                const btn = document.createElement('button');
+                btn.id = 'vntq-epub-btn';
+                btn.innerHTML = '📥 Tải xuống EPUB';
+                btn.style.cssText = 'position: fixed; bottom: 30px; right: 30px; z-index: 999999; padding: 12px 24px; background: #007bff; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.3); transition: all 0.3s;';
+                
+                btn.onmouseover = () => btn.style.transform = 'scale(1.05)';
+                btn.onmouseout = () => btn.style.transform = 'scale(1)';
 
-        btn.addEventListener('click', async () => {
-            if (btn.disabled) return;
-            btn.disabled = true;
-            await startScrapingAndBuilding(btn);
-            btn.disabled = false;
-        });
+                document.body.appendChild(btn);
+
+                btn.addEventListener('click', async () => {
+                    if (btn.disabled) return;
+                    btn.disabled = true;
+                    await startScrapingAndBuilding(btn);
+                    btn.disabled = false;
+                });
+                
+                console.log("✅ Đã tìm thấy mục lục, hiển thị nút tải!");
+            }
+        }, 1000); // Kiểm tra mỗi giây 1 lần
     }
 
     // Luồng xử lý chính
@@ -424,6 +435,7 @@ ${spineItems}  </spine>
         }
     }
 
+    // Bắt đầu setup button
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', setupButton);
     } else {
