@@ -551,7 +551,7 @@
             const genres = Array.from(genreEls).map(g => g.textContent.trim());
 
             // Lấy description
-            let description = "Truyện lấy từ Truyenfull";
+            let description = "Truyện lấy từ Truyenhoan";
             const descEl = document.querySelector('.desc-text[itemprop="description"]') ||
                           document.querySelector('.desc-text');
             if (descEl) {
@@ -670,7 +670,7 @@
     <div class="title">${escapeXml(tname)}</div>
     <div class="divider"></div>
     <div class="author">${escapeXml(authorName)}</div>
-    <div class="info">TruyenFull</div>
+    <div class="info">Truyenhoan</div>
   </div>
 </body>
 </html>`;
@@ -777,7 +777,7 @@
     <dc:language>vi</dc:language>
     <dc:identifier id="pub-id">${escapeXml(alias)}</dc:identifier>
     <dc:description>${escapeXml(description)}</dc:description>
-    <dc:publisher>TruyenFull</dc:publisher>
+    <dc:publisher>Truyenhoan</dc:publisher>
     <dc:date>${new Date().toISOString().split('T')[0]}</dc:date>\n`;
 
             genres.forEach(g => {
