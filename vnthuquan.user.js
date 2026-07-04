@@ -1,12 +1,13 @@
 // ==UserScript==
 // @name         Vnthuquan EPUB Downloader (Auto Mode + Offline Images)
 // @namespace    http://tampermonkey.net/
-// @version      2.2
+// @version      2.3
 // @description  Tải truyện từ vnthuquan.org. Hỗ trợ tự động nội suy danh sách chương bị ẩn và lấy tên chương từ nội dung.
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
 // @grant        GM_xmlhttpRequest
 // @grant        GM_download
+// @connect      * 
 // @require      https://cdnjs.cloudflare.com/ajax/libs/jszip/3.9.1/jszip.min.js
 // @updateURL    https://vnindex.vercel.app/vnthuquan.user.js
 // @downloadURL  https://vnindex.vercel.app/vnthuquan.user.js
@@ -89,21 +90,51 @@
         throw new Error(`Failed after ${retries} retries`);
     }
 
-    // Tải ảnh (Dùng cho cả Ảnh bìa và Ảnh bên trong chương - Bỏ qua lỗi CORS)
+    // Tải ảnh qua Tampermonkey API (vượt CORS)
     function fetchImageGM(url) {
         return new Promise((resolve, reject) => {
             GM_xmlhttpRequest({
                 method: 'GET',
                 url: url,
                 responseType: 'blob',
-                headers: { 'User-Agent': getRandomUserAgent() },
-                onload: function(response) {
-                    if (response.status === 200 && response.response) resolve(response.response);
-                    else reject(new Error('Failed to fetch'));
+                headers: { 
+                    'User-Agent': getRandomUserAgent(),
+                    'Referer': window.location.origin + '/' // Ép thêm Referer để tránh bị server chặn
                 },
-                onerror: reject
+                onload: function(response) {
+                    if (response.status === 200 && response.response) {
+                        resolve(response.response);
+                    } else {
+                        reject(new Error(`Mã lỗi HTTP: ${response.status}`));
+                    }
+                },
+                onerror: reject,
+                ontimeout: reject
             });
         });
+    }
+
+    // Hàm tải ảnh chính có cơ chế dự phòng
+    async function fetchImage(imageUrl) {
+        try {
+            // Cách 1: Ưu tiên dùng GM_xmlhttpRequest để vượt CORS
+            const blob = await fetchImageGM(imageUrl);
+            if (blob) return blob;
+        } catch (e) {
+            console.warn('GM_xmlhttpRequest thất bại, thử dùng Fetch API mặc định:', e.message);
+            // Cách 2: Fallback bằng Fetch API thông thường của trình duyệt
+            try {
+                const response = await fetch(imageUrl, {
+                    headers: { 'User-Agent': getRandomUserAgent() }
+                });
+                if (response.ok) {
+                    return await response.blob();
+                }
+            } catch (err) {
+                console.error('Cả 2 phương thức tải ảnh đều thất bại:', err);
+            }
+        }
+        return null;
     }
 
     async function fetchImage(imageUrl) {
