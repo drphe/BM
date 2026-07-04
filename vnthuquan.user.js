@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name         Vnthuquan EPUB Downloader (Auto Mode + Offline Images)
 // @namespace    http://tampermonkey.net/
-// @version      2.1
-// @description  Tải truyện từ vnthuquan.org. Hỗ trợ Iframe Bibi và Mục lục HTML (Bao gồm tải ảnh offline bên trong chương).
+// @version      2.2
+// @description  Tải truyện từ vnthuquan.org. Hỗ trợ tự động nội suy danh sách chương bị ẩn và lấy tên chương từ nội dung.
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
 // @grant        GM_xmlhttpRequest
@@ -128,14 +128,47 @@
     function getChapterList() {
         const chapterEls = document.querySelectorAll('#vntqTocList .vntq-toc-item');
         if (!chapterEls || chapterEls.length === 0) throw new Error("Không tìm thấy danh sách chương!");
-        return Array.from(chapterEls).map((el, index) => ({
+        
+        let chapters = Array.from(chapterEls).map((el, index) => ({
             title: el.textContent.replace(/\s+/g, ' ').trim(),
             originalUrl: el.href,
             chapterNumber: index + 1
         }));
+
+        // KIỂM TRA MỤC LỤC ẨN TỪ HEADER
+        const headerH3 = document.querySelector('.vntq-modal-header h3');
+        if (headerH3) {
+            // Tìm con số trong ngoặc "Mục lục (1237 chương)"
+            const match = headerH3.textContent.match(/\((\d+)\s*chương\)/i);
+            if (match) {
+                const totalChapters = parseInt(match[1], 10);
+                if (totalChapters > chapters.length) {
+                    console.log(`Phát hiện tổng số chương (${totalChapters}) lớn hơn mục lục hiện tại (${chapters.length}). Đang tiến hành nội suy danh sách...`);
+                    
+                    const firstChapUrl = chapters[0].originalUrl;
+                    // Phân tách URL dựa trên chuỗi '/chuong-'
+                    const urlMatch = firstChapUrl.match(/^(.*\/chuong-)(\d+)(.*)$/i);
+                    
+                    if (urlMatch) {
+                        const prefix = urlMatch[1];
+                        const suffix = urlMatch[3];
+                        chapters = []; // Reset để tạo lại danh sách
+                        
+                        for (let i = 1; i <= totalChapters; i++) {
+                            chapters.push({
+                                title: `Chương ${i}`, // Tạm thời đặt tên, sẽ bị ghi đè sau
+                                originalUrl: `${prefix}${i}${suffix}`,
+                                chapterNumber: i
+                            });
+                        }
+                    }
+                }
+            }
+        }
+
+        return chapters;
     }
 
-    // Hàm lấy chương có thêm đối số "imagesFolder" để ghi ảnh offline vào ZIP
     async function fetchChaptersWithRateLimit(chapters, zip, oebps, imagesFolder, updateProgress) {
         const results = [];
         let completed = 0;
@@ -154,6 +187,22 @@
                     const chapHtml = await chapRes.text();
                     const parser = new DOMParser();
                     const chapDoc = parser.parseFromString(chapHtml, "text/html");
+
+                    // TÌM TÊN CHƯƠNG TỪ NỘI DUNG TRANG (Ưu tiên ghi đè lên tên mặc định)
+                    const chuongSoEl = chapDoc.querySelector('.chuongso_a');
+                    const tuaHoiEl = chapDoc.querySelector('.tuahoi_a');
+                    let realTitle = "";
+                    
+                    if (chuongSoEl) {
+                        realTitle += chuongSoEl.textContent.replace(/\s+/g, ' ').trim();
+                    }
+                    if (tuaHoiEl) {
+                        realTitle += (realTitle ? " - " : "") + tuaHoiEl.textContent.replace(/\s+/g, ' ').trim();
+                    }
+                    
+                    if (realTitle) {
+                        chap.title = realTitle; // Cập nhật trực tiếp object reference
+                    }
 
                     let contentDiv = chapDoc.querySelector('#vntqTextContent');
                     let cleanContent = contentDiv ? contentDiv.innerHTML : "<p>Không thể tải nội dung chương này.</p>";
@@ -174,23 +223,19 @@
                     for (const img of imgs) {
                         let src = img.getAttribute('src');
                         if (src) {
-                            // Chuẩn hóa link ảnh
                             if (src.startsWith('//')) src = 'https:' + src;
                             else if (src.startsWith('/')) src = window.location.origin + src;
                             else if (!src.startsWith('http')) src = window.location.origin + '/' + src;
 
                             imgCounter++;
-                            // Tách đuôi file để lưu (loại bỏ tham số ? nếu có)
                             let ext = src.split('.').pop().split(/[#?]/)[0].toLowerCase();
                             if (!['jpg', 'jpeg', 'png', 'gif', 'webp'].includes(ext)) ext = 'jpg';
                             
                             const localName = `img_chap${chap.chapterNumber}_${imgCounter}.${ext}`;
                             const localPath = `images/${localName}`;
                             
-                            // Thay đổi src của thẻ img trong HTML thành đường dẫn offline (images/...)
                             img.setAttribute('src', localPath);
                             
-                            // Tải Blob và nén ngay vào thư mục OEBPS/images
                             const imgBlob = await fetchImage(src);
                             if (imgBlob) {
                                 imagesFolder.file(localName, imgBlob);
@@ -199,7 +244,6 @@
                         }
                     }
 
-                    // Lấy lại HTML sau khi đổi src ảnh
                     cleanContent = tempDiv.innerHTML;
 
                     const xhtmlStr = `<?xml version="1.0" encoding="utf-8"?>\n<!DOCTYPE html>\n<html xmlns="http://www.w3.org/1999/xhtml">\n<head>\n  <title>${escapeXml(chap.title)}</title>\n  <style type="text/css">\n    body { font-family: "Times New Roman", Times, serif; line-height: 1.8; padding: 20px; max-width: 800px; margin: 0 auto; }\n    h2 { text-align: center; font-size: 1.8em; margin-bottom: 30px; color: #333; }\n    p { text-indent: 2em; margin-bottom: 1em; }\n    img { max-width: 100%; height: auto; display: block; margin: 10px auto; }\n  </style>\n</head>\n<body>\n  <h2>${escapeXml(chap.title)}</h2>\n  ${cleanContent}\n</body>\n</html>`;
@@ -290,7 +334,6 @@
                 navXhtml += `<li><a href="${chap.fileName}">${escapeXml(chap.title)}</a></li>\n`;
                 tocNcx += `<navPoint id="navPoint-${index + 1}" playOrder="${index + 1}"><navLabel><text>${escapeXml(chap.title)}</text></navLabel><content src="${chap.fileName}"/></navPoint>\n`;
                 
-                // Khai báo ảnh đã tải của chương này
                 if (chap.images && chap.images.length > 0) {
                     chap.images.forEach((imgName, imgIdx) => {
                         let mime = 'image/jpeg';
