@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Vnthuquan EPUB Downloader (Auto Mode + Offline Images)
 // @namespace    http://tampermonkey.net/
-// @version      2.3
+// @version      2.4
 // @description  Tải truyện từ vnthuquan.org. Hỗ trợ tự động nội suy danh sách chương bị ẩn và lấy tên chương từ nội dung.
 // @author       BS Phê
 // @match        https://vnthuquan.org/*
@@ -220,20 +220,34 @@
                     const chapDoc = parser.parseFromString(chapHtml, "text/html");
 
                     // TÌM TÊN CHƯƠNG TỪ NỘI DUNG TRANG (Ưu tiên ghi đè lên tên mặc định)
-                    const chuongSoEl = chapDoc.querySelector('.chuongso_a');
-                    const tuaHoiEl = chapDoc.querySelector('.tuahoi_a');
-                    let realTitle = "";
-                    
-                    if (chuongSoEl) {
-                        realTitle += chuongSoEl.textContent.replace(/\s+/g, ' ').trim();
-                    }
-                    if (tuaHoiEl) {
-                        realTitle += (realTitle ? " - " : "") + tuaHoiEl.textContent.replace(/\s+/g, ' ').trim();
-                    }
-                    
-                    if (realTitle) {
-                        chap.title = realTitle; // Cập nhật trực tiếp object reference
-                    }
+// Lấy tất cả thẻ .chuongso_a
+const chuongSoEls = chapDoc.querySelectorAll('.chuongso_a');
+let chuongSoText = "";
+if (chuongSoEls && chuongSoEls.length > 1) {
+    // Nếu có nhiều hơn 1 thẻ, bỏ qua thẻ đầu tiên, lấy thẻ thứ 2
+    chuongSoText = chuongSoEls[1].textContent.replace(/\s+/g, ' ').trim();
+} else if (chuongSoEls && chuongSoEls.length === 1) {
+    // Nếu chỉ có 1 thẻ, lấy thẻ đó
+    chuongSoText = chuongSoEls[0].textContent.replace(/\s+/g, ' ').trim();
+}
+
+const tuaHoiEl = chapDoc.querySelector('.tuahoi_a');
+let tuaHoiText = "";
+if (tuaHoiEl) {
+    tuaHoiText = tuaHoiEl.textContent.replace(/\s+/g, ' ').trim();
+}
+
+let realTitle = "";
+if (chuongSoText) {
+    realTitle += chuongSoText;
+}
+if (tuaHoiText) {
+    realTitle += (realTitle ? " - " : "") + tuaHoiText;
+}
+
+if (realTitle) {
+    chap.title = realTitle; // Cập nhật trực tiếp object reference
+}
 
                     let contentDiv = chapDoc.querySelector('#vntqTextContent');
                     let cleanContent = contentDiv ? contentDiv.innerHTML : "<p>Không thể tải nội dung chương này.</p>";
